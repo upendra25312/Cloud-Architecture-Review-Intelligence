@@ -30,11 +30,11 @@ az --version          # Azure CLI 2.60+
 node --version        # Node.js 20+
 npm --version         # npm 10+
 gh --version          # GitHub CLI 2.40+
-pwsh --version        # PowerShell 7+ (for Bicep validation)
+terraform version     # Terraform 1.7+
 
-# Install Bicep
-az bicep install
-az bicep version      # 0.28+
+# Install Terraform (if not present)
+# Download: https://developer.hashicorp.com/terraform/downloads
+# Or via winget: winget install HashiCorp.Terraform
 
 # Install Playwright (for E2E tests)
 npx playwright install --with-deps chromium
@@ -90,35 +90,56 @@ az group create \
   --tags project=arb-review environment=prod budget-limit=60USD
 ```
 
-#### 1.2 Deploy Bicep Template
+#### 1.2 Bootstrap Terraform Remote State
 
-The full Bicep template is at `infrastructure/main.bicep`. It provisions all 13 resources in a single transaction.
+Before first deploy, create the state storage backend (one-time, manual):
 
 ```bash
-# Validate first (dry run — no resources created)
-az deployment group validate \
-  --resource-group rg-arb-review-prod \
-  --template-file infrastructure/main.bicep \
-  --parameters env=prod prefix=arb-review
-
-# Deploy (~8 minutes)
-az deployment group create \
-  --resource-group rg-arb-review-prod \
-  --template-file infrastructure/main.bicep \
-  --parameters env=prod prefix=arb-review \
-  --output table
+az group create --name rg-tf-state --location eastus2
+az storage account create \
+  --name starbrevtfstate \
+  --resource-group rg-tf-state \
+  --sku Standard_LRS \
+  --min-tls-version TLS1_2
+az storage container create \
+  --name tfstate \
+  --account-name starbrevtfstate \
+  --auth-mode login
 ```
 
-#### 1.3 Capture Outputs
+#### 1.3 Deploy with Terraform
+
+All 13 resources are defined in `infrastructure/terraform/`. GitHub Actions runs this automatically on every push to `main` that touches `infrastructure/terraform/**`.
 
 ```bash
-# Save all outputs to a local env file (never commit this file)
-az deployment group show \
-  --resource-group rg-arb-review-prod \
-  --name main \
-  --query properties.outputs \
-  -o json > .deployment-outputs.json
+cd infrastructure/terraform
 
+# Copy and fill in your values
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars: set subscription_id, alert_email, github_actions_principal_id
+
+# Initialise — downloads providers, connects to remote state
+terraform init
+
+# Preview — no resources created
+terraform plan \
+  -var="subscription_id=<your-subscription-id>" \
+  -var="alert_email=your@email.com"
+
+# Deploy all 13 resources (~10 minutes)
+terraform apply \
+  -var="subscription_id=<your-subscription-id>" \
+  -var="alert_email=your@email.com"
+```
+
+#### 1.4 Capture Outputs
+
+```bash
+# All resource endpoints and names
+terraform output
+
+# Save to JSON for reference
+terraform output -json > ../../.deployment-outputs.json
 cat .deployment-outputs.json
 ```
 
@@ -130,9 +151,9 @@ Expected outputs:
 - `staticWebAppUrl` — `<generated>.azurestaticapps.net`
 - `projectEndpoint` — `https://proj-arb-review-prod.eastus2.api.azureml.ms`
 
-#### 1.4 Verify RBAC Assignments
+#### 1.5 Verify RBAC Assignments
 
-The Bicep template creates all role assignments. Verify each one:
+Terraform creates all role assignments in `rbac.tf`. Verify each one:
 
 ```bash
 FUNC_MI=$(az functionapp identity show \
@@ -149,38 +170,23 @@ az role assignment list \
   -o table
 ```
 
-Expected roles:
+Expected roles for Function App MI (7 total — all Managed Identity, zero keys):
 1. `Storage Blob Data Contributor` on storage account
 2. `Storage Table Data Contributor` on storage account
-3. `Cognitive Services OpenAI User` on AI Services
-4. `Key Vault Secrets User` on Key Vault
+3. `Cognitive Services OpenAI User` on AI Services (Foundry Agents + embeddings)
+4. `Key Vault Secrets User` on Key Vault (foundry-agent-id only)
 5. `Search Index Data Contributor` on AI Search
+6. `Search Service Contributor` on AI Search
+7. `Cognitive Services User` on Document Intelligence
 
-#### 1.5 Store Initial Secrets in Key Vault
-
-```bash
-KV_NAME="kv-arb-review-prod"
-
-# AI Search admin key
-SEARCH_KEY=$(az search admin-key show \
-  --service-name srch-arb-review-prod \
-  --resource-group rg-arb-review-prod \
-  --query primaryKey -o tsv)
-az keyvault secret set --vault-name $KV_NAME --name search-api-key --value "$SEARCH_KEY"
-
-# Document Intelligence key
-DOCINT_KEY=$(az cognitiveservices account keys list \
-  --name di-arb-review-prod \
-  --resource-group rg-arb-review-prod \
-  --query key1 -o tsv)
-az keyvault secret set --vault-name $KV_NAME --name docint-key --value "$DOCINT_KEY"
-```
+> **No API keys anywhere.** AI Search and Document Intelligence use Bearer tokens via `DefaultAzureCredential`. Only `foundry-agent-id` is stored in Key Vault (it is a resource ID, not a credential).
 
 **Gate 1 — Proceed only if:**
+- [ ] `terraform show` reports all 13 resources `complete`
 - [ ] `az resource list --resource-group rg-arb-review-prod --query "length(@)"` returns `13`
-- [ ] All 5 RBAC role assignments exist for Function App MI
-- [ ] Key Vault contains `search-api-key` and `docint-key` secrets
-- [ ] Function App can read secrets: `az functionapp config appsettings list --name func-arb-review-api --resource-group rg-arb-review-prod` shows no `@Microsoft.KeyVault` resolution errors
+- [ ] All 7 RBAC role assignments exist for Function App MI
+- [ ] Key Vault contains only `foundry-agent-id` secret (placeholder)
+- [ ] `AZURE_SEARCH_KEY` and `AZURE_DOCINT_KEY` are NOT present in Function App settings
 
 ---
 
@@ -366,11 +372,79 @@ Perform a full ARB review and return valid JSON.
 
 ---
 
+### Phase 2.5: GitHub Actions Setup *(Cloud Architect — Day 2, ~1 hour)*
+
+Configure GitHub repository secrets so the three CI/CD workflows can authenticate to Azure using OIDC (no stored passwords or client secrets).
+
+#### Create Federated Identity in Azure AD
+
+```bash
+# Create App Registration for GitHub Actions
+APP_ID=$(az ad app create --display-name "github-actions-arb-review" --query appId -o tsv)
+SP_ID=$(az ad sp create --id $APP_ID --query id -o tsv)
+
+# Add federated credential for main branch
+az ad app federated-credential create \
+  --id $APP_ID \
+  --parameters '{
+    "name": "github-main",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:upendra25312/Cloud-Architecture-Review-Intelligence:ref:refs/heads/main",
+    "audiences": ["api://AzureADTokenExchange"]
+  }'
+
+# Add federated credential for pull requests
+az ad app federated-credential create \
+  --id $APP_ID \
+  --parameters '{
+    "name": "github-prs",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:upendra25312/Cloud-Architecture-Review-Intelligence:pull_request",
+    "audiences": ["api://AzureADTokenExchange"]
+  }'
+
+echo "CLIENT_ID: $APP_ID"
+echo "PRINCIPAL_ID (for Terraform rbac.tf): $SP_ID"
+```
+
+#### Add GitHub Repository Secrets
+
+Go to `https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/settings/secrets/actions` and add:
+
+| Secret Name | Value |
+|---|---|
+| `AZURE_CLIENT_ID` | App Registration client ID (`$APP_ID`) |
+| `AZURE_TENANT_ID` | `az account show --query tenantId -o tsv` |
+| `AZURE_SUBSCRIPTION_ID` | Your subscription ID |
+| `ALERT_EMAIL` | Email for cost alerts |
+| `GITHUB_ACTIONS_PRINCIPAL_ID` | `$SP_ID` from above |
+| `NEXT_PUBLIC_API_URL` | `https://func-arb-review-api.azurewebsites.net` |
+| `AZURE_STATIC_WEB_APPS_API_TOKEN` | `terraform output -raw static_web_app_deploy_token` |
+| `TEST_USER_TOKEN` | A valid auth token for E2E tests |
+
+#### CI/CD Workflow Summary
+
+| Workflow | Triggers on | What it does |
+|---|---|---|
+| `terraform.yml` | Push to `main` (infra files) | Plan on PR, Apply on merge |
+| `deploy-api.yml` | Push to `main` (api files) | Test → security scan → deploy → smoke test |
+| `deploy-frontend.yml` | Push to `main` (frontend files) | Build → E2E → deploy to SWA |
+| `validate.yml` | Every Monday 08:00 UTC | Cost check, RBAC audit, secret scan |
+
+---
+
 ### Phase 3: Backend Code Migration *(Full Stack Developer — Days 2–4, ~16 hours)*
 
 #### 3.1 Update `arb-foundry-agent.js`
 
-Replace the Chat Completions transport with the Foundry Agents API. The change is isolated to this one file — all other 21 functions remain unchanged.
+Replace the Chat Completions transport with the Foundry Agents API. **Switch AI Search and Document Intelligence to `DefaultAzureCredential`** — no API keys anywhere in the codebase.
+
+**Code changes required in this phase:**
+1. `arb-foundry-agent.js` — replace Chat Completions with Agents API thread lifecycle
+2. `arb-search.js` — replace `"api-key"` header with `Authorization: Bearer` using `DefaultAzureCredential`
+3. `arb-review-store.js` (extraction) — replace `Ocp-Apim-Subscription-Key` / key header with `DefaultAzureCredential` for Document Intelligence
+
+The change is otherwise isolated — all other 21 functions remain unchanged.
 
 **Key changes:**
 1. Add `agentsRequest()` — HTTP transport using `DefaultAzureCredential`
@@ -1193,15 +1267,15 @@ func azure functionapp publish func-arb-review-api --node
 
 | Variable | Source | Secret? |
 |---|---|---|
-| `FOUNDRY_PROJECT_ENDPOINT` | Bicep output | No |
+| `FOUNDRY_PROJECT_ENDPOINT` | Terraform output | No |
 | `FOUNDRY_AGENT_ID` | Key Vault: `foundry-agent-id` | Yes |
-| `AZURE_SEARCH_ENDPOINT` | Bicep output | No |
+| `AZURE_SEARCH_ENDPOINT` | Terraform output | No |
 | `AZURE_SEARCH_KEY` | Key Vault: `search-api-key` | Yes |
 | `AZURE_SEARCH_INDEX_NAME` | Hardcoded: `arb-documents` | No |
-| `AZURE_DOCINT_ENDPOINT` | Bicep output | No |
+| `AZURE_DOCINT_ENDPOINT` | Terraform output | No |
 | `AZURE_DOCINT_KEY` | Key Vault: `docint-key` | Yes |
-| `AZURE_STORAGE_ACCOUNT_NAME` | Bicep output | No |
-| `APPLICATIONINSIGHTS_CONNECTION_STRING` | Bicep output | No |
+| `AZURE_STORAGE_ACCOUNT_NAME` | Terraform output | No |
+| `APPLICATIONINSIGHTS_CONNECTION_STRING` | Terraform output | No |
 
 ## Appendix C — Test Data
 

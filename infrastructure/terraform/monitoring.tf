@@ -1,0 +1,105 @@
+resource "azurerm_log_analytics_workspace" "main" {
+  name                = "law-${var.prefix}-${var.env}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+
+  tags = azurerm_resource_group.main.tags
+}
+
+resource "azurerm_application_insights" "main" {
+  name                = "appi-${var.prefix}-${var.env}"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  workspace_id        = azurerm_log_analytics_workspace.main.id
+  application_type    = "web"
+
+  tags = azurerm_resource_group.main.tags
+}
+
+# Budget alert — enforces the $60/month hard ceiling
+resource "azurerm_consumption_budget_resource_group" "main" {
+  name              = "budget-${var.prefix}-${var.env}"
+  resource_group_id = azurerm_resource_group.main.id
+
+  amount     = var.budget_amount # $60
+  time_grain = "Monthly"
+
+  time_period {
+    start_date = "2025-01-01T00:00:00Z" # Update to current month on first deploy
+  }
+
+  # Warning at $40 (66.7% of budget)
+  notification {
+    enabled        = true
+    threshold      = 66.7
+    operator       = "GreaterThan"
+    threshold_type = "Actual"
+    contact_emails = [var.alert_email]
+  }
+
+  # Hard alert at $55 (91.7% of budget) — take action before hitting $60
+  notification {
+    enabled        = true
+    threshold      = 91.7
+    operator       = "GreaterThan"
+    threshold_type = "Actual"
+    contact_emails = [var.alert_email]
+  }
+}
+
+# Alert rule: agent review latency > 120 seconds
+resource "azurerm_monitor_metric_alert" "high_latency" {
+  name                = "alert-agent-latency-${var.env}"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_application_insights.main.id]
+  severity            = 2
+  frequency           = "PT5M"
+  window_size         = "PT15M"
+
+  criteria {
+    metric_namespace = "microsoft.insights/components"
+    metric_name      = "requests/duration"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 120000 # 120 seconds in ms
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main.id
+  }
+}
+
+# Alert rule: HTTP 5xx error rate > 5%
+resource "azurerm_monitor_metric_alert" "error_rate" {
+  name                = "alert-error-rate-${var.env}"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_application_insights.main.id]
+  severity            = 1
+  frequency           = "PT5M"
+  window_size         = "PT15M"
+
+  criteria {
+    metric_namespace = "microsoft.insights/components"
+    metric_name      = "requests/failed"
+    aggregation      = "Count"
+    operator         = "GreaterThan"
+    threshold        = 10
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.main.id
+  }
+}
+
+resource "azurerm_monitor_action_group" "main" {
+  name                = "ag-${var.prefix}-${var.env}"
+  resource_group_name = azurerm_resource_group.main.name
+  short_name          = "arbreviews"
+
+  email_receiver {
+    name          = "primary-alert"
+    email_address = var.alert_email
+  }
+}

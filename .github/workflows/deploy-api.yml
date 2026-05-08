@@ -1,0 +1,144 @@
+name: Deploy — Azure Functions API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/**'
+      - '.github/workflows/deploy-api.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'api/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  NODE_VERSION: '20.x'
+  FUNCTION_APP_NAME: 'func-arb-review-api'  # Matches Terraform: func-${prefix}-api
+
+jobs:
+  # ─── Build & Test ────────────────────────────────────────────────────────────
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm test -- --ci --coverage --coverageReporters=text-summary
+        env:
+          NODE_ENV: test
+
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-coverage
+          path: api/coverage/
+          retention-days: 7
+
+  # ─── Security Scan ───────────────────────────────────────────────────────────
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for Secrets in Code
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          if grep -r \
+            -E "(api[_-]?key|apiKey|password|AccountKey|connectionstring)" \
+            --include="*.js" --include="*.ts" \
+            --exclude-dir=node_modules \
+            --exclude-dir=.git \
+            api/src/; then
+            echo "FAIL: Potential secret found in source code"
+            exit 1
+          fi
+          echo "PASS: No hardcoded secrets detected"
+
+      - name: Audit npm Dependencies
+        working-directory: api
+        run: npm audit --audit-level=high
+
+  # ─── Deploy ──────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to Azure Functions
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    environment: production
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: api/package-lock.json
+
+      - name: Install Production Dependencies
+        run: npm ci --omit=dev
+
+      - name: Azure Login (OIDC — no secret)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Function App
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.FUNCTION_APP_NAME }}
+          package: api
+          respect-funcignore: true
+
+      - name: Smoke Test Deployed API
+        run: |
+          sleep 30  # Allow cold start
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://${{ env.FUNCTION_APP_NAME }}.azurewebsites.net/api/arb/health")
+          echo "Health check status: $STATUS"
+          [ "$STATUS" = "200" ] || (echo "FAIL: Health check returned $STATUS" && exit 1)
+          echo "PASS: API is healthy"
+
+      - name: Verify All 22 Functions Registered
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            COUNT=$(az functionapp function list \
+              --name ${{ env.FUNCTION_APP_NAME }} \
+              --resource-group rg-arb-review-prod \
+              --query "length(@)" -o tsv)
+            echo "Functions registered: $COUNT"
+            [ "$COUNT" -ge "22" ] || (echo "FAIL: Expected 22 functions, got $COUNT" && exit 1)
+            echo "PASS: All functions registered"

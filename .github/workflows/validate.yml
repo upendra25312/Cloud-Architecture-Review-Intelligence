@@ -1,0 +1,100 @@
+name: Validate — Security & Cost Checks
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday 08:00 UTC
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  security:
+    name: Security Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: No Hardcoded Secrets
+        run: |
+          echo "=== Scanning all source files for secrets ==="
+          FAIL=0
+          if grep -rn \
+            -E "(api[_-]?key|ApiKey|password|Password|AccountKey|connectionString)" \
+            --include="*.js" --include="*.ts" --include="*.json" \
+            --exclude-dir=node_modules --exclude-dir=.git \
+            --exclude="*.example" --exclude="*.test.*" \
+            api/ frontend/ 2>/dev/null; then
+            echo "FAIL: Hardcoded secret pattern found"
+            FAIL=1
+          fi
+          [ $FAIL -eq 0 ] && echo "PASS: No secrets in source code"
+          exit $FAIL
+
+  cost:
+    name: Cost Projection Check
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Check Current Month Spend
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            START=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)
+            END=$(date +%Y-%m-%d)
+            SPEND=$(az consumption usage list \
+              --start-date $START \
+              --end-date $END \
+              --query "sum([?contains(instanceId, 'rg-arb-review-prod')].pretaxCost)" \
+              -o tsv 2>/dev/null || echo "0")
+            echo "Current month spend: \$$SPEND"
+            THRESHOLD=50
+            RESULT=$(echo "$SPEND > $THRESHOLD" | bc -l 2>/dev/null || echo "0")
+            if [ "$RESULT" = "1" ]; then
+              echo "WARNING: Spend \$$SPEND exceeds \$$THRESHOLD warning threshold"
+              exit 1
+            fi
+            echo "PASS: Spend within budget"
+
+  rbac:
+    name: RBAC Validation
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify No API Keys in Function App Settings
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            SETTINGS=$(az functionapp config appsettings list \
+              --name func-arb-review-api \
+              --resource-group rg-arb-review-prod \
+              --query "[].name" -o tsv)
+            echo "App settings: $SETTINGS"
+            for FORBIDDEN in AZURE_SEARCH_KEY AZURE_DOCINT_KEY FOUNDRY_API_KEY; do
+              if echo "$SETTINGS" | grep -q "^${FORBIDDEN}$"; then
+                echo "FAIL: API key setting $FORBIDDEN found — should use Managed Identity"
+                exit 1
+              fi
+            done
+            echo "PASS: No raw API keys in Function App settings"

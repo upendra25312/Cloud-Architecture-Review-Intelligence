@@ -1,0 +1,27 @@
+# Local .terraform directories
+**/.terraform/*
+
+# Terraform state files — stored remotely in Azure Blob (see backend "azurerm" in main.tf)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Variable files with secrets — NEVER commit these
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Lock file — DO commit this
+# .terraform.lock.hcl
+
+# Plan output files
+*.tfplan

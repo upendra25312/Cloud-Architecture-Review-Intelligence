@@ -1,0 +1,14 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# NEVER commit terraform.tfvars to source control.
+
+subscription_id = "<your-azure-subscription-id>"
+location        = "eastus2"
+env             = "prod"
+prefix          = "arb-review"
+prefix_short    = "arbrev"
+alert_email     = "your-email@example.com"
+budget_amount   = 60
+
+# GitHub Actions federated identity principal ID
+# Run: az ad sp show --id <app-id> --query id -o tsv
+github_actions_principal_id = "<github-actions-service-principal-object-id>"
