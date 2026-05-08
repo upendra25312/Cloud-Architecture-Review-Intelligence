@@ -17,7 +17,9 @@ The ARB Review solution will be re-deployed from scratch in a new Azure subscrip
 - All secrets in Key Vault — enterprise security posture from day 0
 - Bicep IaC — single `az deployment` command provisions everything
 
-**Target monthly cost: $8–15 at 200 reviews/month. Hard ceiling: $30 at 500 reviews/month.**
+**Budget constraint: Total solution cost MUST remain under $60 USD/month at all usage levels.**
+
+**Target monthly cost: $8–15 at 200 reviews/month. Hard ceiling: $30 at 500 reviews/month — well within the $60 budget.**
 
 ---
 
@@ -28,7 +30,7 @@ The ARB Review solution will be re-deployed from scratch in a new Azure subscrip
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Azure Subscription                                              │
-│  Resource Group: rg-arb-review-prod  (East US)                  │
+│  Resource Group: rg-arb-review-prod  (East US 2)                 │
 │                                                                  │
 │  ┌──────────────┐     ┌────────────────────────────────────┐    │
 │  │  Static Web  │────▶│  Azure Functions (Consumption)     │    │
@@ -145,7 +147,9 @@ The agent stores the system prompt + knowledge vector store — your code only s
 | 500 | $6.50 | ~$8.50 |
 | 1,000 | $13.00 | ~$15.00 |
 
-**Hard ceiling: ~$30/month even at 2,000 reviews/month.**
+**Hard ceiling: ~$30/month even at 2,000 reviews/month — less than half the $60 budget cap.**
+
+> **Budget guard:** Set an Azure Cost Management budget with a $40 warning alert and a $55 hard alert on resource group `rg-arb-review-prod`. This ensures spend is caught well before hitting the $60 ceiling.
 
 ---
 
@@ -153,7 +157,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 ### Phase 0 — Prerequisites (Day 0, ~2 hours)
 - [ ] Confirm Contributor access to target Azure subscription
-- [ ] Confirm East US quota for `gpt-4.1-mini` GlobalStandard (request if needed — can take 24h)
+- [ ] Confirm East US 2 quota for `gpt-4.1-mini` GlobalStandard (request if needed — can take 24h)
 - [ ] Clone source repository + confirm code is available
 - [ ] `az login` + `az account set --subscription <your-subscription-id>`
 
@@ -194,6 +198,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 ### Phase 6 — Go-Live (Day 7)
 - [ ] Set custom domain on Static Web App (if applicable)
 - [ ] Enable App Insights alerts (error rate > 5%, latency > 120s)
+- [ ] Create Azure Cost Management budget on `rg-arb-review-prod`: $40 warning alert, $55 hard alert (enforces < $60 constraint)
 - [ ] Document all env vars in Key Vault + README
 - [ ] Deliver handover runbook
 
@@ -210,7 +215,7 @@ The entire infrastructure is expressed as a single Bicep file at `infrastructure
 ```bash
 az group create \
   --name rg-arb-review-prod \
-  --location eastus
+  --location eastus2
 
 az deployment group create \
   --resource-group rg-arb-review-prod \
@@ -240,7 +245,7 @@ az deployment group create \
 
 **Document Intelligence (F0 Free)** — 500 pages/month free. Upgrade path to S0 ($0.001/page) is a single SKU change in Bicep.
 
-**Static Web App (Free)** — Hosts the Next.js 16 frontend. Upgrade to Standard ($9/month) available if rate limiting becomes an issue.
+**Static Web App (Free)** — Deployed to **East US 2** (same region as all other resources). Hosts the Next.js 16 frontend. Upgrade to Standard ($9/month) available if rate limiting becomes an issue.
 
 **Application Insights + Log Analytics** — 30-day retention, 5 GB/month free ingestion. Linked to Functions for end-to-end distributed tracing.
 
@@ -338,7 +343,7 @@ async function pollRunToCompletion(threadId, runId, maxMs = 240000) {
 
 | Variable | Value | Source |
 |---|---|---|
-| `FOUNDRY_PROJECT_ENDPOINT` | `https://proj-arb-review-prod.eastus.api.azureml.ms` | Bicep output |
+| `FOUNDRY_PROJECT_ENDPOINT` | `https://proj-arb-review-prod.eastus2.api.azureml.ms` | Bicep output |
 | `FOUNDRY_AGENT_ID` | `<agent-id>` | Key Vault reference |
 | `AZURE_SEARCH_ENDPOINT` | `https://srch-arb-review-prod.search.windows.net` | Bicep output |
 | `AZURE_SEARCH_KEY` | `<key>` | Key Vault reference |
@@ -434,7 +439,7 @@ All roles use **Managed Identity — no secrets in code or config files** except
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| `gpt-4.1-mini` quota not available in East US | Medium | High | Pre-check quota Day 0; fallback to East US 2 or Sweden Central |
+| `gpt-4.1-mini` quota not available in East US 2 | Medium | High | Pre-check quota Day 0; fallback to East US or West US 2 |
 | Agents API polling timeout on large reviews | Medium | Medium | 4-minute max poll; fallback to `buildFallbackAgentReview()` already implemented |
 | Free AI Search 50 MB limit hit | Low | Medium | Monitor index size via App Insights; cleanup old review indexes on expiry |
 | Static Web App Free tier rate limit | Low | Low | Generous limits; upgrade to Standard ($9/month) if needed |
