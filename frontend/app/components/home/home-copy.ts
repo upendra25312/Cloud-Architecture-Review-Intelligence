@@ -13,7 +13,7 @@ export const HOME_COPY = {
     eyebrow: "Architecture Review Intelligence",
     title: "Turn uploaded architecture evidence into board-ready review decisions.",
     kicker:
-      "Azure reviews available today — AWS and Google Cloud arriving Q3 2026.",
+      "Starting with Azure. Expanding to AWS and Google Cloud.",
     sub: "Upload your architecture documents, get evidence-linked findings and framework-aligned decisions, then export a board-ready review pack — reviewed and signed off by your architects.",
     primaryCta: "Start a Review",
     secondaryCta: "View Sample Output",
