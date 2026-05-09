@@ -11682,6 +11682,40 @@ button.chip:disabled:hover {
   white-space: nowrap;
 }
 
+.review-btn-ghost {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: transparent;
+  color: #f1f5f9;
+}
+
+.review-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.review-hero-trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.review-hero-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.review-hero-trust-item span {
+  color: #22d3ee;
+  font-weight: 800;
+}
+
 /* ── Fluid typography clamps for new headings (Req 17.4) ── */
 .review-intel-home h2 {
   font-size: clamp(1.5rem, 3vw, 2.25rem);

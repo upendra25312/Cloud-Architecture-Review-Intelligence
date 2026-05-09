@@ -10,20 +10,17 @@
 
 export const HOME_COPY = {
   hero: {
-    eyebrow: "Rackspace internal cloud governance",
-    title: "Cloud Architecture Review Intelligence",
+    eyebrow: "Architecture Review Intelligence",
+    title: "Turn uploaded architecture evidence into board-ready review decisions.",
     kicker:
-      "Evidence-backed Azure reviews today, AWS and Google Cloud next.",
-    sub: "Turn uploaded evidence into findings, framework mappings, decisions, and export-ready outputs.",
-    primaryCta: "Start Azure Review",
-    secondaryCta: "View Sample Review",
-    tertiaryCta: "Explore Review Framework",
-    trustChips: [
-      "CAF aligned",
-      "WAF aligned",
+      "Azure reviews available today — AWS and Google Cloud arriving Q3 2026.",
+    sub: "Upload your architecture documents, get evidence-linked findings and framework-aligned decisions, then export a board-ready review pack — reviewed and signed off by your architects.",
+    primaryCta: "Start a Review",
+    secondaryCta: "View Sample Output",
+    trustBar: [
       "Evidence-linked findings",
+      "Framework-aligned",
       "Human-reviewed decisions",
-      "Export-ready outputs",
     ] as const,
   },
 
@@ -243,8 +240,8 @@ export const HOME_COPY = {
   finalCta: {
     heading:
       "Make every cloud architecture review consistent, evidence-based, and defensible.",
-    primaryCta: "Start Azure Review",
-    secondaryCta: "View Sample Review",
+    primaryCta: "Start a Review",
+    secondaryCta: "View Sample Output",
   },
 } as const;
 

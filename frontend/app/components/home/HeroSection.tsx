@@ -59,20 +59,17 @@ export default function HeroSection({
           </a>
           <a
             href="/demo"
-            className="review-btn review-btn-secondary"
+            className="review-btn review-btn-ghost"
             data-arb-cta="view_sample_review"
             onClick={handleCtaClick}
           >
             {hero.secondaryCta}
           </a>
-          <a href="#framework-alignment" className="review-text-link">
-            {hero.tertiaryCta}
-          </a>
         </div>
-        <ul className="review-hero-chips" aria-label="Platform guarantees">
-          {hero.trustChips.map((chip) => (
-            <li key={chip} className="review-hero-chip">
-              {chip}
+        <ul className="review-hero-trust-bar" aria-label="Platform guarantees">
+          {hero.trustBar.map((item) => (
+            <li key={item} className="review-hero-trust-item">
+              <span aria-hidden="true">✓</span> {item}
             </li>
           ))}
         </ul>
