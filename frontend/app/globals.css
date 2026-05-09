@@ -11008,10 +11008,16 @@ button.chip:disabled:hover {
   gap: 28px;
   align-items: stretch;
   padding: clamp(28px, 5vw, 56px);
-  background:
-    linear-gradient(135deg, rgba(26, 26, 46, 0.97), rgba(45, 45, 68, 0.95)),
-    #1a1a2e;
-  color: #f1f5f9;
+  background: linear-gradient(-45deg, #ffffff, #f0f7ff, #fdf4f5, #f5f0ff, #f0f9ff, #ffffff);
+  background-size: 400% 400%;
+  animation: hero-gradient-shift 14s ease infinite;
+  color: #0f172a;
+}
+
+@keyframes hero-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .review-hero-copy {
@@ -11030,7 +11036,7 @@ button.chip:disabled:hover {
 }
 
 .review-hero .review-eyebrow {
-  color: #ff4d6a;
+  color: #C8102E;
 }
 
 .review-hero h1,
@@ -11046,13 +11052,13 @@ button.chip:disabled:hover {
   font-size: clamp(2.05rem, 5vw, 4rem);
   line-height: 1.04;
   font-weight: 800;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .review-hero-sub {
   max-width: 780px;
   margin: 0;
-  color: #cbd5e1;
+  color: #475569;
   font-size: clamp(1rem, 1.7vw, 1.24rem);
   line-height: 1.55;
 }
@@ -11653,7 +11659,7 @@ button.chip:disabled:hover {
 .review-hero-kicker {
   max-width: 780px;
   margin: 0;
-  color: #e2e8f0;
+  color: #64748b;
   font-size: clamp(0.98rem, 1.4vw, 1.1rem);
   font-weight: 600;
   line-height: 1.5;
@@ -11683,14 +11689,15 @@ button.chip:disabled:hover {
 }
 
 .review-btn-ghost {
-  border-color: rgba(255, 255, 255, 0.38);
+  border-color: #C8102E;
   background: transparent;
-  color: #f1f5f9;
+  color: #C8102E;
 }
 
 .review-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: #fdf2f4;
+  border-color: #A00D24;
+  color: #A00D24;
 }
 
 .review-hero-trust-bar {
@@ -11706,13 +11713,13 @@ button.chip:disabled:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #94a3b8;
+  color: #475569;
   font-size: 0.83rem;
   font-weight: 600;
 }
 
 .review-hero-trust-item span {
-  color: #22d3ee;
+  color: #C8102E;
   font-weight: 800;
 }
 
@@ -11733,11 +11740,12 @@ button.chip:disabled:hover {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto auto auto;
   gap: 10px;
-  padding: 16px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: #e2e8f0;
+  padding: 20px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.10), 0 2px 8px rgba(15, 23, 42, 0.06);
+  color: #0f172a;
   min-height: 320px;
 }
 
@@ -11747,8 +11755,8 @@ button.chip:disabled:hover {
   gap: 12px;
   padding: 12px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
 }
 
 .review-hero-mockup-score-label {
@@ -11759,12 +11767,12 @@ button.chip:disabled:hover {
 
 .review-hero-mockup-score-label strong {
   font-size: 1.05rem;
-  color: #f8fafc;
+  color: #0f172a;
   line-height: 1.1;
 }
 
 .review-hero-mockup-score-label small {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -11777,8 +11785,8 @@ button.chip:disabled:hover {
   gap: 6px;
   padding: 10px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
 }
 
 .review-hero-mockup-severity-tile {
@@ -11787,13 +11795,14 @@ button.chip:disabled:hover {
   gap: 2px;
   padding: 8px 10px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
+  background: #ffffff;
   border-left: 3px solid transparent;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
 .review-hero-mockup-severity-tile span {
   font-size: 0.72rem;
-  color: #cbd5e1;
+  color: #64748b;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -11801,7 +11810,7 @@ button.chip:disabled:hover {
 .review-hero-mockup-severity-tile strong {
   font-size: 1.2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #0f172a;
   line-height: 1;
 }
 
@@ -11820,10 +11829,11 @@ button.chip:disabled:hover {
 .review-hero-mockup-pillar-tile {
   padding: 6px 8px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: #e2e8f0;
+  background: #f0f7ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
   font-size: 0.7rem;
+  font-weight: 600;
   line-height: 1.2;
   text-align: center;
   min-height: 42px;
@@ -11838,21 +11848,20 @@ button.chip:disabled:hover {
   gap: 4px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: rgba(22, 163, 74, 0.10);
-  border: 1px solid rgba(22, 163, 74, 0.25);
-  color: #bbf7d0;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   font-size: 0.82rem;
 }
 
 .review-hero-mockup-status small {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .review-hero-mockup-status strong {
-  color: #f8fafc;
+  color: #166534;
   font-size: 0.92rem;
 }
 
@@ -11862,9 +11871,9 @@ button.chip:disabled:hover {
   gap: 8px;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(58, 123, 191, 0.18);
-  border: 1px solid rgba(58, 123, 191, 0.45);
-  color: #dbeafe;
+  background: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1d4ed8;
   font-size: 0.82rem;
   font-weight: 600;
   white-space: nowrap;

@@ -68,7 +68,7 @@ export default function HeroDashboardMockup({
             cy="32"
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.12)"
+            stroke="#e2e8f0"
             strokeWidth="6"
           />
           <circle
@@ -76,7 +76,7 @@ export default function HeroDashboardMockup({
             cy="32"
             r={radius}
             fill="none"
-            stroke="#22d3ee"
+            stroke="#C8102E"
             strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray={`${progress} ${circumference}`}
@@ -88,7 +88,7 @@ export default function HeroDashboardMockup({
             textAnchor="middle"
             fontSize="14"
             fontWeight="800"
-            fill="#f8fafc"
+            fill="#0f172a"
           >
             {clamped}
           </text>
