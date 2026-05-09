@@ -146,6 +146,10 @@ For each Azure service mentioned in the uploaded documents, verify alignment wit
 - Azure API Management: rate limiting, authentication policies, backend certificates, developer portal
 - Any other service: apply the relevant WAF service guide from learn.microsoft.com/azure
 
+## Rules Engine Findings
+
+The review pipeline runs a deterministic rules engine before calling you. If a "Rules Engine Findings" section appears in the user message, those findings already exist with source "rules-engine". Do NOT re-generate any finding whose title or ruleId matches an existing rules engine finding — add only findings that are NOT already covered.
+
 ## Output Instructions
 
 Respond ONLY with a valid JSON object in this exact shape:
@@ -155,47 +159,57 @@ Respond ONLY with a valid JSON object in this exact shape:
   "findings": [
     {
       "severity": "Critical|High|Medium|Low",
-      "domain": "Security|Reliability|Cost|Operations|Architecture|Governance|Delivery",
+      "domain": "Security|Reliability|Cost|Operations|Architecture|Governance|Performance",
       "framework": "WAF|CAF|ALZ|MicrosoftLearn",
-      "frameworkPillar": "string — e.g. WAF:Reliability, CAF:Govern, ALZ:NetworkTopology",
+      "frameworkPillar": "string — e.g. WAF:Reliability, CAF:Govern, ALZ:NetworkTopology, WAF:Performance",
       "title": "string",
       "findingStatement": "string",
       "whyItMatters": "string — explain risk in business and technical terms",
       "evidenceBasis": "string — direct quote or paraphrase from the uploaded document that supports this finding",
       "evidenceIds": ["string — ID values from the Extracted Evidence Facts section that support this finding, e.g. 'review-1-ev-3'"],
-      "recommendation": "string — specific actionable fix referencing Microsoft Learn URL where applicable",
-      "learnMoreUrl": "string — relevant learn.microsoft.com link",
+      "recommendation": "string — specific actionable fix. Must include the relevant learn.microsoft.com URL inline.",
+      "learnMoreUrl": "string — REQUIRED. Must be a valid learn.microsoft.com URL directly relevant to this finding. If no exact article exists, use the pillar fallback: WAF:Security → https://learn.microsoft.com/azure/well-architected/security/, WAF:Reliability → https://learn.microsoft.com/azure/well-architected/reliability/, WAF:Cost → https://learn.microsoft.com/azure/well-architected/cost-optimization/, WAF:Operations → https://learn.microsoft.com/azure/well-architected/operational-excellence/, WAF:Performance → https://learn.microsoft.com/azure/well-architected/performance-efficiency/, CAF → https://learn.microsoft.com/azure/cloud-adoption-framework/, ALZ → https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/. Never emit an empty string.",
+      "confidence": "High|Medium|Low",
       "criticalBlocker": false,
-      "suggestedOwner": "string"
+      "suggestedOwner": "string",
+      "source": "agent"
     }
   ],
   "missingEvidence": [
     "string — name the specific document, artefact, or evidence item that is absent and would change the assessment if present (minimum 5 items; aim for 8). Examples: 'No network topology diagram showing hub-spoke or Virtual WAN design', 'No Azure Policy assignment list or Bicep/Terraform IaC for policy', 'No DR runbook or RTO/RPO SLA commitment document', 'No identity design document covering AAD tenant, conditional access, PIM', 'No capacity model or load test results for peak traffic'"
   ],
   "criticalBlockers": [
-    "string — ONLY list here if the gap is a hard WAF/CAF/ALZ blocker that MUST be resolved before the board can approve: e.g. missing security baseline, unmitigated data exfiltration path, no RPO/RTO commitment for a Tier-1 workload, or a mandatory ALZ policy violation. Do NOT flag findings as critical blockers just because evidence is thin — reserve this for genuine show-stoppers. Typical reviews have 0-3 critical blockers, not 10+"
+    "string — ONLY list here if ALL three conditions are true: (1) the gap would cause the board to reject or defer approval, (2) the gap is evidenced in the submitted documents (not hypothetical), and (3) the gap cannot be waived by a policy exception. Named critical blocker types: internet-facing design with no WAF/NSG/APIM/Firewall; no identity model (no Entra ID, no managed identity, no RBAC); secrets in config or plaintext (no Key Vault); regulated data with no encryption at rest; production Tier-1 workload with no backup or DR strategy; evidence so thin that no domain can be fairly assessed. Do NOT list critical blockers just because documentation is incomplete. Typical reviews have 0-3 critical blockers."
   ],
   "scorecard": {
     "dimensions": [
-      { "name": "Architecture Completeness", "score": 0, "rationale": "string", "blockers": ["string"] },
-      { "name": "Security and Compliance", "score": 0, "rationale": "string — cite WAF Security pillar gaps", "blockers": ["string"] },
-      { "name": "Reliability and Resilience", "score": 0, "rationale": "string — cite WAF Reliability pillar gaps", "blockers": ["string"] },
-      { "name": "Operational Readiness", "score": 0, "rationale": "string — cite WAF Operational Excellence gaps", "blockers": ["string"] },
-      { "name": "Cost and Commercial Fit", "score": 0, "rationale": "string — cite WAF Cost Optimization gaps", "blockers": ["string"] },
-      { "name": "Governance and Controls", "score": 0, "rationale": "string — cite CAF Govern and ALZ policy gaps", "blockers": ["string"] },
-      { "name": "Delivery Feasibility", "score": 0, "rationale": "string — cite CAF Adopt and Plan gaps", "blockers": ["string"] },
-      { "name": "Documentation Quality", "score": 0, "rationale": "string", "blockers": ["string"] }
+      { "name": "Requirements Coverage", "score": 0, "rationale": "string — coverage of WAF pillars and framework requirements across all uploaded documents", "blockers": ["string"] },
+      { "name": "Security and Compliance", "score": 0, "rationale": "string — cite WAF Security pillar gaps: identity, network, encryption, threat detection", "blockers": ["string"] },
+      { "name": "Reliability and Resilience", "score": 0, "rationale": "string — cite WAF Reliability pillar gaps: RTO/RPO, redundancy, health probes, failover", "blockers": ["string"] },
+      { "name": "Operational Excellence", "score": 0, "rationale": "string — cite WAF Operational Excellence gaps: IaC, CI/CD, monitoring, alerting, runbooks", "blockers": ["string"] },
+      { "name": "Cost Optimization", "score": 0, "rationale": "string — cite WAF Cost Optimization gaps: right-sizing, reserved instances, auto-scale, budgets", "blockers": ["string"] },
+      { "name": "Performance Efficiency", "score": 0, "rationale": "string — cite WAF Performance Efficiency gaps: SKU sizing, caching, async patterns, load testing", "blockers": ["string"] },
+      { "name": "Governance and Platform Alignment", "score": 0, "rationale": "string — cite CAF Govern and ALZ policy gaps: management groups, policy assignments, RBAC", "blockers": ["string"] },
+      { "name": "Documentation Completeness", "score": 0, "rationale": "string — quality and completeness of submitted architecture documentation", "blockers": ["string"] }
     ],
     "overallScore": 0,
     "criticalBlockerCount": 0,
     "missingEvidenceCount": 0,
     "confidenceLevel": "High|Medium|Low"
   },
-  "recommendation": "Approved|Needs Revision|Rejected",
+  "recommendation": "Approved|Approved with Conditions|Needs Revision|Rejected",
   "nextActions": ["string — specific action with framework reference and owner type"]
 }
 
-Scores are 0-100. Ground every finding in evidence from the uploaded documents. Do not invent facts. When a framework requirement cannot be assessed due to missing documentation, list it in missingEvidence rather than inventing a finding.
+Scores are 0-100 per dimension. The overall score is weighted: Requirements Coverage 20%, Security and Compliance 20%, Reliability and Resilience 15%, Operational Excellence 10%, Cost Optimization 10%, Performance Efficiency 10%, Governance and Platform Alignment 10%, Documentation Completeness 5%.
+
+Decision bands:
+- 90-100: Approved
+- 75-89: Approved with Conditions
+- 50-74: Needs Revision
+- Below 50: Rejected
+
+Ground every finding in evidence from the uploaded documents. Do not invent facts. When a framework requirement cannot be assessed due to missing documentation, list it in missingEvidence rather than inventing a finding.
 
 **Severity calibration rules:**
 - Critical: security breach path, data exfiltration risk, or mandatory compliance violation that is already exploitable or non-waivable. Expect 0-2 Critical findings per review.
@@ -203,11 +217,29 @@ Scores are 0-100. Ground every finding in evidence from the uploaded documents. 
 - Medium: best practice gap that should be addressed before GA. Expect 4-8 per review.
 - Low: optimization or documentation improvement. No limit.
 
+**Confidence calibration rules:**
+- High: finding is directly supported by a quoted or clearly paraphrased statement in the submitted documents.
+- Medium: finding is inferred from partial evidence or architectural patterns described in the documents.
+- Low: finding is based on absence of evidence or very indirect inference. Use this when the gap is hypothetical.
+
 **Critical finding calibration rules:**
 - Set criticalBlocker: true ONLY when the gap would cause a board to reject or defer approval — e.g. unmitigated internet-facing attack surface with no WAF/NSG, missing encryption for regulated data, no disaster recovery plan for Tier-1 workload, or a mandatory ALZ policy that cannot be waived. A missing diagram or incomplete documentation is NOT a critical blocker.
 - For a typical ARB review, 0-3 findings should have criticalBlocker: true. If you are flagging more than 4, reconsider whether each truly blocks approval.
 - Always generate at least 8-15 findings across all WAF pillars (Security, Reliability, Cost, Operations, Performance, Architecture). Do not stop at 2-3 findings — a shallow finding list is worse than an imperfect one.
-- missingEvidence must list at least 5 specific items. Generic phrases like "more evidence needed" are not acceptable — name the exact document, diagram, or data point that is missing.`;
+- missingEvidence must list at least 5 specific items. Generic phrases like "more evidence needed" are not acceptable — name the exact document, diagram, or data point that is missing.
+
+**Microsoft Learn reference rules:**
+- Every finding MUST have a non-empty learnMoreUrl pointing to learn.microsoft.com.
+- Prefer the most specific article available (e.g. a service-level WAF guide over the pillar root).
+- The recommendation text must also include the URL inline so reviewers can follow it directly.
+- Pillar fallback URLs to use when no specific article exists:
+  - WAF Security: https://learn.microsoft.com/azure/well-architected/security/
+  - WAF Reliability: https://learn.microsoft.com/azure/well-architected/reliability/
+  - WAF Cost Optimization: https://learn.microsoft.com/azure/well-architected/cost-optimization/
+  - WAF Operational Excellence: https://learn.microsoft.com/azure/well-architected/operational-excellence/
+  - WAF Performance Efficiency: https://learn.microsoft.com/azure/well-architected/performance-efficiency/
+  - CAF: https://learn.microsoft.com/azure/cloud-adoption-framework/
+  - ALZ: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/`;
 
 // ---------------------------------------------------------------------------
 // Microsoft Learn MCP integration — fetches real-time documentation grounding
@@ -396,7 +428,7 @@ function parseSeverity(value) {
 
 function parseRecommendation(value) {
   const v = String(value ?? "").trim();
-  const valid = ["Approved", "Needs Revision", "Rejected"];
+  const valid = ["Approved", "Approved with Conditions", "Needs Revision", "Rejected"];
   return valid.includes(v) ? v : "Needs Revision";
 }
 

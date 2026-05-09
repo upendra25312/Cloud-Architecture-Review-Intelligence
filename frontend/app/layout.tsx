@@ -10,7 +10,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const SITE_URL = "https://jolly-sea-014792b10.6.azurestaticapps.net";
+const SITE_URL = "https://red-coast-0b2d8700f.7.azurestaticapps.net";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
