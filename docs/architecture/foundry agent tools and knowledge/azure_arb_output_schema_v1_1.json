@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "azure_arb_output_schema_v1_1",
+  "title": "Azure ARB Agent Output Schema",
+  "description": "JSON Schema for the structured output produced by the ARB Agent. Use as response_format.json_schema when the deployment supports structured outputs.",
+  "type": "object",
+  "required": ["reviewSummary", "strengths", "findings", "missingEvidence", "criticalBlockers", "scorecard", "recommendation", "nextActions"],
+  "additionalProperties": false,
+  "properties": {
+    "reviewSummary": {
+      "type": "string",
+      "description": "2-3 paragraph executive summary referencing WAF/CAF/ALZ gaps and strengths"
+    },
+    "strengths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Framework principles met — cite specific WAF/CAF/ALZ pillar"
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["severity", "domain", "framework", "frameworkPillar", "title", "findingStatement", "whyItMatters", "evidenceBasis", "evidenceIds", "recommendation", "learnMoreUrl", "criticalBlocker", "suggestedOwner"],
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["Critical", "High", "Medium", "Low"]
+          },
+          "domain": {
+            "type": "string",
+            "enum": ["Security", "Reliability", "Cost", "Operations", "Architecture", "Governance", "Delivery", "Performance", "Requirements Coverage", "Documentation Completeness", "Reliability And Resilience", "Operational Excellence", "Cost Optimization", "Governance / Platform Alignment"]
+          },
+          "framework": {
+            "type": "string",
+            "enum": ["WAF", "CAF", "ALZ", "MicrosoftLearn", "Internal"]
+          },
+          "frameworkPillar": {
+            "type": "string",
+            "description": "e.g. WAF:Reliability, CAF:Govern, ALZ:NetworkTopology"
+          },
+          "title": { "type": "string" },
+          "findingStatement": { "type": "string" },
+          "whyItMatters": {
+            "type": "string",
+            "description": "Explain risk in business and technical terms"
+          },
+          "evidenceBasis": {
+            "type": "string",
+            "description": "Direct quote or paraphrase from the uploaded document that supports this finding"
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "ID values from the Extracted Evidence Facts section, e.g. 'review-1-ev-3'"
+          },
+          "recommendation": {
+            "type": "string",
+            "description": "Specific actionable fix referencing Microsoft Learn URL where applicable"
+          },
+          "learnMoreUrl": {
+            "type": "string",
+            "description": "Relevant learn.microsoft.com link"
+          },
+          "criticalBlocker": {
+            "type": "boolean",
+            "description": "True only when the gap would cause a board to reject or defer approval"
+          },
+          "suggestedOwner": {
+            "type": "string",
+            "description": "Role or team responsible for remediation"
+          }
+        }
+      }
+    },
+    "missingEvidence": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string" },
+      "description": "Specific document, artefact, or evidence item absent from the submission. Name the exact item, not a generic description."
+    },
+    "criticalBlockers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Hard WAF/CAF/ALZ blockers that MUST be resolved before approval. Expect 0-3 per review."
+    },
+    "scorecard": {
+      "type": "object",
+      "required": ["dimensions", "overallScore", "criticalBlockerCount", "missingEvidenceCount", "confidenceLevel"],
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "score", "rationale", "blockers"],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "enum": [
+                  "Architecture Completeness",
+                  "Security and Compliance",
+                  "Reliability and Resilience",
+                  "Operational Readiness",
+                  "Cost and Commercial Fit",
+                  "Governance and Controls",
+                  "Delivery Feasibility",
+                  "Documentation Quality"
+                ]
+              },
+              "score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "rationale": { "type": "string" },
+              "blockers": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "overallScore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "criticalBlockerCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missingEvidenceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confidenceLevel": {
+          "type": "string",
+          "enum": ["High", "Medium", "Low"]
+        }
+      }
+    },
+    "recommendation": {
+      "type": "string",
+      "enum": ["Approved", "Needs Revision", "Rejected"]
+    },
+    "nextActions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Specific actions with framework reference and owner type"
+    }
+  }
+}
