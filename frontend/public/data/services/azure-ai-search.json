@@ -1,0 +1,1257 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-ai-search",
+    "service": "Azure AI Search",
+    "aliases": [],
+    "itemCount": 9,
+    "highSeverityCount": 5,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Governance and Security",
+      "Operations"
+    ],
+    "wafPillars": [
+      "Operations",
+      "Reliability"
+    ],
+    "description": "Azure AI Search appears across 9 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure AI Search",
+      "matchedServiceLabel": "Azure AI Search",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 44,
+      "unavailableRegionCount": 15,
+      "restrictedRegionCount": 3,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "7be10278-57c1-4a61-8ee3-895aebfec5aa",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Disaster Recovery",
+      "id": "AI.164",
+      "text": "Backup and Restore an Azure Cognitive Search Index. Use this sample code to back up index definition and snapshot to a series of Json files",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#back-up-and-restore-alternatives",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "41faa1ed-b7f0-447d-8cba-4a4905e5bb83",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "High Availablity",
+      "id": "AI.158",
+      "text": "Enable 2 replicas to have 99.9% availability for read operations",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#high-availability",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ecfc0860-f3a8-4bef-98f2-8660c4eaca34",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Operations",
+      "id": "AI.54",
+      "text": "Enable recommended alert rules to receive notifications of deviations that indicate a decline in workload health.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/monitor-azure-cognitive-search",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "86617182-f039-4f35-ad77-25419a3c98df",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Operations",
+      "id": "AI.127",
+      "text": "Ensure high-quality data in the correct format, and likely chunked, enriched, and embedded for AI model consumption.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "44dc5f2b-a032-4d03-aae8-90c3f2c0a4c3",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "High Availablity",
+      "id": "AI.160",
+      "text": "Leverage Availability Zones by enabling read and/or write replicas",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#availability-zone-support",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7d956fd9-788a-4845-9b9f-c0340972d810",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "High Availablity",
+      "id": "AI.159",
+      "text": "Enable 3 replicas to have 99.9% availability for read/write operations",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#high-availability",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "cd0730f0-0ff1-4b77-9a2b-2a1f7dd5e291",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Georeplication",
+      "id": "AI.161",
+      "text": "For regional redudancy, Manually create services in 2 or more regions for Search as it doesn't provide an automated method of replicating search indexes across geographic regions",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#multiple-services-in-separate-geographic-regions",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "3c964882-aec9-4d44-9f68-4b5f2efbbdb6",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Georeplication",
+      "id": "AI.162",
+      "text": "To synchronize data across multiple services either Use indexers for updating content on multiple services or Use REST APIs for pushing content updates on multiple services",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#synchronize-data-across-multiple-services",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "85ee93c9-f53c-4803-be51-e6e4aa37ff4e",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Georeplication",
+      "id": "AI.163",
+      "text": "Use Azure Traffic Manager to coordinate requests",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure AI Search",
+      "serviceCanonical": "Azure AI Search",
+      "serviceSlug": "azure-ai-search",
+      "link": "https://learn.microsoft.com/azure/search/search-reliability#use-azure-traffic-manager-to-coordinate-requests",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 44,
+    "unavailableRegionCount": 15,
+    "restrictedRegionCount": 3,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure AI Search",
+    "matchedServiceLabel": "Azure AI Search",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AI Enrichment",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Semantic Ranker",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

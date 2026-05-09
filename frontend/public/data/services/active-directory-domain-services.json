@@ -1,0 +1,769 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "active-directory-domain-services",
+    "service": "Active Directory Domain Services",
+    "aliases": [],
+    "itemCount": 3,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Operations Management"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Active Directory Domain Services appears across 3 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "Microsoft Entra Domain Services",
+      "matchedServiceLabel": "Active Directory Domain Services",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 40,
+      "unavailableRegionCount": 19,
+      "restrictedRegionCount": 4,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "identity-review-checklist-identity-checklist",
+        "technology": "Identity Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 9,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "e7a8dd4a-30e3-47c3-b297-11b2362ceee0",
+      "technology": "Identity Review Checklist",
+      "technologySlug": "identity-review-checklist-identity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Identity Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Identity Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Windows Server AD",
+      "id": "A03.02",
+      "text": "Don't replicate! Replication can create issues with directory synchronization",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Active Directory Domain Services",
+      "serviceCanonical": "Active Directory Domain Services",
+      "serviceSlug": "active-directory-domain-services",
+      "link": "https://azure.microsoft.com/blog/setting-up-active-directory-for-a-disaster-recovery-environment-2/",
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "604489a8-f42d-478e-98c0-7a73b22a4a57",
+      "technology": "Identity Review Checklist",
+      "technologySlug": "identity-review-checklist-identity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Identity Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Identity Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Windows Server AD",
+      "id": "A03.01",
+      "text": "Follow VM rules for high availability on the VM level (premium disks, two or more in a region, in different availability zones)",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Active Directory Domain Services",
+      "serviceCanonical": "Active Directory Domain Services",
+      "serviceSlug": "active-directory-domain-services",
+      "link": "https://azure.microsoft.com/blog/setting-up-active-directory-for-a-disaster-recovery-environment-2/",
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "79b598de-fc59-472c-b4cd-21b078036f5e",
+      "technology": "Identity Review Checklist",
+      "technologySlug": "identity-review-checklist-identity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Identity Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Identity Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Windows Server AD",
+      "id": "A03.03",
+      "text": "Have active-active for multi-regions",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Active Directory Domain Services",
+      "serviceCanonical": "Active Directory Domain Services",
+      "serviceSlug": "active-directory-domain-services",
+      "link": "https://azure.microsoft.com/blog/setting-up-active-directory-for-a-disaster-recovery-environment-2/",
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 40,
+    "unavailableRegionCount": 19,
+    "restrictedRegionCount": 4,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "Microsoft Entra Domain Services",
+    "matchedServiceLabel": "Active Directory Domain Services",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

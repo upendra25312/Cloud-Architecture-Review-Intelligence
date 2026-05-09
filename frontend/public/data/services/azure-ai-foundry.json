@@ -1,0 +1,3184 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-ai-foundry",
+    "service": "Azure AI Foundry",
+    "aliases": [],
+    "itemCount": 13,
+    "highSeverityCount": 6,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "Cost Governance",
+      "Governance and Security",
+      "Network Topology and Connectivity",
+      "Operations"
+    ],
+    "wafPillars": [
+      "Cost",
+      "Operations",
+      "Performance",
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure AI Foundry appears across 13 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "Microsoft Foundry",
+      "matchedServiceLabel": "Azure AI Foundry",
+      "matchedSkuHints": [],
+      "notes": [
+        "Availability is mapped to the umbrella Microsoft Foundry offering because the source feed groups several Foundry capabilities together."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 43,
+      "unavailableRegionCount": 16,
+      "restrictedRegionCount": 1,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 14,
+      "retiringRegionCount": 34,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "e3a78016-e8d8-4598-9cbf-02599ff12e3d",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Azure AI Foundry",
+      "id": "AI.110",
+      "text": "Configure the AI managed network and use private endpoints.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/how-to/configure-managed-network",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "988b2b85-208c-44f9-9b0d-e81327060c25",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Monitoring",
+      "id": "AI.113",
+      "text": "Implement a monitoring system to ensure that AI workloads remain aligned with KPIs.",
+      "severity": "High",
+      "waf": "Performance",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/concepts/evaluation-approach-gen-ai",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "fa191645-9897-4e46-82a7-d30aa352f7d2",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Azure AI Foundry",
+      "id": "AI.107",
+      "text": "Limit outbound traffic from your AI resources.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/how-to/configure-managed-network?branch=main&tabs=portal",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "48a9f4af-7ab1-45c3-9d62-e06d9df08986",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Monitoring",
+      "id": "AI.114",
+      "text": "Proactively identify performance bottlenecks and anomalies.",
+      "severity": "High",
+      "waf": "Performance",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/how-to/develop/trace-local-sdk",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e0572cb0-cd12-450c-950c-b007c0fc2afb",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Operations",
+      "id": "AI.118",
+      "text": "Schedule regular retraining based on model performance or business needs to ensure the AI system stays relevant.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-foundry/model-inference/concepts/model-versions",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "888d6799-0028-49bb-ab5f-e62541d6d364",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Access Management",
+      "id": "AI.37",
+      "text": "Use distinct workspaces to organize and manage AI artifacts like datasets, models, and experiments.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/concepts/ai-resources",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0fc6d1b2-cee1-4851-9a89-ab61a9802682",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Risk Mitigation",
+      "id": "AI.50",
+      "text": "Disable inferencing via Azure AI Foundry to prevent API Gateway bypass.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b73836e9-356c-4aaf-8a2d-af4cd51dfcc1",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Operations",
+      "id": "AI.119",
+      "text": "Establish model promotion process to promote trained, fine-tuned, and retrained models to higher environments based on performance criteria.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-services/openai/how-to/fine-tuning-deploy?tabs=portal",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "79157dd1-32b2-4b9f-9cf6-bf2704733a00",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Data Protection",
+      "id": "AI.5",
+      "text": "Implement multi-region deployments to ensure high availability and resiliency for Azure AI Foundry.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/how-to/disaster-recovery",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2181bc5a-da1e-4b2e-b83b-4398398f34c2",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Operations",
+      "id": "AI.128",
+      "text": "Manage model versioning and detect drift and set alerts when model predictions or LLM responses start to deviate from expected behavior.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/concepts/evaluation-approach-gen-ai",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "79eca34e-0aeb-4160-9fe8-0ff5c647e1c7",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Operations",
+      "id": "AI.120",
+      "text": "Standardize compute management for Azure AI Foundry.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/how-to/create-manage-compute",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6f50ef6a-2bb1-4aec-a633-96ad271cb42f",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Operations",
+      "id": "AI.53",
+      "text": "Test the effectiveness of grounding by using tools like prompt flow.",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://learn.microsoft.com/azure/ai-studio/how-to/prompt-flow",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "187edf80-5592-41ca-b65c-c804e56f7394",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Cost Governance",
+      "subcategory": "Cost Management",
+      "id": "AI.19",
+      "text": "Define and enforce a policy to automatically shutdown Azure AI Foundry and Azure Machine Learning compute instances.",
+      "severity": "Low",
+      "waf": "Cost",
+      "service": "Azure AI Foundry",
+      "serviceCanonical": "Azure AI Foundry",
+      "serviceSlug": "azure-ai-foundry",
+      "link": "https://github.com/Azure/Community-Policy/tree/main/policyDefinitions/Compute/deploy-vm-auto-shutdown",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Availability is mapped to the umbrella Microsoft Foundry offering because the source feed groups several Foundry capabilities together."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 43,
+    "unavailableRegionCount": 16,
+    "restrictedRegionCount": 1,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 14,
+    "retiringRegionCount": 34,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "Microsoft Foundry",
+    "matchedServiceLabel": "Azure AI Foundry",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Custom Vision",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure AI Anomaly Detector",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Content Moderator",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure AI Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure AI Metrics Advisor",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Azure Document Intelligence",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Language",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Machine Learning",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Speech",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Vision - Face",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Safety",
+            "state": "GA"
+          },
+          {
+            "skuName": "Content Understanding",
+            "state": "Preview"
+          },
+          {
+            "skuName": "Foundry Agent Service",
+            "state": "GA"
+          },
+          {
+            "skuName": "Foundry Models",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Immersive Reader",
+            "state": "GA"
+          },
+          {
+            "skuName": "Observability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Personalizer",
+            "state": "Retiring"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": [
+      {
+        "skuName": "Azure Translator",
+        "state": "GA"
+      },
+      {
+        "skuName": "Bing Autosuggest",
+        "state": "Retiring"
+      },
+      {
+        "skuName": "Bing Custom Search",
+        "state": "Retiring"
+      },
+      {
+        "skuName": "Bing Visual Search",
+        "state": "Retiring"
+      },
+      {
+        "skuName": "Bing Web Search",
+        "state": "Retiring"
+      },
+      {
+        "skuName": "Ink Recognizer",
+        "state": "Retiring"
+      },
+      {
+        "skuName": "Translator Speech",
+        "state": "Retiring"
+      }
+    ]
+  }
+}

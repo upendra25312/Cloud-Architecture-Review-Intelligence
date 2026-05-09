@@ -1,0 +1,743 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-route-server",
+    "service": "Azure Route Server",
+    "aliases": [],
+    "itemCount": 1,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 0,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Network Topology and Connectivity"
+    ],
+    "wafPillars": [
+      "Security"
+    ],
+    "description": "Azure Route Server appears across 1 normalized findings in 1 checklist families. 1 GA-ready families can anchor the baseline.",
+    "whatThisMeans": "This service has a usable GA-ready baseline. Start there before branching into broader cross-service guidance.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Route Server",
+      "matchedServiceLabel": "Azure Route Server",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 46,
+      "unavailableRegionCount": 13,
+      "restrictedRegionCount": 3,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "91b9d7d5-91e1-4dcb-8f1f-fa7e465646cc",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.08",
+      "text": "If using Route Server, use a /27 prefix for the Route Server subnet.",
+      "severity": "Low",
+      "waf": "Security",
+      "service": "Azure Route Server",
+      "serviceCanonical": "Azure Route Server",
+      "serviceSlug": "azure-route-server",
+      "link": "https://learn.microsoft.com/azure/route-server/quickstart-configure-route-server-portal#create-a-route-server-1",
+      "training": "https://learn.microsoft.com/training/modules/intro-to-azure-route-server/",
+      "graph": "resources | where type=='microsoft.network/virtualnetworks' | project id,subnets=properties.subnets | mv-expand subnets | project id, subnetName = subnets.name, subnetPrefix = subnets.properties.addressPrefix | extend subnetPrefixLength = split(subnetPrefix, '/')[1] | where subnetName == 'RouteServerSubnet' | extend compliant = (subnetPrefixLength <= 27) | distinct id, compliant",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 46,
+    "unavailableRegionCount": 13,
+    "restrictedRegionCount": 3,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Route Server",
+    "matchedServiceLabel": "Azure Route Server",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

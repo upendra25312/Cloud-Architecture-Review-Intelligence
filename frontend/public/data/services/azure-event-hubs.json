@@ -1,0 +1,2014 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-event-hubs",
+    "service": "Azure Event Hubs",
+    "aliases": [
+      "Microsoft.EventHub/namespaces"
+    ],
+    "itemCount": 29,
+    "highSeverityCount": 8,
+    "familyCount": 3,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 3,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Data Protection",
+      "High Availability",
+      "Identity and Access Management",
+      "Networking",
+      "Operations Management",
+      "Scalability",
+      "Security"
+    ],
+    "wafPillars": [
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Event Hubs appears across 29 normalized findings in 3 checklist families. 3 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Event Hubs",
+      "matchedServiceLabel": "Azure Event Hubs",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 54,
+      "unavailableRegionCount": 5,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "data-security-review-checklist-datasecurity-checklist",
+        "technology": "Data Security review checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 100,
+        "highSeverityCount": 21,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 85,
+          "metadataCompleteness": 78,
+          "severityConfidence": 99,
+          "sourceCoverageQuality": 91,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "azure-event-hub-review-eh-checklist",
+        "technology": "Azure Event Hub Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 14,
+        "highSeverityCount": 3,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 94,
+          "metadataCompleteness": 96,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "fbfef3df-04a5-41b2-a8fd-b8541eb04956",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.EventHub/namespaces",
+      "id": "fbfef3df-04a5-41b2-a8fd-b8541eb04956",
+      "text": "Enable auto-inflate on Event Hub Standard tier",
+      "description": "Enable auto-inflate on Event Hub Standard tier namespaces to automatically scale up TUs, meeting usage needs and preventing data ingress or egress throttle scenarios by adjusting to allowed rates.",
+      "severity": "High",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "armService": "Microsoft.EventHub/namespaces",
+      "link": "https://learn.microsoft.com/azure/event-hubs/event-hubs-auto-inflate",
+      "graph": "// Azure Resource Graph Query\n// Find Event Hub namespace instances that are Standard tier and do not have Auto Inflate enabled\nresources\n| where type == \"microsoft.eventhub/namespaces\"\n| where sku.tier == \"Standard\"\n| where properties.isAutoInflateEnabled == \"false\"\n| project recommendationId = \"fbfef3df-04a5-41b2-a8fd-b8541eb04956\", name, id, tags, param1 = \"AutoInflateEnabled: False\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "84636c6c-b317-4722-b603-7b1ffc16384b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.EventHub/namespaces",
+      "id": "84636c6c-b317-4722-b603-7b1ffc16384b",
+      "text": "Ensure zone redundancy is enabled in supported regions",
+      "description": "When using the Azure portal, zone redundancy is automatically enabled. However, some Infrastructure as Code (IaC) tools may default this to false. To ensure replication of metadata and events across data centers in an availability zone, always verify that zone redundancy is enabled.",
+      "severity": "High",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "armService": "Microsoft.EventHub/namespaces",
+      "link": "https://learn.microsoft.com/azure/event-hubs/event-hubs-geo-dr?tabs=portal#availability-zones",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "f15bce21-9e4a-40eb-9787-9424d226786d",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Operations Management",
+      "subcategory": "Zone Redudancy",
+      "id": "B01.2",
+      "text": "Leverage Availability Zones if regionally applicable",
+      "description": "This will be turned on automatically for a new EH namespace created from the portal with Premium, Dedicated, or Standard SKUs in a zone-enabled region. Both the EH metadata and the event data itself are replicated across zones",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/event-hubs-premium-overview#high-availability-with-availability-zones",
+      "query": "resources | where type =~ 'Microsoft.EventHub/namespaces' | extend zoneRedundant = tobool(properties.zoneRedundant) | extend compliant = iff(zoneRedundant == true, true, false) | project name, resourceGroup, zoneRedundant, compliant",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "dc15a1c0-75ee-49f1-90ac-ccd579376bcd",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Operations Management",
+      "subcategory": "Geo Redudancy",
+      "id": "B01.4",
+      "text": "Plan for Geo Disaster Recovery using Active Passive configuration",
+      "description": "The built-in geo-disaster recovery feature, when enabled, ensures that the entire configuration of anamespace (Event Hubs, Consumer Groups and settings) is continuously replicated from a primary namespace to a secondary namespace, and it allows a once-only failover move from the primary to the secondary at any time. Active/Passive feature is designed to make it easier to recover from and abandon a failed Azure region without having to change application configurations",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/event-hubs-geo-dr?tabs=portal",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8357c559-675c-45ee-a5b8-6ad8844ce3b2",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "A02.03",
+      "text": "Use least privilege data plane RBAC",
+      "description": "When creating permissions, provide fine-grained control over a client's access to Azure Event Hub. Permissions in Azure Event Hub can and should be scoped to the individual resource level e.g. consumer group, event hub entity, event hub namespaces, etc.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/authorize-access-azure-active-directory#azure-built-in-roles-for-azure-event-hubs",
+      "training": "https://learn.microsoft.com/learn/modules/explore-basic-services-identity-types/",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d4f3437c-c336-4d81-9f27-a71efe1b9b5d",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.05",
+      "text": "Separate and limit highly privileged/administrative users",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9a80822b-8eb9-4d1b-a77f-26e5e6beba8e",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.04",
+      "text": "Use Azure Key Vaults to store secrets and crendentials.",
+      "description": "Restrict exposure of keys and secerts",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a9c26d9c-42bb-45bd-8c69-99a246e3389a",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.01",
+      "text": "Use Microsoft Entra ID as the default authentication method and disable local access wherever possible",
+      "description": "Use Microsoft Entra ID as the default authentication method.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "13b0f566-4b1e-4944-a459-837ee79d6c6d",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "A02.01",
+      "text": "Avoid using root account when it is not necessary",
+      "description": "When you create an Event Hubs namespace, a policy rule named RootManageSharedAccessKey is automatically created for the namespace. This policy has manage permissions for the entire namespace. It�s recommended that you treat this rule like an administrative root account and don�t use it in your application. Using AAD as an authentication provider with RBAC is recommended.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/authorize-access-shared-access-signature#shared-access-authorization-policies",
+      "training": "https://learn.microsoft.com/learn/paths/azure-administrator-manage-identities-governance/",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a0e6c465-89e5-458b-a37d-3974d1112dbd",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Networking",
+      "id": "A04.02",
+      "text": "Consider only allowing access to Azure Event Hub namespace from specific IP addresses or ranges",
+      "description": "With IP firewall, you can restrict public endpoint further to only a set of IPv4 addresses or IPv4 address ranges in CIDR (Classless Inter-Domain Routing) notation.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/event-hubs-ip-filtering",
+      "training": "https://learn.microsoft.com/learn/paths/implement-resource-mgmt-security/",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5abca2a4-eda1-4dae-8cc9-5d48c6b791dc",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Networking",
+      "id": "A04.01",
+      "text": "Consider using private endpoints to access Azure Event Hub and disable public network access when applicable.",
+      "description": "Azure Event Hub by default has a public IP address and is Internet-reachable. Private endpoints allow traffic between your virtual network and Azure Event Hub traverses over the Microsoft backbone network. In addition to that, you should disable public endpoints if those are not used.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/private-link-service",
+      "training": "https://learn.microsoft.com/learn/modules/azure-ad-privileged-identity-management/",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9ced16ad-d186-4f0a-a241-a999a68af77c",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Operations Management",
+      "subcategory": "Reliability",
+      "id": "B01.6",
+      "text": "Design Resilient Event Hubs",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/architecture/serverless/event-hubs-functions/resilient-design",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b38b875b-a1cf-4104-a900-3a4d3ce474db",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Monitoring",
+      "id": "A03.01",
+      "text": "Enable logging for security investigation. Use Azure Monitor to captured metrics and logs such as resource logs, runtime audit logs and Kafka logs",
+      "description": "Azure Event Hub resource logs include operational logs, virtual network and Kafka logs. Runtime audit logs capture aggregated diagnostic information for all data plane access operations (such as send or receive events) in Event Hubs.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/monitor-event-hubs-reference",
+      "training": "https://learn.microsoft.com/learn/paths/manage-identity-and-access/",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d2f54b29-769e-43a6-a0e7-828ac936657e",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.02",
+      "text": "Enforce a minimum required version of Transport Layer Security (TLS) for requests",
+      "description": "Azure Event Hubs namespaces permit clients to send and receive data with TLS 1.0 and above. To enforce stricter security measures, you can configure your Event Hubs namespace to require that clients send and receive data with a newer version of TLS. If an Event Hubs namespace requires a minimum version of TLS, then any requests made with an older version will fail.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/transport-layer-security-configure-minimum-version",
+      "training": "https://learn.microsoft.com/learn/modules/secure-aad-users-with-mfa/",
+      "query": "resources | where type =~ 'Microsoft.EventHub/namespaces' | extend MinimumTlsVersion = tostring(properties.minimumTlsVersion) | extend compliant = iif(MinimumTlsVersion == '1.2' or MinimumTlsVersion == '1.3', true, false) | project name, resourceGroup, location, MinimumTlsVersion, compliant",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6e31b67d-67ba-4591-89c0-9e805d597c7e",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Operations Management",
+      "subcategory": "Geo Redudancy",
+      "id": "B01.5",
+      "text": "For Business Critical Applications, use Active Active configuration",
+      "description": "Should be used for DR configurations where an outage or loss of event data in the downed region cannot be tolerated. For these cases, follow the replication guidance and do not use the built-in geo-disaster recovery capability (active/passive). With Active/Active, Maintain multiple Event Hubs in different regions and namespaces, and events will be replicated between the hubs",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/event-hubs-federation-overview",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "31d41e36-11c8-417b-8afb-c410d4391898",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "B01.1",
+      "text": "Leverage FTA Resillency HandBook",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://github.com/Azure/fta-resiliencyplaybooks/blob/main/paas-foundations-playbooks-AEH_v1.docx",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "20b56c56-ad58-4519-8f82-735c586bb281",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "B01.3",
+      "text": "Use the Premium or Dedicated SKUs for predicable performance",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/compare-tiers",
+      "query": "resources | where type =~ 'Microsoft.EventHub/namespaces' | extend sku = tostring(sku.name) | extend compliant = iff(sku == 'Premium', true, false) | project name, resourceGroup, location, sku, compliant",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "3a365a5c-7acb-4e48-abd5-4cd79f2e8776",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "A02.02",
+      "text": "When possible, your application should be using a managed identity to authenticate to Azure Event Hub. If not, consider having the storage credential (SAS, service principal credential) in Azure Key Vault or an equivalent service",
+      "description": "Managed identities for Azure resources can authorize access to Event Hubs resources using Azure AD credentials from applications running in Azure Virtual Machines (VMs), Function apps, Virtual Machine Scale Sets, and other services. By using managed identities for Azure resources together with Azure AD authentication, you can avoid storing credentials with your applications that run in the cloud.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/authenticate-managed-identity?tabs=latest",
+      "training": "https://learn.microsoft.com/learn/modules/azure-ad-privileged-identity-management/",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9de0d5d7-21d4-41d2-900c-817bf9eac41f",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.06",
+      "text": "Authenticate access to Event Hubs resources using shared access signatures (SAS) and restrict local users",
+      "description": "When you create an Event Hubs namespace, a policy rule named RootManageSharedAccessKey is automatically created for the namespace. This policy has manage permissions for the entire namespace. It�s recommended that you treat this rule like an administrative root account and don�t use it in your application. You can create additional policy rules in the Configure tab for the namespace in the portal, via PowerShell or Azure CLI. Avoid the usage of local authentication methods or accounts, these should be disabled wherever possible. Instead use Azure AD to authenticate where possible.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/authenticate-shared-access-signature",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "adfe27bd-e187-401a-a352-baa9b68a088c",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.03",
+      "text": "Configure conditional access policies to restrict the access on Data plane",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9b488dee-c496-42cc-9cd2-1bf77f26e5e6",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Networking",
+      "subcategory": "",
+      "id": "C01.03",
+      "text": "Deploy private endpoints for all Azure resources that support the Private Link feature, to establish a private access point for the resources.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/private-link-service",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f3389a7e-42c7-48e7-ac06-a62a2194956e",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Networking",
+      "subcategory": "",
+      "id": "C01.01",
+      "text": "Disable Public Network Access",
+      "description": "Service supports disabling public network access either through using service-level IP ACL filtering rule (not NSG or Azure Firewall) or using a 'Disable Public Network Access' toggle switch.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "bc288bec-6a17-4ca7-8444-51e1add3452a",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "A01.02",
+      "text": "Enable data at rest encryption by default",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "21d41d25-00c8-417b-b9ea-c41fd3390798",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "A01.01",
+      "text": "Encrypt sensitive data in transit",
+      "description": "No additional configurations are required as this is enabled on a default deployment.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/transport-layer-security-configure-minimum-version",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "387e5ced-127d-4d14-8b06-b20c6999a646",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.07",
+      "text": "Use Azure RBACs to fine grain the access",
+      "description": "Use Azure role-based access control (Azure RBAC) to manage Azure resource access through built-in role assignments. Azure RBAC roles can be assigned to users, groups, service principals, and managed identities.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/authorize-access-azure-active-directory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ec723923-7a15-41c5-ab5e-401915387e5c",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "A01.03",
+      "text": "Use customer-managed key option in data at rest encryption when required",
+      "description": "Use Keyvaults to store your CMK",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/configure-customer-managed-key?tabs=Key-Vault",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7e42c77d-78cb-46a2-8ad1-9f916e698d8f",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "B01.02",
+      "text": "Use managed identity to authenticate to the services",
+      "description": "Use Microsoft Entra ID as the default authentication method.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6a8dc4a2-fe27-4b2e-8870-1a1352beedf7",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Networking",
+      "subcategory": "",
+      "id": "C01.02",
+      "text": "Use Vnets to isolate traffic over restricted network",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7aaf12e7-b94e-4f6e-847d-2d92981b1cd6",
+      "technology": "Azure Event Hub Review",
+      "technologySlug": "azure-event-hub-review-eh-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "Azure Event Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Event Hub Review",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.01",
+      "text": "Use customer-managed key option in data at rest encryption when required",
+      "description": "Azure Event Hub provides encryption of data at rest. If you use your own key, the data is still encrypted using the Microsoft-managed key, but in addition the Microsoft-managed key will be encrypted using the customer-managed key.",
+      "severity": "Low",
+      "waf": "Security",
+      "service": "Azure Event Hubs",
+      "serviceCanonical": "Azure Event Hubs",
+      "serviceSlug": "azure-event-hubs",
+      "link": "https://learn.microsoft.com/azure/event-hubs/configure-customer-managed-key",
+      "training": "https://learn.microsoft.com/learn/modules/plan-implement-administer-conditional-access/",
+      "query": "resources | where type =~ 'Microsoft.EventHub/namespaces' | extend SkuName = tostring(sku.name) | extend EncryptionEnabled = iif(isnotempty(properties.encryption.keySource), 'Enabled', 'Disabled') | extend compliant = iif(EncryptionEnabled == 'Enabled', true, false) | project name, resourceGroup, location, SkuName, EncryptionEnabled, compliant | where SkuName == 'Premium'",
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 54,
+    "unavailableRegionCount": 5,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Event Hubs",
+    "matchedServiceLabel": "Azure Event Hubs",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Event Hubs Premium SKU",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

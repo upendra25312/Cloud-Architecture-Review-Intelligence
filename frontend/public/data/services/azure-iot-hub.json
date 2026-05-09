@@ -1,0 +1,1232 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-iot-hub",
+    "service": "Azure IoT Hub",
+    "aliases": [
+      "Microsoft.Devices/IotHubs"
+    ],
+    "itemCount": 11,
+    "highSeverityCount": 9,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "Disaster Recovery",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Scalability"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure IoT Hub appears across 11 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "IoT Hub",
+      "matchedServiceLabel": "Azure IoT Hub",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 42,
+      "unavailableRegionCount": 17,
+      "restrictedRegionCount": 8,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "iot-hub-review-iot-hub-checklist",
+        "technology": "IoT Hub Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 5,
+        "highSeverityCount": 4,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "02568a5d-335e-4e51-9f7c-fe2ada977300",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Devices/IotHubs",
+      "id": "02568a5d-335e-4e51-9f7c-fe2ada977300",
+      "text": "Define Failover Guidelines",
+      "description": "In case of a regional failure, an IoT Hub can failover to a second region, automatically or manually, to ensure your application continues working.",
+      "severity": "High",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "armService": "Microsoft.Devices/IotHubs",
+      "link": "https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-ha-dr",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "783c6c18-760b-4867-9ced-3010a0bc5aa3",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Devices/IotHubs",
+      "id": "783c6c18-760b-4867-9ced-3010a0bc5aa3",
+      "text": "Device Identities are exported to a secondary region",
+      "description": "Device Identities should be copied to the failover region IoT-Hub for all IoT devices to ensure connectivity in case of a failover. Manual Failover to another region is quicker (RTO), suitable for mission critical workloads.",
+      "severity": "High",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "armService": "Microsoft.Devices/IotHubs",
+      "link": "https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-bulk-identity-mgmt",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "eeba3a49-fef0-481f-a471-7ff01139b474",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Devices/IotHubs",
+      "id": "eeba3a49-fef0-481f-a471-7ff01139b474",
+      "text": "Do not use free tier",
+      "description": "In a production scenario, the IoT Hub tier should not be Free because the Free tier does not provide the necessary Service Level Agreement.",
+      "severity": "High",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "armService": "Microsoft.Devices/IotHubs",
+      "link": "https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-scaling",
+      "graph": "// Azure Resource Graph Query\n// list all IoT Hubs that are using the Free tier\nresources\n| where type =~ \"microsoft.devices/iothubs\" and\n    tostring(sku.tier) =~ 'Free'\n| project recommendationId=\"eeba3a49-fef0-481f-a471-7ff01139b474\", name, id, tags, param1=strcat(\"tier:\", tostring(sku.tier))\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "214cbc46-747e-4354-af6e-6bf0054196a5",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Devices/IotHubs",
+      "id": "214cbc46-747e-4354-af6e-6bf0054196a5",
+      "text": "Use Availability Zones",
+      "description": "In regions supporting Availability Zones for IoT Hub, using these zones boosts availability. They're automatically activated for new IoT Hubs in supported areas.",
+      "severity": "High",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "armService": "Microsoft.Devices/IotHubs",
+      "link": "https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-ha-dr#availability-zones",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b1e1378d-4572-4414-bebd-b8872a6d4d1c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Devices/IotHubs",
+      "id": "b1e1378d-4572-4414-bebd-b8872a6d4d1c",
+      "text": "Use Device Provisioning Service",
+      "description": "Device Provisioning Service (DPS) enables easy redistribution of IoT devices for scaling and availability, allowing devices to be reassigned and not bound to specific IoT Hub instances. Devices in IoT Hubs using DPS should be verified for DPS utilization.",
+      "severity": "High",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "armService": "Microsoft.Devices/IotHubs",
+      "link": "https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service",
+      "graph": "// Azure Resource Graph Query\n// list all IoT Hubs that do not have a linked IoT Hub Device Provisioning Service (DPS)\nresources\n| where type =~ \"microsoft.devices/iothubs\"\n| project id, iotHubName=tostring(properties.hostName), tags, resourceGroup\n| join kind=fullouter (\n    resources\n    | where type == \"microsoft.devices/provisioningservices\"\n    | mv-expand iotHubs=properties.iotHubs\n    | project iotHubName = tostring(iotHubs.name), dpsName = name, name=iotHubs.name\n) on iotHubName\n| where dpsName == ''\n| project recommendationId=\"b1e1378d-4572-4414-bebd-b8872a6d4d1c\", name=iotHubName, id, tags, param1='DPS:none'\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4ed3e490-dc06-4a1e-b467-5d0239d85540",
+      "technology": "IoT Hub Review",
+      "technologySlug": "iot-hub-review-iot-hub-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "IoT Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "IoT Hub Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "01.01.03",
+      "text": "Consider a Cross-Region DR strategy for critical workloads",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "link": "https://learn.microsoft.com/azure/iot-hub/iot-hub-ha-dr#cross-region-dr",
+      "sourcePath": "checklists/iot_hub_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/iot_hub_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f9db8dfb-1194-460b-aedd-34dd6a69db22",
+      "technology": "IoT Hub Review",
+      "technologySlug": "iot-hub-review-iot-hub-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "IoT Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "IoT Hub Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "01.01.05",
+      "text": "Learn how to fail back after a failover.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "link": "https://learn.microsoft.com/azure/iot-hub/iot-hub-ha-dr#failback",
+      "sourcePath": "checklists/iot_hub_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/iot_hub_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a11ecab0-db47-46f7-9aa7-17764e7e45a1",
+      "technology": "IoT Hub Review",
+      "technologySlug": "iot-hub-review-iot-hub-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "IoT Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "IoT Hub Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "01.01.04",
+      "text": "Learn how to trigger a manual failover.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "link": "https://learn.microsoft.com/azure/iot-hub/iot-hub-ha-dr#microsoft-initiated-failover",
+      "sourcePath": "checklists/iot_hub_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/iot_hub_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ac1d6380-f866-4bbd-a9b4-b1ee5d7908b8",
+      "technology": "IoT Hub Review",
+      "technologySlug": "iot-hub-review-iot-hub-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "IoT Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "IoT Hub Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "01.01.01",
+      "text": "Leverage Availability Zones if regionally applicable (this is automatically enabled)",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "link": "https://learn.microsoft.com/azure/iot-hub/iot-hub-ha-dr#availability-zones",
+      "sourcePath": "checklists/iot_hub_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/iot_hub_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "35f651e8-0124-4ef7-8c57-658e38609e6e",
+      "technology": "IoT Hub Review",
+      "technologySlug": "iot-hub-review-iot-hub-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "IoT Hub Review",
+      "sourceKind": "checklists",
+      "checklist": "IoT Hub Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "01.01.02",
+      "text": "Be aware of Microsoft-initiated failovers. These are exercised by Microsoft in rare situations to fail over all the IoT hubs from an affected region to the corresponding geo-paired region.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "link": "https://learn.microsoft.com/azure/iot-hub/iot-hub-ha-dr#microsoft-initiated-failover",
+      "sourcePath": "checklists/iot_hub_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/iot_hub_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e7dbd21f-b27a-4b8c-a901-cedb1e6d8e1e",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Devices/IotHubs",
+      "id": "e7dbd21f-b27a-4b8c-a901-cedb1e6d8e1e",
+      "text": "Disabled Fallback Route",
+      "description": "Using message routing for custom endpoints in IoT Hub, messages might not reach these destinations if specific conditions are unmet. A default route ensures all messages are received, but disabling this safety net risks leaving some messages undelivered.",
+      "severity": "Low",
+      "service": "Azure IoT Hub",
+      "serviceCanonical": "Azure IoT Hub",
+      "serviceSlug": "azure-iot-hub",
+      "armService": "Microsoft.Devices/IotHubs",
+      "link": "https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-messages-d2c#fallback-route",
+      "graph": "// Azure Resource Graph Query\n// list all IoT Hubs that have the fallback route disabled\nresources\n| where type == \"microsoft.devices/iothubs\"\n| extend fallbackEnabled=properties.routing.fallbackRoute.isEnabled\n| where fallbackEnabled == false\n| project recommendationId=\"e7dbd21f-b27a-4b8c-a901-cedb1e6d8e1e\", name, id, tags, param1='FallbackRouteEnabled:false'\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 42,
+    "unavailableRegionCount": 17,
+    "restrictedRegionCount": 8,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "IoT Hub",
+    "matchedServiceLabel": "Azure IoT Hub",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "IoT Hub Device Provisioning Service",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

@@ -1,0 +1,1971 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-cache-for-redis",
+    "service": "Azure Cache for Redis",
+    "aliases": [
+      "Microsoft.Cache/redis",
+      "Microsoft.Cache/Redis"
+    ],
+    "itemCount": 7,
+    "highSeverityCount": 2,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "High Availability",
+      "Security"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Cache for Redis appears across 7 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "Redis Cache",
+      "matchedServiceLabel": "Azure Cache for Redis",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 56,
+      "unavailableRegionCount": 3,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 44,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "redis-resiliency-checklist-redis-checklist",
+        "technology": "Redis Resiliency checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 4,
+        "highSeverityCount": 1,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "5a44bd30-ae6a-4b81-9b68-dc3a8ffca4d8",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Cache/Redis",
+      "id": "5a44bd30-ae6a-4b81-9b68-dc3a8ffca4d8",
+      "text": "Enable zone redundancy for Azure Cache for Redis",
+      "description": "Azure Cache for Redis offers zone redundancy in Premium and Enterprise tiers, using VMs across multiple Availability Zones to ensure greater resilience and availability.",
+      "severity": "High",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "armService": "Microsoft.Cache/Redis",
+      "link": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-how-to-zone-redundancy",
+      "graph": "// Azure Resource Graph Query\n// Find Cache for Redis instances with one or no Zones selected\nresources\n| where type =~ \"microsoft.cache/redis\"\n| where array_length(zones) <= 1 or isnull(zones)\n| project recommendationId = \"5a44bd30-ae6a-4b81-9b68-dc3a8ffca4d8\", name, id, tags, param1 = \"AvailabilityZones: Single Zone\"\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "65285269-440b-44be-9d3e-0844276d4bdc",
+      "technology": "Redis Resiliency checklist",
+      "technologySlug": "redis-resiliency-checklist-redis-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Redis Resiliency checklist",
+      "sourceKind": "checklists",
+      "checklist": "Redis Resiliency checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "A01.01",
+      "text": "Enable zone redundancy for Azure Cache for Redis. Azure Cache for Redis supports zone redundant configurations in the Premium and Enterprise tiers. A zone redundant cache can place its nodes across different Azure Availability Zones in the same region. It eliminates data center or AZ outage as a single point of failure and increases the overall availability of your cache.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "link": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-how-to-zone-redundancy",
+      "sourcePath": "checklists/redis_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/redis_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c474fc96-4e6a-4fb0-95d0-a26b3f35933c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.Cache/redis",
+      "id": "c474fc96-4e6a-4fb0-95d0-a26b3f35933c",
+      "text": "Configure Private Endpoints",
+      "description": "Use private endpoints for secure connection to cache via a private link, avoiding the public internet.",
+      "severity": "Medium",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "armService": "Microsoft.Cache/redis",
+      "link": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-network-isolation",
+      "graph": "// Azure Resource Graph Query\n// Find all Azure Redis cache services not protected by private endpoints.\nResources\n| where type =~ \"microsoft.cache/redis\"\n| where properties['publicNetworkAccess'] == \"Enabled\"\n| project recommendationId = \"c474fc96-4e6a-4fb0-95d0-a26b3f35933c\", name, id, tags\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cabc1f98-c8a7-44f7-ab24-977982ef3f70",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Cache/redis",
+      "id": "cabc1f98-c8a7-44f7-ab24-977982ef3f70",
+      "text": "Schedule updates by setting a maintenance window",
+      "description": "Azure Cache for Redis allows for specifying maintenance windows. A maintenance window allows you to control the days and times of a week during which the VMs hosting your cache can be updated.",
+      "severity": "Medium",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "armService": "Microsoft.Cache/redis",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-administration#update-channel-and-schedule-updates",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "bc178bdc-5a06-4ca7-8443-51e19dd34429",
+      "technology": "Redis Resiliency checklist",
+      "technologySlug": "redis-resiliency-checklist-redis-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Redis Resiliency checklist",
+      "sourceKind": "checklists",
+      "checklist": "Redis Resiliency checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "A01.02",
+      "text": "Configure data persistence for an Azure Cache for Redis instance. Because your cache data is stored in memory, a rare and unplanned failure of multiple nodes can cause all the data to be dropped. To avoid losing data completely, Redis persistence allows you to take periodic snapshots of in-memory data, and store it to your storage account.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-high-availability#persistence",
+      "sourcePath": "checklists/redis_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/redis_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a8c26c9b-32ab-45bd-bc69-98a135e33789",
+      "technology": "Redis Resiliency checklist",
+      "technologySlug": "redis-resiliency-checklist-redis-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Redis Resiliency checklist",
+      "sourceKind": "checklists",
+      "checklist": "Redis Resiliency checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "A01.04",
+      "text": "Configure passive geo-replication for Premium Azure Cache for Redis instances. Geo-replication is a mechanism for linking two or more Azure Cache for Redis instances, typically spanning two Azure regions. Geo-replication is designed mainly for cross-region disaster recovery. Two Premium tier cache instances are connected through geo-replication in a way that provides reads and writes to your primary cache, and that data is replicated to the secondary cache.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "link": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-how-to-geo-replication",
+      "sourcePath": "checklists/redis_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/redis_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "eb722823-7a15-41c5-ab4e-4f1814387e5c",
+      "technology": "Redis Resiliency checklist",
+      "technologySlug": "redis-resiliency-checklist-redis-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Redis Resiliency checklist",
+      "sourceKind": "checklists",
+      "checklist": "Redis Resiliency checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "A01.03",
+      "text": "Use Geo-redundant storage account to persist Azure Cache for Redis data, or zonally redundant where geo-redundancy is not available",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cache for Redis",
+      "serviceCanonical": "Azure Cache for Redis",
+      "serviceSlug": "azure-cache-for-redis",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-high-availability#storage-account-for-persistence",
+      "sourcePath": "checklists/redis_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/redis_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 56,
+    "unavailableRegionCount": 3,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 44,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "Redis Cache",
+    "matchedServiceLabel": "Azure Cache for Redis",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Balanced (Compute + Memory)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Compute Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Memory Optimized",
+            "state": "GA"
+          },
+          {
+            "skuName": "Redis Cache",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Redis Enterprise Flash",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

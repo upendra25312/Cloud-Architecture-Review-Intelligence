@@ -1,0 +1,1477 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-database-for-postgresql",
+    "service": "Azure Database for PostgreSQL",
+    "aliases": [
+      "Microsoft.DBforPostgreSQL/flexibleServers"
+    ],
+    "itemCount": 8,
+    "highSeverityCount": 6,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Disaster Recovery",
+      "High Availability",
+      "Operations Management",
+      "Scalability"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Database for PostgreSQL appears across 8 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Database for PostgreSQL",
+      "matchedServiceLabel": "Azure Database for PostgreSQL",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 53,
+      "unavailableRegionCount": 6,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 28,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "postgresql-review-checklist-postgresql-checklist",
+        "technology": "PostgreSQL Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 3,
+        "highSeverityCount": 1,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "31f4ac4b-29cb-4588-8de2-d8fe6f13ceb3",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "id": "31f4ac4b-29cb-4588-8de2-d8fe6f13ceb3",
+      "text": "Configure geo redundant backup storage",
+      "description": "Configure GRS to ensure that your database meets its availability and durability targets even in the face of failures or disasters.",
+      "severity": "High",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "armService": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "link": "https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-backup-restore",
+      "graph": "// Azure Resource Graph Query\n// Find Database for PostgreSQL instances that do not have geo redundant backup storage configured\nresources\n| where type == \"microsoft.dbforpostgresql/flexibleservers\"\n| where properties.backup.geoRedundantBackup != \"Enabled\"\n| project recommendationId = \"31f4ac4b-29cb-4588-8de2-d8fe6f13ceb3\", name, id, tags, param1 = strcat(\"geoRedundantBackup:\", properties['backup']['geoRedundantBackup'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "2ab85a67-26be-4ed2-a0bb-101b2513ec63",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "id": "2ab85a67-26be-4ed2-a0bb-101b2513ec63",
+      "text": "Configure one or more read replicas",
+      "description": "Configure one or more read replicas to ensure that your database meets its availability and durability targets even in the face of failures or disasters.",
+      "severity": "High",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "armService": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "link": "https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-read-replicas",
+      "graph": "// Azure Resource Graph Query\n// Find Database for PostgreSQL instances that are read replicas\nresources\n| where type == \"microsoft.dbforpostgresql/flexibleservers\"\n| where properties.replicationRole == \"AsyncReplica\"\n| project recommendationId = \"2ab85a67-26be-4ed2-a0bb-101b2513ec63\", name, id, tags, param1 = strcat(\"replicationRole:\", properties['replicationRole'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6293a3cc-6b4a-4c0f-9ea7-b8ae8d7dd3d5",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "id": "6293a3cc-6b4a-4c0f-9ea7-b8ae8d7dd3d5",
+      "text": "Configure storage auto-grow",
+      "description": "Configure storage auto-grow to prevent the server from running out of storage and becoming read-only.",
+      "severity": "High",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "armService": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "link": "https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/how-to-auto-grow-storage-portal",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b2bad57d-7e03-4c0f-9024-597c9eb295bb",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "id": "b2bad57d-7e03-4c0f-9024-597c9eb295bb",
+      "text": "Enable custom maintenance schedule",
+      "description": "Use custom maintenance schedule on flexible server instances to select a preferred time for service updates to be applied.",
+      "severity": "High",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "armService": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "link": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-maintenance",
+      "graph": "// Azure Resource Graph Query\n// Find Database for PostgreSQL instances that do not have a custom maintenance window\nresources\n| where type == \"microsoft.dbforpostgresql/flexibleservers\"\n| where properties.maintenanceWindow.customWindow != \"Enabled\"\n| project recommendationId = \"b2bad57d-7e03-4c0f-9024-597c9eb295bb\", name, id, tags, param1 = strcat(\"customWindow:\", properties['maintenanceWindow']['customWindow'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ca87914f-aac4-4783-ab67-82a6f936f194",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "id": "ca87914f-aac4-4783-ab67-82a6f936f194",
+      "text": "Enable HA with zone redundancy",
+      "description": "Enable HA with zone redundancy on flexible server instances to deploy a standby replica in a different zone, offering automatic failover capability for improved reliability and disaster recovery.",
+      "severity": "High",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "armService": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "link": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-high-availability",
+      "graph": "// Azure Resource Graph Query\n// Find Database for PostgreSQL instances that are not zone redundant\nresources\n| where type == \"microsoft.dbforpostgresql/flexibleservers\"\n| where properties.highAvailability.mode != \"ZoneRedundant\"\n| project recommendationId = \"ca87914f-aac4-4783-ab67-82a6f936f194\", name, id, tags, param1 = \"ZoneRedundant: False\"\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "016ccf31-ae5a-41eb-9888-9535e227896d",
+      "technology": "PostgreSQL Review Checklist",
+      "technologySlug": "postgresql-review-checklist-postgresql-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "PostgreSQL Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "PostgreSQL Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A01.02",
+      "text": "Leverage Availability Zones where regionally applicable",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "link": "https://learn.microsoft.com/azure/postgresql/flexible-server/overview#architecture-and-high-availability",
+      "sourcePath": "checklists/postgreSQL_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/postgreSQL_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "31b67c67-be59-4519-8083-845d587cb391",
+      "technology": "PostgreSQL Review Checklist",
+      "technologySlug": "postgresql-review-checklist-postgresql-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "PostgreSQL Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "PostgreSQL Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A01.03",
+      "text": "Leverage cross-region read replicas for BCDR",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "link": "https://learn.microsoft.com/azure/postgresql/single-server/concepts-business-continuity#cross-region-read-replicas",
+      "sourcePath": "checklists/postgreSQL_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/postgreSQL_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "65285269-441c-44bf-9d3e-0844276d4bdc",
+      "technology": "PostgreSQL Review Checklist",
+      "technologySlug": "postgresql-review-checklist-postgresql-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "PostgreSQL Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "PostgreSQL Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A01.01",
+      "text": "Leverage Flexible Server",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Database for PostgreSQL",
+      "serviceCanonical": "Azure Database for PostgreSQL",
+      "serviceSlug": "azure-database-for-postgresql",
+      "link": "https://learn.microsoft.com/azure/postgresql/flexible-server/overview",
+      "sourcePath": "checklists/postgreSQL_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/postgreSQL_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 53,
+    "unavailableRegionCount": 6,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 28,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Database for PostgreSQL",
+    "matchedServiceLabel": "Azure Database for PostgreSQL",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostgreSQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostgreSQL Azure Arc",
+            "state": "Preview"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Hyperscale (Citus)",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

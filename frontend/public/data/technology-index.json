@@ -1,0 +1,2498 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "technologies": [
+    {
+      "slug": "ai-landing-zone-ai-lz-checklist",
+      "technology": "AI Landing Zone",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 177,
+      "highSeverityCount": 83,
+      "categories": [
+        "Application Deployment",
+        "Business Continuity and Disaster Recovery",
+        "Cost Governance",
+        "Governance and Security",
+        "Identity and Access Management",
+        "Network Topology and Connectivity",
+        "Operations"
+      ],
+      "services": [
+        "API Management",
+        "Azure AI Content Safety",
+        "Azure AI Foundry",
+        "Azure AI Search",
+        "Azure AI Services",
+        "Azure Container Apps",
+        "Azure Cost Management",
+        "Azure Devops",
+        "Azure Machine Learning",
+        "Azure Monitor",
+        "Azure OpenAI",
+        "Azure RBAC",
+        "Azure Resource Manager",
+        "Azure Service Health",
+        "Microsoft Defender for Cloud",
+        "Microsoft Entra ID",
+        "Microsoft Purview"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "timestamp": "April 16, 2025",
+      "sourceKind": "checklists",
+      "description": "AI Landing Zone is a Preview family with 177 normalized items, 83 high-severity findings, covers Application Deployment, Business Continuity and Disaster Recovery, Cost Governance, and touches services like API Management, Azure AI Content Safety, Azure AI Foundry, Azure AI Search.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 88,
+        "metadataCompleteness": 82,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 97,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "app-service-web-apps-service-guide-appservicewebapps-sg-checklist",
+      "technology": "App Service Web Apps Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 23,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure App Service"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/appservicewebapps_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/appservicewebapps_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "App Service Web Apps Service Guide is a Preview family with 23 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure App Service.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "aprl-checklist-aprl-checklist",
+      "technology": "APRL Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 327,
+      "highSeverityCount": 162,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Disaster Recovery",
+        "Governance",
+        "High Availability",
+        "Monitoring and Alerting",
+        "Other Best Practices",
+        "Personalized",
+        "Scalability",
+        "Security",
+        "Service Upgrade and Retirement"
+      ],
+      "services": [
+        "API Management",
+        "Azure App Configuration",
+        "Azure App Service",
+        "Azure App Service Plan",
+        "Azure Application Gateway",
+        "Azure Application Insights",
+        "Azure Automation",
+        "Azure Batch",
+        "Azure Cache for Redis",
+        "Azure CDN",
+        "Azure Compute Gallery",
+        "Azure Container Apps",
+        "Azure Container Apps Environment",
+        "Azure Container Registry",
+        "Azure Cosmos DB",
+        "Azure Database for MySQL",
+        "Azure Database for PostgreSQL",
+        "Azure Databricks",
+        "Azure DDoS Protection",
+        "Azure Event Grid",
+        "Azure Event Hubs",
+        "Azure ExpressRoute",
+        "Azure Firewall",
+        "Azure Front Door WAF",
+        "Azure Image Builder",
+        "Azure IoT Hub",
+        "Azure Key Vault",
+        "Azure Kubernetes Service (AKS)",
+        "Azure Load Balancer",
+        "Azure Monitor Alerts",
+        "Azure NAT Gateway",
+        "Azure NetApp Files",
+        "Azure Network Watcher",
+        "Azure Private DNS",
+        "Azure Private Link",
+        "Azure Public IP",
+        "Azure Service Bus",
+        "Azure SignalR Service",
+        "Azure SQL Database",
+        "Azure Storage Account",
+        "Azure Subscriptions",
+        "Azure Traffic Collector",
+        "Azure Traffic Manager",
+        "Azure Virtual Desktop",
+        "Azure Virtual Machine Scale Sets",
+        "Azure Virtual Machines",
+        "Azure Virtual Network",
+        "Azure VMware Solution",
+        "Azure VPN Gateway",
+        "ExpressRoute Direct",
+        "Log Analytics",
+        "Microsoft Entra Domain Services",
+        "Network Security Groups",
+        "Recovery Services vault",
+        "Resource Groups",
+        "Route tables",
+        "VPN and ExpressRoute connections"
+      ],
+      "wafPillars": [],
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "timestamp": "July 14, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "APRL Checklist is a Preview family with 327 normalized items, 162 high-severity findings, covers Business Continuity and Disaster Recovery, Disaster Recovery, Governance, and touches services like API Management, Azure App Configuration, Azure App Service, Azure App Service Plan.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-aks-review-aks-checklist",
+      "technology": "Azure AKS Review",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 112,
+      "highSeverityCount": 33,
+      "categories": [
+        "Application Deployment",
+        "Business Continuity and Disaster Recovery",
+        "Cost Governance",
+        "Governance and Security",
+        "Identity and Access Management",
+        "Network Topology and Connectivity",
+        "Operations"
+      ],
+      "services": [
+        "Azure Container Registry",
+        "Azure Kubernetes Service (AKS)"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/aks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/aks_checklist.en.json",
+      "timestamp": "February 20, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure AKS Review is a GA family with 112 normalized items, 33 high-severity findings, covers Application Deployment, Business Continuity and Disaster Recovery, Cost Governance, and touches services like Azure Container Registry, Azure Kubernetes Service (AKS).",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 93,
+        "metadataCompleteness": 82,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 93 with 82% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "azure-api-management-review-apim-checklist",
+      "technology": "Azure API Management Review",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 44,
+      "highSeverityCount": 12,
+      "categories": [
+        "Governance",
+        "Identity and Access Management",
+        "Management",
+        "Network Topology and Connectivity",
+        "Platform automation and DevOps",
+        "Security"
+      ],
+      "services": [
+        "API Management"
+      ],
+      "wafPillars": [
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "timestamp": "June 10, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure API Management Review is a GA family with 44 normalized items, 12 high-severity findings, covers Governance, Identity and Access Management, Management, and touches services like API Management.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 93,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 93 with 83% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "azure-app-service-review-appsvc-checklist",
+      "technology": "Azure App Service Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 44,
+      "highSeverityCount": 19,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Cost Governance",
+        "Governance and Security",
+        "Operations",
+        "Security"
+      ],
+      "services": [
+        "Azure App Service"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Governance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/appsvc_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/appsvc_checklist.en.json",
+      "timestamp": "March 07, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure App Service Review is a Preview family with 44 normalized items, 19 high-severity findings, covers Business Continuity and Disaster Recovery, Cost Governance, Governance and Security, and touches services like Azure App Service.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 95,
+        "metadataCompleteness": 99,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-application-delivery-networking-afd-checklist",
+      "technology": "Azure Application Delivery Networking (Afd Checklist)",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 39,
+      "highSeverityCount": 13,
+      "categories": [
+        "Network Topology and Connectivity"
+      ],
+      "services": [
+        "Azure Front Door"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/afd_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/afd_checklist.en.json",
+      "timestamp": "September 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Application Delivery Networking (Afd Checklist) is a GA family with 39 normalized items, 13 high-severity findings, covers Network Topology and Connectivity, and touches services like Azure Front Door.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 93,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 93 with 83% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "azure-application-delivery-networking-network-appdelivery-checklist",
+      "technology": "Azure Application Delivery Networking (Network Appdelivery Checklist)",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 40,
+      "highSeverityCount": 9,
+      "categories": [
+        "Network Topology and Connectivity"
+      ],
+      "services": [
+        "Azure Application Gateway",
+        "Azure Front Door",
+        "Azure Load Balancer",
+        "Azure Traffic Manager",
+        "Microsoft Entra ID"
+      ],
+      "wafPillars": [
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/network_appdelivery_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/network_appdelivery_checklist.en.json",
+      "timestamp": "September 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Application Delivery Networking (Network Appdelivery Checklist) is a GA family with 40 normalized items, 9 high-severity findings, covers Network Topology and Connectivity, and touches services like Azure Application Gateway, Azure Front Door, Azure Load Balancer, Azure Traffic Manager.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 93,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 93 with 83% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "azure-application-gateway-service-guide-azureapplicationgateway-sg-checklist",
+      "technology": "Azure Application Gateway Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 18,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Application Gateway"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azureapplicationgateway_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureapplicationgateway_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Application Gateway Service Guide is a Preview family with 18 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Application Gateway.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-arc-review-azure-arc-checklist",
+      "technology": "Azure Arc Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 47,
+      "highSeverityCount": 14,
+      "categories": [
+        "Foundation",
+        "Identity",
+        "Management and Monitoring",
+        "Networking",
+        "Security, Governance and Compliance"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/azure_arc_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azure_arc_checklist.en.json",
+      "timestamp": "October 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Arc Review is a Preview family with 47 normalized items, 14 high-severity findings, covers Foundation, Identity, Management and Monitoring, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 86,
+        "metadataCompleteness": 77,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 99,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technology": "Azure Blob Storage Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 26,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Blob Storage"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Blob Storage Service Guide is a Preview family with 26 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Blob Storage.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-bot-service-azurebotservice-checklist",
+      "technology": "Azure Bot Service",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 3,
+      "highSeverityCount": 0,
+      "categories": [
+        "Operations management"
+      ],
+      "services": [
+        "Azure Bot Service"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/azurebotservice_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurebotservice_checklist.en.json",
+      "timestamp": "April 09, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Bot Service is a Preview family with 3 normalized items, 0 high-severity findings, covers Operations management, and touches services like Azure Bot Service.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-container-registry-security-review-acr-checklist",
+      "technology": "Azure Container Registry Security Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 18,
+      "highSeverityCount": 9,
+      "categories": [
+        "Security"
+      ],
+      "services": [
+        "Azure Container Registry"
+      ],
+      "wafPillars": [
+        "Security"
+      ],
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "timestamp": "October 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Container Registry Security Review is a Preview family with 18 normalized items, 9 high-severity findings, covers Security, and touches services like Azure Container Registry.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 95,
+        "metadataCompleteness": 100,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 96,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technology": "Azure Data Explorer Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 12,
+      "highSeverityCount": 0,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Operations Management"
+      ],
+      "services": [
+        "Azure Data Explorer"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "timestamp": "April 15, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Data Explorer Review Checklist is a Preview family with 12 normalized items, 0 high-severity findings, covers Business Continuity and Disaster Recovery, Operations Management, and touches services like Azure Data Explorer.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 62,
+        "metadataCompleteness": 78,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-data-factory-review-checklist-adf-checklist",
+      "technology": "Azure Data Factory Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 6,
+      "highSeverityCount": 1,
+      "categories": [
+        "Governance and Security",
+        "Network Topology and Connectivity",
+        "Operations Management"
+      ],
+      "services": [
+        "Azure Data Factory"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "timestamp": "April 26, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Data Factory Review Checklist is a Preview family with 6 normalized items, 1 high-severity findings, covers Governance and Security, Network Topology and Connectivity, Operations Management, and touches services like Azure Data Factory.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 90,
+        "metadataCompleteness": 86,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-devops-ado-checklist",
+      "technology": "Azure DevOps",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 57,
+      "highSeverityCount": 14,
+      "categories": [
+        "Azure Artifact",
+        "Azure Boards",
+        "Azure Pipelines",
+        "DevOps Practice",
+        "Version Control"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Operations",
+        "Security"
+      ],
+      "sourcePath": "checklists/ado_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ado_checklist.en.json",
+      "timestamp": "12/15/2023 11:48:52",
+      "sourceKind": "checklists",
+      "description": "Azure DevOps is a Preview family with 57 normalized items, 14 high-severity findings, covers Azure Artifact, Azure Boards, Azure Pipelines, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-event-hub-review-eh-checklist",
+      "technology": "Azure Event Hub Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 14,
+      "highSeverityCount": 3,
+      "categories": [
+        "Operations Management",
+        "Security"
+      ],
+      "services": [
+        "Azure Event Hubs"
+      ],
+      "wafPillars": [
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/eh_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/eh_checklist.en.json",
+      "timestamp": "April 09, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Event Hub Review is a Preview family with 14 normalized items, 3 high-severity findings, covers Operations Management, Security, and touches services like Azure Event Hubs.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 94,
+        "metadataCompleteness": 96,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-expressroute-service-guide-azureexpressroute-sg-checklist",
+      "technology": "Azure Expressroute Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 25,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure ExpressRoute"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azureexpressroute_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureexpressroute_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Expressroute Service Guide is a Preview family with 25 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure ExpressRoute.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-files-service-guide-azurefiles-sg-checklist",
+      "technology": "Azure Files Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 29,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Files"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azurefiles_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azurefiles_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Files Service Guide is a Preview family with 29 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Files.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-firewall-service-guide-azurefirewall-sg-checklist",
+      "technology": "Azure Firewall Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 30,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Firewall"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azurefirewall_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azurefirewall_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Firewall Service Guide is a Preview family with 30 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Firewall.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-front-door-service-guide-azurefrontdoor-sg-checklist",
+      "technology": "Azure Front Door Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 22,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Front Door"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azurefrontdoor_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azurefrontdoor_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Front Door Service Guide is a Preview family with 22 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Front Door.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-function-review-azfun-checklist",
+      "technology": "Azure Function Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 7,
+      "highSeverityCount": 4,
+      "categories": [
+        "Application Deployment",
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Azure Functions"
+      ],
+      "wafPillars": [
+        "Operations",
+        "Reliability"
+      ],
+      "sourcePath": "checklists/azfun_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azfun_checklist.en.json",
+      "timestamp": "April 09, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Function Review is a Preview family with 7 normalized items, 4 high-severity findings, covers Application Deployment, Business Continuity and Disaster Recovery, and touches services like Azure Functions.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-key-vault-keyvault-checklist",
+      "technology": "Azure Key Vault",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 11,
+      "highSeverityCount": 2,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Governance",
+        "Management",
+        "Security"
+      ],
+      "services": [
+        "Azure Key Vault"
+      ],
+      "wafPillars": [
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "timestamp": "September 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Key Vault is a Preview family with 11 normalized items, 2 high-severity findings, covers Business Continuity and Disaster Recovery, Governance, Management, and touches services like Azure Key Vault.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-kubernetes-service-service-guide-azurekubernetesservice-sg-checklist",
+      "technology": "Azure Kubernetes Service Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 46,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Kubernetes Service (AKS)"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azurekubernetesservice_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azurekubernetesservice_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Kubernetes Service Service Guide is a Preview family with 46 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Kubernetes Service (AKS).",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-landing-zone-review-alz-checklist",
+      "technology": "Azure Landing Zone Review",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 255,
+      "highSeverityCount": 71,
+      "categories": [
+        "Azure Billing and Microsoft Entra ID Tenants",
+        "Governance",
+        "Identity and Access Management",
+        "Management",
+        "Network Topology and Connectivity",
+        "Platform Automation and DevOps",
+        "Resource Organization",
+        "Security"
+      ],
+      "services": [
+        "Azure Application Gateway",
+        "Azure Backup",
+        "Azure Bastion",
+        "Azure DNS",
+        "Azure ExpressRoute",
+        "Azure Firewall",
+        "Azure Key Vault",
+        "Azure Load Balancer",
+        "Azure Monitor",
+        "Azure Network Watcher",
+        "Azure Policy",
+        "Azure Public IP",
+        "Azure Route Server",
+        "Azure Storage Account",
+        "Azure Virtual Machines",
+        "Azure Virtual Network",
+        "Azure Virtual WAN",
+        "Azure VPN Gateway",
+        "Microsoft Defender for Cloud",
+        "Microsoft Entra ID",
+        "NSG",
+        "Web Application Firewall"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "timestamp": "February 25, 2026",
+      "sourceKind": "checklists",
+      "description": "Azure Landing Zone Review is a GA family with 255 normalized items, 71 high-severity findings, covers Azure Billing and Microsoft Entra ID Tenants, Governance, Identity and Access Management, and touches services like Azure Application Gateway, Azure Backup, Azure Bastion, Azure DNS.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 91,
+        "metadataCompleteness": 78,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "azure-machine-learning-service-guide-azuremachinelearning-sg-checklist",
+      "technology": "Azure Machine Learning Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 33,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Machine Learning"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azuremachinelearning_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azuremachinelearning_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure Machine Learning Service Guide is a Preview family with 33 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Machine Learning.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-openai-service-guide-azureopenai-sg-checklist",
+      "technology": "Azure OpenAI Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 13,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure OpenAI"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/azureopenai_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureopenai_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Azure OpenAI Service Guide is a Preview family with 13 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure OpenAI.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-red-hat-openshift-aro-checklist",
+      "technology": "Azure Red Hat OpenShift",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 52,
+      "highSeverityCount": 15,
+      "categories": [
+        "Identity and Access Management",
+        "Network topology and connectivity",
+        "Operations management",
+        "Operations Management",
+        "Platform Automation",
+        "Security"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/aro_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/aro_checklist.en.json",
+      "timestamp": "April 19, 2023",
+      "sourceKind": "checklists",
+      "description": "Azure Red Hat OpenShift is a Preview family with 52 normalized items, 15 high-severity findings, covers Identity and Access Management, Network topology and connectivity, Operations management, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 82,
+        "metadataCompleteness": 67,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-security-review-checklist-security-checklist",
+      "technology": "Azure Security Review Checklist",
+      "status": "Deprecated",
+      "maturityBucket": "Deprecated",
+      "itemCount": 157,
+      "highSeverityCount": 110,
+      "categories": [
+        "Azure Firewall",
+        "Azure Networking",
+        "Defender For Cloud",
+        "Identity",
+        "Sentinel",
+        "VM Security Checks"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Operations",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/security_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/security_checklist.en.json",
+      "timestamp": "June 24, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Security Review Checklist is a Deprecated family with 157 normalized items, 110 high-severity findings, covers Azure Firewall, Azure Networking, Defender For Cloud, and uses generalized guidance.",
+      "whatThisMeans": "Keep visible for traceability, but steer current reviews toward newer guidance.",
+      "quality": {
+        "label": "Deprecated · Retire confidence",
+        "qualityScore": 76,
+        "metadataCompleteness": 68,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Retire",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Deprecated",
+        "summary": "Reference only for historical context or migration planning. Do not use as the primary baseline for new reviews."
+      }
+    },
+    {
+      "slug": "azure-service-fabric-review-checklist-servicefabric-checklist",
+      "technology": "Azure Service Fabric Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 16,
+      "highSeverityCount": 0,
+      "categories": [
+        "Managed clusters",
+        "Standard clusters"
+      ],
+      "services": [
+        "Azure Service Fabric"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/servicefabric_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicefabric_checklist.en.json",
+      "timestamp": "September 18, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Service Fabric Review Checklist is a Preview family with 16 normalized items, 0 high-severity findings, covers Managed clusters, Standard clusters, and touches services like Azure Service Fabric.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 88,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 95,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technology": "Azure Spring Apps Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 8,
+      "highSeverityCount": 0,
+      "categories": [
+        "Application Deployment",
+        "Business Continuity and Disaster Recovery",
+        "Operations"
+      ],
+      "services": [
+        "Azure Spring Apps"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "timestamp": "April 10, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Spring Apps Review is a Preview family with 8 normalized items, 0 high-severity findings, covers Application Deployment, Business Continuity and Disaster Recovery, Operations, and touches services like Azure Spring Apps.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-sqldb-security-checklist-preview-sqldb-checklist",
+      "technology": "Azure SQLDB Security Checklist (Preview)",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 49,
+      "highSeverityCount": 13,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Code",
+        "Data Discovery and Classification",
+        "Data Masking",
+        "Defender",
+        "Encryption",
+        "Identity",
+        "Ledger",
+        "Logging",
+        "Networking",
+        "Privileged Access"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Security"
+      ],
+      "sourcePath": "checklists/sqldb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/sqldb_checklist.en.json",
+      "timestamp": "October 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure SQLDB Security Checklist (Preview) is a Preview family with 49 normalized items, 13 high-severity findings, covers Business Continuity and Disaster Recovery, Code, Data Discovery and Classification, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-stack-hci-review-hci-checklist",
+      "technology": "Azure Stack HCI Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 52,
+      "highSeverityCount": 13,
+      "categories": [
+        "Backup and Disaster Recovery",
+        "Management and Monitoring",
+        "Networking",
+        "Operations",
+        "Security",
+        "Storage"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/hci_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/hci_checklist.en.json",
+      "timestamp": "September 12, 2023",
+      "sourceKind": "checklists",
+      "description": "Azure Stack HCI Review is a Preview family with 52 normalized items, 13 high-severity findings, covers Backup and Disaster Recovery, Management and Monitoring, Networking, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 81,
+        "metadataCompleteness": 68,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 93,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-storage-review-checklist-azure-storage-checklist",
+      "technology": "Azure Storage Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 40,
+      "highSeverityCount": 20,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Operations Management",
+        "Security"
+      ],
+      "services": [
+        "Azure Storage Account"
+      ],
+      "wafPillars": [
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/azure_storage_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azure_storage_checklist.en.json",
+      "timestamp": "August 12, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Storage Review Checklist is a Preview family with 40 normalized items, 20 high-severity findings, covers Business Continuity and Disaster Recovery, Operations Management, Security, and touches services like Azure Storage Account.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 94,
+        "metadataCompleteness": 96,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 99,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-synapse-review-checklist-synapse-checklist",
+      "technology": "Azure Synapse Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 11,
+      "highSeverityCount": 2,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/synapse_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/synapse_checklist.en.json",
+      "timestamp": "April 19, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure Synapse Review Checklist is a Preview family with 11 normalized items, 2 high-severity findings, covers Operations Management, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 82,
+        "metadataCompleteness": 67,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-virtual-desktop-review-avd-checklist",
+      "technology": "Azure Virtual Desktop Review",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 130,
+      "highSeverityCount": 32,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Compute",
+        "Foundation",
+        "Identity",
+        "Monitoring and Management",
+        "Networking",
+        "Security",
+        "Storage"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/avd_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/avd_checklist.en.json",
+      "timestamp": "November 09, 2023",
+      "sourceKind": "checklists",
+      "description": "Azure Virtual Desktop Review is a GA family with 130 normalized items, 32 high-severity findings, covers Business Continuity and Disaster Recovery, Compute, Foundation, and uses generalized guidance.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 93,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 93 with 83% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "azure-vmware-solution-design-review-avs-checklist",
+      "technology": "Azure VMware Solution Design Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 105,
+      "highSeverityCount": 35,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Data Storage",
+        "Governance",
+        "Identity",
+        "Management",
+        "Migration",
+        "Networking",
+        "Platform Automation",
+        "Stretched Cluster"
+      ],
+      "services": [
+        "Azure VMware Solution"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/avs_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/avs_checklist.en.json",
+      "timestamp": "January 09, 2024",
+      "sourceKind": "checklists",
+      "description": "Azure VMware Solution Design Review is a Preview family with 105 normalized items, 35 high-severity findings, covers Business Continuity and Disaster Recovery, Data Storage, Governance, and touches services like Azure VMware Solution.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 85,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 79,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "azure-vmware-solution-implementation-checklist-avs-implementation-checklist",
+      "technology": "Azure VMware Solution Implementation Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 126,
+      "highSeverityCount": 0,
+      "categories": [
+        "Business Continuity and Disaster Recovery",
+        "Connectivity",
+        "Identity",
+        "Management",
+        "Monitoring",
+        "Networking",
+        "Other Services/Operations",
+        "Planning",
+        "Security",
+        "VMware"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/avs_implementation_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/avs_implementation_checklist.en.json",
+      "timestamp": "October 25, 2023",
+      "sourceKind": "checklists",
+      "description": "Azure VMware Solution Implementation Checklist is a Preview family with 126 normalized items, 0 high-severity findings, covers Business Continuity and Disaster Recovery, Connectivity, Identity, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "container-apps-review-container-apps-checklist",
+      "technology": "Container Apps Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 4,
+      "highSeverityCount": 4,
+      "categories": [
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Azure Container Apps"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/container_apps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/container_apps_checklist.en.json",
+      "timestamp": "March 21, 2024",
+      "sourceKind": "checklists",
+      "description": "Container Apps Review is a Preview family with 4 normalized items, 4 high-severity findings, covers Business Continuity and Disaster Recovery, and touches services like Azure Container Apps.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technology": "CosmosDB Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 10,
+      "highSeverityCount": 2,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [
+        "Azure Cosmos DB"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "timestamp": "April 15, 2024",
+      "sourceKind": "checklists",
+      "description": "CosmosDB Review Checklist is a Preview family with 10 normalized items, 2 high-severity findings, covers Operations Management, and touches services like Azure Cosmos DB.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 94,
+        "metadataCompleteness": 95,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "cost-optimization-checklist-cost-checklist",
+      "technology": "Cost Optimization Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 86,
+      "highSeverityCount": 0,
+      "categories": [
+        "Cost Optimization",
+        "DB/App tuning",
+        "DB/APP tuning",
+        "Process Administration",
+        "reservations",
+        "Reservations",
+        "Right-sizing"
+      ],
+      "services": [
+        "Azure Backup",
+        "Azure Databricks",
+        "Azure Front Door",
+        "Azure Functions",
+        "Azure Kubernetes Service (AKS)",
+        "Azure Monitor",
+        "Azure Site Recovery",
+        "Azure SQL Database",
+        "Azure Storage Account",
+        "Azure Synapse Analytics",
+        "Azure Virtual Machines"
+      ],
+      "wafPillars": [
+        "Cost"
+      ],
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "timestamp": "April 09, 2024",
+      "sourceKind": "checklists",
+      "description": "Cost Optimization Checklist is a Preview family with 86 normalized items, 0 high-severity findings, covers Cost Optimization, DB/App tuning, DB/APP tuning, and touches services like Azure Backup, Azure Databricks, Azure Front Door, Azure Functions.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 86,
+        "metadataCompleteness": 76,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "data-security-review-checklist-datasecurity-checklist",
+      "technology": "Data Security review checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 100,
+      "highSeverityCount": 21,
+      "categories": [
+        "Additional security recommendation",
+        "Data Protection",
+        "Identity and Access Management",
+        "Network security",
+        "Network Security",
+        "Networking",
+        "Protection against accidental deletion"
+      ],
+      "services": [
+        "Azure Data Factory",
+        "Azure Databricks",
+        "Azure Event Hubs",
+        "Microsoft Fabric",
+        "Microsoft Purview",
+        "Synapse Analytics"
+      ],
+      "wafPillars": [
+        "Security"
+      ],
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "timestamp": "October 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Data Security review checklist is a Preview family with 100 normalized items, 21 high-severity findings, covers Additional security recommendation, Data Protection, Identity and Access Management, and touches services like Azure Data Factory, Azure Databricks, Azure Event Hubs, Microsoft Fabric.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 85,
+        "metadataCompleteness": 78,
+        "severityConfidence": 99,
+        "sourceCoverageQuality": 91,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "databricks-review-checklist-databricks-checklist",
+      "technology": "DataBricks Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 10,
+      "highSeverityCount": 3,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [
+        "Azure Data Factory"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "timestamp": "October 21, 2024",
+      "sourceKind": "checklists",
+      "description": "DataBricks Review Checklist is a Preview family with 10 normalized items, 3 high-severity findings, covers Operations Management, and touches services like Azure Data Factory.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 90,
+        "metadataCompleteness": 87,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "device-provisioning-service-review-device-provisioning-service-checklist",
+      "technology": "Device Provisioning Service Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 5,
+      "highSeverityCount": 4,
+      "categories": [
+        "Application Deployment",
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Iot Hub DPS"
+      ],
+      "wafPillars": [
+        "Operations",
+        "Reliability"
+      ],
+      "sourcePath": "checklists/device_provisioning_service_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/device_provisioning_service_checklist.en.json",
+      "timestamp": "April 26, 2024",
+      "sourceKind": "checklists",
+      "description": "Device Provisioning Service Review is a Preview family with 5 normalized items, 4 high-severity findings, covers Application Deployment, Business Continuity and Disaster Recovery, and touches services like Iot Hub DPS.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "device-update-review-device-update-checklist",
+      "technology": "Device Update Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 4,
+      "highSeverityCount": 4,
+      "categories": [
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Device Update For Iot Hub"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/device_update_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/device_update_checklist.en.json",
+      "timestamp": "March 01, 2024",
+      "sourceKind": "checklists",
+      "description": "Device Update Review is a Preview family with 4 normalized items, 4 high-severity findings, covers Business Continuity and Disaster Recovery, and touches services like Device Update For Iot Hub.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "dns-review-checklist-dns-checklist",
+      "technology": "DNS Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 7,
+      "highSeverityCount": 2,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/dns_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/dns_checklist.en.json",
+      "timestamp": "April 19, 2024",
+      "sourceKind": "checklists",
+      "description": "DNS Review Checklist is a Preview family with 7 normalized items, 2 high-severity findings, covers Operations Management, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 82,
+        "metadataCompleteness": 67,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "identity-review-checklist-identity-checklist",
+      "technology": "Identity Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 9,
+      "highSeverityCount": 0,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [
+        "Active Directory Domain Services",
+        "Azure AD B2C",
+        "Microsoft Entra ID"
+      ],
+      "wafPillars": [
+        "Performance",
+        "Reliability"
+      ],
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "timestamp": "April 26, 2024",
+      "sourceKind": "checklists",
+      "description": "Identity Review Checklist is a Preview family with 9 normalized items, 0 high-severity findings, covers Operations Management, and touches services like Active Directory Domain Services, Azure AD B2C, Microsoft Entra ID.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "iot-hub-review-iot-hub-checklist",
+      "technology": "IoT Hub Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 5,
+      "highSeverityCount": 4,
+      "categories": [
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Azure IoT Hub"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/iot_hub_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/iot_hub_checklist.en.json",
+      "timestamp": "April 10, 2024",
+      "sourceKind": "checklists",
+      "description": "IoT Hub Review is a Preview family with 5 normalized items, 4 high-severity findings, covers Business Continuity and Disaster Recovery, and touches services like Azure IoT Hub.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "logic-apps-checklist-logic-app-checklist",
+      "technology": "Logic Apps checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 5,
+      "highSeverityCount": 4,
+      "categories": [
+        "Application Deployment",
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Logic Apps"
+      ],
+      "wafPillars": [
+        "Operations",
+        "Reliability"
+      ],
+      "sourcePath": "checklists/logic_app_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/logic_app_checklist.en.json",
+      "timestamp": "April 26, 2024",
+      "sourceKind": "checklists",
+      "description": "Logic Apps checklist is a Preview family with 5 normalized items, 4 high-severity findings, covers Application Deployment, Business Continuity and Disaster Recovery, and touches services like Logic Apps.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "microsoft-purview-review-checklist-purview-checklist",
+      "technology": "Microsoft Purview Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 27,
+      "highSeverityCount": 2,
+      "categories": [
+        "Operations management"
+      ],
+      "services": [
+        "Microsoft Purview"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/purview_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/purview_checklist.en.json",
+      "timestamp": "April 15, 2024",
+      "sourceKind": "checklists",
+      "description": "Microsoft Purview Review Checklist is a Preview family with 27 normalized items, 2 high-severity findings, covers Operations management, and touches services like Microsoft Purview.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 84,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "multitenant-architecture-multitenancy-checklist",
+      "technology": "Multitenant architecture",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 32,
+      "highSeverityCount": 17,
+      "categories": [
+        "Business",
+        "Cost Optimization",
+        "Operational Excellence",
+        "Performance Efficiency",
+        "Reliability",
+        "Security"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/multitenancy_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/multitenancy_checklist.en.json",
+      "timestamp": "January 09, 2024",
+      "sourceKind": "checklists",
+      "description": "Multitenant architecture is a GA family with 32 normalized items, 17 high-severity findings, covers Business, Cost Optimization, Operational Excellence, and uses generalized guidance.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 86,
+        "metadataCompleteness": 67,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 98,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 86 with 67% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "mysql-review-checklist-mysql-checklist",
+      "technology": "MySQL Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 3,
+      "highSeverityCount": 1,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [
+        "Azure Database for MySQL"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/mysql_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/mysql_checklist.en.json",
+      "timestamp": "April 10, 2024",
+      "sourceKind": "checklists",
+      "description": "MySQL Review Checklist is a Preview family with 3 normalized items, 1 high-severity findings, covers Operations Management, and touches services like Azure Database for MySQL.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "postgresql-review-checklist-postgresql-checklist",
+      "technology": "PostgreSQL Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 3,
+      "highSeverityCount": 1,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [
+        "Azure Database for PostgreSQL"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/postgreSQL_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/postgreSQL_checklist.en.json",
+      "timestamp": "April 15, 2024",
+      "sourceKind": "checklists",
+      "description": "PostgreSQL Review Checklist is a Preview family with 3 normalized items, 1 high-severity findings, covers Operations Management, and touches services like Azure Database for PostgreSQL.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "recovery-services-vault-checklist-recoveryservicesvault-checklist",
+      "technology": "Recovery Services Vault Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 6,
+      "highSeverityCount": 2,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/recoveryservicesvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/recoveryservicesvault_checklist.en.json",
+      "timestamp": "April 19, 2024",
+      "sourceKind": "checklists",
+      "description": "Recovery Services Vault Checklist is a Preview family with 6 normalized items, 2 high-severity findings, covers Operations Management, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 82,
+        "metadataCompleteness": 67,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "redis-resiliency-checklist-redis-checklist",
+      "technology": "Redis Resiliency checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 4,
+      "highSeverityCount": 1,
+      "categories": [
+        "Business Continuity and Disaster Recovery"
+      ],
+      "services": [
+        "Azure Cache for Redis"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/redis_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/redis_checklist.en.json",
+      "timestamp": "October 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Redis Resiliency checklist is a Preview family with 4 normalized items, 1 high-severity findings, covers Business Continuity and Disaster Recovery, and touches services like Azure Cache for Redis.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "resiliency-review-resiliency-checklist",
+      "technology": "Resiliency Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 38,
+      "highSeverityCount": 9,
+      "categories": [
+        "Compute",
+        "Data",
+        "General",
+        "Network"
+      ],
+      "services": [
+        "Azure Backup",
+        "Azure DNS",
+        "Azure Storage Account",
+        "Azure Virtual Machine Scale Sets",
+        "Azure Virtual Machines",
+        "Data Gateways"
+      ],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "timestamp": "May 12, 2023",
+      "sourceKind": "checklists",
+      "description": "Resiliency Review is a Preview family with 38 normalized items, 9 high-severity findings, covers Compute, Data, General, and touches services like Azure Backup, Azure DNS, Azure Storage Account, Azure Virtual Machine Scale Sets.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 93,
+        "metadataCompleteness": 93,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "sap-checklist-sap-checklist",
+      "technology": "SAP Checklist",
+      "status": "GA",
+      "maturityBucket": "GA",
+      "itemCount": 150,
+      "highSeverityCount": 57,
+      "categories": [
+        "Automation",
+        "Business Continuity and Disaster Recovery",
+        "Cost Optimization",
+        "Identity and Access",
+        "Management and Monitoring",
+        "Management Group and Subscriptions",
+        "Network Topology and Connectivity",
+        "Operational Excellence",
+        "Performance",
+        "Security, Governance and Compliance"
+      ],
+      "services": [
+        "SAP on Azure"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/sap_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/sap_checklist.en.json",
+      "timestamp": "October 02, 2024",
+      "sourceKind": "checklists",
+      "description": "SAP Checklist is a GA family with 150 normalized items, 57 high-severity findings, covers Automation, Business Continuity and Disaster Recovery, Cost Optimization, and touches services like SAP on Azure.",
+      "whatThisMeans": "Suitable for executive and architecture review packs by default.",
+      "quality": {
+        "label": "GA · High confidence",
+        "qualityScore": 94,
+        "metadataCompleteness": 84,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "High",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "GA",
+        "summary": "Strong review accelerator. Quality score 94 with 84% metadata completeness and 100% severity coverage."
+      }
+    },
+    {
+      "slug": "service-bus-review-checklist-servicebus-checklist",
+      "technology": "Service Bus Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 24,
+      "highSeverityCount": 5,
+      "categories": [
+        "Operations Management",
+        "Security"
+      ],
+      "services": [
+        "Azure Service Bus"
+      ],
+      "wafPillars": [
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "timestamp": "September 17, 2024",
+      "sourceKind": "checklists",
+      "description": "Service Bus Review Checklist is a Preview family with 24 normalized items, 5 high-severity findings, covers Operations Management, Security, and touches services like Azure Service Bus.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 88,
+        "metadataCompleteness": 81,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "sql-migration-review-sql-checklist",
+      "technology": "SQL Migration Review",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 60,
+      "highSeverityCount": 35,
+      "categories": [
+        "SQL Managed Instance",
+        "SQL Server on Azure VM"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists/sql_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/sql_checklist.en.json",
+      "timestamp": "December 13, 2023",
+      "sourceKind": "checklists",
+      "description": "SQL Migration Review is a Preview family with 60 normalized items, 35 high-severity findings, covers SQL Managed Instance, SQL Server on Azure VM, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 89,
+        "metadataCompleteness": 83,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "stream-analytics-review-checklist-streamanalytics-checklist",
+      "technology": "Stream Analytics Review Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 4,
+      "highSeverityCount": 1,
+      "categories": [
+        "Operations Management"
+      ],
+      "services": [],
+      "wafPillars": [
+        "Reliability"
+      ],
+      "sourcePath": "checklists/streamanalytics_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/streamanalytics_checklist.en.json",
+      "timestamp": "October 23, 2024",
+      "sourceKind": "checklists",
+      "description": "Stream Analytics Review Checklist is a Preview family with 4 normalized items, 1 high-severity findings, covers Operations Management, and uses generalized guidance.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Medium confidence",
+        "qualityScore": 86,
+        "metadataCompleteness": 75,
+        "severityConfidence": 100,
+        "sourceCoverageQuality": 100,
+        "recommendedUsageConfidence": "Medium",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "the-aks-checklist-theaks-checklist",
+      "technology": "The AKS Checklist",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 167,
+      "highSeverityCount": 2,
+      "categories": [
+        "Application",
+        "Business Continuity and Disaster Recovery",
+        "Cluster Security",
+        "Container",
+        "Identity",
+        "Multi-Cluster",
+        "Networking",
+        "Operations",
+        "Resource Management",
+        "Storage",
+        "Windows"
+      ],
+      "services": [
+        "Azure Kubernetes Service (AKS)"
+      ],
+      "wafPillars": [
+        "Operational Excellence",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Resiliency",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/theaks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/theaks_checklist.en.json",
+      "timestamp": "July 14, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "The AKS Checklist is a Preview family with 167 normalized items, 2 high-severity findings, covers Application, Business Continuity and Disaster Recovery, Cluster Security, and touches services like Azure Kubernetes Service (AKS).",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 55,
+        "metadataCompleteness": 70,
+        "severityConfidence": 2,
+        "sourceCoverageQuality": 78,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "virtual-machines-service-guide-virtualmachines-sg-checklist",
+      "technology": "Virtual Machines Service Guide",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 28,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure Virtual Machines"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/virtualmachines_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/virtualmachines_sg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "Virtual Machines Service Guide is a Preview family with 28 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure Virtual Machines.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 52,
+        "metadataCompleteness": 67,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    },
+    {
+      "slug": "waf-service-guides-wafsg-checklist",
+      "technology": "WAF Service Guides",
+      "status": "Preview",
+      "maturityBucket": "Preview",
+      "itemCount": 646,
+      "highSeverityCount": 0,
+      "categories": [],
+      "services": [
+        "Azure App Service",
+        "Azure Application Gateway",
+        "Azure Blob Storage",
+        "Azure ExpressRoute",
+        "Azure Files",
+        "Azure Firewall",
+        "Azure Front Door",
+        "Azure Kubernetes Service (AKS)",
+        "Azure Machine Learning",
+        "Azure OpenAI",
+        "Azure Virtual Machines"
+      ],
+      "wafPillars": [
+        "Cost",
+        "Operations",
+        "Performance",
+        "Reliability",
+        "Security"
+      ],
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "timestamp": "October 20, 2024",
+      "sourceKind": "checklists-ext",
+      "description": "WAF Service Guides is a Preview family with 646 normalized items, 0 high-severity findings, contains sparse category metadata, and touches services like Azure App Service, Azure Application Gateway, Azure Blob Storage, Azure ExpressRoute.",
+      "whatThisMeans": "Use to enrich design reviews, but validate recommendations before treating them as baseline controls.",
+      "quality": {
+        "label": "Preview · Limited confidence",
+        "qualityScore": 49,
+        "metadataCompleteness": 58,
+        "severityConfidence": 0,
+        "sourceCoverageQuality": 75,
+        "recommendedUsageConfidence": "Limited",
+        "generatedDate": "2026-05-08T18:00:27.107Z",
+        "maturityBucket": "Preview",
+        "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+      }
+    }
+  ]
+}

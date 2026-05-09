@@ -1,0 +1,119 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-rbac",
+    "service": "Azure RBAC",
+    "aliases": [],
+    "itemCount": 1,
+    "highSeverityCount": 1,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Identity and Access Management"
+    ],
+    "wafPillars": [
+      "Security"
+    ],
+    "description": "Azure RBAC appears across 1 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": false,
+      "matchedSkuHints": [],
+      "notes": [
+        "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "6091840f-0bcd-4238-acbe-17f7f66bf78a",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Identity and Access Management",
+      "subcategory": "Authentication",
+      "id": "AI.99",
+      "text": "Use Azure RBAC to manage data plane access to resources, if possible. E.g. Data Operations across Key Vault, Storage Account and Database Services.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure RBAC",
+      "serviceCanonical": "Azure RBAC",
+      "serviceSlug": "azure-rbac",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/identity-access-landing-zones",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": false,
+    "notes": [
+      "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": []
+  }
+}

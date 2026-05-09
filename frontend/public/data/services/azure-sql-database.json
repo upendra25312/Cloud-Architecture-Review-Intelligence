@@ -1,0 +1,1064 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-sql-database",
+    "service": "Azure SQL Database",
+    "aliases": [
+      "Microsoft.Sql/servers"
+    ],
+    "itemCount": 7,
+    "highSeverityCount": 4,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Disaster Recovery",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Reservations"
+    ],
+    "wafPillars": [
+      "Cost"
+    ],
+    "description": "Azure SQL Database appears across 7 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure SQL Database",
+      "matchedServiceLabel": "Azure SQL Database",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 57,
+      "unavailableRegionCount": 2,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "cost-optimization-checklist-cost-checklist",
+        "technology": "Cost Optimization Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 86,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 86,
+          "metadataCompleteness": 76,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "943c168a-2ec2-a94c-8015-85732a1b4859",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Sql/servers",
+      "id": "943c168a-2ec2-a94c-8015-85732a1b4859",
+      "text": "Auto Failover Groups can encompass one or multiple databases, usually used by the same app.",
+      "description": "Failover Groups facilitate disaster recovery by configuring databases on one logical server to replicate to another region's logical server. This streamlines geo-replicated database management, offering a single endpoint for connection routing to replicated databases if the primary server fails.",
+      "severity": "High",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "armService": "Microsoft.Sql/servers",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-sql/database/auto-failover-group-overview?tabs=azure-powershell",
+      "graph": "// Azure Resource Graph Query\n// Provides a list of SQL databases that are not configured to use a failover-group.\nresources\n| where type =~'microsoft.sql/servers/databases'\n| where isnull(properties['failoverGroupId'])\n| project recommendationId = \"943c168a-2ec2-a94c-8015-85732a1b4859\", name, id, tags, param1= strcat(\"databaseId=\", properties['databaseId'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cbb17a29-64fb-c943-95d0-8df814a37c40",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Sql/servers",
+      "id": "cbb17a29-64fb-c943-95d0-8df814a37c40",
+      "text": "Implement Retry Logic",
+      "description": "During transient failures, the application should handle connection retries effectively with Azure SQL Database. No Database layer configuration is needed; instead, the application must be set up for graceful retrying.",
+      "severity": "High",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "armService": "Microsoft.Sql/servers",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-sql/database/troubleshoot-common-connectivity-issues",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7e7daec9-6a81-3546-a4cc-9aef72fec1f7",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Sql/servers",
+      "id": "7e7daec9-6a81-3546-a4cc-9aef72fec1f7",
+      "text": "Monitor your Azure SQL Database in Near Real-Time to Detect Reliability Incidents",
+      "description": "Monitoring and alerting are an important part of database operations. When working with Azure SQL Database, make use of Azure Monitor and SQL Insights to ensure that you capture relevant database metrics.",
+      "severity": "High",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "armService": "Microsoft.Sql/servers",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/insights/azure-sql#analyze-data-and-create-alerts",
+      "graph": "// Azure Resource Graph Query\n// Provides a list of SQL databases that are not configured for monitoring.\nresources\n| where type == \"microsoft.insights/metricalerts\"\n| mv-expand properties.scopes\n| mv-expand properties.criteria.allOf\n| project databaseid = properties_scopes, monitoredMetric = properties_criteria_allOf.metricName\n| where databaseid contains 'databases'\n| summarize monitoredMetrics=make_list(monitoredMetric) by databaseid=tolower(tostring(databaseid))\n| join kind=fullouter   (\n  resources\n  | where type =~ 'microsoft.sql/servers/databases'\n  | project databaseid = tolower(id), name, tags\n) on databaseid\n| where isnull(monitoredMetrics)\n| project recommendationId = \"7e7daec9-6a81-3546-a4cc-9aef72fec1f7\", name, id=databaseid1, tags, param1=strcat(\"MonitoringMetrics=false\" )\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "74c2491d-048b-0041-a140-935960220e20",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Sql/servers",
+      "id": "2ea11bcb-dfd0-48dc-96f0-beba578b989a",
+      "text": "Use Active Geo Replication to Create a Readable Secondary in Another Region",
+      "description": "Active Geo Replication ensures business continuity by utilizing readable secondary database replicas. In case of primary database failure, manually failover to secondary database. Secondaries, up to four, can be in same/different regions, used for read-only access.",
+      "severity": "High",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "armService": "Microsoft.Sql/servers",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview",
+      "graph": "// Azure Resource Graph Query\n// Provides a list of SQL databases that are not part of Geo Replication.\nresources\n| where type == \"microsoft.sql/servers/databases\"\n| summarize secondaryTypeCount = countif(isnotempty(properties.secondaryType)) by name\n| where secondaryTypeCount == 0\n| join kind=inner (\n    Resources\n    | where type == \"microsoft.sql/servers/databases\"\n) on name\n| extend param1 = \"Not part of Geo Replication\"\n| project recommendationId = \"74c2491d-048b-0041-a140-935960220e20\", name, id, tags, param1\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d6ef87aa-574e-584e-a955-3e6bb8b5425b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Sql/servers",
+      "id": "d6ef87aa-574e-584e-a955-3e6bb8b5425b",
+      "text": "Back Up Your Keys",
+      "description": "It is highly recommended to use Azure Key Vault (AKV) to store encryption keys related to Always Encrypted configurations, however it is not required. If you are not using AKV, then ensure that your keys are properly backed up and stored in a secure manner.",
+      "severity": "Medium",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "armService": "Microsoft.Sql/servers",
+      "link": "https://learn.microsoft.com/en-us/azure/key-vault/general/overview",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c0085c32-84c0-c247-bfa9-e70977cbf108",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Sql/servers",
+      "id": "807e58d0-e385-41ad-987b-4a4b3e3fb563",
+      "text": "Enable zone redundancy for Azure SQL Database to achieve high availability and resiliency",
+      "description": "By default, Azure SQL Database premium tier provisions multiple copies within the same region. For geo redundancy, databases can be set as Zone Redundant, distributing copies across Azure Availability Zones to maintain availability during regional outages.",
+      "severity": "Medium",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "armService": "Microsoft.Sql/servers",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla",
+      "graph": "// Azure Resource Graph Query\n// Finds non-zone redundant SQL databases and lists them\nResources\n| where type =~ 'microsoft.sql/servers/databases'\n| where tolower(tostring(properties.zoneRedundant))=~'false'\n|project recommendationId = \"c0085c32-84c0-c247-bfa9-e70977cbf108\", name, id, tags\n\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d7bb012f-7b95-4e06-b158-e2ea3992c2de",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Reservations",
+      "subcategory": "SQL Database AHUB",
+      "id": "D09.01",
+      "text": "Check if applicable and enforce policy/change https://learn.microsoft.com/azure/azure-sql/azure-hybrid-benefit?view=azuresql&tabs=azure-portalhttps://learn.microsoft.com/azure/cost-management-billing/scope-level/create-sql-license-assignments?source=recommendations",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure SQL Database",
+      "serviceCanonical": "Azure SQL Database",
+      "serviceSlug": "azure-sql-database",
+      "link": "https://learn.microsoft.com/azure/active-directory/app-proxy/application-proxy",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 57,
+    "unavailableRegionCount": 2,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure SQL Database",
+    "matchedServiceLabel": "Azure SQL Database",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

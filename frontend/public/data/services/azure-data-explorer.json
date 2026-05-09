@@ -1,0 +1,1175 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-data-explorer",
+    "service": "Azure Data Explorer",
+    "aliases": [],
+    "itemCount": 12,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "Operations Management"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Data Explorer appears across 12 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Data Explorer",
+      "matchedServiceLabel": "Azure Data Explorer",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 53,
+      "unavailableRegionCount": 6,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-data-explorer-review-checklist-adx-checklist",
+        "technology": "Azure Data Explorer Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 12,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Limited confidence",
+          "qualityScore": 62,
+          "metadataCompleteness": 78,
+          "severityConfidence": 0,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Limited",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "8b9fe5c4-1049-4d40-9a82-2c3474d00f18",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "IaC",
+      "id": "B01.03",
+      "text": "Be fully cognizant of what it takes to build a cluster from scratch. Leverage Infrastructure as a Code for your deployments",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/devops",
+      "training": "https://learn.microsoft.com/learn/modules/implement-hybrid-identity-windows-server/",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1559ab91-53e8-4908-ae28-b84c33b6b780",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "IaC",
+      "id": "B01.02",
+      "text": "Design, develop, and implement validation routines to ensure all clusters are in-sync from a data perspective.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/devops",
+      "training": "https://learn.microsoft.com/learn/modules/azure-active-directory/",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "49aa8092-dc8e-4b9d-8bb7-3b26a5a67eba",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "DR Configuration",
+      "id": "A02.04",
+      "text": "For applications, where cost is a concern and can withstand some downtime during failure, create on-demand data recovery cluster configuration",
+      "description": "This solution offers the least resiliency (highest RPO and RTO), is the lowest in cost and highest in effort. In this configuration, there's no data recovery cluster. Configure continuous export of curated data (unless raw and intermediate data is also required) to a storage account that is configured GRS (Geo Redundant Storage). A data recovery cluster is spun up if there is a disaster recovery scenario. At that time, DDLs, configuration, policies, and processes are applied. Data is ingested from storage with the ingestion property kustoCreationTime to over-ride the ingestion time that defaults to system time.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-overview#on-demand-data-recovery-configuration",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8fadfe27-7de2-483b-8ac3-52baa9b75708",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "DR Configuration",
+      "id": "A02.03",
+      "text": "For applications, which required only read during failure, create Active-Hot standby configuration",
+      "description": "The Active-Hot configuration is similar to the Active-Active configuration in dual ingest, processing, and curation. While the standby cluster is online for ingestion, process, and curation, it isn't available to query. The standby cluster doesn't need to be in the same SKU as the primary cluster. It can be of a smaller SKU and scale, which may result in it being less performant. In a disaster scenario, users are redirected to the standby cluster, which can optionally be scaled up to increase performance.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-overview#active-hot-standby-configuration",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "58a9c279-9c42-4bb6-9d0c-65556246b338",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "DR Configuration",
+      "id": "A02.01",
+      "text": "For critical application with no tolerance for outages, create Active-Active-Active (always-on) configuration",
+      "description": "This configuration is also called 'always-on'. For critical application deployments with no tolerance for outages, you should use multiple Azure Data Explorer clusters across Azure paired regions.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-overview#active-active-active-configuration",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "563a4dc7-4a74-48b6-922a-d190916a6649",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "DR Configuration",
+      "id": "A02.02",
+      "text": "For critical applications, create Active-Active configuration in two paired regions",
+      "description": "This configuration is identical to the active-active-active configuration, but only involves two Azure paired regions. Configure dual ingestion, processing, and curation. Users are routed to the nearest region. The cluster SKU must be the same across regions.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-overview#active-active-configuration",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "18ca6017-0265-4f4b-a46a-393af7f31728",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Replication",
+      "id": "A01.05",
+      "text": "Ingest data into each cluster in parallel",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-create-solution",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ba7da7be-9951-4914-a384-5d997cb39132",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Replication",
+      "id": "A01.01",
+      "text": "Leverage External Tables and Continuous data export overview to reduce costs",
+      "description": "Using the correct approach to feed a datalake with cold data and having the Kusto query engine at your disposal at the same time, as in the short-term storage",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/kusto/management/data-export/continuous-data-export",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "436b0635-cb45-4e57-a603-324ace8cc123",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Replication",
+      "id": "A01.04",
+      "text": "Replicate all management activities such as creating new tables or managing user roles on each cluster.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-create-solution#replicate-management-activities",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "861bb2bc-14ae-4a6e-95d8-d9a3adc218e6",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Replication",
+      "id": "A01.03",
+      "text": "To protect against regional failure, create Multiple independent clusters, preferably in two Azure Paired regions",
+      "description": "Azure Data Explorer doesn't support automatic protection against the outage of an entire Azure region. This disruption can happen during a natural disaster, like an earthquake. If you require a solution for a disaster recovery situation, do the following steps to ensure business continuity. In these steps, you'll replicate your clusters, management, and data ingestion in two Azure paired regions.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/business-continuity-create-solution#create-multiple-independent-clusters",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "56a22586-f490-4641-addd-ea8a377cdeb3",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Replication",
+      "id": "A01.02",
+      "text": "To share data, explore Leader-follower cluster configuration",
+      "description": "Azure Data Explorer provides an optional follower capability for a leader cluster to be followed by other follower clusters for read-only access to the leader's data and metadata. Changes in the leader, such as create, append, and drop are automatically synchronized to the follower. While the leaders could span Azure regions, the follower clusters should be hosted in the same region(s) as the leader. If the leader cluster is down or databases or tables are accidentally dropped, the follower clusters will lose access until access is recovered in the leader.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/follower?tabs=csharp",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5a907e1e-348e-4f25-9c27-d32e8bbac757",
+      "technology": "Azure Data Explorer Review Checklist",
+      "technologySlug": "azure-data-explorer-review-checklist-adx-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 62,
+      "family": "Azure Data Explorer Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Explorer Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "IaC",
+      "id": "B01.01",
+      "text": "Wrap DevOps and source control around all your code",
+      "description": "All database objects, policies, and configurations should be persisted in source control so they can be released to the cluster from your release automation tool.",
+      "waf": "Reliability",
+      "service": "Azure Data Explorer",
+      "serviceCanonical": "Azure Data Explorer",
+      "serviceSlug": "azure-data-explorer",
+      "link": "https://learn.microsoft.com/azure/data-explorer/devops",
+      "training": "https://learn.microsoft.com/learn/paths/secure-your-cloud-data/",
+      "sourcePath": "checklists/adx_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adx_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 53,
+    "unavailableRegionCount": 6,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Data Explorer",
+    "matchedServiceLabel": "Azure Data Explorer",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

@@ -1,0 +1,2300 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-key-vault",
+    "service": "Azure Key Vault",
+    "aliases": [
+      "Microsoft.KeyVault/vaults"
+    ],
+    "itemCount": 28,
+    "highSeverityCount": 6,
+    "familyCount": 3,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "Disaster Recovery",
+      "Governance",
+      "Management",
+      "Monitoring and Alerting",
+      "Platform Automation and DevOps",
+      "Security"
+    ],
+    "wafPillars": [
+      "Operations",
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Key Vault appears across 28 normalized findings in 3 checklist families. 1 GA-ready families can anchor the baseline. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Key Vault",
+      "matchedServiceLabel": "Azure Key Vault",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 59,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "azure-key-vault-keyvault-checklist",
+        "technology": "Azure Key Vault",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 11,
+        "highSeverityCount": 2,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "1cca00d2-d9ab-8e42-a788-5d40f49405cb",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.KeyVault/vaults",
+      "id": "78211c00-15a9-336e-17c4-0b48613dadf4",
+      "text": "Key vaults should have soft delete enabled",
+      "description": "Key Vault's soft-delete feature enables recovery of deleted vaults and objects like keys, secrets, and certificates. When enabled, marked resources are retained for 90 days, allowing for their recovery, essentially undoing deletion.",
+      "severity": "High",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "armService": "Microsoft.KeyVault/vaults",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Key Vaults that do not have soft delete enabled.\nresources\n| where type == \"microsoft.keyvault/vaults\"\n| where isnull(properties.enableSoftDelete) or properties.enableSoftDelete != \"true\"\n| project recommendationId = \"1cca00d2-d9ab-8e42-a788-5d40f49405cb\", name, id, tags, param1 = \"EnableSoftDelete: Disabled\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e7091145-3642-bd41-bb58-66502e64d2cd",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Governance",
+      "subcategory": "Microsoft.KeyVault/vaults",
+      "id": "e7091145-3642-bd41-bb58-66502e64d2cd",
+      "text": "Use separate key vaults per application per environment",
+      "description": "Key vaults are security boundaries for secret storage. Grouping secrets together increases risk during a security event, as attacks could access multiple secrets.",
+      "severity": "High",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "armService": "Microsoft.KeyVault/vaults",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices#why-we-recommend-separate-key-vaults",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6d37a33b-531c-4a91-871a-b69d8044f04e",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Governance",
+      "subcategory": "Deployment best practices",
+      "id": "01.01",
+      "text": "Familiarize yourself with the Key Vault's best practices such as isolation recommendations, access control, data protection, backup, and logging.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2df045b1-c0f6-47d3-9a9b-99cf6999684e",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "id": "03.02",
+      "text": "If you want protection against accidental or malicious deletion of your secrets, configure soft-delete and purge protection features on your key vault.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "5017f154-e3ab-4369-9829-e7e316183687",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.01",
+      "text": "Use Azure Key Vault to store your secrets and credentials.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/overview",
+      "training": "https://learn.microsoft.com/training/modules/implement-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "108d5099-a11d-4445-bd8b-e12a5e95412e",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Platform Automation and DevOps",
+      "subcategory": "DevOps Team Topologies",
+      "id": "H01.06",
+      "text": "Use Key Vault secrets to avoid hard-coding sensitive information such as credentials (virtual machines user passwords), certificates or keys.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/considerations/development-strategy-development-lifecycle#automated-builds",
+      "training": "https://learn.microsoft.com/training/modules/implement-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "70fcfe6d-00e9-5544-a63a-fff42b9f2edb",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.KeyVault/vaults",
+      "id": "4ed62ae4-5072-f9e7-8d94-51c76c48159a",
+      "text": "Key vaults should have purge protection enabled",
+      "description": "Purge protection secures against malicious deletions by enforcing a retention period for soft deleted key vaults, ensuring no one, not even insiders or Microsoft, can purge your key vaults during this period, preventing permanent data loss.",
+      "severity": "Medium",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "armService": "Microsoft.KeyVault/vaults",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview#purge-protection",
+      "graph": "// Azure Resource Graph Query\n// This resource graph query will return all Key Vaults that do not have Purge Protection enabled.\nresources\n| where type == \"microsoft.keyvault/vaults\"\n| where isnull(properties.enablePurgeProtection) or properties.enablePurgeProtection != \"true\"\n| project recommendationId = \"70fcfe6d-00e9-5544-a63a-fff42b9f2edb\", name, id, tags, param1 = \"EnablePurgeProtection: Disabled\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "00c3d2b0-ea6e-4c4b-89be-b78a35caeb51",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.KeyVault/vaults",
+      "id": "2e96bc2f-1972-e471-9e70-ae58d41e9d2a",
+      "text": "Private endpoint should be configured for Key Vault",
+      "description": "Azure Private Link Service lets you securely and privately connect to Azure Key Vault via a Private Endpoint in your VNet, using a private IP and eliminating public Internet exposure.",
+      "severity": "Medium",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "armService": "Microsoft.KeyVault/vaults",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/security-features#network-security",
+      "graph": "// Azure Resource Graph Query\n// This resource graph query will return all Key Vaults that does not have a Private Endpoint Connection or where a private endpoint exists but public access is enabled\n\nresources\n| where type == \"microsoft.keyvault/vaults\"\n| where isnull(properties.privateEndpointConnections) or properties.privateEndpointConnections[0].properties.provisioningState != (\"Succeeded\") or (isnull(properties.networkAcls) and properties.publicNetworkAccess == 'Enabled')\n| extend param1 = strcat('Private Endpoint: ', iif(isnotnull(properties.privateEndpointConnections),split(properties.privateEndpointConnections[0].properties.privateEndpoint.id,'/')[8],'No Private Endpoint'))\n| extend param2 = strcat('Access: ', iif(properties.publicNetworkAccess == 'Disabled', 'Public Access Disabled', iif(isnotnull(properties.networkAcls), 'NetworkACLs in place','Public Access Enabled')))\n| project recommendationId = \"00c3d2b0-ea6e-4c4b-89be-b78a35caeb51\", name, id, tags, param1, param2\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "614682ca-6e0c-4f34-9f03-c6d3f2b99a32",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "02.03",
+      "text": "During failover, access policy or firewall configurations and settings can't be changed. The key vault will be in read-only mode during failover. Familiarize yourself with the Key Vault's failover guidance.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/disaster-recovery-guidance#failover-across-regions",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7ba4d380-7b9e-4a8b-a0c3-2d8e49c11872",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "02.01",
+      "text": "Key Vault is a managed service and Microsoft will handle the failover within and across region. Familiarize yourself with the Key Vault's availability and redundancy.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/disaster-recovery-guidance",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0f15640b-31e5-4de6-85a7-d2c652fa09d3",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "id": "04.01",
+      "text": "Purge protection is recommended when using keys for encryption to prevent data loss. Purge protection is an optional Key Vault behavior and is not enabled by default. Purge protection can only be enabled once soft-delete is enabled. It can be turned on via CLI, PowerShell or Portal.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview#purge-protection",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "d0642c1c-312b-4116-94ab-439e1c836819",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "05.01",
+      "text": "RBAC is recommended to control access to your key vault. Familiarize yourself with the Key Vault's access control guidance.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/rbac-guide?tabs=azure-cli",
+      "graph": "resources| where type =~ 'microsoft.keyvault/vaults' | extend compliant = (properties.enableRbacAuthorization == true) | distinct id, compliant",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "17fb86a2-eb45-42a4-9c34-52b92a2a1842",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "02.02",
+      "text": "The contents of your key vault are replicated within the region and to a secondary region at least 150 miles away, but within the same geography to maintain high durability of your keys and secrets. Familiarize yourself with the Key Vault's data replication.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/disaster-recovery-guidance#data-replication",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9ef2b0d2-3206-4c94-b47a-4f07e6a1c509",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "id": "03.01",
+      "text": "When you back up a key vault object, such as a secret, key, or certificate, the backup operation will download the object as an encrypted blob. This blob can't be decrypted outside of Azure. To get usable data from this blob, you must restore the blob into a key vault within the same Azure subscription and Azure geography. Familiarize yourself with the Key Vault's backup and restore guidance.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/backup?tabs=azure-cli#design-considerations",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6d70ba6c-97be-4995-8904-83845c986cb2",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.05",
+      "text": "Automate the certificate management and renewal process with public certificate authorities to ease administration.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "training": "https://learn.microsoft.com/training/modules/configure-and-manage-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b12308ca-5017-4f15-9e3a-b3693829e7e3",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.09",
+      "text": "Delegate Key Vault instantiation and privileged access and use Azure Policy to enforce a consistent compliant configuration.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "training": "https://learn.microsoft.com/training/modules/configure-azure-key-vault-networking-settings/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "cdb3751a-b2ab-413a-ba6e-55d7d8a2adb1",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.07",
+      "text": "Enable private endpoints to control access to the key vault, configure service endpoints and the vault firewall if private endpoints are not applicable",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "training": "https://learn.microsoft.com/training/modules/design-implement-private-access-to-azure-services/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "913156a1-2476-4e49-b541-acdce979377b",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.06",
+      "text": "Establish an automated process for key and certificate rotation.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "training": "https://learn.microsoft.com/training/modules/configure-and-manage-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "dc055bcf-619e-48a1-9f98-879525d62688",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.04",
+      "text": "Follow a least privilege model by assigning just-in-time eligible RBAC roles for operators, administrators, and other user accounts requiring privileged access to Key Vault using Privileged Identity Management (PIM).",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "training": "https://learn.microsoft.com/training/modules/implement-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "4ac6b67c-b3a4-4ff9-8e87-b07a7ce7bbdb",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Sovereign Cloud",
+      "id": "G02.13",
+      "text": "For Sovereign Landing Zone, use Azure Key Vault managed HSM to store your secrets and credentials.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/en-us/industry/sovereign-cloud/sovereign-public-cloud/capabilities/external-key-management",
+      "training": "https://learn.microsoft.com/training/modules/configure-and-manage-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "25d62688-6d70-4ba6-a97b-e99519048384",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Sovereign Cloud",
+      "id": "G02.12",
+      "text": "If you bring your own keys, ensure they are supported across all required services.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/en-us/azure/security/fundamentals/encryption-customer-managed-keys-support",
+      "training": "https://learn.microsoft.com/training/modules/configure-and-manage-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2ba52752-6944-4008-ae7d-7e4843276d8b",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.03",
+      "text": "Provision Azure Key Vault with the soft delete and purge policies enabled to allow retention protection for deleted objects.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/best-practices",
+      "training": "https://learn.microsoft.com/training/modules/implement-azure-key-vault/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a0477a20-9945-4bda-9333-4f2491163418",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.02",
+      "text": "Use different Azure Key Vaults for different applications, environments and regions to avoid transaction scale limits and restrict access to secrets.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/overview-throttling",
+      "training": "https://learn.microsoft.com/training/modules/configure-and-manage-azure-key-vault/",
+      "graph": "ResourceContainers | where type=='microsoft.resources/subscriptions'| parse id with '/subscriptions/' SubscriptionID| project subscriptionId, SubscriptionName = name| join kind=leftouter (Resources| where type == 'microsoft.keyvault/vaults'| project id, name, subscriptionId) on subscriptionId| join kind= leftouter (Resources| where type == 'microsoft.keyvault/vaults'| summarize ResourceCount = count() by subscriptionId) on subscriptionId| extend RCount = iff(isnull(ResourceCount), 0, ResourceCount)| project-away ResourceCount| extend compliant = (RCount <> 1)",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "17d6326a-f625-4ca4-9e56-95f2223ace8c",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Encryption and keys",
+      "id": "G02.08",
+      "text": "Use the platform-central Azure Monitor Log Analytics workspace to audit key, certificate, and secret usage within each instance of Key Vault.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/monitor-key-vault",
+      "training": "https://learn.microsoft.com/training/modules/analyze-infrastructure-with-azure-monitor-logs/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1dc0821d-4f14-7644-bab4-ba208ff5f7fa",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.KeyVault/vaults",
+      "id": "88bbc99c-e5af-ddd7-6105-6150b2bfa519",
+      "text": "Diagnostic logs in Key Vault should be enabled",
+      "description": "Enable logs, set up alerts, and adhere to retention requirements for improved monitoring and security of Key Vault access, detailing the frequency and identity of users.",
+      "severity": "Low",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "armService": "Microsoft.KeyVault/vaults",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/logging?tabs=Vault",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "45c25e29-d0ef-4f07-aa04-0f8c64cbcc04",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "id": "03.05",
+      "text": "Key Vault doesn't currently provide a way to back up an entire key vault in a single operation and keys, secrets and certitificates must be backup indvidually. Familiarize yourself with the Key Vault's backup and restore guidance.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/backup?tabs=azure-cli#limitations",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "cbfa96b0-5249-4e6f-947c-d0e79509708c",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "id": "03.03",
+      "text": "Key Vault's soft-deleted resources are retained for a set period of 90 calendar days. Familiarize yourself with the Key Vault's soft-delete guidance.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e8659d11-7e02-4db0-848c-c6541dbab68c",
+      "technology": "Azure Key Vault",
+      "technologySlug": "azure-key-vault-keyvault-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Key Vault",
+      "sourceKind": "checklists",
+      "checklist": "Azure Key Vault",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "id": "03.04",
+      "text": "Understand Key Vault's backup limitations. Key Vault does not support the ability to backup more than 500 past versions of a key, secret, or certificate object. Attempting to backup a key, secret, or certificate object may result in an error. It is not possible to delete previous versions of a key, secret, or certificate.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Key Vault",
+      "serviceCanonical": "Azure Key Vault",
+      "serviceSlug": "azure-key-vault",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/backup?tabs=azure-cli#limitations",
+      "sourcePath": "checklists/keyvault_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/keyvault_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 59,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Key Vault",
+    "matchedServiceLabel": "Azure Key Vault",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Key Vault Managed HSM",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [],
+    "globalSkuStates": []
+  }
+}

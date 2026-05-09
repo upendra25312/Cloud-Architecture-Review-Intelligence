@@ -1,0 +1,1385 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-service-bus",
+    "service": "Azure Service Bus",
+    "aliases": [
+      "Microsoft.ServiceBus/namespaces"
+    ],
+    "itemCount": 10,
+    "highSeverityCount": 3,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "High Availability",
+      "Security"
+    ],
+    "wafPillars": [
+      "Security"
+    ],
+    "description": "Azure Service Bus appears across 10 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Service Bus",
+      "matchedServiceLabel": "Azure Service Bus",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 56,
+      "unavailableRegionCount": 3,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "service-bus-review-checklist-servicebus-checklist",
+        "technology": "Service Bus Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 24,
+        "highSeverityCount": 5,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 81,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "d810e3a8-600f-4be1-895b-1a93e61d37fd",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ServiceBus/namespaces",
+      "id": "d810e3a8-600f-4be1-895b-1a93e61d37fd",
+      "text": "Enable auto-scale for production workloads on Service Bus namespaces",
+      "description": "Use Service Bus with auto-scale for high availability. The Premium SKU supports auto-scale, ensuring that the resources are automatically scaled based on the load.",
+      "severity": "High",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "armService": "Microsoft.ServiceBus/namespaces",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/automate-update-messaging-units",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "20057905-262c-49fe-a9be-49f423afb359",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ServiceBus/namespaces",
+      "id": "20057905-262c-49fe-a9be-49f423afb359",
+      "text": "Enable Availability Zones for Service Bus namespaces",
+      "description": "Use Service Bus with zone redundancy for high availability. The Premium SKU supports availability zones, ensuring isolation within the same region. It manages 3 copies of the messaging store, kept in sync.",
+      "severity": "High",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "armService": "Microsoft.ServiceBus/namespaces",
+      "link": "https://learn.microsoft.com/en-us/azure/well-architected/services/messaging/service-bus/reliability",
+      "graph": "// Azure Resource Graph Query\n// Returns Service Bus namespaces that do not have any availability zones enabled\nresources\n| where type =~ 'Microsoft.ServiceBus/namespaces'\n| where properties.zoneRedundant == 'false'\n| project recommendationId = \"20057905-262c-49fe-a9be-49f423afb359\", name, id, tags, param1=strcat(\"zoneRedundant: \", properties.zoneRedundant), param2=strcat(\"SKU: \", sku.name), param3=iff(tolower(sku.name) == 'premium', 'Move Service Bus namespace to a region that supports Availability Zones', 'Migrate to Premium SKU in a region that supports Availability Zones')\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "f615658d-e558-4f93-9249-b831112dbd7e",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "A02.03",
+      "text": "Use least privilege data plane RBAC",
+      "description": "When creating permissions, provide fine-grained control over a client's access to Azure Service Bus. Permissions in Azure Service Bus can and should be scoped to the individual resource level e.g. queue, topic or subscription.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/authenticate-application#azure-built-in-roles-for-azure-service-bus",
+      "training": "https://learn.microsoft.com/learn/modules/explore-basic-services-identity-types/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8bcbf59b-ce65-4de8-a03f-97879468d66a",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "A02.01",
+      "text": "Avoid using root account when it is not necessary",
+      "description": "When you create a Service Bus namespace, a SAS rule named RootManageSharedAccessKey is automatically created for the namespace. This policy has Manage permissions for the entire namespace. It's recommended that you treat this rule like an administrative root account and don't use it in your application. Using AAD as an authentication provider with RBAC is recommended.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-sas#shared-access-authorization-policies",
+      "training": "https://learn.microsoft.com/learn/paths/azure-administrator-manage-identities-governance/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ca5f06f1-58e3-4ea3-a92c-2de7e2165c3a",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Networking",
+      "id": "A04.02",
+      "text": "Consider only allowing access to Azure Service Bus namespace from specific IP addresses or ranges",
+      "description": "With IP firewall, you can restrict the public endpoint further to only a set of IPv4 addresses or IPv4 address ranges in CIDR (Classless Inter-Domain Routing) notation.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-ip-filtering",
+      "training": "https://learn.microsoft.com/learn/paths/implement-resource-mgmt-security/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9ae669ca-48e4-4a85-b222-3ece8bb12307",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Networking",
+      "id": "A04.01",
+      "text": "Consider using private endpoints to access Azure Service Bus and disable public network access when applicable.",
+      "description": "Azure Service Bus by default has a public IP address and is Internet-reachable. Private endpoints allow traffic between your virtual network and Azure Service Bus traverses over the Microsoft backbone network. In addition to that, you should disable public endpoints if those are not used.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/private-link-service",
+      "training": "https://learn.microsoft.com/learn/modules/azure-ad-privileged-identity-management/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "af12e7f9-43f6-4304-922d-929c2b1cd622",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Monitoring",
+      "id": "A03.01",
+      "text": "Enable logging for security investigation. Use Azure Monitor to trace resource logs and runtime audit logs (currently available only in the premium tier)",
+      "description": "Azure Service Bus resource logs include operational logs, virtual network and IP filtering logs. Runtime audit logs capture aggregated diagnostic information for various data plane access operations (such as send or receive messages) in Service Bus.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/monitor-service-bus-reference",
+      "training": "https://learn.microsoft.com/learn/paths/manage-identity-and-access/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5c1ea55b-46a9-448f-b8ae-7d7e4b475b6c",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.02",
+      "text": "Enforce a minimum required version of Transport Layer Security (TLS) for requests",
+      "description": "Communication between a client application and an Azure Service Bus namespace is encrypted using Transport Layer Security (TLS). Azure Service Bus namespaces permit clients to send and receive data with TLS 1.0 and above. To enforce stricter security measures, you can configure your Service Bus namespace to require that clients send and receive data with a newer version of TLS.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/transport-layer-security-enforce-minimum-version",
+      "training": "https://learn.microsoft.com/learn/modules/secure-aad-users-with-mfa/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "786d60f9-6c96-4ad8-a55d-04c2b39c986b",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Identity and Access Management",
+      "id": "A02.02",
+      "text": "When possible, disable SAS key authentication (or local authentication) and use only Microsoft Entra ID for authentication",
+      "description": "Microsoft Entra ID provides superior security and ease of use over shared access signatures (SAS). With Microsoft Entra ID, there’s no need to store the tokens in your code and risk potential security vulnerabilities. We recommend that you use Microsoft Entra ID with your Azure Service Bus applications when possible.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/disable-local-authentication",
+      "training": "https://learn.microsoft.com/learn/modules/azure-ad-privileged-identity-management/",
+      "graph": "Resources | where type =~ 'microsoft.servicebus/namespaces' | extend compliant = iif(properties.disableLocalAuth == 'false', 'No', 'Yes') | project id, compliant",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "87af4a79-1f89-439b-ba47-768e14c11567",
+      "technology": "Service Bus Review Checklist",
+      "technologySlug": "service-bus-review-checklist-servicebus-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "Service Bus Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Service Bus Review Checklist",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.01",
+      "text": "Use customer-managed key option in data at rest encryption when required",
+      "description": "Azure Service Bus Premium provides encryption of data at rest. If you use your own key, the data is still encrypted using the Microsoft-managed key, but in addition the Microsoft-managed key will be encrypted using the customer-managed key.",
+      "severity": "Low",
+      "waf": "Security",
+      "service": "Azure Service Bus",
+      "serviceCanonical": "Azure Service Bus",
+      "serviceSlug": "azure-service-bus",
+      "link": "https://learn.microsoft.com/azure/service-bus-messaging/configure-customer-managed-key",
+      "training": "https://learn.microsoft.com/learn/modules/plan-implement-administer-conditional-access/",
+      "sourcePath": "checklists/servicebus_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/servicebus_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 56,
+    "unavailableRegionCount": 3,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Service Bus",
+    "matchedServiceLabel": "Azure Service Bus",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

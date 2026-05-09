@@ -1,0 +1,208 @@
+/* ── Main evidence layout ──────────────────────────────────────────── */
+.evidenceLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Status bar — max 80px ────────────────────────────────────────── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  max-height: 80px;
+  flex-wrap: wrap;
+}
+
+/* ── Summary metrics — max 120px ──────────────────────────────────── */
+.summaryMetrics {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  max-height: 120px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* ── Filter row ───────────────────────────────────────────────────── */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* ── Confidence badge ─────────────────────────────────────────────── */
+.confidenceBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.confidenceBadge--high   { background: #059669; }
+.confidenceBadge--medium { background: #B45309; }
+.confidenceBadge--low    { background: #D92B2B; }
+
+/* ── Severity badge ───────────────────────────────────────────────── */
+.severityBadge {
+  display: inline-flex;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.severityBadge--high   { background: #FEE2E2; color: #D92B2B; }
+.severityBadge--medium { background: #FEF3C7; color: #B45309; }
+.severityBadge--low    { background: #DBEAFE; color: #0078D4; }
+
+/* ── Filter chips ─────────────────────────────────────────────────── */
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border, #D1D5DB);
+  background: transparent;
+  color: var(--t2, #6B7280);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filterChip:hover {
+  border-color: #0078D4;
+}
+
+.filterChipActive {
+  background: #0078D4;
+  color: #fff;
+  border-color: #0078D4;
+}
+
+/* ── Group section ────────────────────────────────────────────────── */
+.groupSection {
+  border: 1px solid var(--border, #E5E7EB);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 20px 12px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: var(--bg, #F9FAFB);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.groupHeader:hover {
+  background: var(--surf-hover, #F3F4F6);
+}
+
+/* ── Card grid ────────────────────────────────────────────────────── */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+/* ── Evidence card ────────────────────────────────────────────────── */
+.evidenceCard {
+  border: 1px solid var(--border, #E5E7EB);
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+  transition: box-shadow 0.15s;
+}
+
+.evidenceCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Excerpt block ────────────────────────────────────────────────── */
+.excerptBlock {
+  border-left: 3px solid var(--border, #D1D5DB);
+  background: var(--bg, #F9FAFB);
+  padding: 8px 12px;
+  margin: 8px 0;
+  font-size: 0.88rem;
+  color: var(--t2, #6B7280);
+  line-height: 1.55;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Quality label ────────────────────────────────────────────────── */
+.qualityLabel {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.qualityLabel--strong   { background: #E6F4EA; color: #059669; }
+.qualityLabel--moderate { background: #FEF3C7; color: #B45309; }
+.qualityLabel--weak     { background: #FEE2E2; color: #D92B2B; }
+
+/* ── Metric value ─────────────────────────────────────────────────── */
+.metricValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metricValue--green  { color: #059669; }
+.metricValue--amber  { color: #B45309; }
+.metricValue--red    { color: #D92B2B; }
+
+/* ── Full-width shell override ────────────────────────────────────── */
+.fullWidthShell {
+  grid-template-columns: 1fr;
+}
+
+/* ── Chevron ──────────────────────────────────────────────────────── */
+.chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 0.75rem;
+}
+
+.chevronExpanded {
+  transform: rotate(90deg);
+}
+
+/* ── Responsive: below 1280px ─────────────────────────────────────── */
+@media (max-width: 1279px) {
+  .summaryMetrics {
+    flex-wrap: wrap;
+    max-height: none;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterRow {
+    flex-wrap: wrap;
+  }
+}

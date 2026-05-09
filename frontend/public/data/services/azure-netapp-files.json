@@ -1,0 +1,1336 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-netapp-files",
+    "service": "Azure NetApp Files",
+    "aliases": [
+      "Microsoft.NetApp/netAppAccounts"
+    ],
+    "itemCount": 13,
+    "highSeverityCount": 8,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Disaster Recovery",
+      "Governance",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Other Best Practices",
+      "Scalability",
+      "Security"
+    ],
+    "wafPillars": [],
+    "description": "Azure NetApp Files appears across 13 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure NetApp Files",
+      "matchedServiceLabel": "Azure NetApp Files",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 43,
+      "unavailableRegionCount": 16,
+      "restrictedRegionCount": 6,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "8bb690e8-64d5-4838-8703-9ee3dbac688f",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Other Best Practices",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "8bb690e8-64d5-4838-8703-9ee3dbac688f",
+      "text": "Deploy ANF volumes in the same availability zone with Azure compute and other services",
+      "description": "Azure NetApp Files' availability zone (AZ) volume placement feature lets you deploy volumes in the same AZ with Azure compute and other services to have within AZ latency and share the same AZ failure domain.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/manage-availability-zone-volume-placement",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b2fb3e60-97ec-e34d-af29-b16a0d61c2ac",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "b2fb3e60-97ec-e34d-af29-b16a0d61c2ac",
+      "text": "Enable backup for data protection in Azure NetApp Files",
+      "description": "Azure NetApp Files offers a fully managed backup solution enhancing long-term recovery, archiving, and compliance.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/backup-introduction",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Azure NetApp Files volumes without a backup policy defined.\nresources\n| where type == \"microsoft.netapp/netappaccounts/capacitypools/volumes\"\n| where properties.dataProtection.backup.backupPolicyId == \"\"\n| project recommendationId = \"b2fb3e60-97ec-e34d-af29-b16a0d61c2ac\", name, id, tags\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e30317d2-c502-4dfe-a2d3-0a737cc79545",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "e30317d2-c502-4dfe-a2d3-0a737cc79545",
+      "text": "Enable Cross-region replication of Azure NetApp Files volumes",
+      "description": "Azure NetApp Files replication offers data protection by allowing asynchronous cross-region volume replication for application failover in case of regional outages. Volumes can be replicated across regions, not concurrently with cross-zone replication. Note that failover is a manual process.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-netapp-files/cross-region-replication-introduction",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Azure NetApp Files volumes without cross-region replication.\nresources\n| where type == \"microsoft.netapp/netappaccounts/capacitypools/volumes\"\n| extend remoteVolumeRegion = properties.dataProtection.replication.remoteVolumeRegion\n| extend volumeType = properties.volumeType\n| extend replicationType = iff((remoteVolumeRegion == location), \"CZR\", iff((remoteVolumeRegion == \"\"),\"n/a\",\"CRR\"))\n| where replicationType != \"CRR\" and volumeType != \"DataProtection\"\n| project recommendationId = \"e30317d2-c502-4dfe-a2d3-0a737cc79545\", name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e3d742e1-dacd-9b48-b6b1-510ec9f87c96",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "e3d742e1-dacd-9b48-b6b1-510ec9f87c96",
+      "text": "Enable Cross-zone replication of Azure NetApp Files volumes",
+      "description": "The cross-zone replication (CZR) feature enables asynchronous data replication between Azure NetApp Files volumes across different availability zones, ensuring data protection and critical application failover in case of zone-wide disasters. Note that failover is a manual process.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/cross-zone-replication-introduction",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Azure NetApp Files volumes without cross-zone replication.\nresources\n| where type == \"microsoft.netapp/netappaccounts/capacitypools/volumes\"\n| extend remoteVolumeRegion = properties.dataProtection.replication.remoteVolumeRegion\n| extend volumeType = properties.volumeType\n| extend replicationType = iff((remoteVolumeRegion == location), \"CZR\", iff((remoteVolumeRegion == \"\"),\"n/a\",\"CRR\"))\n| where replicationType != \"CZR\" and volumeType != \"DataProtection\"\n| project recommendationId = \"e3d742e1-dacd-9b48-b6b1-510ec9f87c96\", name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d1e7ccc3-e6c1-40e9-a36e-fd134711c808",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "e4bebd74-387a-4a74-b757-475d2d1b4e3e",
+      "text": "Make use of SMB continuous availability for supported applications",
+      "description": "Certain SMB applications need SMB Transparent Failover for maintenance without interrupting server connectivity. Azure NetApp Files provides this through SMB Continuous Availability for applications like Citrix App Layering, FSLogix user/profile containers, Microsoft SQL Server, MSIX app attach.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/faq-application-resilience#do-i-need-to-take-special-precautions-for-smb-based-applications",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "47d100a5-7f85-5742-967a-67eb5081240a",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "47d100a5-7f85-5742-967a-67eb5081240a",
+      "text": "Use availability zones for high availability in Azure NetApp Files",
+      "description": "Availability zones are distinct locations within an Azure region to withstand local failures. Deploy your workload in multiple availability zones and use application-based replication or Azure NetApp Files cross-zone replication to achieve high availability. Note that failover is a manual process.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/use-availability-zones",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Azure NetApp Files volumes without an availability zone defined.\nResources\n| where type =~ \"Microsoft.NetApp/netAppAccounts/capacityPools/volumes\"\n| where array_length(zones) == 0 or isnull(zones)\n| project recommendationId = \"47d100a5-7f85-5742-967a-67eb5081240a\", name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "72827434-c773-4345-9493-34848ddf5803",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "72827434-c773-4345-9493-34848ddf5803",
+      "text": "Use snapshots for data protection in Azure NetApp Files",
+      "description": "Azure NetApp Files snapshot technology ensures stability, scalability, and swift data recoverability without affecting performance. It supports automatic snapshot creation via policies for Azure NetApp Files data.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/snapshots-introduction",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Azure NetApp Files volumes without a snapshot policy defined.\nresources\n| where type == \"microsoft.netapp/netappaccounts/capacitypools/volumes\"\n| where properties.dataProtection.snapshot.snapshotPolicyId == \"\"\n| project recommendationId = \"72827434-c773-4345-9493-34848ddf5803\", name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ab984130-c57b-6c4a-8d04-6723b4e1bdb6",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "ab984130-c57b-6c4a-8d04-6723b4e1bdb6",
+      "text": "Use standard network features for production in Azure NetApp Files",
+      "description": "Standard network feature in Azure NetApp Files enhances IP limits and VNet capabilities, including network security groups, user-defined routes on subnets, and diverse connectivity options.",
+      "severity": "High",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/azure-netapp-files-network-topologies",
+      "graph": "// Azure Resource Graph Query\n// This Resource Graph query will return all Azure NetApp Files volumes without standard network features.\nresources\n| where type =~ \"microsoft.netapp/netappaccounts/capacitypools/volumes\"\n| where properties.networkFeatures != \"Standard\"\n| project recommendationId = \"ab984130-c57b-6c4a-8d04-6723b4e1bdb6\", name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "687ae58f-517f-ca43-90fe-922497e61283",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Governance",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "687ae58f-517f-ca43-90fe-922497e61283",
+      "text": "Enforce standards and assess compliance in Azure NetApp Files with Azure policy",
+      "description": "Azure NetApp Files supports Azure policy integration using either built-in policy definitions or by creating custom ones to maintain organizational standards and compliance.",
+      "severity": "Medium",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/azure-policy-definitions",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "60f36f9b-fac9-4160-bbf5-57af04da4f53",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "60f36f9b-fac9-4160-bbf5-57af04da4f53",
+      "text": "Ensure application resilience for service maintenance events",
+      "description": "Azure NetApp Files might undergo occasional planned maintenance such as platform updates or service and software upgrades. It's important to be aware of the application's resiliency settings to cope with these storage service maintenance events.",
+      "severity": "Medium",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/faq-application-resilience#what-do-you-recommend-for-handling-potential-application-disruptions-due-to-storage-service-maintenance-events",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "2f579fc9-e599-0d44-8b97-254f50ae04d8",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "2f579fc9-e599-0d44-8b97-254f50ae04d8",
+      "text": "Monitor Azure NetApp Files metrics to better understand usage pattern and performance",
+      "description": "Azure NetApp Files offers metrics like allocated storage, actual usage, volume IOPS, and latency, enabling a better understanding of usage patterns and volume performance for NetApp accounts.",
+      "severity": "Medium",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/monitor-azure-netapp-files",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cfa2244b-5436-47de-8287-b217875d3b0a",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "cfa2244b-5436-47de-8287-b217875d3b0a",
+      "text": "Restrict default access to Azure NetApp Files volumes",
+      "description": "Access to the delegated subnet should be limited to specific Azure Virtual Networks. SMB-enabled volumes' share permissions should move away from 'Everyone/Full control'. NFS-enabled volumes' access needs to be controlled via export policies and/or NFSv4.1 ACLs.",
+      "severity": "Medium",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/configure-network-features",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "af426a99-62a6-6b4c-9662-42d220b413b8",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.NetApp/netAppAccounts",
+      "id": "af426a99-62a6-6b4c-9662-42d220b413b8",
+      "text": "Use the correct service level and volume quota size for the expected performance level",
+      "description": "Service levels, part of capacity pool attributes, determine the maximum throughput per volume quota in Azure NetApp Files. It combines read and write speed, offering three levels: Standard (16 MiB/s per 1TiB), Premium (64 MiB/s per 1TiB), and Ultra (128 MiB/s per 1TiB) throughput.",
+      "severity": "Medium",
+      "service": "Azure NetApp Files",
+      "serviceCanonical": "Azure NetApp Files",
+      "serviceSlug": "azure-netapp-files",
+      "armService": "Microsoft.NetApp/netAppAccounts",
+      "link": "https://learn.microsoft.com/azure/azure-netapp-files/azure-netapp-files-service-levels",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 43,
+    "unavailableRegionCount": 16,
+    "restrictedRegionCount": 6,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure NetApp Files",
+    "matchedServiceLabel": "Azure NetApp Files",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Backup and Restore",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

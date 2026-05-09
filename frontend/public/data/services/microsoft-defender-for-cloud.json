@@ -1,0 +1,965 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "microsoft-defender-for-cloud",
+    "service": "Microsoft Defender for Cloud",
+    "aliases": [],
+    "itemCount": 6,
+    "highSeverityCount": 6,
+    "familyCount": 2,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Governance and Security",
+      "Security"
+    ],
+    "wafPillars": [
+      "Security"
+    ],
+    "description": "Microsoft Defender for Cloud appears across 6 normalized findings in 2 checklist families. 1 GA-ready families can anchor the baseline. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Microsoft Defender for Cloud",
+      "matchedServiceLabel": "Microsoft Defender for Cloud",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 49,
+      "unavailableRegionCount": 10,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "77f9dffe-09a6-4a2d-bc87-6598564d80aa",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Threat Protection",
+      "id": "AI.34",
+      "text": "Implement threat protection for all AI models.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Microsoft Defender for Cloud",
+      "serviceCanonical": "Microsoft Defender for Cloud",
+      "serviceSlug": "microsoft-defender-for-cloud",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/ai-threat-protection",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "de4b110e-eeb0-4cbf-b7e3-fa5cf40674b0",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Risk Mitigation",
+      "id": "AI.42",
+      "text": "Maintaining a detailed and up-to-date inventory of your AI workload resources",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Microsoft Defender for Cloud",
+      "serviceCanonical": "Microsoft Defender for Cloud",
+      "serviceSlug": "microsoft-defender-for-cloud",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/identify-ai-workload-model",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2db05c38-8c93-481e-84b0-8aa28b3bf7b2",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Governance and Security",
+      "subcategory": "Operations",
+      "id": "AI.51",
+      "text": "Use tools like Defender for Cloud to discover Gen AI workloads and explore AI artifacts risks such as vulnerable images & code repositories.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Microsoft Defender for Cloud",
+      "serviceCanonical": "Microsoft Defender for Cloud",
+      "serviceSlug": "microsoft-defender-for-cloud",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/identify-ai-workload-model",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "36a72a48-fffe-4c40-9747-0ab5064355ba",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Operations",
+      "id": "G03.04",
+      "text": "Enable a Microsoft Defender for Servers plan for all cloud servers.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Microsoft Defender for Cloud",
+      "serviceCanonical": "Microsoft Defender for Cloud",
+      "serviceSlug": "microsoft-defender-for-cloud",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/plan-defender-for-servers-select-plan",
+      "training": "https://learn.microsoft.com/training/modules/understand-azure-defender-cloud-workload-protection/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "09945bda-4333-44f2-9911-634182ba5275",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Operations",
+      "id": "G03.03",
+      "text": "Enable Defender Cloud Security Posture Management (CSPM) plan for all resources in addition to the on-by-default Foundational plan for advanced security posture features.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Microsoft Defender for Cloud",
+      "serviceCanonical": "Microsoft Defender for Cloud",
+      "serviceSlug": "microsoft-defender-for-cloud",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/concept-cloud-security-posture-management",
+      "training": "https://learn.microsoft.com/training/modules/microsoft-defender-cloud-security-posture/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "77425f48-ecba-43a0-aeac-a3ac733ccc6a",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Operations",
+      "id": "G03.05",
+      "text": "Enable Defender Cloud Workload Protection Plans for Azure Resources on all subscriptions.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Microsoft Defender for Cloud",
+      "serviceCanonical": "Microsoft Defender for Cloud",
+      "serviceSlug": "microsoft-defender-for-cloud",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/connect-azure-subscription",
+      "training": "https://learn.microsoft.com/training/modules/understand-azure-defender-cloud-workload-protection/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 49,
+    "unavailableRegionCount": 10,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Microsoft Defender for Cloud",
+    "matchedServiceLabel": "Microsoft Defender for Cloud",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Defender for SQL",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      }
+    ],
+    "globalSkuStates": [
+      {
+        "skuName": "General availability",
+        "state": "GA"
+      }
+    ]
+  }
+}

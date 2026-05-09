@@ -1,0 +1,1935 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-virtual-network",
+    "service": "Azure Virtual Network",
+    "aliases": [
+      "Microsoft.Network/virtualNetworks"
+    ],
+    "itemCount": 18,
+    "highSeverityCount": 9,
+    "familyCount": 2,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Network Topology and Connectivity",
+      "Security"
+    ],
+    "wafPillars": [
+      "Cost",
+      "Operations",
+      "Performance",
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Virtual Network appears across 18 normalized findings in 2 checklist families. 1 GA-ready families can anchor the baseline. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Virtual Network",
+      "matchedServiceLabel": "Azure Virtual Network",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 59,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "69ea1185-19b7-de40-9da1-9e8493547a5c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.Network/virtualNetworks",
+      "id": "69ea1185-19b7-de40-9da1-9e8493547a5c",
+      "text": "Shield public endpoints in Azure VNets with Azure DDoS Standard Protection Plans",
+      "description": "Azure DDoS Protection offers enhanced mitigation features against DDoS attacks and is auto-tuned to protect specific resources in a virtual network, combined with application design best practices.",
+      "severity": "High",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "armService": "Microsoft.Network/virtualNetworks",
+      "link": "https://learn.microsoft.com/azure/architecture/framework/services/networking/azure-virtual-network/reliability",
+      "graph": "// Azure Resource Graph Query\n// Find virtual networks without DDoS Protection\nresources\n| where type =~ 'Microsoft.Network/virtualNetworks'\n| where isnull(properties.enableDdosProtection) or properties.enableDdosProtection contains \"false\"\n| project recommendationId = \"69ea1185-19b7-de40-9da1-9e8493547a5c\", name, id, tags, param1 = strcat(\"EnableDdosProtection: \", properties.enableDdosProtection)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b1c82a3f-2320-4dfa-8972-7ae4823c8930",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Internet",
+      "id": "D05.08",
+      "text": "Add diagnostic settings to save DDoS related logs for all the protected public IP addresses (DDoS IP or Network Protection).",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/ddos-protection/ddos-protection-reference-architectures",
+      "training": "https://learn.microsoft.com/learn/paths/secure-networking-infrastructure/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7dd61623-a364-4a90-9eca-e48ebd54cd7d",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.04",
+      "text": "Deploy shared networking services, including ExpressRoute gateways, VPN gateways, and Azure Firewall or partner NVAs in the central-hub virtual network. If necessary, also deploy DNS services.",
+      "severity": "High",
+      "waf": "Cost",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/traditional-azure-networking-topology",
+      "training": "https://learn.microsoft.com/training/modules/hub-and-spoke-network-architecture/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f348ef25-4c27-4d42-b8bb-ac7571559ab9",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.04",
+      "text": "Do not use overlapping IP address ranges for production and disaster recovery sites.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/site-recovery/concepts-on-premises-to-azure-networking#retain-ip-addresses",
+      "training": "https://learn.microsoft.com/learn/paths/az-104-manage-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "4704489a-8042-4d88-b79d-17b73b22a5a6",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "PaaS",
+      "id": "D08.04",
+      "text": "Don't enable virtual network service endpoints by default on all subnets.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/virtual-network/virtual-network-service-endpoints-overview",
+      "training": "https://learn.microsoft.com/learn/paths/implement-network-security/?source=learn",
+      "graph": "resources | where type =~ 'microsoft.network/virtualnetworks' | project id,resourceGroup,name,subnets = properties.subnets | mv-expand subnets | project id = subnets.id, resourceGroup, VNet = name, serviceEndpoints = subnets.properties.serviceEndpoints, compliant = (isnull(subnets.properties.serviceEndpoints) or array_length(subnets.properties.serviceEndpoints) == 0) | order by compliant asc",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "33aad5e8-c68e-41d7-9667-313b4f5664b5",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.03",
+      "text": "Ensure that IP address space isn't wasted, don't create unnecessarily large virtual networks (for example /16).",
+      "severity": "High",
+      "waf": "Performance",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/plan-for-ip-addressing",
+      "training": "https://learn.microsoft.com/learn/paths/architect-network-infrastructure/",
+      "graph": "resources | where type == 'microsoft.network/virtualnetworks' | extend addressSpace = todynamic(properties.addressSpace) | extend addressPrefix = todynamic(properties.addressSpace.addressPrefixes) | mvexpand addressSpace | mvexpand addressPrefix | extend addressMask = split(addressPrefix,'/')[1] | extend compliant = addressMask > 16 | project name, id, subscriptionId, resourceGroup, addressPrefix, compliant",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b034c01e-110b-463a-b36e-e3346e57f225",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Internet",
+      "id": "D05.07",
+      "text": "Plan for how to manage your network outbound traffic configuration and strategy before the upcoming breaking change. On September 30, 2025, default outbound access for new deployments will be retired and only explicit access configurations will be allowed.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/virtual-network/ip-services/default-outbound-access",
+      "training": "https://learn.microsoft.com/training/modules/configure-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "088137f5-e6c4-4cfd-9e50-4547c2447ec6",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Internet",
+      "id": "D05.06",
+      "text": "Use Azure DDoS Network or IP Protection plans to help protect Public IP Addresses endpoints within the virtual networks including application landing zones.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/ddos-protection/ddos-protection-reference-architectures",
+      "training": "https://learn.microsoft.com/learn/paths/secure-networking-infrastructure/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c76cb5a2-abe2-11ed-afa1-0242ac120002",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.13",
+      "text": "Use the setting 'Allow traffic to remote virtual network' when configuring VNet peerings.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/virtual-network/virtual-network-manage-peering",
+      "training": "https://learn.microsoft.com/training/modules/hub-and-spoke-network-architecture/",
+      "graph": "resources | where type == 'microsoft.network/virtualnetworks' | mvexpand properties.virtualNetworkPeerings | project id, peeringName=properties_virtualNetworkPeerings.name, compliant = (properties_virtualNetworkPeerings.properties.allowVirtualNetworkAccess == True)",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "24ae3773-cc2c-3649-88de-c9788e25b463",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.Network/virtualNetworks",
+      "id": "24ae3773-cc2c-3649-88de-c9788e25b463",
+      "text": "When available, use Private Endpoints instead of Service Endpoints for PaaS Services",
+      "description": "Use VNet service endpoints only if Private Link isn't available and no data movement concerns. This feature restricts Azure service access to specified VNet and subnet, enhancing network security and isolating service traffic.",
+      "severity": "Medium",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "armService": "Microsoft.Network/virtualNetworks",
+      "link": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq",
+      "graph": "// Azure Resource Graph Query\n// Find Subnets with Service Endpoint enabled for services that offer Private Link\nresources\n| where type =~ 'Microsoft.Network/virtualnetworks'\n| mv-expand subnets = properties.subnets\n| extend se = array_length(subnets.properties.serviceEndpoints)\n| where se >= 1\n| project name, id, tags, subnets, serviceEndpoints=todynamic(subnets.properties.serviceEndpoints)\n| mv-expand serviceEndpoints\n| project name, id, tags, subnetName=subnets.name, serviceName=tostring(serviceEndpoints.service)\n| where serviceName in (parse_json('[\"Microsoft.CognitiveServices\",\"Microsoft.AzureCosmosDB\",\"Microsoft.DBforMariaDB\",\"Microsoft.DBforMySQL\",\"Microsoft.DBforPostgreSQL\",\"Microsoft.EventHub\",\"Microsoft.KeyVault\",\"Microsoft.ServiceBus\",\"Microsoft.Sql\", \"Microsoft.Storage\",\"Microsoft.StorageSync\",\"Microsoft.Synapse\",\"Microsoft.Web\"]'))\n| project recommendationId = \"24ae3773-cc2c-3649-88de-c9788e25b463\", name, id, tags, param1 = strcat(\"subnet=\", subnetName), param2=strcat(\"serviceName=\",serviceName), param3=\"ServiceEndpoints=true\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7bc1c396-2461-4698-b57f-30ca69525252",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.03",
+      "text": "Deploy your Azure landing zone connectivity resources in multiple regions, so that you can quickly support multi-region application landing zones and disaster recovery scenarios.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/considerations/regions",
+      "training": "https://learn.microsoft.com/training/modules/hub-and-spoke-network-architecture/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "cc881471-607c-41cc-a0e6-14658dd558f9",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.09",
+      "text": "For network architectures with multiple hub-and-spoke topologies across Azure regions, use global virtual network peerings between the hub VNets to connect the regions to each other.",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-faq#can-i-create-a-peering-connection-to-a-vnet-in-a-different-region",
+      "training": "https://learn.microsoft.com/learn/paths/azure-administrator-manage-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0e7c28ec-9366-4572-83b0-f4664b1d944a",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.11",
+      "text": "If you have more than 400 spoke networks in a region, deploy an additional hub to bypass VNet peering limits (500) and the maximum number of prefixes that can be advertised via ExpressRoute (1000).",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits?toc=/azure/virtual-network/toc.json#azure-resource-manager-virtual-networking-limits",
+      "training": "https://learn.microsoft.com/training/modules/hub-and-spoke-network-architecture/",
+      "graph": "resources | where type == 'microsoft.network/virtualnetworks' | mvexpand properties.virtualNetworkPeerings | summarize peeringcount = count() by id | extend compliant = (peeringcount < 450) | distinct id,compliant",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "3d457936-e9b7-41eb-bdff-314b26450b12",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.12",
+      "text": "Limit the number of routes per route table to 400.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits?toc=/azure/virtual-network/toc.json#azure-resource-manager-virtual-networking-limits",
+      "training": "https://learn.microsoft.com/training/modules/hub-and-spoke-network-architecture/",
+      "graph": "resources | where type=='microsoft.network/routetables' | mvexpand properties.routes | summarize routeCount = count() by id | extend compliant = (routeCount < 360) | distinct id,compliant",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e8bbac75-7155-49ab-a153-e8908ae28c84",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.02",
+      "text": "Use a hub-and-spoke network topology for network scenarios that require maximum flexibility.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/network-topology-and-connectivity",
+      "training": "https://learn.microsoft.com/learn/paths/architect-network-infrastructure/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "4722d929-c1b1-4cd6-81f5-4b29bade39ad",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.10",
+      "text": "Use Azure Monitor for Networks to monitor the end-to-end state of the networks on Azure.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/insights/network-insights-overview",
+      "training": "https://learn.microsoft.com/learn/modules/design-implement-network-monitoring/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "3f630472-2dd6-49c5-a5c2-622f54b69bad",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.02",
+      "text": "Use IP addresses from the address allocation ranges for private internets (RFC 1918).",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/plan-for-ip-addressing",
+      "training": "https://learn.microsoft.com/learn/paths/architect-network-infrastructure/",
+      "graph": "resources | where type == 'microsoft.network/virtualnetworks' | extend addressSpace = todynamic(properties.addressSpace) | extend addressPrefix = todynamic(properties.addressSpace.addressPrefixes) | mvexpand addressSpace | mvexpand addressPrefix | project name, id, location, resourceGroup, subscriptionId, cidr = addressPrefix | extend compliant = (cidr matches regex @'^(10\\\\.|172\\\\.(1[6-9]|2[0-9]|3[01])\\\\.|192\\\\.168\\\\.)')  | project id, compliant, cidr",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f0bf9ae6-25a5-974d-87d5-025abec73539",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.Network/virtualNetworks",
+      "id": "eade5b56-eefd-444f-95c8-23f29e5d93cb",
+      "text": "All Subnets should have a Network Security Group associated",
+      "description": "Network security groups and application security groups allow filtering of inbound and outbound traffic by IP, port, and protocol, adding a security layer at the Subnet level.",
+      "severity": "Low",
+      "service": "Azure Virtual Network",
+      "serviceCanonical": "Azure Virtual Network",
+      "serviceSlug": "azure-virtual-network",
+      "armService": "Microsoft.Network/virtualNetworks",
+      "link": "https://learn.microsoft.com/azure/virtual-network/concepts-and-best-practices",
+      "graph": "// Azure Resource Graph Query\n// Find Subnets without NSG associated\nresources\n| where type =~ 'Microsoft.Network/virtualnetworks'\n| mv-expand subnets = properties.subnets\n| extend sn = string_size(subnets.properties.networkSecurityGroup)\n| where sn == 0 and subnets.name !in (\"GatewaySubnet\", \"AzureFirewallSubnet\", \"AzureFirewallManagementSubnet\", \"RouteServerSubnet\")\n| project recommendationId = \"f0bf9ae6-25a5-974d-87d5-025abec73539\", name, id, tags, param1 = strcat(\"SubnetName: \", subnets.name), param2 = \"NSG: False\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 59,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Virtual Network",
+    "matchedServiceLabel": "Azure Virtual Network",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Global Vnet Peering",
+            "state": "GA"
+          },
+          {
+            "skuName": "Virtual Network Peering",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [],
+    "globalSkuStates": []
+  }
+}

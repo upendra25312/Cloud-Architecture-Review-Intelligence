@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif">
+  <defs>
+    <linearGradient id="page-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EEF4FD"/>
+      <stop offset="100%" stop-color="#F8FAFF"/>
+    </linearGradient>
+    <linearGradient id="ai-card-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0078D4"/>
+      <stop offset="100%" stop-color="#005A9E"/>
+    </linearGradient>
+    <linearGradient id="score-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0078D4"/>
+      <stop offset="78%" stop-color="#0078D4"/>
+      <stop offset="78%" stop-color="#E5E7EB"/>
+      <stop offset="100%" stop-color="#E5E7EB"/>
+    </linearGradient>
+    <filter id="card-shadow" x="-4%" y="-4%" width="108%" height="118%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#000000" flood-opacity="0.07"/>
+    </filter>
+    <filter id="ai-shadow" x="-6%" y="-6%" width="112%" height="122%">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#0078D4" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Page background -->
+  <rect width="1200" height="630" fill="url(#page-bg)"/>
+
+  <!-- Top azure accent bar -->
+  <rect width="1200" height="5" fill="#0078D4"/>
+
+  <!-- Subtle grid dots (decorative) -->
+  <g opacity="0.06">
+    <circle cx="40" cy="560" r="3" fill="#0078D4"/>
+    <circle cx="80" cy="560" r="3" fill="#0078D4"/>
+    <circle cx="120" cy="560" r="3" fill="#0078D4"/>
+    <circle cx="40" cy="600" r="3" fill="#0078D4"/>
+    <circle cx="80" cy="600" r="3" fill="#0078D4"/>
+    <circle cx="120" cy="600" r="3" fill="#0078D4"/>
+    <circle cx="1080" cy="560" r="3" fill="#0078D4"/>
+    <circle cx="1120" cy="560" r="3" fill="#0078D4"/>
+    <circle cx="1160" cy="560" r="3" fill="#0078D4"/>
+    <circle cx="1080" cy="600" r="3" fill="#0078D4"/>
+    <circle cx="1120" cy="600" r="3" fill="#0078D4"/>
+    <circle cx="1160" cy="600" r="3" fill="#0078D4"/>
+  </g>
+
+  <!-- ── HEADER ── -->
+  <!-- Azure icon mark (simplified triangle) -->
+  <path d="M55 84 L72 56 L89 84 Z" fill="#0078D4" opacity="0.85"/>
+  <path d="M63 84 L80 63 L97 84 Z" fill="#50B3FF" opacity="0.5"/>
+
+  <text x="108" y="76" font-size="22" font-weight="700" fill="#0078D4" letter-spacing="-0.3">Rackspace Cloud Architecture Review Intelligence</text>
+  <text x="108" y="100" font-size="15" fill="#6B7280">Evidence-backed architecture reviews · board-ready findings in minutes</text>
+
+  <!-- ── CARD 1 – Documents ── -->
+  <g filter="url(#card-shadow)">
+    <rect x="60" y="132" width="290" height="346" rx="14" fill="white"/>
+  </g>
+  <!-- Card top accent -->
+  <rect x="60" y="132" width="290" height="5" rx="2" fill="#E8F3FF"/>
+  <rect x="60" y="132" width="290" height="5" rx="2" fill="#0078D4" opacity="0.12"/>
+
+  <!-- Document illustration -->
+  <rect x="128" y="162" width="76" height="96" rx="6" fill="#E8F3FF" stroke="#BFD9F5" stroke-width="1.5"/>
+  <!-- Dog-ear fold -->
+  <path d="M188 162 L204 178 L188 178 Z" fill="#BFD9F5"/>
+  <path d="M188 162 L204 178" stroke="#BFD9F5" stroke-width="1.5" fill="none"/>
+  <!-- Lines on doc -->
+  <rect x="142" y="192" width="48" height="3" rx="1.5" fill="#0078D4" opacity="0.5"/>
+  <rect x="142" y="202" width="48" height="3" rx="1.5" fill="#0078D4" opacity="0.5"/>
+  <rect x="142" y="212" width="32" height="3" rx="1.5" fill="#0078D4" opacity="0.35"/>
+  <rect x="142" y="222" width="40" height="3" rx="1.5" fill="#0078D4" opacity="0.35"/>
+  <rect x="142" y="232" width="28" height="3" rx="1.5" fill="#0078D4" opacity="0.25"/>
+
+  <!-- Second doc (stacked) -->
+  <rect x="146" y="156" width="76" height="96" rx="6" fill="#DDF0FF" stroke="#BFD9F5" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Upload arrow circle -->
+  <circle cx="230" cy="200" r="22" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1.5"/>
+  <path d="M230 210 L230 196 M225 202 L230 196 L235 202" stroke="#0078D4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <text x="205" y="282" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">Your Documents</text>
+  <text x="205" y="304" text-anchor="middle" font-size="13" fill="#6B7280">SOW · Architecture design</text>
+  <text x="205" y="323" text-anchor="middle" font-size="13" fill="#6B7280">Diagrams · Requirements</text>
+
+  <!-- Format chips row 1 -->
+  <rect x="82"  y="344" width="46" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="105" y="360" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">PDF</text>
+
+  <rect x="136" y="344" width="56" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="164" y="360" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">DOCX</text>
+
+  <rect x="200" y="344" width="54" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="227" y="360" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">PPTX</text>
+
+  <rect x="262" y="344" width="68" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="296" y="360" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">+more</text>
+
+  <!-- Format chips row 2 -->
+  <rect x="100" y="376" width="60" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="130" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">drawio</text>
+
+  <rect x="168" y="376" width="50" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="193" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">Bicep</text>
+
+  <rect x="226" y="376" width="60" height="24" rx="12" fill="#EBF5FF" stroke="#BFD9F5" stroke-width="1"/>
+  <text x="256" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#0078D4">XLSX</text>
+
+  <text x="205" y="452" text-anchor="middle" font-size="12" fill="#9CA3AF">Drag and drop · any format</text>
+
+  <!-- ── ARROW 1 ── -->
+  <line x1="358" y1="305" x2="400" y2="305" stroke="#0078D4" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <polygon points="397,298 412,305 397,312" fill="#0078D4"/>
+
+  <!-- ── CARD 2 - Review Intelligence (highlighted) ── -->
+  <g filter="url(#ai-shadow)">
+    <rect x="420" y="112" width="360" height="386" rx="16" fill="url(#ai-card-bg)"/>
+  </g>
+
+  <!-- Decorative circles on review card -->
+  <circle cx="600" cy="250" r="160" fill="white" opacity="0.03"/>
+  <circle cx="600" cy="250" r="120" fill="white" opacity="0.03"/>
+
+  <!-- Review intelligence icon -->
+  <circle cx="600" cy="198" r="38" fill="white" opacity="0.12"/>
+  <!-- Star burst -->
+  <path d="M600 172 L604 188 L620 192 L604 196 L600 212 L596 196 L580 192 L596 188 Z" fill="white"/>
+  <!-- Small orbiting dots -->
+  <circle cx="600" cy="158" r="4" fill="white" opacity="0.6"/>
+  <circle cx="640" cy="198" r="4" fill="white" opacity="0.6"/>
+  <circle cx="600" cy="238" r="4" fill="white" opacity="0.6"/>
+  <circle cx="560" cy="198" r="4" fill="white" opacity="0.6"/>
+  <!-- Connecting lines -->
+  <line x1="600" y1="162" x2="600" y2="172" stroke="white" stroke-width="1.5" opacity="0.4"/>
+  <line x1="636" y1="198" x2="626" y2="198" stroke="white" stroke-width="1.5" opacity="0.4"/>
+  <line x1="600" y1="234" x2="600" y2="224" stroke="white" stroke-width="1.5" opacity="0.4"/>
+  <line x1="564" y1="198" x2="574" y2="198" stroke="white" stroke-width="1.5" opacity="0.4"/>
+
+  <text x="600" y="262" text-anchor="middle" font-size="20" font-weight="700" fill="white">Review Intelligence</text>
+  <text x="600" y="285" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.82)">Reads your documents end-to-end</text>
+  <text x="600" y="305" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.82)">Checks 11 Azure frameworks in one pass</text>
+  <text x="600" y="325" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.82)">Grounded in live Microsoft Learn docs</text>
+
+  <!-- Framework pills -->
+  <rect x="440" y="346" width="52" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="466" y="361" text-anchor="middle" font-size="11" font-weight="600" fill="white">WAF</text>
+
+  <rect x="500" y="346" width="46" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="523" y="361" text-anchor="middle" font-size="11" font-weight="600" fill="white">CAF</text>
+
+  <rect x="554" y="346" width="44" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="576" y="361" text-anchor="middle" font-size="11" font-weight="600" fill="white">ALZ</text>
+
+  <rect x="606" y="346" width="56" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="634" y="361" text-anchor="middle" font-size="11" font-weight="600" fill="white">HA/DR</text>
+
+  <rect x="670" y="346" width="62" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="701" y="361" text-anchor="middle" font-size="11" font-weight="600" fill="white">Security</text>
+
+  <rect x="450" y="376" width="80" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="490" y="391" text-anchor="middle" font-size="11" font-weight="600" fill="white">Networking</text>
+
+  <rect x="538" y="376" width="88" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="582" y="391" text-anchor="middle" font-size="11" font-weight="600" fill="white">Monitoring</text>
+
+  <rect x="634" y="376" width="90" height="22" rx="11" fill="rgba(255,255,255,0.16)"/>
+  <text x="679" y="391" text-anchor="middle" font-size="11" font-weight="600" fill="white">Governance</text>
+
+  <!-- Minutes callout -->
+  <rect x="500" y="412" width="200" height="36" rx="18" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+  <text x="600" y="434" text-anchor="middle" font-size="13" font-weight="600" fill="white">⚡ Minutes — not 2–3 days</text>
+
+  <text x="600" y="476" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.5)">Microsoft Learn MCP · Live guidance at review time</text>
+
+  <!-- ── ARROW 2 ── -->
+  <line x1="788" y1="305" x2="828" y2="305" stroke="#0078D4" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <polygon points="825,298 840,305 825,312" fill="#0078D4"/>
+
+  <!-- ── CARD 3 – Findings ── -->
+  <g filter="url(#card-shadow)">
+    <rect x="848" y="132" width="292" height="346" rx="14" fill="white"/>
+  </g>
+  <!-- Card top accent -->
+  <rect x="848" y="132" width="292" height="5" rx="2" fill="#0078D4" opacity="0.12"/>
+
+  <text x="994" y="168" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">Board-Ready Findings</text>
+
+  <!-- Finding 1 – High -->
+  <rect x="868" y="182" width="252" height="58" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <rect x="868" y="182" width="4" height="58" rx="2" fill="#D92B2B"/>
+  <text x="882" y="200" font-size="10" font-weight="700" fill="#D92B2B" letter-spacing="0.5">HIGH</text>
+  <text x="882" y="217" font-size="12" font-weight="600" fill="#111827">No zone redundancy in gateway</text>
+  <text x="882" y="232" font-size="10" fill="#6B7280">WAF Reliability · HA/DR</text>
+  <text x="1100" y="200" text-anchor="end" font-size="10" fill="#9CA3AF">learn.microsoft.com →</text>
+
+  <!-- Finding 2 – Medium -->
+  <rect x="868" y="248" width="252" height="58" rx="8" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <rect x="868" y="248" width="4" height="58" rx="2" fill="#B45309"/>
+  <text x="882" y="266" font-size="10" font-weight="700" fill="#B45309" letter-spacing="0.5">MEDIUM</text>
+  <text x="882" y="283" font-size="12" font-weight="600" fill="#111827">Missing tagging policy alignment</text>
+  <text x="882" y="298" font-size="10" fill="#6B7280">ALZ Governance · CAF</text>
+
+  <!-- Finding 3 – Low -->
+  <rect x="868" y="314" width="252" height="58" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
+  <rect x="868" y="314" width="4" height="58" rx="2" fill="#15803D"/>
+  <text x="882" y="332" font-size="10" font-weight="700" fill="#15803D" letter-spacing="0.5">LOW</text>
+  <text x="882" y="349" font-size="12" font-weight="600" fill="#111827">Enable deployment slot strategy</text>
+  <text x="882" y="364" font-size="10" fill="#6B7280">CAF Operational Excellence</text>
+
+  <!-- Score bar -->
+  <text x="868" y="398" font-size="12" fill="#6B7280">Overall Score</text>
+  <text x="1100" y="400" text-anchor="end" font-size="30" font-weight="700" fill="#B45309">78</text>
+  <rect x="868" y="406" width="192" height="6" rx="3" fill="#E5E7EB"/>
+  <rect x="868" y="406" width="150" height="6" rx="3" fill="#0078D4"/>
+
+  <!-- Decision chips -->
+  <rect x="868" y="424" width="76" height="26" rx="13" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+  <text x="906" y="441" text-anchor="middle" font-size="11" font-weight="600" fill="#15803D">Approved</text>
+
+  <rect x="950" y="424" width="106" height="26" rx="13" fill="#0078D4"/>
+  <text x="1003" y="441" text-anchor="middle" font-size="11" font-weight="700" fill="white">Needs Revision</text>
+
+  <rect x="1062" y="424" width="68" height="26" rx="13" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="1096" y="441" text-anchor="middle" font-size="11" font-weight="600" fill="#D92B2B">Rejected</text>
+
+  <!-- Export line -->
+  <text x="868" y="470" font-size="11" fill="#9CA3AF">Export: CSV · HTML · Markdown — ARB pack</text>
+
+  <!-- ── FOOTER ── -->
+  <line x1="60" y1="540" x2="1140" y2="540" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="600" y="573" text-anchor="middle" font-size="14" fill="#9CA3AF" letter-spacing="0.2">Upload · Structured analysis · Board-ready pack - Rackspace internal use</text>
+  <text x="600" y="596" text-anchor="middle" font-size="12" fill="#BFD9F5">jolly-sea-014792b10.6.azurestaticapps.net</text>
+</svg>

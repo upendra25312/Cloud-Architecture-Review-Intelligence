@@ -1,0 +1,1181 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-spring-apps",
+    "service": "Azure Spring Apps",
+    "aliases": [],
+    "itemCount": 8,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Application Deployment",
+      "Business Continuity and Disaster Recovery",
+      "Operations"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Spring Apps appears across 8 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Spring Apps",
+      "matchedServiceLabel": "Azure Spring Apps",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 29,
+      "unavailableRegionCount": 30,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 29,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-spring-apps-review-azurespringapps-checklist",
+        "technology": "Azure Spring Apps Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 8,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "fbcb40ac-9480-4a6d-bcf4-8081252a6716",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Disaster Recovery",
+      "text": "Azure Spring Apps instances could be created in multiple regions for your applications and traffic could be routed by Traffic Manager/Front Door.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/architecture/web-apps/spring-apps/architectures/spring-apps-multi-region",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6d8e32a8-3892-479d-a40b-10f6b4f6f298",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Application Deployment",
+      "subcategory": "DevOps",
+      "text": "Azure Spring Apps permits two deployments for every app, only one of which receives production traffic. You can achieve zero downtime with blue green deployment strategies. Blue green deployment is only available in Standard and Enterprise tiers. You could automate deployment using CI/CD with ADO/GitHub actions",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/spring-apps/concepts-blue-green-deployment-strategies",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ff1ae6a7-9301-4feb-9d11-56cd72f1d4ef",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "text": "In supported region, Azure Spring Apps can be deployed as zone redundant, which means that instances are automatically distributed across availability zones. This feature is only available in Standard and Enterprise tiers.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/reliability/reliability-spring-apps",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7504c230-6035-4183-95a5-85762acc6075",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Operations",
+      "subcategory": "Monitoring",
+      "text": "Monitor Azure Spring Apps with logs, metrics and tracing. Integrate ASA with application insights and track failures and create workbooks.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/spring-apps/diagnostic-services",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1eb48d58-3eec-4ef5-80b0-d2b0dde3f0c6",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Operations",
+      "subcategory": "Scalability",
+      "text": "Set up autoscaling in Spring Cloud Gateway",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/spring-apps/how-to-configure-enterprise-spring-cloud-gateway",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "dfcaffd1-d27c-4ef2-998d-64c1df3a7ac3",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Operations",
+      "subcategory": "Support",
+      "text": "Use Enterprise plan for commercial support of spring boot for mission critical apps. With other tiers you get OSS support.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/spring-apps/overview",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ffc735ad-fbb1-4802-b43f-ad6387c4c066",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "text": "Use more than 1 app instance for your apps",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/spring-apps/concept-understand-app-and-deployment",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "97411607-b6fd-4335-99d1-9885faf4e392",
+      "technology": "Azure Spring Apps Review",
+      "technologySlug": "azure-spring-apps-review-azurespringapps-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Spring Apps Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Spring Apps Review",
+      "category": "Operations",
+      "subcategory": "Scalability",
+      "text": "Enable autoscale for the apps with Standard consumption & dedicated plan.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Spring Apps",
+      "serviceCanonical": "Azure Spring Apps",
+      "serviceSlug": "azure-spring-apps",
+      "link": "https://learn.microsoft.com/azure/spring-apps/how-to-setup-autoscale",
+      "sourcePath": "checklists/azurespringapps_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurespringapps_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 29,
+    "unavailableRegionCount": 30,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 29,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Spring Apps",
+    "matchedServiceLabel": "Azure Spring Apps",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "Retiring",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Enterprise",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "Standard Gen2",
+            "state": "Retiring"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

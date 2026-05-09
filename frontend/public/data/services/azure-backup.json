@@ -1,0 +1,1247 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-backup",
+    "service": "Azure Backup",
+    "aliases": [],
+    "itemCount": 8,
+    "highSeverityCount": 0,
+    "familyCount": 3,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Cost Optimization",
+      "General",
+      "Management",
+      "Right-sizing"
+    ],
+    "wafPillars": [
+      "Cost",
+      "Operations",
+      "Reliability"
+    ],
+    "description": "Azure Backup appears across 8 normalized findings in 3 checklist families. 1 GA-ready families can anchor the baseline. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Backup",
+      "matchedServiceLabel": "Azure Backup",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 55,
+      "unavailableRegionCount": 4,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "resiliency-review-resiliency-checklist",
+        "technology": "Resiliency Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 38,
+        "highSeverityCount": 9,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 93,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "cost-optimization-checklist-cost-checklist",
+        "technology": "Cost Optimization Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 86,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 86,
+          "metadataCompleteness": 76,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "f625ca44-e569-45f2-823a-ce8cb12308ca",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Protect and Recover",
+      "id": "F04.02",
+      "text": "Use Azure-native backup capabilities, or an Azure-compatible, 3rd-party backup solution.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/backup/backup-center-overview",
+      "training": "https://learn.microsoft.com/training/modules/design-solution-for-backup-disaster-recovery/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "45901365-d38e-443f-abcb-d868266abca2",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Cost Optimization",
+      "subcategory": "Backup",
+      "id": "A02.01",
+      "text": "check backup instances with the underlying datasource not found",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/multi-tenant/automation",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "69bad37a-ad53-4cc7-ae1d-76667357c449",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Cost Optimization",
+      "subcategory": "Delete/archive",
+      "id": "A03.04",
+      "text": "Consider a good balance between site recovery storage and backup for non mission critical applications",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/azure-billing-microsoft-customer-agreement#design-recommendations",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "44be3b1a-27f8-4b9e-a1be-1f38df03a822",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Right-sizing",
+      "subcategory": "Backup",
+      "id": "E03.01",
+      "text": "Move recovery points to vault-archive where applicable (Validate)",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/logs/data-retention-archive?tabs=portal-1%2Cportal-2#how-retention-and-archiving-work",
+      "training": "https://azure.microsoft.com/pricing/reservations/",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b44be3b1-a27f-48b9-b91b-e1038df03a82",
+      "technology": "Resiliency Review",
+      "technologySlug": "resiliency-review-resiliency-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 93,
+      "family": "Resiliency Review",
+      "sourceKind": "checklists",
+      "checklist": "Resiliency Review",
+      "category": "General",
+      "subcategory": "Backup",
+      "text": "Enable Azure Backup enhanced soft delete for improved data protection and recovery",
+      "description": "Azure Backup enhanced soft delete provides critical protection against ransomware attacks by retaining deleted backups, enabling recovery from potential ransomware encryption or deletion.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/backup/backup-azure-enhanced-soft-delete-about",
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "eba8cf22-45c6-4dc1-9b57-2cceb3b97ce5",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Data Protection",
+      "id": "F02.02",
+      "text": "When using Azure Backup, use the correct backup types (GRS, ZRS & LRS) for your backup, as the default setting is GRS.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/storage/common/storage-redundancy",
+      "training": "https://learn.microsoft.com/training/modules/design-solution-for-backup-disaster-recovery/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2cc88147-0607-4c1c-aa0e-614658dd458e",
+      "technology": "Resiliency Review",
+      "technologySlug": "resiliency-review-resiliency-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 93,
+      "family": "Resiliency Review",
+      "sourceKind": "checklists",
+      "checklist": "Resiliency Review",
+      "category": "General",
+      "subcategory": "Backup",
+      "text": "Implement Immutable Storage for your vaults to protect against ransomware and prevent unauthorized modifications to backups",
+      "description": "Azure Immutable Storage provides an additional layer of security by ensuring that backup data stored in the vault cannot be modified or deleted for a specified retention period. This helps safeguard your backups from ransomware attacks that may attempt to compromise or manipulate your backup data.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/backup/backup-azure-immutable-vault-concept?source=recommendations&tabs=recovery-services-vault",
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "2cd463cb-bbc8-4ac2-a9eb-c92a43da1dae",
+      "technology": "Resiliency Review",
+      "technologySlug": "resiliency-review-resiliency-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 93,
+      "family": "Resiliency Review",
+      "sourceKind": "checklists",
+      "checklist": "Resiliency Review",
+      "category": "General",
+      "subcategory": "Backup",
+      "text": "Implement multi-user authorization for Azure Backup to ensure secure and controlled access to backup resources",
+      "description": "Azure Backup's multi-user authorization enables fine-grained control over user access to backup resources, allowing you to restrict privileges and ensure proper authentication and authorization for backup operations.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Backup",
+      "serviceCanonical": "Azure Backup",
+      "serviceSlug": "azure-backup",
+      "link": "https://learn.microsoft.com/azure/backup/multi-user-authorization-concept",
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 55,
+    "unavailableRegionCount": 4,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Backup",
+    "matchedServiceLabel": "Azure Backup",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "AKS Cluster Backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for PostGreSQL backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Files backup",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

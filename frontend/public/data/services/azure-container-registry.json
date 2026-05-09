@@ -1,0 +1,1916 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-container-registry",
+    "service": "Azure Container Registry",
+    "aliases": [
+      "Microsoft.ContainerRegistry/registries"
+    ],
+    "itemCount": 30,
+    "highSeverityCount": 13,
+    "familyCount": 3,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "Disaster Recovery",
+      "Governance",
+      "Governance and Security",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Scalability",
+      "Security"
+    ],
+    "wafPillars": [
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Container Registry appears across 30 normalized findings in 3 checklist families. 1 GA-ready families can anchor the baseline. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Container Registry",
+      "matchedServiceLabel": "Azure Container Registry",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 56,
+      "unavailableRegionCount": 3,
+      "restrictedRegionCount": 9,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-aks-review-aks-checklist",
+        "technology": "Azure AKS Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 112,
+        "highSeverityCount": 33,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 93 with 82% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "azure-container-registry-security-review-acr-checklist",
+        "technology": "Azure Container Registry Security Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 18,
+        "highSeverityCount": 9,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 95,
+          "metadataCompleteness": 100,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 96,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "36ea6c09-ef6e-d743-9cfb-bd0c928a430b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "36ea6c09-ef6e-d743-9cfb-bd0c928a430b",
+      "text": "Enable geo-replication",
+      "description": "Use Azure Container Registry's geo-replication for multi-region deployments to simplify registry management and minimize latency. It enables serving global customers from local data centers and supports distributed development teams. Regional webhooks can notify of events in replicas.",
+      "severity": "High",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-best-practices#geo-replicate-multi-region-deployments",
+      "graph": "// Azure Resource Graph Query\n// Find all Container Registries that do not have geo-replication enabled\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| project registryName = name, registryId = id, tags, primaryRegion = location\n| join kind=leftouter (\n    Resources\n    | where type =~ \"microsoft.containerregistry/registries/replications\"\n    | project replicationRegion=name, replicationId = id\n    | extend registryId=strcat_array(array_slice(split(replicationId, '/'), 0, -3), '/')\n    ) on registryId\n| project-away registryId1, replicationId\n| where isempty(replicationRegion)\n| project recommendationId = \"36ea6c09-ef6e-d743-9cfb-bd0c928a430b\", name=registryName, id=registryId, tags\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "63491f70-22e4-3b4a-8b0c-845450e46fac",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "63491f70-22e4-3b4a-8b0c-845450e46fac",
+      "text": "Enable zone redundancy",
+      "description": "Azure Container Registry's optional zone redundancy enhances resiliency and high availability for registries or replication resources in a specific region by distributing resources across multiple zones.",
+      "severity": "High",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://review.learn.microsoft.com/en-us/azure/container-registry/zone-redundancy?toc=%2Fazure%2Freliability%2Ftoc.json&bc=%2Fazure%2Freliability%2Fbreadcrumb%2Ftoc.json&branch=main",
+      "graph": "// Azure Resource Graph Query\n// Find all Container Registries that do not have zone redundancy enabled\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| where properties.zoneRedundancy != \"Enabled\"\n| project recommendationId = \"63491f70-22e4-3b4a-8b0c-845450e46fac\", name, id, tags, param1=strcat(\"zoneRedundancy: \", tostring(properties.zoneRedundancy))\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "eb005943-40a8-194b-9db2-474d430046b7",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "eb005943-40a8-194b-9db2-474d430046b7",
+      "text": "Use Premium tier for critical production workloads",
+      "description": "Choose a service tier of Azure Container Registry to meet your performance needs. Premium offers the most bandwidth and highest rate of read and write operations for high-volume deployments. Use Basic to start, Standard for production, and Premium for hyper-scale performance and geo-replication.",
+      "severity": "High",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-best-practices",
+      "graph": "// Azure Resource Graph Query\n// Find all Container Registries that are not using the Premium tier\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| where sku.name != \"Premium\"\n| project recommendationId = \"eb005943-40a8-194b-9db2-474d430046b7\", name, id, tags, param1=strcat(\"SkuName: \", tostring(sku.name))\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3c763963-7a55-42d5-a15e-401955387e5c",
+      "technology": "Azure AKS Review",
+      "technologySlug": "azure-aks-review-aks-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure AKS Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure AKS Review",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "High Availability",
+      "id": "02.02.05",
+      "text": "If using a private registry, configure region replication to store images in multiple regions",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-geo-replication",
+      "sourcePath": "checklists/aks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/aks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "387e5ced-126c-4d13-8af5-b20c6998a646",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.03",
+      "text": "Assign AcrPull & AcrPush RBAC roles rather than granting Administrative access to identity principals",
+      "description": "Disable Administrator account and assign RBAC roles to principals for ACR Pull/Push operations",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-roles?tabs=azure-cli",
+      "graph": "resources | where type =~ 'microsoft.containerregistry/registries' | extend localAdminDisabled = properties.adminUserEnabled // Adjust this property as needed | extend compliant = iif(localAdminDisabled == 'false', true, false) // Check if local admin is disabled | project compliant, name, id, tags | distinct id, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b3bec3d4-f343-47c1-936d-b55f27a71eee",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.06",
+      "text": "Deploy images from a trusted environment",
+      "description": "Deploy container images to an ACR behind a Private endpoint within a trusted network",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ab91932c-9fc9-4d1b-a880-37f5e6bfcb9e",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.01",
+      "text": "Disable Azure Container Registry image export",
+      "description": "Disable image export to prevent data exfiltration. Note that this will prevent image import of images into another ACR instance.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/data-loss-prevention",
+      "query": "resources | where type =~ 'Microsoft.ContainerRegistry/registries' | extend acrName = name, acrId = id | extend exportPolicyStatus = properties.policies.exportPolicy.status | extend compliant = iif(exportPolicyStatus =~ 'Disabled', true, false) | project acrName, acrId, exportPolicyStatus, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "be0e38ce-e297-411b-b363-caaab79b198d",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.02",
+      "text": "Disable local authentication for management plane access",
+      "description": "The local Administrator account is disabled by default and should not be enabled. Use either Token or RBAC-based access methods instead",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-authentication-managed-identity",
+      "graph": "resources | where type =~ 'microsoft.containerregistry/registries' | extend localAdminDisabled = properties.adminUserEnabled // Adjust this property as needed | extend compliant = iif(localAdminDisabled == 'false', true, false) // Check if local admin is disabled | project compliant, name, id, tags | distinct id, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "698dc3a2-fd27-4b2e-8870-1a1252beedf6",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.05",
+      "text": "Disable repository-scoped access tokens",
+      "description": "Token authentication doesn't support assignment to an AAD principal. Any tokens provided are able to be used by anyone who can access the token",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-authentication?tabs=azure-cli",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d503547c-d447-4e82-9128-a7100f1cac6d",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.02",
+      "text": "Enable Azure Policies for Azure Container Registry",
+      "description": "Enable audit compliance visibility by enabling Azure Policy for Azure Container Registry",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-azure-policy",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d345293c-7639-4637-a551-c5c04e401955",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.03",
+      "text": "Sign and Verify containers with notation (Notary v2)",
+      "description": "The Azure Key Vault (AKV) is used to store a signing key that can be utilized by?notation?with the notation AKV plugin (azure-kv) to sign and verify container images and other artifacts. The Azure Container Registry (ACR) allows you to attach these signatures using the?az?or?oras?CLI commands.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-tutorial-sign-build-push",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8f42d78e-79dc-47b3-9bd2-a1a27e7a8e90",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.01",
+      "text": "Use Managed Identities to connect instead of Service Principals",
+      "description": "Use managed identities to secure ACRPull/Push RBAC access from client applications",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-authentication-managed-identity",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4e401955-387e-45ce-b126-cd132af5b20c",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Vulnerability Management",
+      "id": "A05.02",
+      "text": "Use up-to-date platforms, languages, protocols and frameworks",
+      "description": "Use the latest versions of supported platforms, programming languages, protocols, and frameworks.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "44107155-7a32-9348-89f3-d5aa7e7c5a1d",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "44107155-7a32-9348-89f3-d5aa7e7c5a1d",
+      "text": "Configure Diagnostic Settings for all Azure Container Registries",
+      "description": "Resource Logs are not collected and stored until you create a diagnostic setting and route them to one or more locations.",
+      "severity": "Medium",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/monitor-service-reference#resource-logs",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "03f4a7d8-c5b4-7842-8e6e-14997a34842b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "03f4a7d8-c5b4-7842-8e6e-14997a34842b",
+      "text": "Disable anonymous pull access",
+      "description": "By default, Azure container registry requires authentication for pull/push actions. Enabling anonymous pull access exposes all content for public read actions. This applies to all repositories, potentially allowing unrestricted access if repository-scoped tokens are used.",
+      "severity": "Medium",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/anonymous-pull-access#about-anonymous-pull-access",
+      "graph": "// Azure Resource Graph Query\n// Find all Container Registries that have anonymous pull access enabled\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| where properties.anonymousPullEnabled == \"true\"\n| project recommendationId = \"03f4a7d8-c5b4-7842-8e6e-14997a34842b\", name, id, tags\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e7f0fd54-fba0-054e-9ab8-e676f2851f88",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "e7f0fd54-fba0-054e-9ab8-e676f2851f88",
+      "text": "Enable soft delete policy",
+      "description": "Enabling soft delete in Azure Container Registry (ACR) allows for the management of deleted artifacts with a specified retention period. Users can list, filter, and restore these artifacts until automatically purged post-retention.",
+      "severity": "Medium",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-soft-delete-policy",
+      "graph": "// Azure Resource Graph Query\n// Provides a list of Azure Container Registry resources that do not have soft delete enabled\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| where properties.policies.softDeletePolicy.status == \"disabled\"\n| project recommendationId = \"e7f0fd54-fba0-054e-9ab8-e676f2851f88\", name, id, tags\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3ef86f16-f65b-c645-9901-7830d6dc3a1b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "3ef86f16-f65b-c645-9901-7830d6dc3a1b",
+      "text": "Manage registry size",
+      "description": "The storage constraints of Azure Container Registry's service tiers align with usage scenarios: Basic for starters, Standard for production, and Premium for high-scale performance and geo-replication.",
+      "severity": "Medium",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-best-practices#manage-registry-size",
+      "graph": "// Azure Resource Graph Query\n// Find all Container Registries that have their retention policy disabled\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| where properties.policies.retentionPolicy.status == \"disabled\"\n| project recommendationId = \"3ef86f16-f65b-c645-9901-7830d6dc3a1b\", name, id, tags, param1='retentionPolicy:disabled'\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d594cde6-4116-d143-a64a-25f63289a2f8",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "d594cde6-4116-d143-a64a-25f63289a2f8",
+      "text": "Monitor Azure Container Registry with Azure Monitor",
+      "description": "Monitoring Azure resources using Azure Monitor enhances their availability, performance, and operation. Azure Container Registry, a full-stack monitoring service, provides features for Azure and other cloud and on-premises resources.",
+      "severity": "Medium",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/monitor-service-reference#metrics",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "59bce65d-e8a0-43f9-9879-468d66a786d6",
+      "technology": "Azure AKS Review",
+      "technologySlug": "azure-aks-review-aks-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure AKS Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure AKS Review",
+      "category": "Governance and Security",
+      "subcategory": "Compliance",
+      "id": "04.01.05",
+      "text": "Scan your images for vulnerabilities",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/security-center/container-security",
+      "sourcePath": "checklists/aks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/aks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "21d41d25-00b7-407a-b9ea-b40fd3290798",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Network Security",
+      "id": "A04.01",
+      "text": "Control inbound network access with Private Link",
+      "description": "Service supports disabling public network access either through using service-level IP ACL filtering rule (not NSG or Azure Firewall) or using a 'Disable Public Network Access' toggle switch",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-private-link",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4451e1a2-d345-4293-a763-9637a551c5c0",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Vulnerability Management",
+      "id": "A05.01",
+      "text": "Deploy validated container images",
+      "description": "Deploy trusted code that was validated and scanned for vulnerabilities according to DevSecOps practices.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e338997e-41c7-47d7-acf6-a62a1194956d",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.04",
+      "text": "Disable Anonymous pull access",
+      "description": "Disable anonymous pull/push access",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/anonymous-pull-access#configure-anonymous-pull-access",
+      "graph": "resources | where type =~ 'microsoft.containerregistry/registries' | extend compliant = iif(properties.anonymousPullEnabled == false, true, false) | project compliant, name, id, tags | distinct id, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3a041fd3-2947-498b-8288-b3c6a56ceb54",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Identity and Access Control",
+      "id": "A02.07",
+      "text": "Disable Azure ARM audience tokens for authentication",
+      "description": "Only tokens with an ACR audience can be used for authentication. Used when enabling Conditional access policies for ACR",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-enable-conditional-access-policy",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cd289ced-6b17-4db8-8554-62f2aee4553a",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Network Security",
+      "id": "A04.02",
+      "text": "Disable Public Network access",
+      "description": "Disable public network access if inbound network access is secured using Private Link",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-access-selected-networks#disable-public-network-access",
+      "graph": "resources | where type =~ 'Microsoft.ContainerRegistry/registries' | where sku.name =~ 'Premium' // Check for Premium SKU | extend publicAccessEnabled = properties.publicNetworkAccess | extend defaultAction = tostring(properties.networkRuleSet.defaultAction) // Extract defaultAction | extend compliant = iif(publicAccessEnabled != 'Enabled' or defaultAction == 'Deny', true, false) | project name, id, publicAccessEnabled, defaultAction, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8a488cde-c486-42bc-9bd2-1be77f26e5e6",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Logging and Monitoring",
+      "id": "A03.01",
+      "text": "Enable diagnostics logging",
+      "description": "Set up a diagnostic setting to send 'repositoryEvents' & 'LoginEvents' to Log Analytics as the central destination for logging and monitoring. This allows you to monitor control plane activity on the ACR resource itself.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/monitor-service",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0bd05dc2-efd5-4d76-8d41-d2500cc47b49",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Data Protection",
+      "id": "A01.04",
+      "text": "Encrypt registry with a customer managed key",
+      "description": "Azure Container Registry automatically encrypts images and other artifacts that you store. By default, Azure automatically encrypts the registry content at rest by using service-managed keys. By using a customer-managed key, you can supplement default encryption with an additional encryption layer.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/tutorial-customer-managed-keys",
+      "graph": "resources | where type =~ 'Microsoft.ContainerRegistry/registries' | extend acrName = name, acrId = id | extend encryptionStatus = properties.encryption.status  | extend compliant = iif(encryptionStatus == 'disabled', false, true) | project acrName, acrId, encryptionStatus, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "fc833934-8b26-42d6-ac5f-512925498f6d",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Network Security",
+      "id": "A04.03",
+      "text": "Use an Azure Container Registry SKU that supports Private Link (Premium SKU)",
+      "description": "Only the ACR Premium SKU supports Private Link access",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/container-registry/container-registry-skus",
+      "graph": "resources | where type =~ 'Microsoft.ContainerRegistry/registries' | extend skuName = sku.name // Extract the SKU name | extend compliant = iif(skuName == 'Premium', true, false) // Check if SKU is Premium | project name, id, skuName, compliant",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8e389532-5db5-7e4c-9d4d-443b3e55ae82",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Governance",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "8e389532-5db5-7e4c-9d4d-443b3e55ae82",
+      "text": "Move Container Registry to a dedicated resource group",
+      "description": "Container registries, used across multiple hosts, should be in their own resource group to prevent accidental deletion of images when container instances are deleted, preserving the image collection while experimenting with hosts.",
+      "severity": "Low",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-best-practices#dedicated-resource-group",
+      "graph": "// Azure Resource Graph Query\n// List container registries that contain additional resources within the same resource group.\nresources\n| where type =~ \"microsoft.containerregistry/registries\"\n| project registryName=name, registryId=id, registryTags=tags, resourceGroupId=strcat('/subscriptions/', subscriptionId, '/resourceGroups/', resourceGroup), resourceGroup, subscriptionId\n| join kind=inner (\n    resources\n    | where not(type =~ \"microsoft.containerregistry/registries\")\n    | summarize recourceCount=count() by subscriptionId, resourceGroup\n    | where recourceCount != 0\n) on resourceGroup, subscriptionId\n| project recommendationId = \"8e389532-5db5-7e4c-9d4d-443b3e55ae82\", name=registryName, id=registryId, tags=registryTags, param1=strcat('resourceGroupName:',resourceGroup), param2=strcat('resourceGroupId:',resourceGroupId)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a5a0101a-a240-8742-90ba-81dbde9a0c0c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.ContainerRegistry/registries",
+      "id": "a5a0101a-a240-8742-90ba-81dbde9a0c0c",
+      "text": "Use Repository namespaces",
+      "description": "Using repository namespaces allows a single registry to be shared across multiple groups and deployments within an organization, supporting nested namespaces for group isolation. However, repositories are managed independently, not hierarchically.",
+      "severity": "Low",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "armService": "Microsoft.ContainerRegistry/registries",
+      "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-best-practices#repository-namespaces",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "bad37dac-43bc-46ce-8d7a-a9b24604489a",
+      "technology": "Azure Container Registry Security Review",
+      "technologySlug": "azure-container-registry-security-review-acr-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 95,
+      "family": "Azure Container Registry Security Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Container Registry Security Review",
+      "category": "Security",
+      "subcategory": "Network Security",
+      "id": "A04.04",
+      "text": "Enable Defender for Containers to scan Azure Container Registry for vulnerabilities",
+      "description": "Azure Defender for containers or equivalent service should be used to scan container images for vulnerabilities",
+      "severity": "Low",
+      "waf": "Security",
+      "service": "Azure Container Registry",
+      "serviceCanonical": "Azure Container Registry",
+      "serviceSlug": "azure-container-registry",
+      "link": "https://learn.microsoft.com/azure/defender-for-cloud/defender-for-containers-introduction",
+      "sourcePath": "checklists/acr_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/acr_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 56,
+    "unavailableRegionCount": 3,
+    "restrictedRegionCount": 9,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Container Registry",
+    "matchedServiceLabel": "Azure Container Registry",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

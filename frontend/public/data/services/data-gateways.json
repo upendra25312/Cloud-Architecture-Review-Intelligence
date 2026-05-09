@@ -1,0 +1,119 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "data-gateways",
+    "service": "Data Gateways",
+    "aliases": [],
+    "itemCount": 1,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Network"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Data Gateways appears across 1 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": false,
+      "matchedSkuHints": [],
+      "notes": [
+        "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "resiliency-review-resiliency-checklist",
+        "technology": "Resiliency Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 38,
+        "highSeverityCount": 9,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 93,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "89f89dc7-b44b-4e3b-8a27-f8b9e91be103",
+      "technology": "Resiliency Review",
+      "technologySlug": "resiliency-review-resiliency-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 93,
+      "family": "Resiliency Review",
+      "sourceKind": "checklists",
+      "checklist": "Resiliency Review",
+      "category": "Network",
+      "subcategory": "Data Gateways",
+      "text": "Use on-premises data gateway clusters to ensure high availability for business-critical data",
+      "description": "Use an on-premises data gateway cluster to avoid single points of failure and to load balance traffic across gateways.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Data Gateways",
+      "serviceCanonical": "Data Gateways",
+      "serviceSlug": "data-gateways",
+      "link": "https://learn.microsoft.com/data-integration/gateway/service-gateway-high-availability-clusters",
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": false,
+    "notes": [
+      "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": []
+  }
+}

@@ -1,0 +1,1861 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-monitor",
+    "service": "Azure Monitor",
+    "aliases": [],
+    "itemCount": 10,
+    "highSeverityCount": 1,
+    "familyCount": 3,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Cost Optimization",
+      "Management",
+      "Operations",
+      "Security"
+    ],
+    "wafPillars": [
+      "Cost",
+      "Operations",
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Monitor appears across 10 normalized findings in 3 checklist families. 1 GA-ready families can anchor the baseline. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Monitor",
+      "matchedServiceLabel": "Azure Monitor",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 55,
+      "unavailableRegionCount": 4,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 14,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "cost-optimization-checklist-cost-checklist",
+        "technology": "Cost Optimization Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 86,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 86,
+          "metadataCompleteness": 76,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "5e6c4cfd-3e50-4454-9c24-47ec66138a72",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Monitoring",
+      "id": "F01.03",
+      "text": "Export logs to Azure Storage if your log retention requirements exceed twelve years. Use immutable storage with a write-once, read-many policy to make data non-erasable and non-modifiable for a user-specified interval.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/logs/data-retention-archive?tabs=portal-1%2Cportal-2#how-retention-and-archiving-work",
+      "training": "https://learn.microsoft.com/learn/paths/architect-infrastructure-operations/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b49dd9e6-e189-4fc5-a02d-d5cc04583d1d",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Monitoring",
+      "id": "AI.116",
+      "text": "Deploy AMBA to establish monitoring for platform components of your landing zone.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/management-monitor",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e5f8d79f-2e87-4768-924c-516775c6ea95",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Security",
+      "subcategory": "Operations",
+      "id": "G03.08",
+      "text": "Connect default resource configurations to a centralized Azure Monitor Log Analytics workspace.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/logs/design-logs-deployment",
+      "training": "https://learn.microsoft.com/training/modules/analyze-infrastructure-with-azure-monitor-logs/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7418ada9-4199-4c28-8286-d15e9433e8f3",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Monitoring",
+      "id": "F01.02",
+      "text": "Decide whether to use a single Azure Monitor Logs workspace for all regions or to create multiple workspaces to cover various geographical regions. Each approach has advantages and disadvantages, including potential cross-region networking charges",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/logs/design-logs-deployment",
+      "training": "https://learn.microsoft.com/azure/azure-monitor/logs/design-logs-deployment",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "67e7a8ed-4b30-4e38-a3f2-9812b2363cef",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Monitoring",
+      "id": "F01.01",
+      "text": "Use a single monitor logs workspace to manage platforms centrally except where Azure role-based access control (Azure RBAC), data sovereignty requirements, or data retention policies mandate separate workspaces.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/logs/workspace-design#azure-regions",
+      "training": "https://learn.microsoft.com/azure/azure-monitor/logs/design-logs-deployment",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "97be9951-9048-4384-9c98-6cb2913156a1",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Monitoring",
+      "id": "F01.15",
+      "text": "Use Azure Monitor alerts for the generation of operational alerts.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-overview",
+      "training": "https://learn.microsoft.com/training/modules/incident-response-with-alerting-on-azure/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6944008b-e7d7-4e48-9327-6d8bdc055bcf",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "Monitoring",
+      "id": "F01.13",
+      "text": "Use Azure Monitor Logs for insights and reporting.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-setup-guide/monitoring-reporting?tabs=AzureMonitor",
+      "training": "https://learn.microsoft.com/training/modules/configure-azure-monitor/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "674b5ed8-5a85-49c7-933b-e2a1a27b765a",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Cost Optimization",
+      "subcategory": "Log Analytics retention for workspaces",
+      "id": "A04.01",
+      "text": "Check spending and savings opportunities among the 40 different log analytics workspaces- use different retention and data collection for nonprod workspaces-create daily cap for awareness and tier sizing - If you do set a daily cap, in addition to creating an alert when the cap is reached,ensure that you also create an alert rule to be notified when some percentage has been reached (90% for example). - consider workspace transformation if possible - https://learn.microsoft.com/azure/azure-monitor/essentials/data-collection-transformations#workspace-transformation-dcr",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/cost-management-billing/manage/direct-ea-administration#manage-notification-contacts",
+      "training": "https://learn.microsoft.com/azure/cost-management-billing/costs/understand-work-scopes",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a95b86ad-8840-48e3-9273-4b875ba18f20",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Cost Optimization",
+      "subcategory": "Azure Monitor - enforce data collection rules",
+      "id": "A01.01",
+      "text": "Data collection rules in Azure Monitor -https://learn.microsoft.com/azure/azure-monitor/essentials/data-collection-rule-overview",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/architecture/guide/multitenant/considerations/tenancy-models",
+      "training": "https://azure.microsoft.com/pricing/reservations/",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "91be1f38-8ef3-494c-8bd4-63cbbac75819",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Cost Optimization",
+      "subcategory": "Policy",
+      "id": "A05.01",
+      "text": "Enforce a purging log policy and automation (if needed, logs can be moved to cold storage)",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Monitor",
+      "serviceCanonical": "Azure Monitor",
+      "serviceSlug": "azure-monitor",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/azure-billing-enterprise-agreement#design-considerations",
+      "training": "https://www.youtube.com/watch?v=nHQYcYGKuyw",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 55,
+    "unavailableRegionCount": 4,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 14,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Monitor",
+    "matchedServiceLabel": "Azure Monitor",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Application Insights",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor Managed Service for Prometheus",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Monitor SCOM Managed Instance",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Log Analytics",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": [
+      {
+        "skuName": "Azure Monitor pipeline",
+        "state": "Preview"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1457 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-cosmos-db",
+    "service": "Azure Cosmos DB",
+    "aliases": [
+      "Microsoft.DocumentDB/databaseAccounts"
+    ],
+    "itemCount": 18,
+    "highSeverityCount": 7,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Disaster Recovery",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Operations Management",
+      "Scalability"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Cosmos DB appears across 18 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Cosmos DB",
+      "matchedServiceLabel": "Azure Cosmos DB",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 56,
+      "unavailableRegionCount": 3,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "cosmosdb-review-checklist-cosmosdb-checklist",
+        "technology": "CosmosDB Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 10,
+        "highSeverityCount": 2,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 94,
+          "metadataCompleteness": 95,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "43663217-a1d3-844b-80ea-571a2ce37c6c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "b57f7a29-dcc8-43de-86fa-18d3f9d3764d",
+      "text": "Configure at least two regions for high availability",
+      "description": "Enable a secondary region in Cosmos DB for higher SLA without downtime. Simple as pinning a location on a map. For Strong consistency, configure at least three regions for write availability in case of failure.",
+      "severity": "High",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/distribute-data-globally",
+      "graph": "// Azure Resource Graph Query\n// Query to find Azure Cosmos DB accounts that have less than 2 regions or less than 3 regions with strong consistency level\nResources\n| where type =~ 'Microsoft.DocumentDb/databaseAccounts'\n| where\n    array_length(properties.locations) < 2 or\n    (array_length(properties.locations) < 3 and properties.consistencyPolicy.defaultConsistencyLevel == 'Strong')\n| project recommendationId='43663217-a1d3-844b-80ea-571a2ce37c6c', name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e544520b-8505-7841-9e77-1f1974ee86ec",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "52fef986-5897-4359-8b92-0f22749f0d73",
+      "text": "Configure continuous backup mode",
+      "description": "Cosmos DB's backup is always on, offering protection against data mishaps. Continuous mode allows for self-serve restoration to a pre-mishap point, unlike periodic mode which requires contacting Microsoft support, leading to longer restore times.",
+      "severity": "High",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/continuous-backup-restore-introduction",
+      "graph": "// Azure Resource Graph Query\n// Query all Azure Cosmos DB accounts that do not have continuous backup mode configured\nResources\n| where type =~ 'Microsoft.DocumentDb/databaseAccounts'\n| where\n    properties.backupPolicy.type == 'Periodic' and\n    properties.enableMultipleWriteLocations == false and\n    properties.enableAnalyticalStorage == false\n| project recommendationId='e544520b-8505-7841-9e77-1f1974ee86ec', name, id, tags\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9cabded7-a1fc-6e4a-944b-d7dd98ea31a2",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "5de9f2e6-087e-40da-863a-34b7943beed4",
+      "text": "Enable service-managed failover for multi-region accounts with single write region",
+      "description": "Cosmos DB boasts high uptime and resiliency. Even so, issues may arise. With Service-Managed failover, if a region is down, Cosmos DB automatically switches to the next available region, requiring no user action.",
+      "severity": "High",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/how-to-manage-database-account#automatic-failover",
+      "graph": "// Azure Resource Graph Query\n// Query to list all Azure Cosmos DB accounts that do not have multiple write locations or automatic failover enabled\nResources\n| where type =~ 'Microsoft.DocumentDb/databaseAccounts'\n| where\n    array_length(properties.locations) > 1 and\n    tobool(properties.enableAutomaticFailover) == false and\n    tobool(properties.enableMultipleWriteLocations) == false\n| project recommendationId='9cabded7-a1fc-6e4a-944b-d7dd98ea31a2', name, id, tags\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c006604a-0d29-684c-99f0-9729cb40dac5",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "c006604a-0d29-684c-99f0-9729cb40dac5",
+      "text": "Ensure query results are fully drained",
+      "description": "Cosmos DB has a 4 MB response limit, leading to paginated results for large or partition-spanning queries. Each page shows availability and provides a continuation token for the next. A while loop in code is necessary to traverse all pages until completion.",
+      "severity": "High",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/nosql/query/pagination#handling-multiple-pages-of-results",
+      "graph": "// under-development\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9ce78192-74a0-104c-b5bb-9a443f941649",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "9ce78192-74a0-104c-b5bb-9a443f941649",
+      "text": "Evaluate multi-region write capability",
+      "description": "Multi-region write capability allows for designing applications that are highly available across multiple regions, though it demands careful attention to consistency requirements and conflict resolution. Improper setup may decrease availability and cause data corruption due to unhandled conflicts.",
+      "severity": "High",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/distribute-data-globally",
+      "graph": "// Azure Resource Graph Query\n// Query to find Azure Cosmos DB accounts that have multiple read locations but do not have multiple write locations enabled\nResources\n| where type =~ 'Microsoft.DocumentDb/databaseAccounts'\n| where\n    array_length(properties.locations) > 1 and\n    properties.enableMultipleWriteLocations == false\n| project recommendationId='9ce78192-74a0-104c-b5bb-9a443f941649', name, id, tags\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9f8ea848-25ec-4140-bc32-2758e6ee9ac0",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "High Availability",
+      "id": "A02.05",
+      "text": "Choose from several well-defined consistency models",
+      "description": "Choose from various consistency levels such as Eventual, Consistent Prefix, Session, Bounded Staleness and strong",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/consistency-levels",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "de39ac0e-7c28-4dc9-9565-7202bff4564b",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "High Availability",
+      "id": "A02.01",
+      "text": "Leverage Availablity Zones where regionally applicable and ofcourse if the service offers it",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#slas",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "fa6ac22f-0584-bb4b-80e4-80f4755d1a97",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "fa6ac22f-0584-bb4b-80e4-80f4755d1a97",
+      "text": "Implement retry logic in your client",
+      "description": "Cosmos DB SDKs automatically manage many transient errors through retries. Despite this, it's crucial for applications to implement additional retry policies targeting specific cases that the SDKs can't generically address, ensuring more robust error handling.",
+      "severity": "Medium",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/nosql/conceptual-resilient-sdk-applications",
+      "graph": "// under-development\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7eb32cf9-9a42-1540-acf8-597cbba8a418",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "7eb32cf9-9a42-1540-acf8-597cbba8a418",
+      "text": "Maintain singleton pattern in your client",
+      "description": "Using a single instance of the SDK client for each account and application is crucial as connections are tied to the client. Compute environments have a limit on open connections, affecting connectivity when exceeded.",
+      "severity": "Medium",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/nosql/conceptual-resilient-sdk-applications",
+      "graph": "// under-development\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "deaea200-013c-414b-ac9f-bfa7a7fb13f0",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.DocumentDB/databaseAccounts",
+      "id": "deaea200-013c-414b-ac9f-bfa7a7fb13f0",
+      "text": "Monitor Cosmos DB health and set up alerts",
+      "description": "Monitoring the availability and responsiveness of Azure Cosmos DB resources and having alerts set up for your workload is a good practice. This ensures you stay proactive in handling unforeseen events.",
+      "severity": "Medium",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "armService": "Microsoft.DocumentDB/databaseAccounts",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/create-alerts",
+      "graph": "// under-development\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d43918a8-cd28-49be-b6b1-7cb8245461e1",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup Strategy",
+      "id": "A03.03",
+      "text": "Continous Backup with point-in-time restore in Azure Cosmos DB",
+      "description": "Continous 7 day retention and 30 day retention backups. Azure Cosmos DB performs data backup in the background without consuming any extra provisioned throughput (RUs) or affecting the performance and availability of your database. Continuous backups are taken in every region where the account exists.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/continuous-backup-restore-introduction",
+      "training": "https://learn.microsoft.com/learn/modules/create-custom-azure-roles-with-rbac/",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8153d89f-89dc-47b3-9be2-b1a27f7b9e91",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "High Availability",
+      "id": "A02.04",
+      "text": "Distribute your data globally",
+      "description": "Span Cosmos account across two or more regions with multi-region writes",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#slas",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3499c9c1-133d-42f7-a4b1-a5bd06ff1a90",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup Strategy",
+      "id": "A03.01",
+      "text": "Enable Automatic Backups",
+      "description": "Azure Cosmos DB automatically takes backups of your data at regular intervals. The automatic backups are taken without affecting the performance or availability of the database operations. All the backups are stored separately in a storage service.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/online-backup-and-restore",
+      "training": "https://learn.microsoft.com/learn/modules/explore-basic-services-identity-types/",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a47e4d1e-bb79-43f9-bf87-69e1032b72fe",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "High Availability",
+      "id": "A02.06",
+      "text": "Enable Service managed failover",
+      "description": "Maintain business continuity during regional outages. Azure Cosmos DB supports service-managed failover during a regional outage. During a regional outage, Azure Cosmos DB continues to maintain its latency, availability, consistency, and throughput SLAs. To help make sure that your entire application is highly available, Azure Cosmos DB offers a manual failover API to simulate a regional outage. By using this API, you can carry out regular business continuity drills.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/how-to-manage-database-account#automatic-failover",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "43e52f47-22d9-428c-8b1c-d521e54a29a9",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A01.01",
+      "text": "FTA Resiliency Playbook",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://github.com/Azure/fta-resiliencyplaybooks/blob/main/pass-foundations-playbooks-CosmosDB_v1.docx",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "bad38ead-53cc-47de-8d8a-aab3571449ab",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "High Availability",
+      "id": "A02.03",
+      "text": "Leverage Multi-Region Writes",
+      "description": "Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#multiple-write-regions",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a6eb33f6-005c-4d92-9286-7655672d6121",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup Strategy",
+      "id": "A03.02",
+      "text": "Perform Periodic Backups",
+      "description": "This mode is the default backup mode for all existing accounts. In this mode, backup is taken at a periodic interval and the data is restored by creating a request with the support team. In this mode, you configure a backup interval and retention for your account. The maximum retention period extends to a month. The minimum backup interval can be one hour.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/periodic-backup-restore-introduction",
+      "training": "https://learn.microsoft.com/learn/paths/manage-identity-and-access/",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0d934a34-8b26-43e7-bd60-513a3649906e",
+      "technology": "CosmosDB Review Checklist",
+      "technologySlug": "cosmosdb-review-checklist-cosmosdb-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 94,
+      "family": "CosmosDB Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "CosmosDB Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "High Availability",
+      "id": "A02.02",
+      "text": "Run multiple replicas of the database (>1) in Prod",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Cosmos DB",
+      "serviceCanonical": "Azure Cosmos DB",
+      "serviceSlug": "azure-cosmos-db",
+      "link": "https://learn.microsoft.com/azure/cosmos-db/high-availability#replica-outages",
+      "sourcePath": "checklists/cosmosdb_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cosmosdb_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 56,
+    "unavailableRegionCount": 3,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Cosmos DB",
+    "matchedServiceLabel": "Azure Cosmos DB",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

@@ -1,0 +1,1453 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-database-for-mysql",
+    "service": "Azure Database for MySQL",
+    "aliases": [
+      "Microsoft.DBforMySQL/flexibleServers"
+    ],
+    "itemCount": 8,
+    "highSeverityCount": 6,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Disaster Recovery",
+      "High Availability",
+      "Operations Management",
+      "Scalability"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Database for MySQL appears across 8 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Database for MySQL",
+      "matchedServiceLabel": "Azure Database for MySQL",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 57,
+      "unavailableRegionCount": 2,
+      "restrictedRegionCount": 9,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 43,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "mysql-review-checklist-mysql-checklist",
+        "technology": "MySQL Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 3,
+        "highSeverityCount": 1,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "5c96afc3-7d2e-46ff-a4c7-9c32850c441b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.DBforMySQL/flexibleServers",
+      "id": "5c96afc3-7d2e-46ff-a4c7-9c32850c441b",
+      "text": "Configure geo redundant backup storage",
+      "description": "Configure GRS to ensure that your database meets its availability and durability targets even in the face of failures or disasters.",
+      "severity": "High",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "armService": "Microsoft.DBforMySQL/flexibleServers",
+      "link": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-backup-restore",
+      "graph": "// Azure Resource Graph Query\n// Find Database for MySQL instances that do not have geo redundant backup storage enabled\nresources\n| where type =~ \"microsoft.dbformysql/flexibleservers\"\n| where properties.backup.geoRedundantBackup != \"Enabled\"\n| project recommendationId = \"5c96afc3-7d2e-46ff-a4c7-9c32850c441b\", name, id, tags, param1 = strcat(\"geoRedundantBackup:\", properties['backup']['geoRedundantBackup'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b49a8653-cc43-48c9-8513-a2d2e3f14dd1",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.DBforMySQL/flexibleServers",
+      "id": "b49a8653-cc43-48c9-8513-a2d2e3f14dd1",
+      "text": "Configure one or more read replicas",
+      "description": "Configure one or more read replicas to ensure that your database meets its availability and durability targets even in the face of failures or disasters.",
+      "severity": "High",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "armService": "Microsoft.DBforMySQL/flexibleServers",
+      "link": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-read-replicas",
+      "graph": "// Azure Resource Graph Query\n// Find Database for MySQL instances that do not have a read replica configured\nresources\n| where type =~ \"microsoft.dbformysql/flexibleservers\"\n| where properties.replicationRole == \"None\"\n| project recommendationId = \"b49a8653-cc43-48c9-8513-a2d2e3f14dd1\", name, id, tags, param1 = strcat(\"replicationRole:\", properties['replicationRole'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8176a79d-8645-4e52-96be-a10fc0204fe5",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.DBforMySQL/flexibleServers",
+      "id": "8176a79d-8645-4e52-96be-a10fc0204fe5",
+      "text": "Configure storage auto-grow",
+      "description": "Configure storage auto-grow to prevent the server from running out of storage and becoming read-only.",
+      "severity": "High",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "armService": "Microsoft.DBforMySQL/flexibleServers",
+      "link": "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/concepts-service-tiers-storage#storage-auto-grow",
+      "graph": "// Azure Resource Graph Query\n// Find Database for MySQL instances that do not have a storage auto-grow\nresources\n| where type =~ \"microsoft.dbformysql/flexibleservers\"\n| where properties.storage.autoGrow != \"Enabled\"\n| project recommendationId = \"8176a79d-8645-4e52-96be-a10fc0204fe5\", name, id, tags, param1 = strcat(\"autoGrow:\", properties['storage']['autoGrow'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "82a9a0f2-24ee-496f-9ad2-25f81710942d",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.DBforMySQL/flexibleServers",
+      "id": "82a9a0f2-24ee-496f-9ad2-25f81710942d",
+      "text": "Enable custom maintenance schedule",
+      "description": "Use custom maintenance schedule on flexible server instances to select a preferred time for service updates to be applied.",
+      "severity": "High",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "armService": "Microsoft.DBforMySQL/flexibleServers",
+      "link": "https://learn.microsoft.com/azure/mysql/flexible-server/concepts-maintenance",
+      "graph": "// Azure Resource Graph Query\n// Find Database for MySQL instances that do not have a custom maintenance window\nresources\n| where type =~ \"microsoft.dbformysql/flexibleservers\"\n| where properties.maintenanceWindow.customWindow != \"Enabled\"\n| project recommendationId = \"82a9a0f2-24ee-496f-9ad2-25f81710942d\", name, id, tags, param1 = strcat(\"customWindow:\", properties['maintenanceWindow']['customWindow'])\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "88856605-53d8-4bbd-a75b-4a7b14939d32",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.DBforMySQL/flexibleServers",
+      "id": "88856605-53d8-4bbd-a75b-4a7b14939d32",
+      "text": "Enable HA with zone redundancy",
+      "description": "Enable HA with zone redundancy on flexible server instances to deploy a standby replica in a different zone, offering automatic failover capability for improved reliability and disaster recovery.",
+      "severity": "High",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "armService": "Microsoft.DBforMySQL/flexibleServers",
+      "link": "https://learn.microsoft.com/azure/mysql/flexible-server/concepts-high-availability",
+      "graph": "// Azure Resource Graph Query\n// Find Database for MySQL instances that are not zone redundant\nresources\n| where type == \"microsoft.dbformysql/flexibleservers\"\n| where properties.highAvailability.mode != \"ZoneRedundant\"\n| project recommendationId = \"88856605-53d8-4bbd-a75b-4a7b14939d32\", name, id, tags, param1 = \"ZoneRedundant: False\"\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "de3aad1e-8c38-4ec9-9666-7313c005674b",
+      "technology": "MySQL Review Checklist",
+      "technologySlug": "mysql-review-checklist-mysql-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "MySQL Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "MySQL Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A1.2",
+      "text": "Leverage Availability Zones where regionally applicable",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "link": "https://learn.microsoft.com/azure/mysql/flexible-server/overview#high-availability-within-and-across-availability-zones",
+      "sourcePath": "checklists/mysql_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/mysql_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1e944a45-9c37-43e7-bd61-623b365a917e",
+      "technology": "MySQL Review Checklist",
+      "technologySlug": "mysql-review-checklist-mysql-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "MySQL Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "MySQL Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A1.3",
+      "text": "Leverage Data-in replication for cross-region DR scenarios",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "link": "https://learn.microsoft.com/azure/mysql/flexible-server/overview#setup-hybrid-or-multi-cloud-data-synchronization-with-data-in-replication",
+      "sourcePath": "checklists/mysql_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/mysql_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "388c3e25-e800-4ad2-9df3-f3d6ae1050b7",
+      "technology": "MySQL Review Checklist",
+      "technologySlug": "mysql-review-checklist-mysql-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "MySQL Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "MySQL Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A1.1",
+      "text": "Leverage Flexible Server",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Database for MySQL",
+      "serviceCanonical": "Azure Database for MySQL",
+      "serviceSlug": "azure-database-for-mysql",
+      "link": "https://learn.microsoft.com/azure/mysql/flexible-server/overview",
+      "sourcePath": "checklists/mysql_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/mysql_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 57,
+    "unavailableRegionCount": 2,
+    "restrictedRegionCount": 9,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 43,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Database for MySQL",
+    "matchedServiceLabel": "Azure Database for MySQL",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Database for MySQL - Flexible Server",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Database for MySQL - Single Server",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

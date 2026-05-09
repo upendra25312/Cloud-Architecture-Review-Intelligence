@@ -1,0 +1,1270 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-dns",
+    "service": "Azure DNS",
+    "aliases": [],
+    "itemCount": 7,
+    "highSeverityCount": 1,
+    "familyCount": 2,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Network",
+      "Network Topology and Connectivity"
+    ],
+    "wafPillars": [
+      "Operations",
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure DNS appears across 7 normalized findings in 2 checklist families. 1 GA-ready families can anchor the baseline. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure DNS",
+      "matchedServiceLabel": "Azure DNS",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 59,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "resiliency-review-resiliency-checklist",
+        "technology": "Resiliency Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 38,
+        "highSeverityCount": 9,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 93,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "614658d3-558f-4d77-849b-821112df27ee",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.09",
+      "text": "Enable auto-registration for Azure DNS to automatically manage the lifecycle of the DNS records for the virtual machines deployed within a virtual network.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://learn.microsoft.com/azure/dns/private-dns-autoregistration",
+      "training": "https://learn.microsoft.com/learn/paths/az-104-manage-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "41049d40-3a92-43c3-974d-00018ac6a9e0",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.07",
+      "text": "For environments where name resolution across Azure and on-premises is required and there is no existing enterprise DNS service like Active Directory, use Azure DNS Private Resolver to route DNS requests to Azure or to on-premises DNS servers.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://learn.microsoft.com/azure/dns/dns-private-resolver-overview",
+      "training": "https://learn.microsoft.com/training/modules/intro-to-azure-dns-private-resolver/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "153e8908-ae28-4c84-a33b-6b7808b9fe5c",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.06",
+      "text": "For environments where name resolution in Azure is all that's required, use Azure Private DNS for resolution with a delegated zone for name resolution (such as 'azure.contoso.com').",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://learn.microsoft.com/azure/dns/private-dns-getstarted-portal",
+      "training": "https://learn.microsoft.com/learn/paths/az-104-manage-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "18c80eb0-582a-4198-bf5c-d8800b2d263b",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.10",
+      "text": "Implement a plan for managing DNS resolution between multiple Azure regions and when services fail over to another region",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/private-link-and-dns-integration-at-scale#private-link-and-dns-integration-in-hub-and-spoke-network-architectures",
+      "training": "https://learn.microsoft.com/learn/paths/az-104-manage-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "baac3ecb-a94c-4ac4-8c79-cdf27c0d78df",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.11",
+      "text": "Disable Windows systems from attempting to use port 65330 in Azure, Windows systems in Azure may attempt to use port 65330 for DNS resolution, which can cause timeouts and connectivity issues. Disabling this behavior can help prevent these issues.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://techcommunity.microsoft.com/blog/coreinfrastructureandsecurityblog/unmasking-dns-timeouts-the-hidden-culprit-in-azure-virtual-networks/4250444",
+      "training": "https://learn.microsoft.com/learn/paths/az-104-manage-virtual-networks/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1e6a83de-5de3-42c1-a924-81607d5d1e4e",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.08",
+      "text": "Special workloads that require and deploy their own DNS (such as Red Hat OpenShift) should use their preferred DNS solution.",
+      "severity": "Low",
+      "waf": "Operations",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://learn.microsoft.com/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances",
+      "training": "https://learn.microsoft.com/training/courses/az-700t00",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "43da1dae-2cc8-4814-9060-7c1cca0e6146",
+      "technology": "Resiliency Review",
+      "technologySlug": "resiliency-review-resiliency-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 93,
+      "family": "Resiliency Review",
+      "sourceKind": "checklists",
+      "checklist": "Resiliency Review",
+      "category": "Network",
+      "subcategory": "DNS",
+      "text": "Implement DNS Failover using Azure DNS Private Resolvers",
+      "description": "To eliminate a single point of failure in your on-premises DNS services and ensure reliable DNS resolution during business continuity and disaster recovery scenarios, it is recommended to utilize Azure DNS Private Resolvers in multiple regions. By deploying two or more Azure DNS private resolvers across different regions, you can enable DNS failover and achieve resiliency in your DNS infrastructure.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure DNS",
+      "serviceCanonical": "Azure DNS",
+      "serviceSlug": "azure-dns",
+      "link": "https://learn.microsoft.com/azure/dns/tutorial-dns-private-resolver-failover",
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 59,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure DNS",
+    "matchedServiceLabel": "Azure DNS",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure DNS Private Resolver",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure DNS Private Zones",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [],
+    "globalSkuStates": [
+      {
+        "skuName": "Azure DNS Public Zones",
+        "state": "GA"
+      },
+      {
+        "skuName": "General availability",
+        "state": "GA"
+      }
+    ]
+  }
+}

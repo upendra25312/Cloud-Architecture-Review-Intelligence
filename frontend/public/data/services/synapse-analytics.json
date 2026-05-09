@@ -1,0 +1,1142 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "synapse-analytics",
+    "service": "Synapse Analytics",
+    "aliases": [],
+    "itemCount": 13,
+    "highSeverityCount": 3,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Data Protection",
+      "Identity and Access Management",
+      "Network Security"
+    ],
+    "wafPillars": [
+      "Security"
+    ],
+    "description": "Synapse Analytics appears across 13 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Synapse Analytics",
+      "matchedServiceLabel": "Synapse Analytics",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 42,
+      "unavailableRegionCount": 17,
+      "restrictedRegionCount": 5,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "data-security-review-checklist-datasecurity-checklist",
+        "technology": "Data Security review checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 100,
+        "highSeverityCount": 21,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 85,
+          "metadataCompleteness": 78,
+          "severityConfidence": 99,
+          "sourceCoverageQuality": 91,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "32d41e36-11c8-417b-8afb-c410d4391898",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "A01.01",
+      "text": "Restrict use of local users on sql workloads on Synapse",
+      "description": "Restrict the use of local authentication methods for data plane access. Instead, use Microsoft Entra ID as the default authentication method to control your data plane access.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ec823923-7a15-42d6-ac5e-402925388e5d",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "A01.03",
+      "text": "Separate and limit highly privileged/administrative users and enable MFA and conditional policies",
+      "description": "If not required for routine administrative operations, disable or restrict any local admin accounts for only emergency use.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8a477cde-b486-41bc-9bc1-0ae66e25e4d5",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "C01.03",
+      "text": "Store passwords, secerts and keys in Azure key vault",
+      "description": "Use Keyvaults to store your secrets and credentials",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "efc4d761-c31d-425f-bbb4-7a393a040ed3",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "B01.02",
+      "text": "Configure private endpoints to connect to the external services and disable public access",
+      "description": "To protect any sensitive data, it's recommended to disable public access to the workspace endpoints entirely. By doing so, it ensures all workspace endpoints can only be accessed using�private endpoints.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints?view=sql-server-ver16",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e337897e-31b6-47d6-9be5-962a1193846d",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "C01.01",
+      "text": "Data Encryption at rest using Customer managed Keys for workspace",
+      "description": "First layer of encryption is done by Microsoft managed keys, you can add a second layer of encryption using Customer managed Keys",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/security/workspaces-encryption",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "697cc391-ed16-4b2d-886f-0a1241bddde6",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "C01.02",
+      "text": "Data Encryption in transit",
+      "description": "Azure Synapse leverages TLS to ensure data is encrypted in motion. SQL dedicated pools support TLS 1.0, TLS 1.1, and TLS 1.2 versions for encryption wherein Microsoft-provided drivers use TLS 1.2 by default. Serverless SQL pool and Apache Spark pool use TLS 1.2 for all outbound connections.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/guidance/security-white-paper-data-protection#data-in-transit",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d234292b-7528-4537-a551-c5bf4e4f1854",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "B01.04",
+      "text": "Deploy SHIR VMs in your vnet if you are working with sensitive data that shouldn�t leave your corporate network",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/data-factory/create-self-hosted-integration-runtime?tabs=data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "287d5cdc-126c-4c03-8af5-b1fc6898a535",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "B01.05",
+      "text": "Enable Data Exfiltration Protection (DEP)",
+      "description": "This can be done only when deploying the workspace, but Python libraries installed from public repositories like PyPI are not supported. (Think about the limitation before enabling it)",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/security/how-to-create-a-workspace-with-data-exfiltration-protection",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7f42c78e-78cb-46a2-8ad1-a0916e6a8d8f",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "A01.05",
+      "text": "Implement RLS, CLS and data masking on sql workloads in dedicated sql pool to add additional layer of security",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/sql/relational-databases/security/row-level-security?view=sql-server-ver16&context=%2Fazure%2Fsynapse-analytics%2Fcontext%2Fcontext",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a9c27d9c-42bb-46cd-8c79-99a246f3389a",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "A01.04",
+      "text": "Use Azure RBAC to control access on storage and Synapse RBAC to control access on workspace level depending on the personas of the team to fine grain the access on data and compute",
+      "description": "Azure Synapse also includes Synapse role-based access control (RBAC) roles to manage different aspects of Synapse Studio. Leverage these built-in roles to assign permissions to users, groups, or other security principals to manage who can Publish code artifacts and list or access published code artifacts,Execute code on Apache Spark pools and integration runtimes,Access linked (data) services that are protected by credentials,Monitor or cancel job executions, review job output and execution logs.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/security/synapse-workspace-understand-what-role-you-need",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cd289bed-6b17-4cb8-8454-61e1aee3453a",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "A01.02",
+      "text": "Use managed identity to authenticate to the services",
+      "description": "Use Microsoft Entra ID as the default authentication method to control your data plane access.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/synapse-service-identity?context=%2Fazure%2Fsynapse-analytics%2Fcontext%2Fcontext",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e2436b03-36db-455e-8796-0eee0bdf4cc2",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "B01.01",
+      "text": "Use managed vnet workspace to restrict the access over public internet",
+      "description": "When you create your Azure Synapse workspace, you can choose to associate it to a Microsoft Azure Virtual Network. The Virtual Network associated with your workspace is managed by Azure Synapse. This Virtual Network is called a Managed workspace Virtual Network. This can be selected when deploying a workspace",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/security/synapse-workspace-managed-vnet?view=sql-server-ver16",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "294798b1-178a-42c5-a46c-eb544350d092",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "B01.03",
+      "text": "If enabling public access highly recommended to configure IP firewall rules",
+      "description": "If public access needs to be enabled, it's highly recommended to configure the IP firewall rules to allow inbound connections only from the specified list of public IP addresses.",
+      "waf": "Security",
+      "service": "Synapse Analytics",
+      "serviceCanonical": "Synapse Analytics",
+      "serviceSlug": "synapse-analytics",
+      "link": "https://learn.microsoft.com/azure/synapse-analytics/security/synapse-workspace-ip-firewall",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 42,
+    "unavailableRegionCount": 17,
+    "restrictedRegionCount": 5,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Synapse Analytics",
+    "matchedServiceLabel": "Synapse Analytics",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

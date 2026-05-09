@@ -1,0 +1,2381 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-databricks",
+    "service": "Azure Databricks",
+    "aliases": [
+      "Microsoft.Databricks/workspaces"
+    ],
+    "itemCount": 46,
+    "highSeverityCount": 21,
+    "familyCount": 3,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 3,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Business Continuity and Disaster Recovery",
+      "Data Protection",
+      "Disaster Recovery",
+      "Governance",
+      "High Availability",
+      "Identity and Access Management",
+      "Monitoring and Alerting",
+      "Networking",
+      "Other Best Practices",
+      "Personalized",
+      "Right-sizing",
+      "Scalability"
+    ],
+    "wafPillars": [
+      "Cost",
+      "Security"
+    ],
+    "description": "Azure Databricks appears across 46 normalized findings in 3 checklist families. 3 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Databricks",
+      "matchedServiceLabel": "Azure Databricks",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 38,
+      "unavailableRegionCount": 21,
+      "restrictedRegionCount": 3,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "data-security-review-checklist-datasecurity-checklist",
+        "technology": "Data Security review checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 100,
+        "highSeverityCount": 21,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 85,
+          "metadataCompleteness": 78,
+          "severityConfidence": 99,
+          "sourceCoverageQuality": 91,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "cost-optimization-checklist-cost-checklist",
+        "technology": "Cost Optimization Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 86,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 86,
+          "metadataCompleteness": 76,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "42aedaa8-6151-424d-b782-b8666c779969",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Other Best Practices",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "42aedaa8-6151-424d-b782-b8666c779969",
+      "text": "Automate deployments and workloads",
+      "description": "The Databricks Terraform provider manages Azure Databricks workspaces and cloud infrastructure flexibly and powerfully.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/operational-excellence/best-practices#2-automate-deployments-and-workloads",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4fdb7112-4531-6f48-b60e-c917a6068d9b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "4fdb7112-4531-6f48-b60e-c917a6068d9b",
+      "text": "Configure a disaster recovery pattern",
+      "description": "Implementing a disaster recovery pattern is vital for Azure Databricks, ensuring data teams' access even during rare regional outages. It is important to note that the Azure Databricks service is not entirely zone redudant and does support zonal failover.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://github.com/Azure/AzureDatabricksBestPractices/tree/master",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "84e44da6-8cd7-b349-b02c-c8bf72cf587c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "84e44da6-8cd7-b349-b02c-c8bf72cf587c",
+      "text": "Configure jobs for automatic retries and termination",
+      "description": "Use Databricks and MLflow for deploying models as Spark UDFs for job scheduling, retries, autoscaling. Model serving offers scalable infrastructure, processes models using MLflow, and serves them via REST API using serverless compute managed in Databricks cloud.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "397cdebb-9d6e-ab4f-83a1-8c481de0a3a7",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "397cdebb-9d6e-ab4f-83a1-8c481de0a3a7",
+      "text": "Deploy workspaces in separate Subscriptions",
+      "description": "Customers often naturally divide workspaces by teams or departments. However, it's crucial to also consider Azure Subscription and ADB Workspace limits when partitioning.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://github.com/Azure/AzureDatabricksBestPractices/blob/master/toc.md#deploy-workspaces-in-multiple-subscriptions-to-honor-azure-capacity-limits",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "14310ba6-77ad-3641-a2db-57a2218b9bc7",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "14310ba6-77ad-3641-a2db-57a2218b9bc7",
+      "text": "Do not Store any Production Data in Default DBFS Folders",
+      "description": "Driven by security and data availability concerns, each Azure Databricks Workspace comes with a default DBFS designed for system-level artifacts like libraries and Init scripts, not for production data.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://github.com/Azure/AzureDatabricksBestPractices/blob/master/toc.md#do-not-store-any-production-data-in-default-dbfs-foldersr",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b5af7e26-3939-1b48-8fba-f8d4a475c67a",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "b5af7e26-3939-1b48-8fba-f8d4a475c67a",
+      "text": "Do not use Azure Spot VMs for critical Production workloads",
+      "description": "Azure Spot VMs are not suitable for critical production workloads needing high availability and reliability. They are meant for fault-tolerant tasks and can be evicted with 30-seconds notice if Azure needs the capacity, with no SLA guarantees.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5c72f0d6-55ec-d941-be84-36c194fa78c0",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "5c72f0d6-55ec-d941-be84-36c194fa78c0",
+      "text": "Enable autoscaling for batch workloads",
+      "description": "Autoscaling adjusts cluster sizes automatically based on workload demands, offering benefits for many use cases in terms of costs and performance. It includes guidance on when and how to best utilize Autoscaling. For streaming, Delta Live Tables with autoscaling is advised.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#enable-autoscaling-for-batch-workloadss",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "362ad2b6-b92c-414f-980a-0cf69467ccce",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "362ad2b6-b92c-414f-980a-0cf69467ccce",
+      "text": "Enable autoscaling for SQL warehouse",
+      "description": "The scaling parameter of a SQL warehouse defines the min and max number of clusters for distributing queries. By default, it's set to one. Increasing the cluster count can accommodate more concurrent users effectively.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#enable-autoscaling-for-sql-warehouse",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8aa63c34-dd9d-49bd-9582-21ec310dfbdd",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "8aa63c34-dd9d-49bd-9582-21ec310dfbdd",
+      "text": "Evaluate regional isolation for workspaces",
+      "description": "Move workspaces to in-region control plane for increased regional isolation. Identify current control plane region using the workspace URL and nslookup. When region from CNAME differs from workspace region and an in-region control is available, consider migration using tools provided below.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/azure/databricks/resources/supported-regions#--azure-databricks-control-plane-addresses",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5e722c4f-415a-9b4c-bd4c-96b74dce29ad",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "5e722c4f-415a-9b4c-bd4c-96b74dce29ad",
+      "text": "Isolate each workspace in its own Vnet",
+      "description": "Deploying only one Databricks Workspace per VNet aligns with ADB's isolation model.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://github.com/Azure/AzureDatabricksBestPractices/blob/master/toc.md#consider-isolating-each-workspace-in-its-own-vnet",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "12e9d852-5cdc-2743-bffe-ee21f2ef7781",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "12e9d852-5cdc-2743-bffe-ee21f2ef7781",
+      "text": "Recover from Structured Streaming query failures",
+      "description": "Structured Streaming ensures fault-tolerance and data consistency in streaming queries. With Azure Databricks workflows, you can set up your queries to automatically restart after failure, picking up precisely where they left off.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#recover-from-structured-streaming-query-failures",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "20193ff9-dbcd-a74e-b197-71d7d9d3c1e6",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "20193ff9-dbcd-a74e-b197-71d7d9d3c1e6",
+      "text": "Set up monitoring, alerting, and logging",
+      "description": "The Databricks Terraform provider is a flexible, powerful tool for managing Azure Databricks workspaces and cloud infrastructure.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/operational-excellence/best-practices#system-monitoring",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4cbb7744-ff3d-0447-badb-baf068c95696",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "4cbb7744-ff3d-0447-badb-baf068c95696",
+      "text": "Use a scalable and production-grade model serving infrastructure",
+      "description": "Use Databricks and MLflow for deploying models as Apache Spark UDFs, benefiting from job scheduling, retries, autoscaling, etc.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c166602e-0804-e34b-be8f-09b4d56e1fcd",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "c166602e-0804-e34b-be8f-09b4d56e1fcd",
+      "text": "Use Databricks Pools",
+      "description": "Databricks pools pre-provision VMs, reducing risks of provisioning errors during cluster start or scale, enhancing reliability.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "da4ea916-4df3-8c4d-8060-17b49da45977",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "da4ea916-4df3-8c4d-8060-17b49da45977",
+      "text": "Use Delta Lake for higher reliability",
+      "description": "Delta Lake is an open source storage format enhancing data lakes' reliability with ACID transactions, schema enforcement, and scalable metadata handling.",
+      "severity": "High",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d4cd21b0-7703-46e5-b6b4-bfd3d503547c",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "T01.01",
+      "text": "Avoid storing production data in DBFS.",
+      "description": "By default, DBFS is a filesystem that is accessible to all users of the given workspace and can be accessed via API. This is not necessarily a major data exfiltration concern as you can limit access to accessing data via the DBFS API or Databricks cli using IP access lists or private network access. However, as use of Azure Databricks grows and more users join a workspace, those users would have access to any data stored in DBFS, creating the potential for undesired information sharing. Databricks recommends that our customers do not store production data in DBFS.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a22a4956-e7a8-4dc4-a20e-27c3e29711b1",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "O01.02",
+      "text": "Configure single sign-on and unified login. Enable multi-factor authentication.",
+      "description": "Azure Databricks supports Microsoft Entra ID conditional access, which allows administrators to control where and when users are permitted to sign in to Azure Databricks. Conditional access policies can restrict sign-in to your corporate network or can require multi-factor authentication (MFA).",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/security/auth/#single-sign-on",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d7999a64-6f43-489a-af42-c78e78c06a73",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "O01.01",
+      "text": "Define Least Privilege model and Lower exposure of privileged accounts",
+      "description": "Separate admin accounts from normal user accounts.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6b57dfc6-5546-41e1-a3e3-453a3c863964",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "",
+      "subcategory": "",
+      "id": "P01.01",
+      "text": "Restrict workspace admins",
+      "description": "Account admins can configure a workspace setting called RestrictWorkspaceAdmins to restrict workspace admins to only change a job owner to themselves and the job run as setting to a service principal that they have the Service Principal User role on.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/admin/workspace-settings/restrict-workspace-admins",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "77036e5e-6b4b-4fd3-b503-547c1447dc56",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "O01.04",
+      "text": "Separate admin accounts from normal user accounts",
+      "description": "If you have Databricks administrators who are also normal users of the Databricks platform (for example, there�s a lead data engineer who administers the platform and also does data engineering work), Databricks recommends creating a separate account for administrative tasks. It�s important to note that as part of the Azure RBAC model, users that are given Contributor or above permissions to the Resource Group for a deployed Azure Databricks workspace automatically become administrators when they login to that workspace. Therefore, the same considerations outlined above should be applied to Azure portal users too.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8b662d6c-15f5-4129-9539-8e6ded237dd1",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "Q01.01",
+      "text": "Store passwords, secrets in Azure Key Vault",
+      "description": "It�s important to note that even if customers use Azure Key Vault to store their secrets, access controls still need to be defined within Azure Databricks. This is because the same service identity is used to retrieve the secret for all users of an Azure Databricks workspace.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b7e1d13f-54c9-1648-8a52-34c0abe8ce16",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Other Best Practices",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "b7e1d13f-54c9-1648-8a52-34c0abe8ce16",
+      "text": "Actively manage schemas",
+      "description": "Uncontrolled schema changes can lead to invalid data and failing jobs. Databricks validates and enforces schema through Delta Lake, which prevents bad records during ingestion, and Auto Loader, which detects new columns and supports schema evolution to maintain data integrity.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3d3e53b5-ebd1-db42-b43b-d4fad74824ec",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "3d3e53b5-ebd1-db42-b43b-d4fad74824ec",
+      "text": "Automatic Job Termination is enabled, ensure there are no user-defined local processes",
+      "description": "To conserve cluster resources, you can terminate a cluster to store its configuration for future reuse or autostart jobs. Clusters can auto-terminate after inactivity, but this only tracks Spark jobs, not local processes, which might still be running even after Spark jobs end.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0e835cc2-2551-a247-b1f1-3c5f25c9cb70",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Governance",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "0e835cc2-2551-a247-b1f1-3c5f25c9cb70",
+      "text": "Databricks runtime version is not latest or is not LTS version",
+      "description": "Databricks recommends migrating workloads to the latest or LTS version of its runtime for enhanced stability and support. If on Runtime 11.3 LTS or above, move directly to the latest 12.x version. If below, first migrate to 11.3 LTS, then to the latest 12.x version as per the migration guide.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/release-notes/runtime/databricks-runtime-ver",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "028593be-956e-4736-bccf-074cb10b92f4",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Personalized",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "028593be-956e-4736-bccf-074cb10b92f4",
+      "text": "Define alternate VM SKUs",
+      "description": "Azure Databricks planning should include VM SKU swap strategies for capacity issues. VMs are regional, and allocation failures may occur, shown by a \"CLOUD PROVIDER\" error.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/azure/databricks/compute/cluster-config-best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7fb90127-5364-bb4d-86fa-30778ed713fb",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "7fb90127-5364-bb4d-86fa-30778ed713fb",
+      "text": "Enable Logging-Cluster log delivery",
+      "description": "When creating a Databricks cluster, you can set a log delivery location for the Spark driver, worker nodes, and events. Logs are delivered every 5 mins and archived hourly. Upon cluster termination, all generated logs until that point are guaranteed to be delivered.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/clusters/configure#cluster-log-delivery",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a18d60f8-c98c-ba4e-ad6e-2fac72879df1",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "a18d60f8-c98c-ba4e-ad6e-2fac72879df1",
+      "text": "Recover ETL jobs based on Delta time travel",
+      "description": "Despite thorough testing, a production job can fail or yield unexpected data. Sometimes, repairs are done by adding jobs post-issue identification and pipeline correction.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#recover-etl-jobs-based-on-delta-time-travel",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1b0d0893-bf0e-8f4c-9dc6-f18f145c1ecf",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "1b0d0893-bf0e-8f4c-9dc6-f18f145c1ecf",
+      "text": "Use a layered storage architecture",
+      "description": "Curate data by creating a layered architecture to increase data quality across layers. Start with a raw layer for ingested source data, continue with a curated layer for cleansed and refined data, and finish with a final layer catered to business needs, focusing on security and performance.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cd77db98-9b13-6e4b-bd2b-74c2cb538628",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "cd77db98-9b13-6e4b-bd2b-74c2cb538628",
+      "text": "Use Delta Live Tables enhanced autoscaling",
+      "description": "Databricks enhanced autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact on the data processing latency of your pipelines.",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5877a510-8444-7a4c-8412-a8dab8662f7e",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "5877a510-8444-7a4c-8412-a8dab8662f7e",
+      "text": "Use SSD backed VMs for Worker VM Type and Driver type",
+      "description": "Upgrade HDDs in premium VMs to SSDs for better speed and reliability. Premium SSDs boost IO-heavy apps; Standard SSDs balance cost and performance. Ideal for critical workloads, upgrading improves connectivity with brief reboot. Consider for vital VMs",
+      "severity": "Medium",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/azure/virtual-machines/disks-types#premium-ssd",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cd463cbb-bc8a-4c29-aebc-91a43da1dae2",
+      "technology": "Cost Optimization Checklist",
+      "technologySlug": "cost-optimization-checklist-cost-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 86,
+      "family": "Cost Optimization Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Cost Optimization Checklist",
+      "category": "Right-sizing",
+      "subcategory": "Databricks",
+      "id": "E04.01",
+      "text": "Consider using Spot VMs with fallback where possible. Consider autotermination of clusters.",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/clusters/cluster-config-best-practices#automatic-termination",
+      "sourcePath": "checklists/cost_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/cost_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "72d42e36-11cc-457b-9a4b-1410e43a58a9",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "T01.03",
+      "text": "Add a customer-managed key for managed services and workspace storage",
+      "description": "Add a customer-managed key for select data stored within the Azure Databricks control plane, such as notebooks, secrets, Databricks SQL queries, and Databricks SQL query history and for the root storage account used for DBFS. Azure Databricks requires access to this key for ongoing operations. You can revoke access to the key to prevent Azure Databricks from accessing encrypted data within the control plane (or in our backups). This is like a �nuclear option� where the workspace ceases to function, but it provides an emergency control for extreme situations. This feature requires the Premium pricing tier.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/security/keys/customer-managed-keys",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "82db8eb9-d1ba-473b-86a5-a57eba8dd4b3",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Networking",
+      "subcategory": "",
+      "id": "U01.02",
+      "text": "Configure and use Azure Private Link to access Azure resources.",
+      "description": "Azure Private Link provides a private network route from one Azure environment to another. Private Link can be configured both between Azure Databricks users and the control plane, and also between the control plane and the data plane. Between Databricks users and the control plane, Private Link provides strong controls that limit the source for inbound requests. If a company already routes traffic through an Azure environment, they can use Private Link so that the communication between users and the Azure Databricks control plane does not traverse public IP addresses. This feature requires the Premium pricing tier. Use Azure Private Link to connect from Azure Databricks to your Azure resources. Not only does Private Link ensure",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/security/network/classic/private-link",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "277de183-b1ac-4252-a9a9-b64608489a8f",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Networking",
+      "subcategory": "",
+      "id": "U01.01",
+      "text": "Enable IP access lists to restrict access to certain IP addresses.",
+      "description": "Configure IP access lists that restrict the IP addresses that can authenticate to Databricks at account console and workspace level by checking if the user or API client is coming from a known good IP address range such as a VPN or office network. Established user sessions do not work if the user moves to a bad IP address, such as when disconnecting from the VPN.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/security/network/front-end/ip-access-list",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1447dc56-028a-471f-bf1c-e15dd3f0d5e8",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "T01.02",
+      "text": "Encrypt storage and restrict access.",
+      "description": "For the storage accounts that you manage, it is your responsibility to ensure that the storage accounts are protected according to your requirements. Examples might include: Encryption with your customer-managed key, Restrict access to trusted networks with a storage firewall, Anonymous public access is not allowed",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/security/keys/customer-managed-keys",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "11cc57b4-a4b1-4410-b43a-58a9c2289b3d",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "O01.06",
+      "text": "Limit cluster creation rights.",
+      "description": "Using either cluster policies or the older cluster ACLs, admins can define what users or groups within the organization are able to create clusters. Cluster ACLs allow you to specify which users can attach a notebook to a given cluster. Note that if a user shares a notebook already attached to a standard mode cluster, the recipient will also be able to execute code on that cluster. This does not apply to clusters that enforce user isolation: SQL Warehouses, high concurrency with table ACLs clusters, and high concurrency with credential passthrough clusters. Customers who use Unity Catalog can also enable single-user clusters to enforce isolation clusters.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "028a71ff-f1ce-415d-b3f0-d5e872d42e36",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "O01.05",
+      "text": "SCIM synchronization of users and groups.",
+      "description": "SCIM (System for Cross-domain Identity Management) allows you to sync users and groups from Microsoft Entra ID to Azure Databricks. There are three major benefits of this approach: 1. When you remove a user, the user is automatically removed from Databricks. 2. Users can also be disabled temporarily via SCIM. Customers have used this capability for scenarios where customers believe that an account may be compromised and need to investigate 3. Groups are automatically synchronized Please refer to the documentation for detailed instructions on how to configure SCIM for Azure Databricks. This feature requires the Premium pricing tier",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/admin/users-groups/scim/",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "78c06a73-a22a-4495-9e7a-8dc4a20e27c3",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "S01.01",
+      "text": "Use clusters that support user isolation.",
+      "description": "Clusters with user isolation include enforcement such that each user runs as a different non-privileged user account on the cluster host. Languages are also limited to those that can be implemented in an isolated manner (SQL and Python), and Spark APIs must be on an allowlist of those we believe to be isolation-safe.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e29711b1-352b-4eee-879b-588defc5972c",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "S01.02",
+      "text": "Use service principals to run production jobs. Use proper access control for workspace level (ACLs), account level (RBACs) and data level (Unity catalog) security controls",
+      "description": "It is against security best practices to tie production workloads to individual user accounts, and so we recommend configuring Service Principals within Databricks. Service Principles separate administrator and user actions from the workload and prevent workloads from being impacted if a user leaves an organization. With Databricks, you can configure jobs to run as service principals and generate Personal Access Tokens for Service Principals.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/security/auth/access-control/",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "352beee0-79b5-488d-bfc5-972cd4cd21b0",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "O01.03",
+      "text": "Use token management.",
+      "description": "Customers can use the Token Management API or UI controls to enable or disable personal access tokens (PATs) for REST API authentication, limit the users who are allowed to use PATs, set the maximum lifetime for new tokens, and manage existing tokens. Highly-secure customers typically provision a maximum token lifetime for new tokens for a workspace. This feature requires the Premium pricing tier.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "link": "https://learn.microsoft.com/azure/databricks/admin/access-control/tokens",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7e52d64d-8cc0-8548-a593-eb49ab45630d",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "7e52d64d-8cc0-8548-a593-eb49ab45630d",
+      "text": "Automatically rescue invalid or nonconforming data with Databricks Auto Loader or Delta Live Tables",
+      "description": "Invalid or nonconforming data can crash workloads dependent on specific data formats. Best practices recommend filtering such data at ingestion to improve end-to-end resilience, ensuring no data is lost or missed.",
+      "severity": "Low",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "932d45d6-b46d-e341-abfb-d97bce832f1f",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "932d45d6-b46d-e341-abfb-d97bce832f1f",
+      "text": "Create regular backups",
+      "description": "To recover from a failure, regular backups are needed. The Databricks Labs project migrate lets admins create backups by exporting workspace assets using the Databricks CLI/API. These backups help in restoring or migrating workspaces.",
+      "severity": "Low",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#create-regular-backups",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e93fe702-e385-d741-ba37-1f1656482ecd",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "e93fe702-e385-d741-ba37-1f1656482ecd",
+      "text": "Improve data integrity by reducing data redundancy",
+      "description": "Copying data leads to redundancy, lost integrity, lineage, and access issues, affecting lakehouse data quality. Temporary copies are useful for agility and innovation but can become problematic operational data silos, questioning data's master status and currency.",
+      "severity": "Low",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a42297c4-7e4f-8b41-8d4b-114033263f0e",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Business Continuity and Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "a42297c4-7e4f-8b41-8d4b-114033263f0e",
+      "text": "Use constraints and data expectations",
+      "description": "Delta tables verify data quality automatically with SQL constraints, triggering an error for violations. Delta Live Tables enhance this by defining expectations for data quality, utilizing Python or SQL, to manage actions for record failures, ensuring data integrity and compliance.",
+      "severity": "Low",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#use-constraints-and-data-expectations",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c0e22580-3819-444d-8546-a80e4ed85c83",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "c0e22580-3819-444d-8546-a80e4ed85c83",
+      "text": "Use Databricks Workflows and built-in recovery",
+      "description": "Databricks Workflows enable efficient error recovery in multi-task jobs by offering a matrix view for issue examination. Fixes can be applied to initiate repair runs targeting only failed and dependent tasks, preserving successful outcomes and thereby saving time and money.",
+      "severity": "Low",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "892ca809-e2b5-9a47-924a-71132bf6f902",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Databricks/workspaces",
+      "id": "892ca809-e2b5-9a47-924a-71132bf6f902",
+      "text": "Use Photon Acceleration",
+      "description": "Apache Spark in Databricks Lakehouse ensures resilient distributed data processing by automatically rescheduling failed tasks, aiding in overcoming external issues like network problems or revoked VMs.",
+      "severity": "Low",
+      "service": "Azure Databricks",
+      "serviceCanonical": "Azure Databricks",
+      "serviceSlug": "azure-databricks",
+      "armService": "Microsoft.Databricks/workspaces",
+      "link": "https://learn.microsoft.com/en-us/azure/databricks/lakehouse-architecture/reliability/best-practices#use-apache-spark-or-photon-for-distributed-compute",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 38,
+    "unavailableRegionCount": 21,
+    "restrictedRegionCount": 3,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Databricks",
+    "matchedServiceLabel": "Azure Databricks",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

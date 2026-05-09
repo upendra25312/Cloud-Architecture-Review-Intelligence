@@ -1,0 +1,48 @@
+{
+  "name": "azure-review-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Azure Review Assistant for architecture review workflows on Azure Static Web Apps and Azure Functions.",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "npm run generate:data && next dev",
+    "generate:data": "node tools/generate-data.mjs",
+    "build": "next build",
+    "serve:export": "node scripts/serve-export.mjs",
+    "start": "next start",
+    "test:api": "npm --prefix api test",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "eval:fixtures": "node tests/agent-eval/generate-synthetic-fixtures.mjs",
+    "eval": "node --experimental-strip-types tests/agent-eval/runner.ts",
+    "eval:dry-run": "node --experimental-strip-types tests/agent-eval/runner.ts --dry-run",
+    "test:e2e": "playwright test",
+    "test:e2e:core": "playwright test tests/e2e/validation-core.spec.ts --workers=1 --reporter=line",
+    "test:e2e:a11y": "playwright test tests/e2e/a11y-core.spec.ts --workers=1 --reporter=line",
+    "test:e2e:visual": "playwright test tests/e2e/visual-core.spec.ts --workers=1 --reporter=line",
+    "test:e2e:review-cloud": "playwright test tests/e2e/review-cloud.spec.ts --workers=1 --reporter=line",
+    "test:e2e:admin-copilot": "playwright test tests/e2e/admin-copilot.spec.ts --workers=1 --reporter=line"
+  },
+  "dependencies": {
+    "@azure/ai-form-recognizer": "^5.1.0",
+    "@microsoft/applicationinsights-web": "^3.4.1",
+    "next": "^16.2.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "axe-core": "^4.11.2",
+    "fast-check": "^3.23.2",
+    "serve": "^14.2.6",
+    "sharp": "^0.34.5",
+    "typescript": "^6.0.3",
+    "vitest": "^2.1.9"
+  }
+}

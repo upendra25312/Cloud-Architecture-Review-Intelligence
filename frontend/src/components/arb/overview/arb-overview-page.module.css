@@ -1,0 +1,332 @@
+/* ── Main overview layout ──────────────────────────────────────────── */
+.overviewLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Status bar — max 80px ────────────────────────────────────────── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  max-height: 80px;
+  flex-wrap: wrap;
+}
+
+/* ── Dashboard grid: 2 columns at ≥1280px ─────────────────────────── */
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* ── Score gauge ──────────────────────────────────────────────────── */
+.scoreGauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.scoreGaugeNumber {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+
+.scoreGaugeGreen {
+  color: #107C10;
+  background: #E6F4EA;
+}
+
+.scoreGaugeAmber {
+  color: #B45309;
+  background: #FEF3C7;
+}
+
+.scoreGaugeRed {
+  color: #D92B2B;
+  background: #FEE2E2;
+}
+
+.scoreGaugeNeutral {
+  color: #6B7280;
+  background: #F3F4F6;
+}
+
+.scoreBandLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--t2);
+  margin-top: 4px;
+}
+
+.recommendationBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-top: 8px;
+}
+
+.recommendationBadgeGreen {
+  background: #E6F4EA;
+  color: #107C10;
+}
+
+.recommendationBadgeAmber {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.recommendationBadgeRed {
+  background: #FEE2E2;
+  color: #D92B2B;
+}
+
+.recommendationBadgeNeutral {
+  background: #F3F4F6;
+  color: #6B7280;
+}
+
+.confidenceLabel {
+  font-size: 0.82rem;
+  color: var(--t3);
+  margin-top: 4px;
+}
+
+/* ── Metric card ──────────────────────────────────────────────────── */
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.metricCardLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+}
+
+.metricCardValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.metricCardBreakdown {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--t2);
+}
+
+.metricAccentRed {
+  border-left: 4px solid #D92B2B;
+}
+
+.metricAccentAmber {
+  border-left: 4px solid #B45309;
+}
+
+.metricAccentBlue {
+  border-left: 4px solid #0078D4;
+}
+
+.metricAccentGreen {
+  border-left: 4px solid #107C10;
+}
+
+/* ── Metrics grid (inside dashboard) ──────────────────────────────── */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* ── Progress bar ─────────────────────────────────────────────────── */
+.progressBar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.progressStep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--t3);
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  text-decoration: none;
+  position: relative;
+}
+
+.progressStep::after {
+  content: "→";
+  position: absolute;
+  right: -4px;
+  color: var(--border);
+  font-size: 0.75rem;
+}
+
+.progressStep:last-child::after {
+  content: none;
+}
+
+.progressStepComplete {
+  color: #107C10;
+  font-weight: 600;
+}
+
+.progressStepActive {
+  color: #0078D4;
+  font-weight: 700;
+}
+
+.progressStepPending {
+  color: var(--t3);
+}
+
+/* ── Quick link grid ──────────────────────────────────────────────── */
+.quickLinkGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 20px;
+}
+
+.quickLink {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.quickLink:hover {
+  background: var(--surf-hover);
+  border-color: var(--border-md);
+}
+
+.quickLinkName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--t1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quickLinkDescription {
+  font-size: 0.82rem;
+  color: var(--t2);
+  line-height: 1.5;
+}
+
+.quickLinkStatus {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quickLinkStatusComplete {
+  color: #107C10;
+}
+
+.quickLinkStatusActive {
+  color: #0078D4;
+}
+
+.quickLinkStatusPending {
+  color: var(--t3);
+}
+
+/* ── Summary card ─────────────────────────────────────────────────── */
+.summaryCard {
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: 8px;
+  background: #F9FAFB;
+  margin: 0 20px 20px;
+}
+
+.summaryCard p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--t1);
+  font-size: 0.9rem;
+}
+
+/* ── Full-width shell override ────────────────────────────────────── */
+.fullWidthShell {
+  grid-template-columns: 1fr;
+}
+
+/* ── Metric badge (status bar) ────────────────────────────────────── */
+.metricBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--t2);
+  white-space: nowrap;
+}
+
+.metricBadge strong {
+  color: var(--t1);
+}
+
+/* ── Responsive: below 1280px ─────────────────────────────────────── */
+@media (max-width: 1279px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quickLinkGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

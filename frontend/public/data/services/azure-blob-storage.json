@@ -1,0 +1,3879 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-blob-storage",
+    "service": "Azure Blob Storage",
+    "aliases": [],
+    "itemCount": 90,
+    "highSeverityCount": 0,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [],
+    "wafPillars": [
+      "Cost",
+      "Operations",
+      "Performance",
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Blob Storage appears across 90 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "Storage",
+      "matchedServiceLabel": "Azure Blob Storage",
+      "matchedSkuHints": [
+        "Blob Storage",
+        "Premium Block Blobs"
+      ],
+      "notes": [
+        "Availability is derived from Blob-related Storage SKUs in the Microsoft availability feed."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 56,
+      "unavailableRegionCount": 3,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+        "technology": "Azure Blob Storage Service Guide",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 26,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Limited confidence",
+          "qualityScore": 52,
+          "metadataCompleteness": 67,
+          "severityConfidence": 0,
+          "sourceCoverageQuality": 75,
+          "recommendedUsageConfidence": "Limited",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "waf-service-guides-wafsg-checklist",
+        "technology": "WAF Service Guides",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 646,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Limited confidence",
+          "qualityScore": 49,
+          "metadataCompleteness": 58,
+          "severityConfidence": 0,
+          "sourceCoverageQuality": 75,
+          "recommendedUsageConfidence": "Limited",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "cc147319-67cb-4737-ba01-285f3ebddcea",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Add a hash character sequence (such as three digits) as early as possible in the partition key of a blob. The partition key is the account name, container name, virtual directory name, and blob name. If you plan to use timestamps in names, then consider adding a seconds value to the beginning of that stamp. For more information, see Partitioning.",
+      "description": "Using a hash code or seconds value nearest the beginning of a partition key reduces the time required to list query and read blobs.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ed64645f-1d29-48f6-ac60-d072f840a0b9",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Apply an Azure Resource Manager lock on the storage account.",
+      "description": "Locking an account prevents it from being deleted and causing data loss.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d095b8f1-86f8-4345-a730-c079330d8a19",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "As a part of your backup and recovery strategy, enable the container soft delete, blob soft delete, versioning, and point-in-time restore options.",
+      "description": "The soft delete option enables a storage account to recover deleted containers and blobs. The versioning option automatically tracks changes made to blobs. This option lets you restore a blob to a previous state.The point-in-time restore option protects against accidental blob deletion or corruption and lets you restore block blob data to an earlier state. For more information, see Data protection overview.",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4784f5c3-bc75-45a7-b309-e39a328d352b",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Authorize access by using Azure role-based access control (RBAC).",
+      "description": "With RBAC, there are no passwords or keys that can be compromised. The security principal (user, group, managed identity, or service principal) is authenticated by Microsoft Entra ID to return an OAuth 2.0 token. The token is used to authorize a request against the Blob Storage service.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1cb9a83e-5e1f-4fa2-9fd6-b2e26a5462db",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Before initiating a failover or failback, evaluate the potential for data loss by checking the value of the last synchronization time property. This recommendation applies only to GRS and GZRS configurations.",
+      "description": "This property helps you estimate how much data you might lose by initiating an account failover. All data and metadata written before the last synchronization time is available on the secondary region, but data and metadata written after the last synchronization time might be lost because it's not written to the secondary region.",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "561e09d2-403f-42d4-9d64-dcf0c8845a7b",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Configure your account for redundancy. For maximum availability and durability, configure your account by using zone-redundant storage (ZRS) or GZRS.",
+      "description": "Redundancy protects your data against unexpected failures. The ZRS and GZRS configuration options replicate across different availability zones and enable applications to continue reading data during an outage. For more information, see Durability and availability by outage scenario and Durability and availability parameters.",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d2308a89-4f5c-4997-b38f-d4fa5585fbda",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Configure your storage account so clients can send and receive data by using the minimum version of TLS 1.2.",
+      "description": "TLS 1.2 is more secure and faster than TLS 1.0 and 1.1, which don't support modern cryptographic algorithms and cipher suites.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "82c9cd68-5f8f-496a-a84f-abbf6ce339c3",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Consider using your own encryption key to protect the data in your storage account. For more information, see Customer-managed keys for Azure Storage encryption.",
+      "description": "Customer-managed keys provide greater flexibility and control. For example, you can store encryption keys in Key Vault and automatically rotate them.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0906a42b-c081-4ba8-bef8-04633017558c",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Disable anonymous read access to containers and blob.",
+      "description": "When anonymous access is allowed for a storage account, a user that has the appropriate permissions can modify a container's anonymous access setting to enable anonymous access to the data in that container.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9ca25392-5ed4-43e6-af70-33fea033e859",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Disable any encryption scopes that aren't needed to avoid unnecessary charges.",
+      "description": "Encryptions scopes incur a per month charge.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c8c2f2d2-3aca-4483-9092-c5e078bd7488",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Disable traffic to the public endpoints of your storage account. Create private endpoints for clients that run in Azure. Enable the public endpoint only if clients and services external to Azure require direct access to your storage account. Enable firewall rules that limit access to specific virtual networks.",
+      "description": "Start with zero access and then incrementally authorize the lowest levels of access required for clients and services to minimize the risk of creating unnecessary openings for attackers.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9b699609-816c-4658-af6d-dc939f1edd51",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Disallow shared key authorization. This disables not only account key access but also service and account shared access signature tokens because they're based on account keys.",
+      "description": "Only secured requests that are authorized with Microsoft Entra ID are permitted.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "35ebda6d-7534-4808-84f7-70bd3adb0f35",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Enable SFTP support only when it's used to transfer data.",
+      "description": "Enabling the SFTP endpoint incurs an hourly cost. By thoughtfully disabling SFTP support, and then enabling it as needed, you can avoid passive charges from accruing in your account.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4dea9363-c277-4793-b9e2-e8737aeb619f",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "For broad consumption by web clients (streaming video, audio, or static website content), consider using a content delivery network through Azure Front Door.",
+      "description": "Content is delivered to clients faster because it uses the Microsoft global edge network with hundreds of global and local points of presence around the world.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0d4d5fa0-eff6-4fff-88b1-17b542978ea1",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "If you enable soft delete, then place blobs that are frequently overwritten into an account that doesn't have soft delete enabled. Set retention periods. Consider starting with a short retention period to better understand how the feature affects your bill. The minimum recommended retention period is seven days.",
+      "description": "Every time a blob is overwritten, a new snapshot is created. The cause of increased capacity charges might be difficult to access because the creation of these snapshots doesn't appear in logs. To reduce capacity charges, store frequently overwritten data in a separate storage account with soft delete disabled. A retention period keeps soft-deleted blobs from piling up and adding to the cost of capacity.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c33bbf5b-3635-4aed-acb1-0a0b697cff0a",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "If you enable versioning, then place blobs that are frequently overwritten into an account that doesn't have versioning enabled.",
+      "description": "Every time a blob is overwritten, a new version is added which leads to increased storage capacity charges. To reduce capacity charges, store frequently overwritten data in a separate storage account with versioning disabled.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "514fae4b-0f5c-4107-9b2e-cf9d20192634",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "If you enable versioning, use a lifecycle management policy to automatically delete old blob versions.",
+      "description": "Every write operation to a blob creates a new version. This increases capacity costs. You can keep costs in check by removing versions that you no longer need.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d7f07d9a-eff1-48c0-85c1-31c641051313",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Pack small files into larger files before moving them to cooler tiers. You can use file formats such as TAR or ZIP.",
+      "description": "Cooler tiers have higher data transfer costs. By having fewer large files, you can reduce the number of operations required to transfer data.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5e724a0a-d268-47ae-9dcf-7ef18d870d1d",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Provision storage accounts in the same region where dependent resources are placed. For applications that aren't hosted on Azure, such as mobile device apps or on-premises enterprise services, locate the storage account in a region nearer to those clients. For more information, see Azure geographies.If clients from a different region don't require the same data, then create a separate account in each region.If clients from a different region require only some data, consider using an object-replication policy to asynchronously copy relevant objects to a storage account in the other region.",
+      "description": "Reducing the physical distance between the storage account and VMs, services, and on-premises clients can improve performance and reduce network latency. Reducing the physical distance also reduces cost for applications hosted in Azure because bandwidth usage within a single region is free.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0393ace4-ae00-4510-a626-24fd6c331e91",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Reduce the cost of using resource logs by choosing the appropriate log storage location and by managing log-retention periods. If you only plan to query logs occasionally (for example, querying logs for compliance auditing), consider sending resource logs to a storage account instead of sending them to an Azure Monitor Logs workspace. You can use a serverless query solution such as Azure Synapse Analytics to analyze logs. For more information, see Optimize cost for infrequent queries. Use lifecycle management policies to delete or archive logs.",
+      "description": "Storing resource logs in a storage account for later analysis can be a cheaper option. Using lifecycle management policies to manage log retention in a storage account prevents large numbers of logs files building up over time, which can lead to unnecessary capacity charges.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "ce1d3a00-f0c5-47c1-b230-5a199e462b52",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Use infrastructure as code (IaC) to define the details of your storage accounts in Azure Resource Manager templates (ARM templates), Bicep, or Terraform.",
+      "description": "You can use your existing DevOps processes to deploy new storage accounts, and use Azure Policy to enforce their configuration.",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c122df96-d477-4595-acf5-501023d8f002",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Use standard-priority rehydration when rehydrating blobs from archive storage. Use high-priority rehydration only for emergency data restoration situations. For more information, see Rehydrate an archived blob to an online tier",
+      "description": "High-priority rehydration from the archive tier can lead to higher-than-normal bills.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a06df82c-98fb-4219-9708-6cb27a3b9c71",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "Use Storage insights to track the health and performance of your storage accounts. Storage insights provides a unified view of the failures, performance, availability, and capacity for all your storage accounts.",
+      "description": "You can track the health and operation of each of your accounts. Easily create dashboards and reports that stakeholders can use to track the health of your storage accounts.",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "edf07227-fd13-41c0-8e4e-dbba1e9e5240",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "We recommend that you don't use an account key. If you must use account keys, then store them in Key Vault, and make sure that you regenerate them periodically.",
+      "description": "Key Vault lets you retrieve keys at runtime, instead of saving them by using your application. Key Vault also makes it easy to rotate your keys without interruption to your applications. Rotating the account keys periodically reduces the risk of exposing your data to malicious attacks.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1432d7ef-8818-4563-86fe-eead1fc727b9",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "We recommend that you don't use shared access signature tokens. Evaluate whether you need shared access signature tokens to secure access to Blob Storage resources. If you must create one, then review this list of shared access signature best practices before you create and distribute it.",
+      "description": "Best practices can help you prevent a shared access signature token from being leaked and quickly recover if a leak does occur.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a0addee3-cb0e-4235-b93c-8d5a8ddfbab2",
+      "technology": "Azure Blob Storage Service Guide",
+      "technologySlug": "azure-blob-storage-service-guide-azureblobstorage-sg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 52,
+      "family": "Azure Blob Storage Service Guide",
+      "sourceKind": "checklists-ext",
+      "checklist": "Azure Blob Storage Service Guide",
+      "subcategory": "recommendation",
+      "text": "When uploading blobs or blocks, use a blob or block size that's greater than 256 KiB.",
+      "description": "Blob or block sizes above 256 KiB takes advantage of performance enhancements in the platform made specifically for larger blobs and block sizes.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/azureblobstorage_sg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "36fc9ddc-5d24-4ecc-a67e-3fd7bc0c4373",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Add a hash character sequence (such as three digits) as early as possible in the partition key of a blob. The partition key is the account name, container name, virtual directory name, and blob name. If you plan to use timestamps in names, then consider adding a seconds value to the beginning of that stamp. For more information, see Partitioning.",
+      "description": "Using a hash code or seconds value nearest the beginning of a partition key reduces the time required to list query and read blobs.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "09543d14-a0c7-49dc-89d1-74b1913c3b03",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Apply an Azure Resource Manager lock on the storage account.",
+      "description": "Locking an account prevents it from being deleted and causing data loss.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6ba14c6a-6f37-46a3-a2a8-e38373925d6f",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "As a part of your backup and recovery strategy, enable the container soft delete, blob soft delete, versioning, and point-in-time restore options.",
+      "description": "The soft delete option enables a storage account to recover deleted containers and blobs. The versioning option automatically tracks changes made to blobs. This option lets you restore a blob to a previous state.The point-in-time restore option protects against accidental blob deletion or corruption and lets you restore block blob data to an earlier state. For more information, see Data protection overview.",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "2ecbd38b-7ae5-4858-916a-0554e8f2d41d",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Authorize access by using Azure role-based access control (RBAC).",
+      "description": "With RBAC, there are no passwords or keys that can be compromised. The security principal (user, group, managed identity, or service principal) is authenticated by Microsoft Entra ID to return an OAuth 2.0 token. The token is used to authorize a request against the Blob Storage service.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b0e33ead-c6ca-4386-acee-30e929390ca0",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Authorize access without using passwords or keys: Microsoft Entra ID provides superior security and ease of use compared to shared keys and shared access signatures. Grant security principals only those permissions that are necessary for them to do their tasks.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f42e13de-f6f3-4fad-97f3-f657b8aa1f6c",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Before initiating a failover or failback, evaluate the potential for data loss by checking the value of the last synchronization time property. This recommendation applies only to GRS and GZRS configurations.",
+      "description": "This property helps you estimate how much data you might lose by initiating an account failover. All data and metadata written before the last synchronization time is available on the secondary region, but data and metadata written after the last synchronization time might be lost because it's not written to the secondary region.",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "51e5c8d4-4794-4514-bb01-54a517927a05",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Choose a billing model for capacity: Evaluate whether using a commitment-based model is more cost-efficient than using a consumption-based model. If you're unsure about how much capacity you need, you can start with a consumption-based model, monitor the capacity metrics, and then evaluate later.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "8a5b488c-2b97-4e55-8997-659d64c62030",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Choose an account type, a redundancy level, and a default access tier: You must select a value for each of these settings when you create a storage account. All the values affect transaction charges and capacity charges. All these settings except for the account type can be changed after the account is created.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ef4063df-4ac9-4e8b-9391-cf99ea520f3a",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Choose an efficient naming scheme: Decrease the latency of listing, list, query, and read operations by using hash tag prefixes nearest the beginning of the blob partition key (account, container, virtual directory, or blob name). This scheme benefits mostly accounts that have a flat namespace.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b675b5be-352c-4a06-94ed-8457e3d5db8c",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Choose the most cost-effective default access tier: Unless a tier is specified with each blob upload, blobs infer their access tier from the default access tier setting. A change to the default access tier setting of a storage account applies to all blobs in the account for which an access tier hasn't been explicitly set. This cost could be significant if you've collected a large number of blobs. For more information about how a tier change affects each existing blob, see Changing a blob's access tier.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "bd64ef47-64e7-4c7e-b19f-ccfd451083e0",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Choose the optimal storage account type: If your workload requires high transaction rates, smaller objects, and a consistently low transaction latency, then consider using premium block blob storage accounts. A standard general-purpose v2 account is most appropriate in most cases.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0b2ed074-7dcb-460a-8455-144171d2fe8f",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Collect performance data: Monitor your storage account to identify performance bottlenecks that occur from throttling. For more information, see Monitoring your storage service with Monitor Storage insights. Use both metrics and logs. Metrics provide numbers such as throttling errors. Logs describe activity. If you see throttling metrics, you can use logs to identity which clients are receiving throttling errors. For more information, see Auditing data plane operations.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f9c07c6b-c5ab-4e57-83f7-9455042e2e23",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Configure data redundancy: For maximum durability, choose a configuration that copies data across availability zones or global regions. For maximum availability, choose a configuration that allows clients to read data from the secondary region during an outage of the primary region.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e426149f-841f-4865-878e-311cfe914db9",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Configure your account for redundancy. For maximum availability and durability, configure your account by using zone-redundant storage (ZRS) or GZRS.",
+      "description": "Redundancy protects your data against unexpected failures. The ZRS and GZRS configuration options replicate across different availability zones and enable applications to continue reading data during an outage. For more information, see Durability and availability by outage scenario and Durability and availability parameters.",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d586222d-d9d1-4f51-ba29-58021c0ee0ae",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Configure your storage account so clients can send and receive data by using the minimum version of TLS 1.2.",
+      "description": "TLS 1.2 is more secure and faster than TLS 1.0 and 1.1, which don't support modern cryptographic algorithms and cipher suites.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "33303cd1-5b9c-4688-aa24-50cb53f5caac",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Consider using your own encryption key to protect the data in your storage account. For more information, see Customer-managed keys for Azure Storage encryption.",
+      "description": "Customer-managed keys provide greater flexibility and control. For example, you can store encryption keys in Key Vault and automatically rotate them.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3a9677e5-9506-4aaa-bac6-48b5002070c1",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Create a recovery plan: Consider data protection features, backup and restore operations, or failover procedures. Prepare for potential data loss and data inconsistencies and the time and cost of failing over. For more information, see Recommendations for designing a disaster recovery strategy.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b69e35ad-ee70-4787-bcb2-9cde1aa2600c",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Create guardrails: Create budgets based on subscriptions and resource groups. Use governance policies to restrict resource types, configurations, and locations. Additionally, use RBAC to block actions that can lead to overspending.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ab85e732-c3b0-47d2-ae0c-fa0ccf3ee4d1",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Create maintenance and emergency recovery plans: Consider data protection features, backup and restore operations, and failover procedures. Prepare for potential data loss and data inconsistencies and the time and cost of failing over.",
+      "description": "",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "df99152b-4af1-4cea-b2bd-b06fd2425c57",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Decide which features you need: Some features such as versioning and blob soft delete incur additional transaction and capacity costs as well as other charges. Make sure to review the pricing and billing sections in articles that describe those capabilities when you choose which capabilities to add to your account.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "817f9103-607a-4e3d-ba94-1a3adffaff8f",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Define reliability and recovery targets: Review the Azure service-level agreements (SLAs). Derive the service-level objective (SLO) for the storage account. For example, the SLO might be affected by the redundancy configuration that you chose. Consider the effect of a regional outage, the potential for data loss, and the time required to restore access after an outage. Also consider the availability of any internal dependencies that you identified as part of your failure mode analysis.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e71dbbd7-5e50-4ade-b5e5-4b9e59d10706",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Design applications: Design applications to seamlessly shift to reading data from the secondary region if the primary region becomes unavailable for any reason. This only applies to geo-redundant storage (GRS) and geo-zone-redundant storage (GZRS) configurations. Designing applications to handle outages reduces downtime for end users.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "80a10cbe-93f3-410a-b7ad-d7b5234add61",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Detect threats: Enable Microsoft Defender for Storage to detect threats. Security alerts are triggered when anomalies in activity occur. The alerts notify subscription administrators via email with details of suspicious activity and recommendations on how to investigate and remediate threats.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "4380d8e1-fdb6-45da-a1e1-109e162f43d3",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Disable anonymous read access to containers and blob.",
+      "description": "When anonymous access is allowed for a storage account, a user that has the appropriate permissions can modify a container's anonymous access setting to enable anonymous access to the data in that container.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b71aeb26-fc96-486c-8bed-c5c616c1d0b1",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Disable any encryption scopes that aren't needed to avoid unnecessary charges.",
+      "description": "Encryptions scopes incur a per month charge.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1b8c4090-6b15-45e0-8833-ee5285ebd444",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Disable traffic to the public endpoints of your storage account. Create private endpoints for clients that run in Azure. Enable the public endpoint only if clients and services external to Azure require direct access to your storage account. Enable firewall rules that limit access to specific virtual networks.",
+      "description": "Start with zero access and then incrementally authorize the lowest levels of access required for clients and services to minimize the risk of creating unnecessary openings for attackers.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4d731629-d6d3-4aa9-b46f-6259451f08f0",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Disallow shared key authorization. This disables not only account key access but also service and account shared access signature tokens because they're based on account keys.",
+      "description": "Only secured requests that are authorized with Microsoft Entra ID are permitted.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b842f2e7-9ac7-4d2e-9c9a-a3fb2ddc2441",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Enable blob inventory reports: Enable blob inventory reports to review the retention, legal hold, or encryption status of your storage account contents. You can also use blob inventory reports to understand the total data size, age, tier distribution, or other attributes of your data. Use tools such as Azure Databricks or Azure Synapse Analytics and Power BI to better visualize inventory data and to create reports for stakeholders.",
+      "description": "",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c1d10494-a396-4add-aae2-aaf5aa5aa0da",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Enable SFTP support only when it's used to transfer data.",
+      "description": "Enabling the SFTP endpoint incurs an hourly cost. By thoughtfully disabling SFTP support, and then enabling it as needed, you can avoid passive charges from accruing in your account.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "cd6916c2-09f8-4269-971d-60a07e57cbbd",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Enable the secure transfer required option: Enabling this setting for all your storage accounts ensures that all requests made against the storage account must take place over secure connections. Any requests made over HTTP fail.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "31b047a5-abfe-4452-ad3e-a4b99cad0e4b",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Estimate the cost of capacity and operations: You can model the costs associated with data storage, ingress, and egress by using the Azure pricing calculator. Use fields to compare the cost associated with various regions, account types, namespace types, and redundancy configurations. For certain scenarios, you can use sample calculations and worksheets available in Microsoft documentation. For example, you can estimate the cost of archiving data or estimate the cost of using the AzCopy command to transfer blobs.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2243ff8e-7ce3-4999-9eee-3b3377f4df8b",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Explore features to help you meet your recovery targets: Make blobs restorable so that they can be recovered if they're corrupted, edited, or deleted by mistake.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7ee0dea0-804f-457c-9660-1fe756011d25",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "For broad consumption by web clients (streaming video, audio, or static website content), consider using a content delivery network through Azure Front Door.",
+      "description": "Content is delivered to clients faster because it uses the Microsoft global edge network with hundreds of global and local points of presence around the world.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3549725f-8de2-4431-a8e2-fb88c2def5b4",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Have a plan for managing the data lifecycle: Optimize transaction and capacity costs by taking advantage of access tiers and lifecycle management. Data used less often should be placed in cooler access tiers while data that's accessed often should be placed in warmer access tiers.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6f7ce98b-ec2c-4535-9e6a-11c077c9bd3f",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Identify the meters that are used to calculate your bill: Meters are used to track the amount of data stored in the account (data capacity) and the number and type of operations that are performed to write and read data. There are also meters associated with the use of optional features such as blob index tags, blob inventory, change feed support, encryption scopes, and SSH File Transfer Protocol (SFTP) support. For more information, see How you're charged for Blob Storage.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7041f493-74f4-42e8-bbd2-15602763dc40",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "If you enable soft delete, then place blobs that are frequently overwritten into an account that doesn't have soft delete enabled. Set retention periods. Consider starting with a short retention period to better understand how the feature affects your bill. The minimum recommended retention period is seven days.",
+      "description": "Every time a blob is overwritten, a new snapshot is created. The cause of increased capacity charges might be difficult to access because the creation of these snapshots doesn't appear in logs. To reduce capacity charges, store frequently overwritten data in a separate storage account with soft delete disabled. A retention period keeps soft-deleted blobs from piling up and adding to the cost of capacity.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "91514322-4007-4a99-85f0-e73c181d95fa",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "If you enable versioning, then place blobs that are frequently overwritten into an account that doesn't have versioning enabled.",
+      "description": "Every time a blob is overwritten, a new version is added which leads to increased storage capacity charges. To reduce capacity charges, store frequently overwritten data in a separate storage account with versioning disabled.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "496e994f-ae82-40c2-90cb-eb03a9e2205c",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "If you enable versioning, use a lifecycle management policy to automatically delete old blob versions.",
+      "description": "Every write operation to a blob creates a new version. This increases capacity costs. You can keep costs in check by removing versions that you no longer need.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "41cc33cd-773d-463f-b9e3-07256ea9e3f0",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Monitor costs: Ensure costs stay within budgets, compare costs against forecasts, and see where overspending occurs. You can use the cost analysis pane in the Azure portal to monitor costs. You also can export cost data to a storage account and analyze that data by using Excel or Power BI.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ffdb383d-6a9a-4ebb-b902-12320390dd84",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Monitor potential availability problems: Subscribe to the Azure Service Health dashboard to monitor potential availability problems. Use storage metrics in Azure Monitor and diagnostic logs to investigate alerts.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "bdd60136-85dd-45cc-ac07-37d69124d9ab",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Monitor the health of your storage account: Create Storage insights dashboards to monitor availability, performance, and resilience metrics. Set up alerts to identify and address problems in your system before your customers notice them. Use diagnostic settings to route resource logs to an Azure Monitor Logs workspace. Then you can query logs to investigate alerts more deeply.",
+      "description": "",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "94b3fa52-a17f-44ec-b4ba-9801c2764632",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Monitor usage: Continuously monitor usage patterns and detect unused or underutilized accounts and containers. Use Storage insights to identity accounts with no or low use. Enable blob inventory reports, and use tools such as Azure Databricks or Azure Synapse Analytics and Power BI to analyze cost data. Watch out for unexpected increases in capacity, which might indicate that you're collecting numerous log files, blob versions, or soft-deleted blobs. Develop a strategy for expiring or transitioning objects to more cost-effective access tiers.Have a plan for expiring objects or moving objects to more affordable access tiers.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "97486b6a-ea0c-4100-86e0-319ce0c8ad21",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Optimize the performance of custom code: Consider using Storage SDKs instead of creating your own wrappers for blob REST operations. Azure SDKs are optimized for performance and provide mechanisms to fine-tune performance. Before creating an application, review the performance and scalability checklist for Blob Storage. Consider using query acceleration to filter out unwanted data during the storage request and keep clients from needlessly transferring data across the network.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "45c2db00-baf4-4e7a-8ceb-871abc5f5d64",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Optimize the performance of data clients: Choose a data transfer tool that's most appropriate for the data size, transfer frequency, and bandwidth of your workloads. Some tools such as AzCopy are optimized for performance and require little intervention. Consider the factors that influence latency, and fine-tune performance by reviewing the performance optimization guidance that's published with each tool.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7eb7a0d4-912b-4d5c-af98-31200e20cc63",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Pack small files into larger files before moving them to cooler tiers. You can use file formats such as TAR or ZIP.",
+      "description": "Cooler tiers have higher data transfer costs. By having fewer large files, you can reduce the number of operations required to transfer data.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "61755535-55a0-4064-8537-e9cdf07e1baa",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Plan for scale: Understand the scale targets for storage accounts.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f944c199-636d-46b4-bc23-ee8bdfefa7a5",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Protect critical objects: Apply immutability policies to protect critical objects. Policies protect blobs that are stored for legal, compliance, or other business purposes from being modified or deleted. Configure holds for set time periods or until restrictions are lifted by an administrator.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c2d96110-7950-4f81-8c41-34e1fa015631",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Protect sensitive information: Protect sensitive information such as account keys and shared access signature tokens. While these forms of authorization are generally not recommended, you should make sure to rotate, expire, and store them securely.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1a37ef87-aa18-44a6-9877-6665fb1dc486",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Provision storage accounts in the same region where dependent resources are placed. For applications that aren't hosted on Azure, such as mobile device apps or on-premises enterprise services, locate the storage account in a region nearer to those clients. For more information, see Azure geographies.If clients from a different region don't require the same data, then create a separate account in each region.If clients from a different region require only some data, consider using an object-replication policy to asynchronously copy relevant objects to a storage account in the other region.",
+      "description": "Reducing the physical distance between the storage account and VMs, services, and on-premises clients can improve performance and reduce network latency. Reducing the physical distance also reduces cost for applications hosted in Azure because bandwidth usage within a single region is free.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3d39bc4a-58c1-4d69-8116-751252d03104",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Reduce the attack surface: Preventing anonymous access, account key access, or access over non-secure (HTTP) connections can reduce the attack surface. Require clients to send and receive data by using the latest version of the Transport Layer Security (TLS) protocol.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f29291b5-d170-453b-bdbb-379f229fdc5b",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Reduce the cost of using resource logs by choosing the appropriate log storage location and by managing log-retention periods. If you only plan to query logs occasionally (for example, querying logs for compliance auditing), consider sending resource logs to a storage account instead of sending them to an Azure Monitor Logs workspace. You can use a serverless query solution such as Azure Synapse Analytics to analyze logs. For more information, see Optimize cost for infrequent queries. Use lifecycle management policies to delete or archive logs.",
+      "description": "Storing resource logs in a storage account for later analysis can be a cheaper option. Using lifecycle management policies to manage log retention in a storage account prevents large numbers of logs files building up over time, which can lead to unnecessary capacity charges.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b21b6a75-b065-43f1-8298-5778460e2ba0",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Reduce travel distance between the client and server: Place data in regions nearest to connecting clients (ideally in the same region). Optimize for clients in regions far away by using object replication or a content delivery network. Default network configurations provide the best performance. Modify network settings only to improve security. In general, network settings don't decrease travel distance and don't improve performance.",
+      "description": "",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "5738d99e-ae27-47ca-959c-0dabef735931",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Review the security baseline for Azure Storage: To get started, first review the security baseline for Storage.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b54e930b-e9fe-4b7b-adc2-b0f0d0b0f05c",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Set up policies that delete blobs or move them to cost-efficient access tiers: Create a lifecycle management policy with an initial set of conditions. Policy runs automatically delete or set the access tier of blobs based on the conditions you define. Periodically analyze container use by using Monitor metrics and blob inventory reports so that you can refine conditions to optimize cost efficiency.",
+      "description": "",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0c2e2825-34c7-4ad5-ad21-a270b1b402c0",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Understand the price of each meter: Make sure to use the appropriate pricing page and apply the appropriate settings in that page. For more information, see Finding the unit price for each meter. Consider the number of operations associated with each price. For example, the price associated with write and read operations applies to 10,000 operations. To determine the price of an individual operation, divide the listed price by 10,000.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "fbf53f6f-f5af-47ef-8e28-e471bf173884",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Upload data directly to the most cost-efficient access tier: For example, if the default access tier setting of your account is hot, but you're uploading files for archiving purposes, specify a cooler tier as the archive or a cold tier as part of your upload operation. After uploading blobs, use lifecycle management policies to move blobs to the most cost-efficient tiers based on usage metrics such as the last accessed time. Choosing the most optimal tier up front can reduce costs. If you change the tier of a block blob that you already uploaded, then you pay the cost of writing to the initial tier when you first upload the blob, and then pay the cost of writing to the desired tier.",
+      "description": "",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "d68b4fc0-fd9c-499a-9fd4-2c572735bd36",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Use failure mode analysis: Minimize points of failure by considering internal dependencies such as the availability of virtual networks, Azure Key Vault, or Azure Content Delivery Network or Azure Front Door endpoints. Failures can occur if credentials required by workloads to access Blob Storage go missing from Key Vault, or if workloads use an endpoint based on a content delivery network that's removed. In these cases, workloads might need to use an alternative endpoint to connect. For general information about failure mode analysis, see Recommendations for performing failure mode analysis.",
+      "description": "",
+      "waf": "Reliability",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "d069785a-7a9f-4a12-9642-3987b04328d1",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Use infrastructure as code (IaC) to define the details of your storage accounts in Azure Resource Manager templates (ARM templates), Bicep, or Terraform.",
+      "description": "You can use your existing DevOps processes to deploy new storage accounts, and use Azure Policy to enforce their configuration.",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "54dc05f5-631d-41ac-8ad7-40a451e48efd",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "checklist",
+      "text": "Use network controls to restrict ingress and egress traffic: Disable all public traffic to the storage account. Use account network controls to grant the minimal level of access required by users and applications. For more information, see How to approach network security for your storage account.",
+      "description": "",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "8d3e7da9-3091-4daf-8a07-37116d9e3f7e",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Use standard-priority rehydration when rehydrating blobs from archive storage. Use high-priority rehydration only for emergency data restoration situations. For more information, see Rehydrate an archived blob to an online tier",
+      "description": "High-priority rehydration from the archive tier can lead to higher-than-normal bills.",
+      "waf": "Cost",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9475eb5c-afb9-446a-bcb1-85ecc26112a9",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "Use Storage insights to track the health and performance of your storage accounts. Storage insights provides a unified view of the failures, performance, availability, and capacity for all your storage accounts.",
+      "description": "You can track the health and operation of each of your accounts. Easily create dashboards and reports that stakeholders can use to track the health of your storage accounts.",
+      "waf": "Operations",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "62ae35d2-7f0b-4c63-b0ff-1a1f85d39b89",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "We recommend that you don't use an account key. If you must use account keys, then store them in Key Vault, and make sure that you regenerate them periodically.",
+      "description": "Key Vault lets you retrieve keys at runtime, instead of saving them by using your application. Key Vault also makes it easy to rotate your keys without interruption to your applications. Rotating the account keys periodically reduces the risk of exposing your data to malicious attacks.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e2163930-a35e-415f-bea3-a019e5c2a5c7",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "We recommend that you don't use shared access signature tokens. Evaluate whether you need shared access signature tokens to secure access to Blob Storage resources. If you must create one, then review this list of shared access signature best practices before you create and distribute it.",
+      "description": "Best practices can help you prevent a shared access signature token from being leaked and quickly recover if a leak does occur.",
+      "waf": "Security",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "78872d9e-216b-4cc3-8686-0471d46a1acd",
+      "technology": "WAF Service Guides",
+      "technologySlug": "waf-service-guides-wafsg-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Limited",
+      "technologyQualityScore": 49,
+      "family": "WAF Service Guides",
+      "sourceKind": "checklists-ext",
+      "checklist": "WAF Service Guides",
+      "subcategory": "recommendation",
+      "text": "When uploading blobs or blocks, use a blob or block size that's greater than 256 KiB.",
+      "description": "Blob or block sizes above 256 KiB takes advantage of performance enhancements in the platform made specifically for larger blobs and block sizes.",
+      "waf": "Performance",
+      "service": "Azure Blob Storage",
+      "serviceCanonical": "Azure Blob Storage",
+      "serviceSlug": "azure-blob-storage",
+      "sourcePath": "checklists-ext/wafsg_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/wafsg_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "inferred",
+        "severity": "unavailable",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Availability is derived from Blob-related Storage SKUs in the Microsoft availability feed."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 56,
+    "unavailableRegionCount": 3,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "Storage",
+    "matchedServiceLabel": "Azure Blob Storage",
+    "matchedSkuHints": [
+      "Blob Storage",
+      "Premium Block Blobs"
+    ],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Hot/Cool/Cold Blob Storage Tiers",
+            "state": "GA"
+          },
+          {
+            "skuName": "Premium Block Blobs",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

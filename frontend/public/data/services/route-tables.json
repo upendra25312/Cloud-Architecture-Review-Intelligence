@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "route-tables",
+    "service": "Route tables",
+    "aliases": [
+      "Microsoft.Network/routeTables"
+    ],
+    "itemCount": 2,
+    "highSeverityCount": 1,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Governance",
+      "Monitoring and Alerting"
+    ],
+    "wafPillars": [],
+    "description": "Route tables appears across 2 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": false,
+      "matchedSkuHints": [],
+      "notes": [
+        "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "23b2dfc7-7e5d-9443-9f62-980ca621b561",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/routeTables",
+      "id": "23b2dfc7-7e5d-9443-9f62-980ca621b561",
+      "text": "Monitor changes in Route Tables with Azure Monitor",
+      "description": "Create Alerts with Azure Monitor for operations like Create or Update Route Table to spot unauthorized/undesired changes in production resources. This setup aids in identifying improper routing changes, including efforts to evade firewalls or access resources from outside.",
+      "severity": "High",
+      "service": "Route tables",
+      "serviceCanonical": "Route tables",
+      "serviceSlug": "route-tables",
+      "armService": "Microsoft.Network/routeTables",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log?tabs=powershell",
+      "graph": "// Azure Resource Graph Query\n// Find all Route Tables without alerts for modification configured.\nresources\n| where type =~ \"Microsoft.Network/routeTables\"\n| project name, id, tags, lowerCaseRouteTableId = tolower(id)\n| join kind = leftouter (\n    resources\n    | where type =~ \"Microsoft.Insights/activityLogAlerts\" and properties.enabled == true\n    | mv-expand scope = properties.scopes\n    | where scope has \"Microsoft.Network/routeTables\"\n    | project alertName = name, conditionJson = dynamic_to_json(properties.condition.allOf), scope\n    | where conditionJson has '\"Administrative\"' and (\n        // Create or Update Route Table\n        (conditionJson has '\"Microsoft.Network/routeTables/write\"') or\n        // All Administrative operations\n        (conditionJson !has '\"Microsoft.Network/routeTables/write\"' and conditionJson !has '\"Microsoft.Network/routeTables/delete\"' and conditionJson !has '\"Microsoft.Network/routeTables/join/action\"')\n        )\n    | project lowerCaseRouteTableIdOfScope = tolower(scope)\n    )\n    on $left.lowerCaseRouteTableId == $right.lowerCaseRouteTableIdOfScope\n| where isempty(lowerCaseRouteTableIdOfScope)\n| project recommendationId = \"23b2dfc7-7e5d-9443-9f62-980ca621b561\", name, id, tags, param1 = \"ModificationAlert: Not configured/Disabled\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "89d1166a-1a20-0f46-acc8-3194387bf127",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Governance",
+      "subcategory": "Microsoft.Network/routeTables",
+      "id": "89d1166a-1a20-0f46-acc8-3194387bf127",
+      "text": "Configure locks for Route Tables to avoid accidental changes or deletion",
+      "description": "As an administrator, you can protect Azure subscriptions, resource groups, or resources from accidental deletions and modifications by setting locks.",
+      "severity": "Low",
+      "service": "Route tables",
+      "serviceCanonical": "Route tables",
+      "serviceSlug": "route-tables",
+      "armService": "Microsoft.Network/routeTables",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?toc=%2Fazure%2Fvirtual-network%2Ftoc.json&tabs=json",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": false,
+    "notes": [
+      "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": []
+  }
+}

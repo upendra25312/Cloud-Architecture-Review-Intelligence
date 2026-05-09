@@ -1,0 +1,1163 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-virtual-machine-scale-sets",
+    "service": "Azure Virtual Machine Scale Sets",
+    "aliases": [
+      "Microsoft.Compute/virtualMachineScaleSets"
+    ],
+    "itemCount": 10,
+    "highSeverityCount": 5,
+    "familyCount": 2,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Compute",
+      "Governance",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Other Best Practices",
+      "Scalability"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Virtual Machine Scale Sets appears across 10 normalized findings in 2 checklist families. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Virtual Machine Scale Sets",
+      "matchedServiceLabel": "Azure Virtual Machine Scale Sets",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 55,
+      "unavailableRegionCount": 4,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "resiliency-review-resiliency-checklist",
+        "technology": "Resiliency Review",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 38,
+        "highSeverityCount": 9,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 93,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "ee66ff65-9aa3-2345-93c1-25827cf79f44",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "ee66ff65-9aa3-2345-93c1-25827cf79f44",
+      "text": "Configure VMSS Autoscale to custom and configure the scaling metrics",
+      "description": "Use custom autoscale for VMSS based on metrics and schedules to improve performance and cost effectiveness, adjusting instances as demand changes.",
+      "severity": "High",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-get-started?WT.mc_id=Portal-Microsoft_Azure_Monitoring",
+      "graph": "// Azure Resource Graph Query\n// Find VMSS instances associated with autoscale settings when autoscale is disabled\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| project name, id, tags\n| join kind=leftouter  (\n    resources\n    | where type == \"microsoft.insights/autoscalesettings\"\n    | where tostring(properties.targetResourceUri) contains \"Microsoft.Compute/virtualMachineScaleSets\"\n    | project id = tostring(properties.targetResourceUri), autoscalesettings = properties\n) on id\n| where isnull(autoscalesettings) or autoscalesettings.enabled == \"false\"\n| project recommendationId = \"ee66ff65-9aa3-2345-93c1-25827cf79f44\", name, id, tags, param1 = \"autoscalesettings: Disabled\"\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1422c567-782c-7148-ac7c-5fc14cf45adc",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "1422c567-782c-7148-ac7c-5fc14cf45adc",
+      "text": "Deploy VMSS across availability zones with VMSS Flex",
+      "description": "When creating VMSS, implement availability zones as a protection measure for your applications and data against the rare event of datacenter failure.",
+      "severity": "High",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones",
+      "graph": "// Azure Resource Graph Query\n// Find VMSS instances with one or no Zones selected\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| where array_length(zones) <= 1 or isnull(zones)\n| project recommendationId = \"1422c567-782c-7148-ac7c-5fc14cf45adc\", name, id, tags, param1 = \"AvailabilityZones: Single Zone\"\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b5a63aa0-c58e-244f-b8a6-cbba0560a6db",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "b5a63aa0-c58e-244f-b8a6-cbba0560a6db",
+      "text": "Disable Force strictly even balance across zones to avoid scale in and out fail attempts",
+      "description": "Microsoft advises disabling strictly even VM instance distribution across Availability Zones in VMSS to improve scalability and flexibility, noting that uneven distribution may better serve application load demands despite the potential trade-off in resilience.",
+      "severity": "High",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-scale-in-policy",
+      "graph": "// Azure Resource Graph Query\n// Find VMSS instances where strictly zoneBalance is set to True\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| where properties.orchestrationMode == \"Uniform\" and properties.zoneBalance == true\n| project recommendationId = \"b5a63aa0-c58e-244f-b8a6-cbba0560a6db\", name, id, tags, param1 = \"strictly zoneBalance: Enabled\"\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "820f4743-1f94-e946-ae0b-45efafd87962",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "b4d988a9-85e6-4179-b69c-549bdd8a55bb",
+      "text": "Enable Automatic Repair Policy on Azure Virtual Machine Scale Sets",
+      "description": "Enabling automatic instance repairs in Azure Virtual Machine Scale Sets enhances application availability through a continuous health check and maintenance process.",
+      "severity": "High",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-automatic-instance-repairs#requirements-for-using-automatic-instance-repairs",
+      "graph": "// Azure Resource Graph Query\n// Find all VMs that do NOT have automatic repair policy enabled\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| where properties.automaticRepairsPolicy.enabled == false\n| project recommendationId = \"820f4743-1f94-e946-ae0b-45efafd87962\", name, id, tags, param1 = \"automaticRepairsPolicy: Disabled\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "83d61669-7bd6-9642-a305-175db8adcdf4",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Governance",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "3b739bd1-c193-4bb6-a953-1362ee3b03b2",
+      "text": "Upgrade VMSS Image versions scheduled to be deprecated or already retired",
+      "description": "Ensure current versions of images are in use to avoid disruption after image deprecation. Please review the publisher, offer, sku information of the VM to ensure you are running on a supported image. Enable Auto Guest Patching or Image Upgrades, to get notifications about image deprecation.",
+      "severity": "High",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/deprecated-images",
+      "graph": "//cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e7495e1c-0c75-0946-b266-b429b5c7f3bf",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "e7495e1c-0c75-0946-b266-b429b5c7f3bf",
+      "text": "Deploy VMSS with Flex orchestration mode instead of Uniform",
+      "description": "Deploying even single instance VMs into a scale set with Flexible orchestration mode future-proofs applications for scaling and availability. This mode guarantees high availability (up to 1000 VMs) by distributing VMs across fault domains in a region or within an Availability Zone.",
+      "severity": "Medium",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-design-overview#when-to-use-scale-sets-instead-of-virtual-machines",
+      "graph": "// Azure Resource Graph Query\n// Find all zonal VMs that are NOT deployed with Flex orchestration mode\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| where properties.orchestrationMode != \"Flexible\"\n| project recommendationId = \"e7495e1c-0c75-0946-b266-b429b5c7f3bf\", name, id, tags, param1 = strcat(\"orchestrationMode: \", tostring(properties.orchestrationMode))\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "94794d2a-eff0-2345-9b67-6f9349d0a627",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "3b587048-b04b-4f81-aaed-e43793652b0f",
+      "text": "Enable Azure Virtual Machine Scale Set Application Health Monitoring",
+      "description": "Monitoring application health in Azure Virtual Machine Scale Sets is crucial for deployment management. It supports rolling upgrades such as automatic OS-image upgrades and VM guest patching, leveraging health monitoring for upgrading.",
+      "severity": "Medium",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-health-extension?tabs=rest-api",
+      "graph": "// Azure Resource Graph Query\n// Find all VMs that do NOT have health monitoring enabled\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| join kind=leftouter  (\n    resources\n    | where type == \"microsoft.compute/virtualmachinescalesets\"\n    | mv-expand extension=properties.virtualMachineProfile.extensionProfile.extensions\n    | where extension.properties.type in ( \"ApplicationHealthWindows\", \"ApplicationHealthLinux\" )\n    | project id\n) on id\n| where id1 == \"\"\n| project recommendationId = \"94794d2a-eff0-2345-9b67-6f9349d0a627\", name, id, tags, param1 = \"extension: null\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3f85a51c-e286-9f44-b4dc-51d00768696c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "3f85a51c-e286-9f44-b4dc-51d00768696c",
+      "text": "Enable Predictive autoscale and configure at least for Forecast Only",
+      "description": "Predictive autoscale utilizes machine learning to efficiently manage and scale Azure Virtual Machine Scale Sets by forecasting CPU load through historical usage analysis, ensuring timely scale-out to meet demand.",
+      "severity": "Low",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-predictive",
+      "graph": "// Azure Resource Graph Query\n// Find VMSS instances associated with autoscale settings when predictiveAutoscalePolicy_scaleMode is disabled\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| project name, id, tags\n| join kind=leftouter  (\n    resources\n    | where type == \"microsoft.insights/autoscalesettings\"\n    | where tostring(properties.targetResourceUri) contains \"Microsoft.Compute/virtualMachineScaleSets\"\n    | project id = tostring(properties.targetResourceUri), autoscalesettings = properties\n) on id\n| where autoscalesettings.enabled == \"true\" and autoscalesettings.predictiveAutoscalePolicy.scaleMode == \"Disabled\"\n| project recommendationId = \"3f85a51c-e286-9f44-b4dc-51d00768696c\", name, id, tags, param1 = \"predictiveAutoscalePolicy_scaleMode: Disabled\"\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e4ffd7b0-ba24-c84e-9352-ba4819f908c0",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Other Best Practices",
+      "subcategory": "Microsoft.Compute/virtualMachineScaleSets",
+      "id": "e4ffd7b0-ba24-c84e-9352-ba4819f908c0",
+      "text": "Set Patch orchestration options to Azure-orchestrated",
+      "description": "Enabling automatic VM guest patching eases update management by safely, automatically patching virtual machines to maintain security compliance, while limiting blast radius of VMs. Note, the KQL will not return sets using Uniform orchestration.",
+      "severity": "Low",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "armService": "Microsoft.Compute/virtualMachineScaleSets",
+      "link": "https://learn.microsoft.com/azure/virtual-machines/automatic-vm-guest-patching",
+      "graph": "// Azure Resource Graph query\n// Identifies VMs and VMSS with manual patch settings, excluding automatic patch modes\nresources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| join kind=inner (\n    resources\n    | where type == \"microsoft.compute/virtualmachines\"\n    | project id = tostring(properties.virtualMachineScaleSet.id), vmproperties = properties\n) on id\n| extend recommendationId = \"e4ffd7b0-ba24-c84e-9352-ba4819f908c0\", param1 = \"patchMode: Manual\", vmproperties.osProfile.linuxConfiguration.patchSettings.patchMode\n| where isnotnull(vmproperties.osProfile.linuxConfiguration) and vmproperties.osProfile.linuxConfiguration.patchSettings.patchMode !in (\"AutomaticByPlatform\", \"AutomaticByOS\")\n| distinct recommendationId, name, id, param1\n| union (resources\n| where type == \"microsoft.compute/virtualmachinescalesets\"\n| join kind=inner (\n    resources\n    | where type == \"microsoft.compute/virtualmachines\"\n    | project id = tostring(properties.virtualMachineScaleSet.id), vmproperties = properties\n) on id\n| extend recommendationId = \"e4ffd7b0-ba24-c84e-9352-ba4819f908c0\", param1 = \"patchMode: Manual\", vmproperties.osProfile.windowsConfiguration.patchSettings.patchMode\n| where isnotnull(vmproperties.osProfile.windowsConfiguration) and vmproperties.osProfile.windowsConfiguration.patchSettings.patchMode !in (\"AutomaticByPlatform\", \"AutomaticByOS\")\n| distinct recommendationId, name, id, param1)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7e13c105-675c-41e9-95b4-59837ff7ae7c",
+      "technology": "Resiliency Review",
+      "technologySlug": "resiliency-review-resiliency-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 93,
+      "family": "Resiliency Review",
+      "sourceKind": "checklists",
+      "checklist": "Resiliency Review",
+      "category": "Compute",
+      "subcategory": "VM Scale Sets",
+      "text": "Enable automatic instance repairs for enhanced VM Scale Sets resiliency",
+      "description": "Automatic instance repairs ensure that unhealthy instances are promptly identified and replaced, maintaining a set of healthy instances within your scale set.",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Virtual Machine Scale Sets",
+      "serviceCanonical": "Azure Virtual Machine Scale Sets",
+      "serviceSlug": "azure-virtual-machine-scale-sets",
+      "link": "https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-automatic-instance-repairs",
+      "sourcePath": "checklists/resiliency_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/resiliency_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 55,
+    "unavailableRegionCount": 4,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Virtual Machine Scale Sets",
+    "matchedServiceLabel": "Azure Virtual Machine Scale Sets",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

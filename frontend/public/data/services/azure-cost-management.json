@@ -1,0 +1,131 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-cost-management",
+    "service": "Azure Cost Management",
+    "aliases": [],
+    "itemCount": 1,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Cost Governance"
+    ],
+    "wafPillars": [
+      "Cost"
+    ],
+    "description": "Azure Cost Management appears across 1 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Cost Management",
+      "matchedServiceLabel": "Azure Cost Management",
+      "matchedSkuHints": [],
+      "notes": [
+        "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "15912c2a-babb-4b9f-9dc3-73c1489472dd",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Cost Governance",
+      "subcategory": "Cost Management",
+      "id": "AI.20",
+      "text": "Configure 'Actual' and 'Forecasted' Budget Alerts.",
+      "severity": "Medium",
+      "waf": "Cost",
+      "service": "Azure Cost Management",
+      "serviceCanonical": "Azure Cost Management",
+      "serviceSlug": "azure-cost-management",
+      "link": "https://learn.microsoft.com/azure/cost-management-billing/costs/tutorial-acm-create-budgets?bc=%2Fazure%2Fcloud-adoption-framework%2F_bread%2Ftoc.json&toc=%2Fazure%2Fcloud-adoption-framework%2Ftoc.json",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Cost Management",
+    "matchedServiceLabel": "Azure Cost Management",
+    "matchedSkuHints": [],
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": [
+      {
+        "skuName": "General availability",
+        "state": "GA"
+      }
+    ]
+  }
+}

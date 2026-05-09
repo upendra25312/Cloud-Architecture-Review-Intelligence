@@ -1,0 +1,239 @@
+/* ── Main scorecard layout ─────────────────────────────────────────── */
+.scorecardLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Status bar — max 80px ────────────────────────────────────────── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  max-height: 80px;
+  flex-wrap: wrap;
+}
+
+/* ── Summary hero — max 160px ─────────────────────────────────────── */
+.summaryHero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  max-height: 160px;
+  border-bottom: 1px solid var(--border);
+}
+
+.scoreCluster {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.scoreNumber {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.scoreNumberGreen { color: #107C10; }
+.scoreNumberAmber { color: #B45309; }
+.scoreNumberRed   { color: #D92B2B; }
+.scoreNumberNeutral { color: #6B7280; }
+
+.metricsRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metricBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--t2);
+  white-space: nowrap;
+}
+
+.metricBadge strong {
+  color: var(--t1);
+}
+
+.blockerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--high);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.blockerBadge strong {
+  color: var(--high);
+}
+
+.scoreBandLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--t2);
+}
+
+.recommendationBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.recommendationBadgeApproved {
+  background: #E6F4EA;
+  color: #107C10;
+}
+
+.recommendationBadgeAttention {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.recommendationBadgeNeutral {
+  background: #F3F4F6;
+  color: #6B7280;
+}
+
+/* ── Strengths section ────────────────────────────────────────────── */
+.strengthsSection {
+  border-left: 4px solid #107C10;
+  padding: 12px 20px;
+  background: #F0FFF4;
+}
+
+.strengthItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1.6;
+  color: var(--t1);
+}
+
+/* ── Domain section — collapsible ─────────────────────────────────── */
+.domainSection {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.domainHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: var(--bg);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.domainHeader:hover {
+  background: var(--surf-hover);
+}
+
+.chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 0.75rem;
+}
+
+.chevronExpanded {
+  transform: rotate(90deg);
+}
+
+.scoreBar {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.scoreBarFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.scoreBarFillGreen { background: #107C10; }
+.scoreBarFillAmber { background: #B45309; }
+.scoreBarFillRed   { background: #D92B2B; }
+
+.domainBody {
+  padding: 0 16px 16px;
+}
+
+.inlineFinding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+/* ── Severity badges ──────────────────────────────────────────────── */
+.severityBadge {
+  display: inline-flex;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.severityBadgeHigh   { background: #FEE2E2; color: #D92B2B; }
+.severityBadgeMedium { background: #FEF3C7; color: #B45309; }
+.severityBadgeLow    { background: #DBEAFE; color: #0078D4; }
+
+/* ── Conditions to close table ────────────────────────────────────── */
+.conditionsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.conditionsTable th,
+.conditionsTable td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.conditionsTable th {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+}
+
+/* ── Full-width shell override ────────────────────────────────────── */
+.fullWidthShell {
+  grid-template-columns: 1fr;
+}
+
+/* ── Responsive: below 1280px ─────────────────────────────────────── */
+@media (max-width: 1279px) {
+  .summaryHero {
+    flex-direction: column;
+    max-height: none;
+    align-items: flex-start;
+  }
+
+  .metricsRow {
+    flex-wrap: wrap;
+  }
+}

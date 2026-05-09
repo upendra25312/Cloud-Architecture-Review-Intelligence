@@ -1,0 +1,1310 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-vpn-gateway",
+    "service": "Azure VPN Gateway",
+    "aliases": [
+      "Microsoft.Network/virtualNetworkGateways"
+    ],
+    "itemCount": 14,
+    "highSeverityCount": 9,
+    "familyCount": 2,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Disaster Recovery",
+      "High Availability",
+      "Monitoring and Alerting",
+      "Network Topology and Connectivity"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure VPN Gateway appears across 14 normalized findings in 2 checklist families. 1 GA-ready families can anchor the baseline. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "VPN Gateway",
+      "matchedServiceLabel": "Azure VPN Gateway",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 55,
+      "unavailableRegionCount": 4,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "5b1933a6-90e4-f642-a01f-e58594e5aab2",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "5b1933a6-90e4-f642-a01f-e58594e5aab2",
+      "text": "Choose a Zone-redundant VPN gateway",
+      "description": "Azure VPN gateway offers variable SLAs based on deployment in one or two availability zones. Deploying zone-redundant virtual network gateways across availability zones ensures zone-resiliency, improving access to mission-critical, scalable services on Azure.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/about-zone-redundant-vnet-gateways",
+      "graph": "// Azure Resource Graph Query\n// For all VNGs of type Vpn, show any that do not have AZ in the SKU tier\nresources\n| where type =~ \"Microsoft.Network/virtualNetworkGateways\"\n| where properties.gatewayType == \"Vpn\"\n| where properties.sku.tier !contains 'AZ'\n| project recommendationId = \"5b1933a6-90e4-f642-a01f-e58594e5aab2\", name, id, tags, param1= strcat(\"sku-tier: \" , properties.sku.tier), param2=location\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3e115044-a3aa-433e-be01-ce17d67e50da",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "3e115044-a3aa-433e-be01-ce17d67e50da",
+      "text": "Configure customer-controlled ExpressRoute gateway maintenance",
+      "description": "ExpressRoute gateways are updated for improved functionality, reliability, performance, and security. Customer-controlled maintenance configuration and scheduling minimize update impact and align with your maintenance windows.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/en-us/azure/expressroute/customer-controlled-gateway-maintenance#azure-portal-steps",
+      "graph": "// Azure Resource Graph Query\n// Find all Virtual Network Gateways without Maintenance Configurations\n\nresources\n| where type =~ \"Microsoft.Network/virtualNetworkGateways\"\n| extend resourceId = tolower(id)\n| join kind=leftouter  (\n    maintenanceresources\n    | where type =~ \"Microsoft.Maintenance/configurationAssignments\"\n    | project JsonData = parse_json(properties)\n    | extend maintenanceConfigurationId = tolower(tostring(JsonData.maintenanceConfigurationId))\n    | join kind=inner (\n        resources\n        | where type =~ \"Microsoft.Maintenance/maintenanceConfigurations\"\n        | project maintenanceConfigurationId=tolower(id)\n    ) on maintenanceConfigurationId\n    | project maintenanceConfigurationId, resourceId=tolower(tostring(JsonData.resourceId))\n) on resourceId\n| where isempty(maintenanceConfigurationId)\n| project recommendationId = \"3e115044-a3aa-433e-be01-ce17d67e50da\", name, id, tags, param1= strcat(\"sku-tier: \" , properties.sku.tier), param2=location\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d37db635-157f-584d-9bce-4f6fc8c65ce5",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "8d61a7d4-5405-4f43-81e3-8c6239b844a6",
+      "text": "Connect ExpressRoute gateway with circuits from diverse peering locations for resilience",
+      "description": "To increase reliability, it's advised that each ExpressRoute gateway connects to at least two circuits, with each circuit originating from a different peering location than the other, ensuring diverse connectivity paths for enhanced resilience.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/expressroute/designing-for-disaster-recovery-with-expressroute-privatepeering",
+      "graph": "// Azure Resource Graph Query\n// Provides a list of ExpressRoute Gateways that are not connected to two or more ExpressRoute Circuits. Baremetal circuits are excluded from consideration\n//This query assumes that the running entity has visibilty to the gateway, connection, and circuit scopes.\n//Start with a full list of gateways\n(resources\n| where type == \"microsoft.network/virtualnetworkgateways\"\n| where properties.gatewayType == \"ExpressRoute\"\n| extend exrGatewayId = tolower(tostring(id))\n| join kind=inner(\nresources\n| where type == \"microsoft.network/virtualnetworkgateways\"\n| where properties.gatewayType == \"ExpressRoute\"\n| extend exrGatewayId = tolower(tostring(id))\n| join kind=leftouter(\n//connections joined with circuit peer info\nresources\n| where type == \"microsoft.network/connections\"\n| extend connectionType = properties.connectionType\n| extend exrGatewayId = tolower(tostring(properties.virtualNetworkGateway1.id))\n| extend peerId = tolower(tostring(properties.peer.id))\n| extend connectionId = tolower(tostring(id))\n| where connectionType == \"ExpressRoute\"\n| join kind=leftouter(\n  resources\n  | where type == \"microsoft.network/expressroutecircuits\"\n    //should this be location instead of peeringLocation\n  | extend circuitId = tolower(tostring(id))\n  | extend peeringLocation = tostring(properties.serviceProviderProperties.peeringLocation)\n  | extend peerId = tolower(id)\n) on peerId ) on exrGatewayId\n//remove bare metal services connections/circuits\n| where not(isnotnull(connectionId) and isnull(sku1))\n//group by gateway ID's and peering locations\n| summarize by exrGatewayId, peeringLocation\n//summarize to connections with fewer than two unique connections\n| summarize connCount = count() by exrGatewayId\n| where connCount < 2) on exrGatewayId\n| project recommendationId = \"d37db635-157f-584d-9bce-4f6fc8c65ce5\", name, id, tags, param1 = \"twoOrMoreCircuitsConnectedFromDifferentPeeringLocations: false\")\n| union\n(\nresources\n| where type == \"microsoft.network/virtualnetworkgateways\"\n| where properties.gatewayType == \"ExpressRoute\"\n| extend exrGatewayId = tolower(tostring(id))\n| join kind=leftouter(\n//connections joined with circuit peer info\nresources\n| where type == \"microsoft.network/connections\"\n| extend connectionType = properties.connectionType\n| extend exrGatewayId = tolower(tostring(properties.virtualNetworkGateway1.id))\n| extend peerId = tolower(tostring(properties.peer.id))\n| extend connectionId = tolower(tostring(id))\n| where connectionType == \"ExpressRoute\") on exrGatewayId\n| where isnull(connectionType)\n| project recommendationId = \"d37db635-157f-584d-9bce-4f6fc8c65ce5\", name, id, tags, param1 = \"twoOrMoreCircuitsConnectedFromDifferentPeeringLocations: false\", param2 = \"noConnectionsOnGateway: true\"\n)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "af11fc4c-c06c-4f4c-b98d-6eee6d5c4c70",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Disaster Recovery",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "af11fc4c-c06c-4f4c-b98d-6eee6d5c4c70",
+      "text": "Deploy active-active VPN concentrators on your premises for maximum resiliency with VPN gateways",
+      "description": "Deploying active-active VPN concentrators and Azure VPN Gateways maximizes resilience and availability using a fully-meshed topology with four IPSec tunnels.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-highlyavailable#dual-redundancy-active-active-vpn-gateways-for-both-azure-and-on-premises-networks",
+      "graph": "// under-development\n\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4bae5a28-5cf4-40d9-bcf1-623d28f6d917",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "4bae5a28-5cf4-40d9-bcf1-623d28f6d917",
+      "text": "Deploy zone-redundant VPN gateways with zone-redundant Public IP(s)",
+      "description": "For zone-redundant VPN gateways, always use zone-redundant Standard SKU public IPs to avoid deploying all instances in one zone. This ensures the gateway's reliability, applying to both active-passive (single IP) and active-active (dual IP) setups.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/about-zone-redundant-vnet-gateways",
+      "graph": "// Azure Resource Graph Query\n// Provides a list of zone-redundant Azure VPN gateways associated with non-zone-redundant Public IPs\nresources\n| where type =~ \"Microsoft.Network/virtualNetworkGateways\"\n| where properties.gatewayType == \"Vpn\"\n| where properties.sku.tier contains 'AZ'\n| mv-expand ipconfig = properties.ipConfigurations\n| extend pipId = tostring(ipconfig.properties.publicIPAddress.id)\n| join kind=inner (\n    resources\n    | where type == \"microsoft.network/publicipaddresses\"\n    | where isnull(zones) or array_length(zones) < 3   )\n    on $left.pipId == $right.id\n| project recommendationId = \"4bae5a28-5cf4-40d9-bcf1-623d28f6d917\", name, id, tags, param1 = strcat(\"PublicIpAddressName: \", name1), param2 = strcat (\"PublicIpAddressId: \",id1), param3 = strcat (\"PublicIpAddressTags: \",tags1)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9186dae0-7ddc-8f4b-bea5-55538cea4893",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "9186dae0-7ddc-8f4b-bea5-55538cea4893",
+      "text": "Enable VPN gateway service health",
+      "description": "VPN gateway leverages service health to inform users about both planned and unplanned maintenance, ensuring they are notified about modifications to their VPN connectivity.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/azure-monitor/essentials/metrics-getting-started",
+      "graph": "// under-development\n\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1c34faa8-8b99-974c-adbf-71922eae943c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "1c34faa8-8b99-974c-adbf-71922eae943c",
+      "text": "Monitor gateway health for ExpressRoute gateways",
+      "description": "Use Network Insights for monitoring ExpressRoute Gateway's health, including availability, performance, and scalability.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/expressroute/expressroute-monitoring-metrics-alerts#expressroute-gateways",
+      "graph": "// under-development\n\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "9eab120e-f6d3-ee49-ba0d-766562ce7df1",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "9eab120e-f6d3-ee49-ba0d-766562ce7df1",
+      "text": "Monitor VPN gateway connections and health",
+      "description": "Set up monitoring and alerts for Virtual Network Gateway health to utilize a variety of metrics for ensuring operational efficiency and prompt response to any disruptions.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/monitor-vpn-gateway-reference",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "bbe668b7-eb5c-c746-8b82-70afdedf0cae",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "c9af1ef6-55bc-48af-bfe4-2c80490159f8",
+      "text": "Use Zone-redundant ExpressRoute gateway SKUs",
+      "description": "Azure ExpressRoute gateway offers variable SLAs based on deployment in single or multiple availability zones. To deploy virtual network gateways across zones automatically, use zone-redundant gateways for accessing critical, scalable services with increased resilience.",
+      "severity": "High",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/expressroute/expressroute-about-virtual-network-gateways#zrgw",
+      "graph": "// Azure Resource Graph Query\n// For all VNGs of type ExpressRoute, show any that do not have AZ in the SKU tier\nresources\n| where type =~ \"Microsoft.Network/virtualNetworkGateways\"\n| where properties.gatewayType == \"ExpressRoute\"\n| where properties.sku.tier !contains 'AZ'\n| project recommendationId = \"bbe668b7-eb5c-c746-8b82-70afdedf0cae\", name, id, tags, param1= strcat(\"sku-tier: \" , properties.sku.tier), param2=location\n| order by id asc\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "194c14ac-0d7a-5a48-ae32-75fa450ee564",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "194c14ac-0d7a-5a48-ae32-75fa450ee564",
+      "text": "Avoid using ExpressRoute circuits for VNet to VNet communication",
+      "description": "While multiple VNets can connect via the same ExpressRoute gateway, Microsoft recommends using alternatives like VNet peering, Azure Firewall, NVA, Azure Route Server, site-to-site VPN, virtual WAN, or SD-WAN for VNet-to-VNet communication to optimize network performance and management.",
+      "severity": "Medium",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/expressroute/expressroute-about-virtual-network-gateways#vnet-to-vnet-connectivity",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "c0f23a92-d322-4d4d-97e9-a238b5e3bbb8",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "c0f23a92-d322-4d4d-97e9-a238b5e3bbb8",
+      "text": "Configure an Azure Resource lock for ExpressRoute gateway to prevent accidental deletion",
+      "description": "Configuring an Azure Resource lock for ExpressRoute gateway prevents accidental deletion by enabling administrators to lock an Azure subscription, resource group, or resource, thereby protecting them from unintended user deletions and modifications, with the lock overriding all user permissions.",
+      "severity": "Medium",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?tabs=json",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "281a2713-c0e0-3c48-b596-19f590c46671",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/virtualNetworkGateways",
+      "id": "c249dc0e-9a17-423e-838a-d72719e8c5dd",
+      "text": "Enable Active-Active VPN Gateways for redundancy",
+      "description": "The active-active mode is available for all SKUs except Basic, allowing for two Gateway IP configurations and two public IP addresses, enhancing redundancy and traffic handling.",
+      "severity": "Medium",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "armService": "Microsoft.Network/virtualNetworkGateways",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/active-active-portal#gateway",
+      "graph": "// Azure Resource Graph Query\n// Identifies non-active-active VPN type virtual network gateways\nresources\n| where type =~ 'Microsoft.Network/virtualNetworkGateways'\n| where properties.gatewayType =~ \"vpn\"\n| extend gatewayType = properties.gatewayType, vpnType = properties.vpnType, connections = properties.connections, activeactive=properties.activeActive\n| where activeactive == false\n| project recommendationId = \"281a2713-c0e0-3c48-b596-19f590c46671\", name, id, tags\n\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "45866df8-cf85-4ca9-bbe2-65ec1478919e",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hybrid",
+      "id": "D06.10",
+      "text": "Use redundant VPN appliances on-premises (active/active or active/passive).",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/vpn-gateway-highlyavailable",
+      "training": "https://learn.microsoft.com/training/modules/intro-to-azure-vpn-gateway/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "4d873974-8b66-42d6-b15f-512a65498f6d",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hybrid",
+      "id": "D06.09",
+      "text": "Use zone-redundant VPN gateways to connect branches or remote locations to Azure (where available).",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure VPN Gateway",
+      "serviceCanonical": "Azure VPN Gateway",
+      "serviceSlug": "azure-vpn-gateway",
+      "link": "https://learn.microsoft.com/azure/vpn-gateway/create-zone-redundant-vnet-gateway",
+      "training": "https://learn.microsoft.com/training/modules/intro-to-azure-vpn-gateway/",
+      "graph": "resources | where type=='microsoft.network/virtualnetworkgateways' | where properties.gatewayType == 'Vpn' | extend compliant = (tolower(properties.sku.name) contains 'az') | distinct id, compliant",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 55,
+    "unavailableRegionCount": 4,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "VPN Gateway",
+    "matchedServiceLabel": "Azure VPN Gateway",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

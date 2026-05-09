@@ -1,0 +1,213 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-front-door-waf",
+    "service": "Azure Front Door WAF",
+    "aliases": [
+      "Microsoft.Network/frontdoorWebApplicationFirewallPolicies"
+    ],
+    "itemCount": 3,
+    "highSeverityCount": 3,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Monitoring and Alerting"
+    ],
+    "wafPillars": [],
+    "description": "Azure Front Door WAF appears across 3 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "Azure Web Application Firewall",
+      "matchedServiceLabel": "Azure Front Door WAF",
+      "matchedSkuHints": [
+        "WAF on Azure Front Door"
+      ],
+      "notes": [
+        "Availability is derived from the Front Door-specific WAF SKU under Azure Web Application Firewall.",
+        "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "537b4d94-edd1-4041-b13d-8217dfa485f0",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies",
+      "id": "537b4d94-edd1-4041-b13d-8217dfa485f0",
+      "text": "Check Azure Application Gateway WAF logs for mistakenly blocked valid requests",
+      "description": "WAF may block legitimate requests as false positives. Identifying blocked requests within the last 24 hours through Log Analytics can help manage and mitigate these incorrect blockages efficiently.",
+      "severity": "High",
+      "service": "Azure Front Door WAF",
+      "serviceCanonical": "Azure Front Door WAF",
+      "serviceSlug": "azure-front-door-waf",
+      "armService": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/application-gateway-waf-metrics#logs-and-diagnostics",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "d0cfe47f-686b-5043-bf83-5a3868acb80a",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies",
+      "id": "d0cfe47f-686b-5043-bf83-5a3868acb80a",
+      "text": "Inspect Azure Front Door WAF logs for wrongfully blocked legitimate requests",
+      "description": "WAF may mistakenly block legitimate requests (false positives). These can be identified by examining the last 24 hours of blocked requests in Log Analytics.",
+      "severity": "High",
+      "service": "Azure Front Door WAF",
+      "serviceCanonical": "Azure Front Door WAF",
+      "serviceSlug": "azure-front-door-waf",
+      "armService": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/afds/waf-front-door-monitor?pivots=front-door-standard-premium#access-logs",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5357ae22-0f52-1a49-9fd4-1f00ace6add0",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies",
+      "id": "5357ae22-0f52-1a49-9fd4-1f00ace6add0",
+      "text": "Monitor Web Application Firewall",
+      "description": "Monitoring the health of your Web Application Firewall and the applications it protects is crucial. This can be achieved through integration with Microsoft Defender for Cloud, Azure Monitor, and Azure Monitor logs, ensuring optimal performance and security.",
+      "severity": "High",
+      "service": "Azure Front Door WAF",
+      "serviceCanonical": "Azure Front Door WAF",
+      "serviceSlug": "azure-front-door-waf",
+      "armService": "Microsoft.Network/frontdoorWebApplicationFirewallPolicies",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/ag-overview#waf-monitoring",
+      "graph": "// cannot-be-validated-with-arg\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Availability is derived from the Front Door-specific WAF SKU under Azure Web Application Firewall.",
+      "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "Azure Web Application Firewall",
+    "matchedServiceLabel": "Azure Front Door WAF",
+    "matchedSkuHints": [
+      "WAF on Azure Front Door"
+    ],
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": [
+      {
+        "skuName": "Azure Web Application Firewall - Global (WAF on Azure Front Door)",
+        "state": "GA"
+      }
+    ]
+  }
+}

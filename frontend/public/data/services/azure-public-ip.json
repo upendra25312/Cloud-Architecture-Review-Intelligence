@@ -1,0 +1,1436 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-public-ip",
+    "service": "Azure Public IP",
+    "aliases": [
+      "Microsoft.Network/publicIPAddresses"
+    ],
+    "itemCount": 5,
+    "highSeverityCount": 2,
+    "familyCount": 2,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "High Availability",
+      "Network Topology and Connectivity",
+      "Security"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Public IP appears across 5 normalized findings in 2 checklist families. 1 GA-ready families can anchor the baseline. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "IP Services",
+      "matchedServiceLabel": "Azure Public IP",
+      "matchedSkuHints": [
+        "Azure Public IP"
+      ],
+      "notes": [
+        "Availability is derived from public IP SKUs within the IP Services offering."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 56,
+      "unavailableRegionCount": 3,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "c63b81fb-7afc-894c-a840-91bb8a8dcfaf",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/publicIPAddresses",
+      "id": "c63b81fb-7afc-894c-a840-91bb8a8dcfaf",
+      "text": "Use Standard SKU and Zone-Redundant IPs when applicable",
+      "description": "Public IP addresses in Azure can be of standard SKU, available as non-zonal, zonal, or zone-redundant. Zone-redundant IPs are accessible across all zones, resisting any single zone failure, thereby providing higher resilience.",
+      "severity": "High",
+      "service": "Azure Public IP",
+      "serviceCanonical": "Azure Public IP",
+      "serviceSlug": "azure-public-ip",
+      "armService": "Microsoft.Network/publicIPAddresses",
+      "link": "https://learn.microsoft.com/azure/virtual-network/ip-services/public-ip-addresses#availability-zone",
+      "graph": "// Azure Resource Graph query\n// List public IP addresses that are not Zone-Redundant\nResources\n| where type =~ \"Microsoft.Network/publicIPAddresses\" and sku.tier =~ \"Regional\"\n| where isempty(zones) or array_length(zones) <= 1\n| extend az = case(isempty(zones), \"Non-zonal\", array_length(zones) <= 1, strcat(\"Zonal (\", strcat_array(zones, \",\"), \")\"), zones)\n| project recommendationId = \"c63b81fb-7afc-894c-a840-91bb8a8dcfaf\", name, id, tags, param1 = strcat(\"sku: \", sku.name), param2 = strcat(\"availabilityZone: \", az)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "0c47f486-656d-4699-8c30-edef5b8a93c4",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "IP plan",
+      "id": "D03.05",
+      "text": "Use Standard SKU and Zone-Redundant IPs when applicable, Public IP addresses in Azure can be of standard SKU, available as non-zonal, zonal, or zone-redundant. Zone-redundant IPs are accessible across all zones, resisting any single zone failure, thereby providing higher resilience.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Public IP",
+      "serviceCanonical": "Azure Public IP",
+      "serviceSlug": "azure-public-ip",
+      "link": "https://learn.microsoft.com/azure/virtual-network/ip-services/public-ip-addresses#availability-zone",
+      "training": "https://learn.microsoft.com/en-gb/training/modules/configure-virtual-networks/6-create-public-ip-addressing",
+      "graph": "Resources | where type =~ 'Microsoft.Network/publicIPAddresses' and sku.tier =~ 'Regional' | where isempty(zones) or array_length(zones) <= 1 | extend az = case(isempty(zones), 'Non-zonal', array_length(zones) <= 1, strcat('Zonal (', strcat_array(zones, ','), ')'), zones) | project name, id, tags, param1 = strcat('sku: ', sku.name), param2 = strcat('availabilityZone: ', az)",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c4254c66-b8a5-47aa-82f6-e7d7fb418f47",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Security",
+      "subcategory": "Microsoft.Network/publicIPAddresses",
+      "id": "c4254c66-b8a5-47aa-82f6-e7d7fb418f47",
+      "text": "Public IP addresses should have DDoS protection enabled",
+      "description": "DDoS attacks can be targeted at any endpoint that is publicly reachable through the internet.",
+      "severity": "Medium",
+      "service": "Azure Public IP",
+      "serviceCanonical": "Azure Public IP",
+      "serviceSlug": "azure-public-ip",
+      "armService": "Microsoft.Network/publicIPAddresses",
+      "link": "https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview",
+      "graph": "// Azure Resource Graph query\n// Public IP addresses should have DDoS protection enabled\nresources\n| where type =~ 'Microsoft.Network/publicIPAddresses'\n| where properties.ddosSettings.protectionMode !in~ (\"Enabled\", \"VirtualNetworkInherited\")\n| project recommendationId=\"c4254c66-b8a5-47aa-82f6-e7d7fb418f47\", name, id, tags, param1=strcat(\"Apply either DDoS Network protection or DDoS IP Protrection to the public IP address.\")\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5cea1501-6fe4-4ec4-ac8f-f72320eb18d3",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/publicIPAddresses",
+      "id": "5cea1501-6fe4-4ec4-ac8f-f72320eb18d3",
+      "text": "Upgrade Basic SKU public IP addresses to Standard SKU",
+      "description": "Basic SKU public IP addresses will be retired on September 30, 2025. Users are advised to upgrade to Standard SKU public IP addresses before this date to avoid service disruptions.",
+      "severity": "Medium",
+      "service": "Azure Public IP",
+      "serviceCanonical": "Azure Public IP",
+      "serviceSlug": "azure-public-ip",
+      "armService": "Microsoft.Network/publicIPAddresses",
+      "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-basic-upgrade-guidance",
+      "graph": "// Azure Resource Graph query\n// List Basic SKU public IP addresses\nResources\n| where type =~ \"Microsoft.Network/publicIPAddresses\"\n| where sku.name =~ \"Basic\"\n| project recommendationId = \"5cea1501-6fe4-4ec4-ac8f-f72320eb18d3\", name, id, tags, param1 = strcat(\"sku: \", sku.name)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1adba190-5c4c-e646-8527-dd1b2a6d8b15",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/publicIPAddresses",
+      "id": "1adba190-5c4c-e646-8527-dd1b2a6d8b15",
+      "text": "Use NAT gateway for outbound connectivity to avoid SNAT Exhaustion",
+      "description": "Prevent connectivity failures due to SNAT port exhaustion by employing NAT gateway for outbound traffic from virtual networks, ensuring dynamic scaling and secure internet connections.",
+      "severity": "Medium",
+      "service": "Azure Public IP",
+      "serviceCanonical": "Azure Public IP",
+      "serviceSlug": "azure-public-ip",
+      "armService": "Microsoft.Network/publicIPAddresses",
+      "link": "https://learn.microsoft.com/azure/advisor/advisor-reference-reliability-recommendations#use-nat-gateway-for-outbound-connectivity",
+      "graph": "// Azure Resource Graph query\n// Lists VMs with PIPs\nresources\n| where type =~ 'Microsoft.Network/publicIPAddresses'\n| where tostring(properties.ipConfiguration.id) contains \"microsoft.network/networkinterfaces\"\n| project recommendationId=\"1adba190-5c4c-e646-8527-dd1b2a6d8b15\", name, id, tags, param1=strcat(\"Migrate from instance IP to NAT Gateway\")\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Availability is derived from public IP SKUs within the IP Services offering."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 56,
+    "unavailableRegionCount": 3,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "IP Services",
+    "matchedServiceLabel": "Azure Public IP",
+    "matchedSkuHints": [
+      "Azure Public IP"
+    ],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Public IP Address Basic",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Address Standard",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Public IP Prefix",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

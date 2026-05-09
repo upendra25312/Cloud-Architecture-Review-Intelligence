@@ -1,0 +1,201 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-bot-service",
+    "service": "Azure Bot Service",
+    "aliases": [],
+    "itemCount": 3,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Operations management"
+    ],
+    "wafPillars": [
+      "Reliability"
+    ],
+    "description": "Azure Bot Service appears across 3 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Bot Service",
+      "matchedServiceLabel": "Azure Bot Service",
+      "matchedSkuHints": [],
+      "notes": [
+        "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-bot-service-azurebotservice-checklist",
+        "technology": "Azure Bot Service",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 3,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "19bfe9d5-5d04-4c3c-9919-ca1b2d1215ae",
+      "technology": "Azure Bot Service",
+      "technologySlug": "azure-bot-service-azurebotservice-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Bot Service",
+      "sourceKind": "checklists",
+      "checklist": "Azure Bot Service",
+      "category": "Operations management",
+      "subcategory": "High Availablity",
+      "id": "A01.3",
+      "text": "Azure Bot Service runs in active-active mode for both global and regional services. When an outage occurs, you don't need to detect errors or manage the service. Azure Bot Service automatically performs auto failover and auto recovery in a multi-region geographical architecture. For the EU bot regional service, Azure Bot Service provides two full regions inside Europe with active/active replication to ensure redundancy. For the global bot service, all available regions/geographies can be served as the global footprint.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Bot Service",
+      "serviceCanonical": "Azure Bot Service",
+      "serviceSlug": "azure-bot-service",
+      "link": "https://learn.microsoft.com/en-us/azure/reliability/reliability-bot#cross-region-disaster-recovery-in-multi-region-geography",
+      "sourcePath": "checklists/azurebotservice_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurebotservice_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e65de8e1-3f9c-4cbd-9682-66abca264f9a",
+      "technology": "Azure Bot Service",
+      "technologySlug": "azure-bot-service-azurebotservice-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Bot Service",
+      "sourceKind": "checklists",
+      "checklist": "Azure Bot Service",
+      "category": "Operations management",
+      "subcategory": "High Availablity",
+      "id": "A01.2",
+      "text": "Deploying bots with local data residency and regional compliance",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Bot Service",
+      "serviceCanonical": "Azure Bot Service",
+      "serviceSlug": "azure-bot-service",
+      "link": "https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-concept-regionalization",
+      "sourcePath": "checklists/azurebotservice_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurebotservice_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6ad48408-ee72-4734-a476-ba28fdcf590c",
+      "technology": "Azure Bot Service",
+      "technologySlug": "azure-bot-service-azurebotservice-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Azure Bot Service",
+      "sourceKind": "checklists",
+      "checklist": "Azure Bot Service",
+      "category": "Operations management",
+      "subcategory": "High Availablity",
+      "id": "A01.1",
+      "text": "Follow reliability support recommendations in Azure Bot Service",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Bot Service",
+      "serviceCanonical": "Azure Bot Service",
+      "serviceSlug": "azure-bot-service",
+      "link": "https://learn.microsoft.com/en-us/azure/reliability/reliability-bot",
+      "sourcePath": "checklists/azurebotservice_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/azurebotservice_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Bot Service",
+    "matchedServiceLabel": "Azure Bot Service",
+    "matchedSkuHints": [],
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": [
+      {
+        "skuName": "General availability",
+        "state": "GA"
+      }
+    ]
+  }
+}

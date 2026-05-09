@@ -1,0 +1,2480 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "api-management",
+    "service": "API Management",
+    "aliases": [
+      "Microsoft.ApiManagement/service"
+    ],
+    "itemCount": 50,
+    "highSeverityCount": 17,
+    "familyCount": 3,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 2,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Governance",
+      "High Availability",
+      "Identity and Access Management",
+      "Management",
+      "Network Topology and Connectivity",
+      "Operations",
+      "Platform automation and DevOps",
+      "Security"
+    ],
+    "wafPillars": [
+      "Operations",
+      "Performance",
+      "Reliability",
+      "Security"
+    ],
+    "description": "API Management appears across 50 normalized findings in 3 checklist families. 1 GA-ready families can anchor the baseline. 2 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "API Management",
+      "matchedServiceLabel": "API Management",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 46,
+      "unavailableRegionCount": 13,
+      "restrictedRegionCount": 9,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-api-management-review-apim-checklist",
+        "technology": "Azure API Management Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 44,
+        "highSeverityCount": 12,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 93 with 83% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "ai-landing-zone-ai-lz-checklist",
+        "technology": "AI Landing Zone",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 177,
+        "highSeverityCount": 83,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 88,
+          "metadataCompleteness": 82,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 97,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "129b5c68-132e-4839-ac3a-ebe7c14bc08e",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "API Gateway",
+      "id": "AI.109",
+      "text": "Deploy a API Gateway solution like API-Management to load balance requests, rate limit tokens, keyless authentication and monitor AI usage.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://github.com/Azure/apim-landing-zone-accelerator/blob/main/scenarios/workload-genai/README.md",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "21f656e3-7ba4-4d23-be79-02a6264a1942",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Identity and Access Management",
+      "subcategory": "Authentication",
+      "id": "AI.101",
+      "text": "Require clients to authenticate using Entra ID when accessing AI model endpoints.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://github.com/Azure/apim-landing-zone-accelerator/blob/main/scenarios/workload-genai/README.md",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e35cf148-8eee-49d1-a1c9-956160f99e0b",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ApiManagement/service",
+      "id": "e5f60ef8-3fcc-4fb5-bee7-7aaeb44c1509",
+      "text": "Azure API Management platform version should be stv2",
+      "description": "Upgrading to API Management stv2 is required as stv1 retires on 31 Aug 2024, offering enhanced capabilities with the new platform version.",
+      "severity": "High",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "armService": "Microsoft.ApiManagement/service",
+      "link": "https://learn.microsoft.com/en-us/azure/api-management/breaking-changes/stv1-platform-retirement-august-2024",
+      "graph": "// Azure Resource Graph Query\n// Find all API Management instances that aren't upgraded to platform version stv2\nresources\n| where type =~ 'Microsoft.ApiManagement/service'\n| extend plat_version = properties.platformVersion\n| extend skuName = sku.name\n| where tolower(plat_version) != tolower('stv2')\n| project recommendationId = \"e35cf148-8eee-49d1-a1c9-956160f99e0b\", name, id, tags, param1=strcat(\"Platform Version: \", plat_version) , param2=strcat(\"SKU: \", skuName)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "740f2c1c-8857-4648-80eb-47d2c56d5a50",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ApiManagement/service",
+      "id": "740f2c1c-8857-4648-80eb-47d2c56d5a50",
+      "text": "Enable Availability Zones on Premium API Management instances",
+      "description": "Zone redundancy for APIM instances ensures the gateway and control plane (Management API, developer portal, Git configuration) are replicated across datacenters in physically separated zones, boosting resilience to zone failures.",
+      "severity": "High",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "armService": "Microsoft.ApiManagement/service",
+      "link": "https://learn.microsoft.com/en-us/azure/api-management/high-availability#availability-zones",
+      "graph": "// Azure Resource Graph Query\n// Find all Premium API Management instances that aren't zone redundant\nresources\n| where type =~ 'Microsoft.ApiManagement/service'\n| extend skuName = sku.name\n| where tolower(skuName) == tolower('premium')\n| where isnull(zones) or array_length(zones) < 2\n| extend zoneValue = iff((isnull(zones)), \"null\", zones)\n| project recommendationId = \"740f2c1c-8857-4648-80eb-47d2c56d5a50\", name, id, tags, param1=\"Zones: No Zone or Zonal\", param2=strcat(\"Zones value: \", zoneValue )\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "baf3bfc0-32a2-4c0c-926d-c9bf0b49808e",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ApiManagement/service",
+      "id": "baf3bfc0-32a2-4c0c-926d-c9bf0b49808e",
+      "text": "Migrate API Management services to Premium SKU to support Availability Zones",
+      "description": "Upgrading the API Management instance to the Premium SKU adds support for Availability Zones, enhancing availability and resilience by distributing services across physically separate locations within Azure regions.",
+      "severity": "High",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "armService": "Microsoft.ApiManagement/service",
+      "link": "https://learn.microsoft.com/en-us/azure/api-management/upgrade-and-scale#change-your-api-management-service-tier",
+      "graph": "// Azure Resource Graph Query\n// Find all API Management instances that aren't Premium\nresources\n| where type =~ 'Microsoft.ApiManagement/service'\n| extend skuName = sku.name\n| where tolower(skuName) != tolower('premium')\n| project recommendationId = \"baf3bfc0-32a2-4c0c-926d-c9bf0b49808e\", name, id, tags, param1=strcat(\"SKU: \", skuName)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "46f07d33-ef9a-44e8-8f98-67c097c5d8cd",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Resource Limits",
+      "text": "Be aware of APIM's limits",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits#api-management-limits",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "55fd27bb-76ac-4a91-bc37-049e885be6b7",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Monitoring",
+      "text": "Configure alerts on the most critical metrics",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-use-azure-monitor",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "d698adbd-3288-44cb-b10a-9b572da395ae",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Security",
+      "text": "Disable Public Network Access",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#disable-public-network-access",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | extend compliant = (properties.virtualNetworkType == 'Internal') | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a7d0840a-c8c4-4e83-adec-5ca578eb4049",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Monitoring",
+      "text": "Enable Diagnostics Settings to export logs to Azure Monitor",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-use-azure-monitor#resource-logs",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "39460bdb-156f-4dc2-a87f-1e8c11ab0998",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Identity and Access Management",
+      "subcategory": "Data protection",
+      "text": "Ensure that custom SSL certificates are stored an Azure Key Vault so they can be securely accessed and updated",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#certificate-management-in-azure-key-vault",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f8af3d94-1d2b-4070-846f-849197524258",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "Data protection",
+      "text": "Ensure that secrets (Named values) are stored an Azure Key Vault so they can be securely accessed and updated",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#im-8-restrict-the-exposure-of-credential-and-secrets",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "10f58602-f0f9-4d77-972a-956f6e0f2600",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Self-Hosted",
+      "text": "Ensure that the self-hosted gateway deployments are resilient.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/en-us/azure/api-management/self-hosted-gateway-overview",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "8d2db6e8-85c6-4118-a52c-ae76a4f27934",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "text": "Ensure there is an automated backup routine",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#service-native-backup-capability",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e9217997-5f6c-479d-8576-8f2adf706ec8",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Identity and Access Management",
+      "subcategory": "Identity",
+      "text": "Protect incoming requests to APIs (data plane) with Azure AD",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#azure-ad-authentication-required-for-data-plane-access",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "46f07d33-ef9a-44e8-8f98-67c097c5d8ce",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Platform Version",
+      "text": "Upgrade the platform version and follow lifecyle. stv1 is retirng on 31 August 2024",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/en-us/azure/api-management/migrate-stv1-to-stv2",
+      "graph": "resources | where type =~ 'microsoft.apimanagement/service' | extend compliant = (properties.platformVersion != 'stv1') | project id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2deee033-b906-4bc2-9f26-c8d3699fe091",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "Ciphers",
+      "text": "Use the latest TLS version when encrypting information in transit. Disable outdated and unnecessary protocols and ciphers when possible.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-manage-protocols-ciphers",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "220c4ca6-6688-476b-b2b5-425a78e6fb87",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "Network",
+      "text": "Use web application firewall (WAF) by deploying Application Gateway in front of APIM",
+      "severity": "High",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#ns-6-deploy-web-application-firewall",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "65a0e89a-d016-4eda-b366-af816f1344d6",
+      "technology": "AI Landing Zone",
+      "technologySlug": "ai-landing-zone-ai-lz-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 88,
+      "family": "AI Landing Zone",
+      "sourceKind": "checklists",
+      "checklist": "AI Landing Zone",
+      "category": "Operations",
+      "subcategory": "Operations",
+      "id": "AI.126",
+      "text": "Enforce recommended guardrails for API Management",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Enforce-Guardrails-APIM.html",
+      "sourcePath": "checklists/ai_lz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/ai_lz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "121bfc39-fa7b-4096-b93b-ab56c1bc0bed",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Performance and scalability",
+      "text": "Apply throttling policies to control the number of requests per second",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-sample-flexible-throttling",
+      "training": "https://learn.microsoft.com/training/modules/protect-apis-on-api-management/",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c385bfcd-49fd-4786-81ba-cedbb4c57345",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Platform automation and DevOps",
+      "subcategory": "Best practices",
+      "text": "Configure APIM via Infrastructure-as-code. Review DevOps best practices from the Cloud Adoption Framework APIM Landing Zone Accelerator",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/app-platform/api-management/platform-automation-and-devops#design-recommendations",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "bb5f356b-3daf-47a2-a9ee-867a8100bbd5",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Performance and scalability",
+      "text": "Configure autoscaling to scale out the number of instances when the load increases",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-autoscale",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | join kind = leftouter (resources | where type == 'microsoft.insights/autoscalesettings' | extend targetResourceUri = tostring(properties.targetResourceUri)) on $left.id == $right.targetResourceUri | extend compliant = (sku.name == 'Premium' and isnotempty(targetResourceUri) and properties1.enabled == true) | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "f8e574ce-280f-49c8-b2ef-68279b081cf3",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Identity and Access Management",
+      "subcategory": "Privileged access",
+      "text": "Create appropriate groups to control the visibility of the products",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-create-groups",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9c8d1664-dd9a-49d4-bd83-950af0af4044",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "text": "Deploy at least one unit in two or more availability zones for an increased SLA of 99.99%",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/high-availability",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | extend compliant = ( sku.name == 'Premium' and  isnotnull(zones) and sku.capacity >= 2 ) | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "02661582-b3d1-48d1-9d7b-c6a918a0ca33",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Security",
+      "text": "Deploy network security groups (NSG) to your subnets to restrict or monitor traffic to/from APIM.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#network-security-group-support",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "67437a28-2721-4a2c-becd-caa54c8237a5",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Security",
+      "text": "Deploy Private Endpoints to filter incoming traffic when APIM is not deployed to a VNet.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#azure-private-link",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | extend compliant = (properties.virtualNetworkType == 'None' and isnotnull(properties.privateEndpointConnections)) | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "84b94abb-59b6-4b9d-8587-3413669468e8",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Performance and scalability",
+      "text": "Deploy self-hosted gateways where Azure doesn't have a region close to the backend APIs.",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-provision-self-hosted-gateway",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "cd45c90e-7690-4753-930b-bf290c69c074",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Security",
+      "text": "Deploy the service within a Virtual Network (VNet)",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#virtual-network-integration",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | extend compliant = (isnotnull(properties.virtualNetworkConfiguration)) | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "8691fa38-45ed-4299-a247-fecd98d35deb",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Monitoring",
+      "text": "Enable Application Insights for more detailed telemetry",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-app-insights",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0b0c0765-ff37-4369-90bd-3eb23ce71b08",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Development best practices",
+      "text": "Ensure all APIs policies include a <base/> element.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/set-edit-policies?tabs=form#use-base-element-to-set-policy-evaluation-order",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "beae759e-4ddb-4326-bf26-47f87d3454b6",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Business continuity and disaster recovery",
+      "text": "For DR, leverage the premium tier with deployments scaled across two or more regions for 99.99% SLA",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-deploy-multi-region",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | extend compliant = ( sku.name == 'Premium' and  isnotnull(properties.additionalLocations)) | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c3818a95-6ff3-4474-88dc-e809b46dad6a",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Monetization",
+      "text": "If you are planning to monetize your APIs, review the 'monetization support' article for best practices",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/monetization-support",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "d7941d4a-7b6f-458f-8714-2f8f8c059ad4",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Development best practices",
+      "text": "Implement an error handling policy at the global level",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-error-handling-policies",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "354f1c03-8112-4965-85ad-c0074bddf231",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Platform automation and DevOps",
+      "subcategory": "DevOps",
+      "text": "Implement DevOps and CI/CD in your workflow",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/devops-api-development-templates",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1b8d68a4-66cd-44d5-ba94-3ee94440e8d6",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Request Routing",
+      "text": "In multi-region model, use Policies to route the requests to regional backends based on availability or latency.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-deploy-multi-region#-route-api-calls-to-regional-backend-services",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "6c3a27c0-197f-426c-9ffa-86fed51d9ab6",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Platform automation and DevOps",
+      "subcategory": "Best practices",
+      "text": "Promote usage of Visual Studio Code APIM extension for faster API development",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/visual-studio-code-tutorial",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "074435f5-4a46-41ac-b521-d6114cb5d845",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "APIs",
+      "text": "Review 'Recommendations to mitigate OWASP API Security Top 10 threats' article and check what is applicable to your APIs",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/mitigate-owasp-api-threats",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b6439493-426a-45f3-9697-cf65baee208d",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "APIs",
+      "text": "Secure APIs using client certificate authentication",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-mutual-certificates-for-clients",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2a67d143-1033-4c0a-8732-680896478f08",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "APIs",
+      "text": "Secure backend services using client certificate authentication",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-mutual-certificates",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0674d750-0c6f-4ac0-8717-ceec04d0bdbd",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Platform automation and DevOps",
+      "subcategory": "Automation",
+      "text": "Simplify management with PowerShell automation scripts",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/automation-manage-api-management",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "5507c4b8-a7f8-41d6-9661-418c987100c9",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "APIs",
+      "text": "Use Authorizations feature to simplify management of OAuth 2.0 token for your backend APIs",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/authorizations-overview",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7519e385-a88b-4d34-966b-6269d686e890",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Connectivity",
+      "text": "Use Azure Front Door in front of APIM for multi-region deployment",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/front-door-api-management",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "06862505-2d9a-4874-9491-2837b00a3475",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Best practices",
+      "text": "Use Backends feature to eliminate redundant API backend configurations",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/backends",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "791abd8b-7706-4e31-9569-afefde724be3",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Security",
+      "subcategory": "Identities",
+      "text": "Use managed identities to authenticate to other Azure resources whenever possible",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/security/benchmark/azure/baselines/api-management-security-baseline?toc=%2Fazure%2Fapi-management%2F&bc=%2Fazure%2Fapi-management%2Fbreadcrumb%2Ftoc.json#managed-identities",
+      "graph": "resources | where type == 'microsoft.apimanagement/service' | extend compliant = (isnotnull(identity)) | distinct id, compliant",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "5e5f64ba-c90e-480e-8888-398d96cf0bfb",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Identity and Access Management",
+      "subcategory": "Identity",
+      "text": "Use Microsoft Entra ID to authenticate users in the Developer Portal",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-aad",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "03b125d5-b69b-4739-b7fd-84b86da4933e",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Best practices",
+      "text": "Use Named Values to store common values that can be used in policies",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-properties?tabs=azure-portal",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "43e60b94-7bca-43a2-aadf-efb04d63a485",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Failover and Caching",
+      "text": "Use Policies to add a fail-over backend URL and caching to reduce failing calls.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/retry-policy",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a5c45b03-93b6-42fe-b16b-8fccb6a79902",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Governance",
+      "subcategory": "Development best practices",
+      "text": "Use Policy Fragments to avoid repeating same policies definitions across multiple APIs",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/policy-fragments",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1fe8db45-a017-4888-8c4d-4422583cfae0",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Premium Tier",
+      "text": "Use the premium tier for production workloads.",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/upgrade-and-scale#upgrade-and-scale",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c79680ea-de85-44fa-a596-f31fa17a952f",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.ApiManagement/service",
+      "id": "c79680ea-de85-44fa-a596-f31fa17a952f",
+      "text": "Enable auto-scale for production workloads on API Management services",
+      "description": "Use API Management with auto-scale for high availability in workloads that experience variable traffic patterns. There are several limitations with auto-scale, so review the documentation to ensure it meets your requirements.",
+      "severity": "Low",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "armService": "Microsoft.ApiManagement/service",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-autoscale",
+      "graph": "// cannot-be-validated-with-arg\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "8210699f-8d43-45c2-8f19-57e54134bd8f",
+      "technology": "Azure API Management Review",
+      "technologySlug": "azure-api-management-review-apim-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure API Management Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure API Management Review",
+      "category": "Management",
+      "subcategory": "Performance and scalability",
+      "text": "If you need to log at high performance levels, consider Event Hubs policy",
+      "severity": "Low",
+      "waf": "Operations",
+      "service": "API Management",
+      "serviceCanonical": "API Management",
+      "serviceSlug": "api-management",
+      "link": "https://learn.microsoft.com/azure/api-management/api-management-howto-log-event-hubs",
+      "sourcePath": "checklists/apim_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/apim_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 46,
+    "unavailableRegionCount": 13,
+    "restrictedRegionCount": 9,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "API Management",
+    "matchedServiceLabel": "API Management",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

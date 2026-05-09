@@ -1,0 +1,1829 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-data-factory",
+    "service": "Azure Data Factory",
+    "aliases": [],
+    "itemCount": 31,
+    "highSeverityCount": 7,
+    "familyCount": 3,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 3,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Data Protection",
+      "Governance and Security",
+      "Identity and Access Management",
+      "Network Security",
+      "Network Topology and Connectivity",
+      "Operations Management"
+    ],
+    "wafPillars": [
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Data Factory appears across 31 normalized findings in 3 checklist families. 3 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Data Factory",
+      "matchedServiceLabel": "Azure Data Factory",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 44,
+      "unavailableRegionCount": 15,
+      "restrictedRegionCount": 1,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "data-security-review-checklist-datasecurity-checklist",
+        "technology": "Data Security review checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 100,
+        "highSeverityCount": 21,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 85,
+          "metadataCompleteness": 78,
+          "severityConfidence": 99,
+          "sourceCoverageQuality": 91,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "databricks-review-checklist-databricks-checklist",
+        "technology": "DataBricks Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 10,
+        "highSeverityCount": 3,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 90,
+          "metadataCompleteness": 87,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      },
+      {
+        "slug": "azure-data-factory-review-checklist-adf-checklist",
+        "technology": "Azure Data Factory Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 6,
+        "highSeverityCount": 1,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 90,
+          "metadataCompleteness": 86,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "e503547c-d447-4e82-9138-a7200f1cac6d",
+      "technology": "Azure Data Factory Review Checklist",
+      "technologySlug": "azure-data-factory-review-checklist-adf-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "Azure Data Factory Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Factory Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Availablity Zone",
+      "id": "A02.01",
+      "text": "Use zone redundant pipelines in regions that support Availability Zones",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/architecture/example-scenario/analytics/pipelines-disaster-recovery",
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "0bdf4cc2-efc4-4d76-8c31-d25ffbb47a39",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "E01.01",
+      "text": "Restrict use of local users whereever necessary",
+      "description": "Restrict the use of local authentication methods for data plane access. Instead, use Microsoft Entra ID as the default authentication method to control your data plane access.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4350d092-d234-4292-a752-8537a551c5bf",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "E01.03",
+      "text": "Separate and limit highly privileged/administrative users and enable MFA and conditional policies",
+      "description": "If not required for routine administrative operations, disable or restrict any local admin accounts for only emergency use.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "faa62a15-9495-46da-a7dc-3a23267b2258",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "H01.04",
+      "text": "Store passwords, secrets in Azure Key Vault",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/store-credentials-in-key-vault, https:/learn.microsoft.com/azure/data-factory/how-to-use-azure-key-vault-secrets-pipeline-activities",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "675c5ee8-5b85-49c7-944c-e3b1a28b875a",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup",
+      "id": "46.7",
+      "text": "Backup your code with DevOps",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/databricks/dev-tools/index-ci-cd",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "a1bf1038-9f03-4a4d-8ce4-63dbbbc8682a",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Disaster Recovery",
+      "id": "46.8",
+      "text": "Plan for Disaster recovery using Active/Active or Active/Passive Configuration",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/databricks/administration-guide/disaster-recovery",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "65285269-440c-44be-9d3e-0844276d4bdc",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "46.1",
+      "text": "Reference Databricks HA/DR playbook",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://github.com/Azure/fta-resiliencyplaybooks/blob/main/pass-foudations-playbooks-ADB_v1.docx",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "ab91932c-9fc9-4d1b-a881-37f5e6c0cb9e",
+      "technology": "Azure Data Factory Review Checklist",
+      "technologySlug": "azure-data-factory-review-checklist-adf-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "Azure Data Factory Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Factory Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Best Practices",
+      "id": "A01.01",
+      "text": "Leverage FTA Resiliency Playbook for Azure Data Factory",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://github.com/Azure/fta-resiliencyplaybooks/blob/main/paas-foundations-playbooks-ADF_v1.docx",
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "aee4563a-fd83-4393-98b2-62d6dc5f512a",
+      "technology": "Azure Data Factory Review Checklist",
+      "technologySlug": "azure-data-factory-review-checklist-adf-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "Azure Data Factory Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Factory Review Checklist",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Network",
+      "id": "B01.02",
+      "text": "Make sure you replicate or duplicate your network in the sister region. You have to make a copy of your Vnet in another region",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/architecture/example-scenario/analytics/pipelines-disaster-recovery",
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "e43a18a9-cd29-49cf-b7b1-7db8255562f2",
+      "technology": "Azure Data Factory Review Checklist",
+      "technologySlug": "azure-data-factory-review-checklist-adf-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "Azure Data Factory Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Factory Review Checklist",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Network",
+      "id": "B01.01",
+      "text": "Make sure you replicate the Self-Hosted Integration Runtime VMs in another region",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/architecture/example-scenario/analytics/pipelines-disaster-recovery",
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9ef1d6e8-32e5-42e3-911c-818b1a0bc511",
+      "technology": "Azure Data Factory Review Checklist",
+      "technologySlug": "azure-data-factory-review-checklist-adf-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "Azure Data Factory Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Factory Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "DevOps Integration",
+      "id": "A03.01",
+      "text": "Use DevOps to Backup the ARM templates with Github/Azure DevOps integration",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/source-control",
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "41bddde6-8a47-47cd-bb48-61bc3bc10ae6",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "F01.04",
+      "text": "Configure managed private endpoints to connect to resources using managed azure IR",
+      "description": "Managed private endpoints are private endpoints created in the Data Factory managed virtual network that establishes a private link to Azure resources. Data Factory manages these private endpoints on your behalf.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/managed-virtual-network-private-endpoint#managed-private-endpoints",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "b47a393a-0804-4272-a479-8b1578b219a4",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "",
+      "subcategory": "",
+      "id": "G01.01",
+      "text": "Configure Private Links to connect to sources in customer Vnet and data factory",
+      "description": "By using Azure Private Link, you can connect to various platform as a service (PaaS) deployments in Azure via a private endpoint. A private endpoint is a private IP address within a specific virtual network and subnet",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/data-factory-private-link",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6ceb5443-5135-4922-9442-93bb628637a5",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "H01.01",
+      "text": "Data Encryption at rest by Microsoft managed keys",
+      "description": "This is a default setting",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "f9b241a9-98a5-435e-9378-97e71ca7da8c",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "H01.03",
+      "text": "Data Encryption in transit by BYOK (Customer managed keys)",
+      "description": "When you specify a customer-managed key, Data Factory uses�both�the factory system key and the CMK to encrypt customer data. Missing either would result in Deny of Access to data and factory.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/enable-customer-managed-key",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "5119b08e-8f58-4543-a7e9-cec166cd072a",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "H01.02",
+      "text": "Data Encryption in transit by Microsoft managed keys",
+      "description": "This is a default setting",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6898a535-e337-4897-b31b-67d67be5962a",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "F01.02",
+      "text": "Deploy SHIR VMs in your vnet if you are working with sensitive data that shouldn�t leave your corporate network",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "4e4f1854-287d-45cd-a126-cc032af5b1fc",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "F01.01",
+      "text": "Disable access over public internet and configure either firewall rules or trusted services rules",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "c14aeb7e-66e8-4d9a-9bec-218e6436b173",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "H01.06",
+      "text": "Encrypt credentials for on-premises using SHIR data stores in Azure Data Factory",
+      "description": "You can encrypt and store credentials for any of your on-premises data stores (linked services with sensitive information) on a machine with self-hosted integration runtime.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/encrypt-credentials-self-hosted-integration-runtime",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a3aec2c4-e243-46b0-936d-b55e17960eee",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "",
+      "subcategory": "",
+      "id": "D01.01",
+      "text": "Use Azure Key Vault secrets in pipeline activities",
+      "description": "You can store credentials or secret values in an Azure Key Vault and use them during pipeline execution to pass to your activities.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/how-to-use-azure-key-vault-secrets-pipeline-activities",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "unavailable",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6f4a1652-bddd-4ea8-a487-cdec4861bc3b",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Data Protection",
+      "subcategory": "",
+      "id": "H01.05",
+      "text": "Use Azure Key Vault secrets in pipeline activities",
+      "description": "You can store credentials or secret values in an Azure Key Vault and use them during pipeline execution to pass to your activities.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/how-to-use-azure-key-vault-secrets-pipeline-activities",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "3a040ed3-2947-498b-8178-a2c5a46ceb54",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Identity and Access Management",
+      "subcategory": "",
+      "id": "E01.02",
+      "text": "Use managed identity to authenticate to the services",
+      "description": "Managed identities eliminate the need to manage credentials. Managed identities provide an identity for the service instance when connecting to resources that support Microsoft Entra authentication.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/data-factory/data-factory-service-identity",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "1193846d-697c-4c39-8ed1-6b2d186f0a12",
+      "technology": "Data Security review checklist",
+      "technologySlug": "data-security-review-checklist-datasecurity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 85,
+      "family": "Data Security review checklist",
+      "sourceKind": "checklists",
+      "checklist": "Data Security review checklist",
+      "category": "Network Security",
+      "subcategory": "",
+      "id": "F01.03",
+      "text": "Use managed vnet IR to restrict the access over public internet for Azure Integration Runtime",
+      "description": "When you create an Azure integration runtime within a Data Factory managed virtual network, the integration runtime is provisioned with the managed virtual network. It uses private endpoints to securely connect to supported data stores.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "sourcePath": "checklists/datasecurity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/datasecurity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "unavailable",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "7abae48a-bd54-4cd7-ae2e-86768357c559",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup",
+      "id": "46.6",
+      "text": "Backup your data to Azure Storage RA-GRS",
+      "description": "Download the blob using the secondary endpoint in RAGRS storage account",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://techcommunity.microsoft.com/t5/azure-paas-blog/download-the-blob-using-secondary-endpoint-in-ragrs-storage/ba-p/2403750",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4b1d944a-3598-437e-b79d-6c6d3a364a5b",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup",
+      "id": "46.5",
+      "text": "Backup your data with deep and shallow clones",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://www.databricks.com/blog/2021/04/20/attack-of-the-delta-clones-against-disaster-recovery-availability-complexity.html",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "89d558b9-37d3-4974-b111-2dbd7aaf12e6",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup",
+      "id": "46.2",
+      "text": "Backup your workspace configuration including ARM templates and secret scopes",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/databricks/security/secrets/secret-scopes",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "769e3969-0e78-428a-a936-657d03b0f466",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup",
+      "id": "46.4",
+      "text": "Plan Disaster Recovery strategy in Databricks using the Hive External Metastore",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://techcommunity.microsoft.com/t5/fasttrack-for-azure/disaster-recovery-strategy-in-azure-databricks-using-the-hive/ba-p/3684581",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "b94ee5ef-47d2-4d92-a81b-1cd6d1f54b29",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Backup",
+      "id": "46.3",
+      "text": "Share metaData across different Databricks workspaces using Hive external metastore",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://techcommunity.microsoft.com/t5/fasttrack-for-azure/sharing-metadata-across-different-databricks-workspaces-using/ba-p/3679757",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "5abc92a4-eda1-4dae-8cc8-5c47c6b781cc",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Migration",
+      "id": "46.9",
+      "text": "Use Databricks Migration tools",
+      "description": "Migration package to log all Databricks resources for backup and/or migrating to another Databricks workspace",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://github.com/databrickslabs/migrate",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "25498f6d-bad3-47da-a43b-c6ce1d7aa9b2",
+      "technology": "Azure Data Factory Review Checklist",
+      "technologySlug": "azure-data-factory-review-checklist-adf-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "Azure Data Factory Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Azure Data Factory Review Checklist",
+      "category": "Governance and Security",
+      "subcategory": "Integration",
+      "id": "C01.01",
+      "text": "If using Keyvault integration, use SLA of Keyvault to understand your availablity",
+      "description": "If your ADF Pipelines use Key Vault you don't have to do anything to replicate Key Vault. Key Vault is a managed service and Microsoft takes care of it for you",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://learn.microsoft.com/azure/key-vault/general/disaster-recovery-guidance",
+      "sourcePath": "checklists/adf_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/adf_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "a0e6c465-89d5-458b-a37d-3974d1112dbd",
+      "technology": "DataBricks Review Checklist",
+      "technologySlug": "databricks-review-checklist-databricks-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 90,
+      "family": "DataBricks Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "DataBricks Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "Migration",
+      "id": "46.10",
+      "text": "Use Databricks Sync",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure Data Factory",
+      "serviceCanonical": "Azure Data Factory",
+      "serviceSlug": "azure-data-factory",
+      "link": "https://github.com/databrickslabs/databricks-sync",
+      "sourcePath": "checklists/databricks_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/databricks_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 44,
+    "unavailableRegionCount": 15,
+    "restrictedRegionCount": 1,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Data Factory",
+    "matchedServiceLabel": "Azure Data Factory",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess"
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

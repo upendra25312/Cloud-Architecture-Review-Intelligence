@@ -1,0 +1,1321 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "web-application-firewall",
+    "service": "Web Application Firewall",
+    "aliases": [],
+    "itemCount": 5,
+    "highSeverityCount": 2,
+    "familyCount": 1,
+    "gaFamilyCount": 1,
+    "previewFamilyCount": 0,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Management",
+      "Network Topology and Connectivity"
+    ],
+    "wafPillars": [
+      "Operations",
+      "Security"
+    ],
+    "description": "Web Application Firewall appears across 5 normalized findings in 1 checklist families. 1 GA-ready families can anchor the baseline.",
+    "whatThisMeans": "This service has a usable GA-ready baseline. Start there before branching into broader cross-service guidance.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Web Application Firewall",
+      "matchedServiceLabel": "Web Application Firewall",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 54,
+      "unavailableRegionCount": 5,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "89cc5e11-aa4d-4c3b-893d-feb99215266a",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "App delivery",
+      "id": "F06.01",
+      "text": "Add diagnostic settings to save WAF logs from application delivery services like Azure Front Door and Azure Application Gateway. Regularly review the logs to check for attacks and for false positive detections.",
+      "severity": "High",
+      "waf": "Operations",
+      "service": "Web Application Firewall",
+      "serviceCanonical": "Web Application Firewall",
+      "serviceSlug": "web-application-firewall",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/afds/waf-front-door-best-practices#add-diagnostic-settings-to-save-your-wafs-logs",
+      "training": "https://learn.microsoft.com/training/modules/capture-application-logs-app-service/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "2363cefe-179b-4599-be0d-5973cd4cd21b",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Internet",
+      "id": "D05.05",
+      "text": "When WAFs and other reverse proxies are required for inbound HTTP/S connections, deploy them within a landing-zone virtual network and together with the apps that they're protecting and exposing to the internet.",
+      "severity": "High",
+      "waf": "Security",
+      "service": "Web Application Firewall",
+      "serviceCanonical": "Web Application Firewall",
+      "serviceSlug": "web-application-firewall",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/ag-overview",
+      "training": "https://learn.microsoft.com/learn/paths/architect-network-infrastructure/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "7f408960-c626-44cb-a018-347c8d790cdf",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Management",
+      "subcategory": "App delivery",
+      "id": "F06.02",
+      "text": "Send WAF logs from your application delivery services like Azure Front Door and Azure Application Gateway to Microsoft Sentinel. Detect attacks and integrate WAF telemetry into your overall Azure environment.",
+      "severity": "Medium",
+      "waf": "Operations",
+      "service": "Web Application Firewall",
+      "serviceCanonical": "Web Application Firewall",
+      "serviceSlug": "web-application-firewall",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/afds/waf-front-door-best-practices#send-logs-to-microsoft-sentinel",
+      "training": "https://learn.microsoft.com/training/paths/sc-200-connect-logs-to-azure-sentinel/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "1d7aa9b6-4704-4489-a804-2d88e79d17b7",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Internet",
+      "id": "D05.03",
+      "text": "Use Azure Front Door and WAF policies to provide global protection across Azure regions for inbound HTTP/S connections to a landing zone.",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Web Application Firewall",
+      "serviceCanonical": "Web Application Firewall",
+      "serviceSlug": "web-application-firewall",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/afds/afds-overview",
+      "training": "https://learn.microsoft.com/learn/paths/secure-application-delivery/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "3b22a5a6-7e7a-48ed-9b30-e38c3f29812b",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Internet",
+      "id": "D05.04",
+      "text": "When using Azure Front Door and Azure Application Gateway to help protect HTTP/S apps, use WAF policies in Azure Front Door. Lock down Azure Application Gateway to receive traffic only from Azure Front Door.",
+      "severity": "Low",
+      "waf": "Security",
+      "service": "Web Application Firewall",
+      "serviceCanonical": "Web Application Firewall",
+      "serviceSlug": "web-application-firewall",
+      "link": "https://learn.microsoft.com/azure/web-application-firewall/ag/ag-overview",
+      "training": "https://learn.microsoft.com/learn/paths/secure-application-delivery/",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 54,
+    "unavailableRegionCount": 5,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Web Application Firewall",
+    "matchedServiceLabel": "Web Application Firewall",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Azure Web Application Firewall - Regional (WAF on Application Gateway)",
+            "state": "GA"
+          },
+          {
+            "skuName": "Azure Web Application Firewall Regional v2 (WAF on Application Gateway v2)",
+            "state": "GA"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": [
+      {
+        "skuName": "Azure Web Application Firewall - Global (WAF on Azure Front Door)",
+        "state": "GA"
+      }
+    ]
+  }
+}

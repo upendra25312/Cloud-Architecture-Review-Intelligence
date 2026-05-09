@@ -1,0 +1,302 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+  "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+  "regions": [
+    {
+      "regionName": "Australia Central",
+      "geographyName": "Australia",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Australia Central 2",
+      "geographyName": "Australia",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Australia East",
+      "geographyName": "Australia",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Australia Southeast",
+      "geographyName": "Australia",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Austria East",
+      "geographyName": "Austria",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Belgium Central",
+      "geographyName": "Belgium",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Brazil South",
+      "geographyName": "Brazil",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Brazil Southeast",
+      "geographyName": "Brazil",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Canada Central",
+      "geographyName": "Canada",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Canada East",
+      "geographyName": "Canada",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Central India",
+      "geographyName": "India",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Central US",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Chile Central",
+      "geographyName": "Chile",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Denmark East",
+      "geographyName": "Denmark",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "East Asia",
+      "geographyName": "Asia Pacific",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "East US",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "East US 2",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "East US 3",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "France Central",
+      "geographyName": "France",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "France South",
+      "geographyName": "France",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Germany North",
+      "geographyName": "Germany",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Germany West Central",
+      "geographyName": "Germany",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Indonesia Central",
+      "geographyName": "Indonesia",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Israel Central",
+      "geographyName": "Israel",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Italy North",
+      "geographyName": "Italy",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Japan East",
+      "geographyName": "Japan",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Japan West",
+      "geographyName": "Japan",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Korea Central",
+      "geographyName": "Korea",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Korea South",
+      "geographyName": "Korea",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Malaysia West",
+      "geographyName": "Malaysia",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Mexico Central",
+      "geographyName": "Mexico",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "New Zealand North",
+      "geographyName": "New Zealand",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "North Central US",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "North Europe",
+      "geographyName": "Europe",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Norway East",
+      "geographyName": "Norway",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Norway West",
+      "geographyName": "Norway",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Poland Central",
+      "geographyName": "Poland",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Qatar Central",
+      "geographyName": "Qatar",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "South Africa North",
+      "geographyName": "Africa",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "South Africa West",
+      "geographyName": "Africa",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "South Central US",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "South India",
+      "geographyName": "India",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Southeast Asia",
+      "geographyName": "Asia Pacific",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Spain Central",
+      "geographyName": "Spain",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Sweden Central",
+      "geographyName": "Sweden",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Sweden South",
+      "geographyName": "Sweden",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Switzerland North",
+      "geographyName": "Switzerland",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "Switzerland West",
+      "geographyName": "Switzerland",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "Taiwan North",
+      "geographyName": "Taiwan",
+      "accessState": "EarlyAccess"
+    },
+    {
+      "regionName": "UAE Central",
+      "geographyName": "United Arab Emirates",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "UAE North",
+      "geographyName": "United Arab Emirates",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "UK South",
+      "geographyName": "United Kingdom",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "UK West",
+      "geographyName": "United Kingdom",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "West Central US",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "West Europe",
+      "geographyName": "Europe",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "West India",
+      "geographyName": "India",
+      "accessState": "ReservedAccess"
+    },
+    {
+      "regionName": "West US",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "West US 2",
+      "geographyName": "United States",
+      "accessState": "Open"
+    },
+    {
+      "regionName": "West US 3",
+      "geographyName": "United States",
+      "accessState": "Open"
+    }
+  ]
+}

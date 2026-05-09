@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /.auth/
+
+Sitemap: https://jolly-sea-014792b10.6.azurestaticapps.net/sitemap.xml

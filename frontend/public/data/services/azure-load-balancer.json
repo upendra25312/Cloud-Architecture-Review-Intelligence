@@ -1,0 +1,1630 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-load-balancer",
+    "service": "Azure Load Balancer",
+    "aliases": [
+      "Microsoft.Network/loadBalancers"
+    ],
+    "itemCount": 10,
+    "highSeverityCount": 7,
+    "familyCount": 3,
+    "gaFamilyCount": 2,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "High Availability",
+      "Monitoring and Alerting",
+      "Network Topology and Connectivity"
+    ],
+    "wafPillars": [
+      "Reliability",
+      "Security"
+    ],
+    "description": "Azure Load Balancer appears across 10 normalized findings in 3 checklist families. 2 GA-ready families can anchor the baseline. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "Start with the GA-ready families for this service, then widen into preview guidance only when the review question requires more depth.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "exact",
+      "matchedOfferingName": "Azure Load Balancer",
+      "matchedServiceLabel": "Azure Load Balancer",
+      "matchedSkuHints": [],
+      "notes": [],
+      "publicRegionCount": 59,
+      "availableRegionCount": 57,
+      "unavailableRegionCount": 2,
+      "restrictedRegionCount": 10,
+      "earlyAccessRegionCount": 1,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 55,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "azure-landing-zone-review-alz-checklist",
+        "technology": "Azure Landing Zone Review",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 255,
+        "highSeverityCount": 71,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 91,
+          "metadataCompleteness": 78,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 91 with 78% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "azure-application-delivery-networking-network-appdelivery-checklist",
+        "technology": "Azure Application Delivery Networking (Network Appdelivery Checklist)",
+        "status": "GA",
+        "maturityBucket": "GA",
+        "itemCount": 40,
+        "highSeverityCount": 9,
+        "quality": {
+          "label": "GA · High confidence",
+          "qualityScore": 93,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "High",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "GA",
+          "summary": "Strong review accelerator. Quality score 93 with 83% metadata completeness and 100% severity coverage."
+        }
+      },
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "621dbc78-3745-4d32-8eac-9e65b27b7512",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/loadBalancers",
+      "id": "621dbc78-3745-4d32-8eac-9e65b27b7512",
+      "text": "Ensure Standard Load Balancer is zone-redundant",
+      "description": "In regions with Availability Zones, assigning a zone-redundant frontend IP to a Standard Load Balancer ensures continuous traffic distribution even if one availability zone fails, provided other healthy zones and backend instances are available to receive the traffic.",
+      "severity": "High",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "armService": "Microsoft.Network/loadBalancers",
+      "link": "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-standard-availability-zones#zone-redundant",
+      "graph": "// Azure Resource Graph Query\n// Find all LoadBalancers with with regional or zonal public IP Addresses\nresources\n| where type == \"microsoft.network/loadbalancers\"\n| where tolower(sku.name) != 'basic'\n| mv-expand feIPconfigs = properties.frontendIPConfigurations\n| extend\n    feConfigName = (feIPconfigs.name),\n    PrivateSubnetId = toupper(feIPconfigs.properties.subnet.id),\n    PrivateIPZones = feIPconfigs.zones,\n    PIPid = toupper(feIPconfigs.properties.publicIPAddress.id),\n    JoinID = toupper(id)\n| where isnotempty(PrivateSubnetId)\n| where isnull(PrivateIPZones) or array_length(PrivateIPZones) < 2\n| project name, feConfigName, id\n| union (resources\n    | where type == \"microsoft.network/loadbalancers\"\n    | where tolower(sku.name) != 'basic'\n    | mv-expand feIPconfigs = properties.frontendIPConfigurations\n    | extend\n        feConfigName = (feIPconfigs.name),\n        PIPid = toupper(feIPconfigs.properties.publicIPAddress.id),\n        JoinID = toupper(id)\n    | where isnotempty(PIPid)\n    | join kind=innerunique (\n        resources\n        | where type == \"microsoft.network/publicipaddresses\"\n        | where isnull(zones) or array_length(zones) < 2\n        | extend\n            LBid = toupper(substring(properties.ipConfiguration.id, 0, indexof(properties.ipConfiguration.id, '/frontendIPConfigurations'))),\n            InnerID = toupper(id)\n    ) on $left.PIPid == $right.InnerID)\n| project recommendationId = \"621dbc78-3745-4d32-8eac-9e65b27b7512\", name, id, tags, param1=\"Zones: No Zone or Zonal\", param2=strcat(\"Frontend IP Configuration:\", \" \", feConfigName)\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "6d82d042-6d61-ad49-86f0-6a5455398081",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/loadBalancers",
+      "id": "6d82d042-6d61-ad49-86f0-6a5455398081",
+      "text": "Ensure the Backend Pool contains at least two instances",
+      "description": "Deploying Azure Load Balancers with at least two instances in the backend prevents a single point of failure and supports scalability. Pairing with Virtual Machine Scale Sets is advised for optimal scale building.",
+      "severity": "High",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "armService": "Microsoft.Network/loadBalancers",
+      "link": "https://learn.microsoft.com/azure/architecture/checklist/resiliency-per-service#azure-load-balancer",
+      "graph": "// Azure Resource Graph Query\n// Find all LoadBalancers which only have 1 backend pool defined or only 1 VM in the backend pool\nresources\n| where type =~ 'Microsoft.Network/loadBalancers'\n| extend bep = properties.backendAddressPools\n| extend BackEndPools = array_length(bep)\n| where BackEndPools == 0\n| project recommendationId = \"6d82d042-6d61-ad49-86f0-6a5455398081\", name, id, Param1=\"backendPools\", Param2=toint(0), tags\n| union (resources\n  | where type =~ 'Microsoft.Network/loadBalancers'\n  | where sku.name == \"Standard\"\n  | extend bep = properties.backendAddressPools\n  | extend BackEndPools = toint(array_length(bep))\n  | mv-expand bip = properties.backendAddressPools\n  | extend BackendAddresses = array_length(bip.properties.loadBalancerBackendAddresses)\n  | where toint(BackendAddresses) <= 1\n  | project recommendationId = \"6d82d042-6d61-ad49-86f0-6a5455398081\", name, id, tags, Param1=\"backendAddresses\", Param2=toint(BackendAddresses))\n| union (\n  resources\n  | where type =~ 'Microsoft.Network/loadBalancers'\n  | where sku.name == \"Basic\"\n  | mv-expand properties.backendAddressPools\n  | extend backendPoolId = properties_backendAddressPools.id\n  | project id, name, tags, tostring(backendPoolId), recommendationId = \"6d82d042-6d61-ad49-86f0-6a5455398081\", Param1=\"BackEndPools\"\n  | join kind = leftouter (\n  resources\n  | where type =~ \"Microsoft.Network/networkInterfaces\"\n  | mv-expand properties.ipConfigurations\n  | mv-expand properties_ipConfigurations.properties.loadBalancerBackendAddressPools\n  | extend backendPoolId = tostring(properties_ipConfigurations_properties_loadBalancerBackendAddressPools.id)\n  | summarize poolMembers = count() by backendPoolId\n  | project tostring(backendPoolId), poolMembers ) on backendPoolId\n  | where toint(poolMembers) <= 1\n  | extend BackendAddresses = poolMembers\n  | project id, name, tags, recommendationId, Param1=\"backendAddresses\", Param2=toint(BackendAddresses))\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "e5f5fcea-f925-4578-8599-9a391e888a60",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Monitoring and Alerting",
+      "subcategory": "Microsoft.Network/loadBalancers",
+      "id": "e5f5fcea-f925-4578-8599-9a391e888a60",
+      "text": "Use Health Probes to detect backend instances availability",
+      "description": "Health probes are used by Azure Load Balancers to determine the status of backend endpoints. Using custom health probes that are aligned with vendor recommendations enhances understanding of backend availability and facilitates monitoring of backend services for any impact.",
+      "severity": "High",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "armService": "Microsoft.Network/loadBalancers",
+      "link": "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-custom-probe-overview",
+      "graph": "// Azure Resource Graph Query\n// List the load balancers which don't have health probe configured\nresources\n| where type =~ \"microsoft.network/loadbalancers\"\n| where array_length(properties.probes) == 0\n| project recommendationId=\"e5f5fcea-f925-4578-8599-9a391e888a60\", name, id, tags, param1=\"customHealthProbeUsed: false\"\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "38c3bca1-97a1-eb42-8cd3-838b243f35ba",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/loadBalancers",
+      "id": "38c3bca1-97a1-eb42-8cd3-838b243f35ba",
+      "text": "Use Standard Load Balancer SKU",
+      "description": "Selecting Standard SKU Load Balancer enhances reliability through availability zones and zone resiliency, ensuring deployments withstand zone and region failures. Unlike Basic, it supports global load balancing and offers an SLA.",
+      "severity": "High",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "armService": "Microsoft.Network/loadBalancers",
+      "link": "https://learn.microsoft.com/azure/architecture/framework/services/networking/azure-load-balancer/reliability",
+      "graph": "// Azure Resource Graph Query\n// Find all LoadBalancers using Basic SKU\nresources\n| where type =~ 'Microsoft.Network/loadBalancers'\n| where sku.name == 'Basic'\n| project recommendationId = \"38c3bca1-97a1-eb42-8cd3-838b243f35ba\", name, id, tags, Param1=strcat(\"sku-tier: basic\")\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "97a2fd46-64b0-1dfa-b72d-9c8869496d75",
+      "technology": "Azure Application Delivery Networking (Network Appdelivery Checklist)",
+      "technologySlug": "azure-application-delivery-networking-network-appdelivery-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure Application Delivery Networking",
+      "sourceKind": "checklists",
+      "checklist": "Azure Application Delivery Networking",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Load Balancer",
+      "id": "A01.22",
+      "text": "Use Azure NAT Gateway instead of Load Balancer outbound rules for better SNAT scalability",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "link": "https://learn.microsoft.com/azure/nat-gateway/nat-overview#outbound-connectivity",
+      "graph": "resources | where type=='microsoft.network/loadbalancers' | extend countOutRules=array_length(properties.outboundRules) | extend compliant = (countOutRules == 0) | distinct id,compliant",
+      "sourcePath": "checklists/network_appdelivery_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/network_appdelivery_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "48682fb1-1e86-4458-a686-518ebd47393d",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.15",
+      "text": "Ensure load balancer backend pool(s) contains at least two instances, Deploying Azure Load Balancers with at least two instances in the backend prevents a single point of failure and supports scalability.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "link": "https://learn.microsoft.com/azure/reliability/reliability-load-balancer?tabs=graph#zone-redundant",
+      "graph": "resources | where type =~ 'Microsoft.Network/loadBalancers' | extend bep = properties.backendAddressPools | extend BackEndPools = array_length(bep) | where BackEndPools == 0 | project name, id, Param1='backendPools', Param2=toint(0), tags | union (resources | where type =~ 'Microsoft.Network/loadBalancers' | where sku.name == 'Standard' | extend bep = properties.backendAddressPools | extend BackEndPools = toint(array_length(bep)) | mv-expand bip = properties.backendAddressPools | extend BackendAddresses = array_length(bip.properties.loadBalancerBackendAddresses) | where toint(BackendAddresses) <= 1 | project name, id, tags, Param1='backendAddresses', Param2=toint(BackendAddresses)) | union ( resources | where type =~ 'Microsoft.Network/loadBalancers' | where sku.name == 'Basic' | mv-expand properties.backendAddressPools | extend backendPoolId = properties_backendAddressPools.id | project id, name, tags, tostring(backendPoolId), Param1='BackEndPools' | join kind = leftouter ( resources | where type =~ 'Microsoft.Network/networkInterfaces' | mv-expand properties.ipConfigurations | mv-expand properties_ipConfigurations.properties.loadBalancerBackendAddressPools | extend backendPoolId = tostring(properties_ipConfigurations_properties_loadBalancerBackendAddressPools.id) | summarize poolMembers = count() by backendPoolId | project tostring(backendPoolId), poolMembers ) on backendPoolId | where toint(poolMembers) <= 1 | extend BackendAddresses = poolMembers | project id, name, tags, Param1='backendAddresses', Param2=toint(BackendAddresses))",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9dcd6250-9c4a-4382-aa9b-5b84c64fc1fe",
+      "technology": "Azure Landing Zone Review",
+      "technologySlug": "azure-landing-zone-review-alz-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 91,
+      "family": "Azure Landing Zone Review",
+      "sourceKind": "checklists",
+      "checklist": "Azure Landing Zone Review",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Hub and spoke",
+      "id": "D01.14",
+      "text": "Use Standard Load Balancer SKU with a zone-redundant deployment, Selecting Standard SKU Load Balancer enhances reliability through availability zones and zone resiliency, ensuring deployments withstand zone and region failures. Unlike Basic, it supports global load balancing and offers an SLA.",
+      "severity": "High",
+      "waf": "Reliability",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "link": "https://learn.microsoft.com/azure/reliability/reliability-load-balancer?tabs=graph#zone-redundant",
+      "graph": "resources | where type == 'microsoft.network/loadbalancers' | where tolower(sku.name) != 'basic' | mv-expand feIPconfigs = properties.frontendIPConfigurations | extend feConfigName = (feIPconfigs.name), PrivateSubnetId = toupper(feIPconfigs.properties.subnet.id), PrivateIPZones = feIPconfigs.zones, PIPid = toupper(feIPconfigs.properties.publicIPAddress.id), JoinID = toupper(id) | where isnotempty(PrivateSubnetId) | where isnull(PrivateIPZones) or array_length(PrivateIPZones) < 2 | project name, feConfigName, id | union (resources | where type == 'microsoft.network/loadbalancers' | where tolower(sku.name) != 'basic' | mv-expand feIPconfigs = properties.frontendIPConfigurations | extend feConfigName = (feIPconfigs.name), PIPid = toupper(feIPconfigs.properties.publicIPAddress.id), JoinID = toupper(id) | where isnotempty(PIPid) | join kind=innerunique ( resources | where type == 'microsoft.network/publicipaddresses' | where isnull(zones) or array_length(zones) < 2 | extend LBid = toupper(substring(properties.ipConfiguration.id, 0, indexof(properties.ipConfiguration.id, '/frontendIPConfigurations'))), InnerID = toupper(id) ) on $left.PIPid == $right.InnerID) | project name, id, tags, param1='Zones: No Zone or Zonal', param2=strcat('Frontend IP Configuration:', ' ', feConfigName)",
+      "sourcePath": "checklists/alz_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/alz_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "8d319a05-677b-944f-b9b4-ca0fb42e883c",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/loadBalancers",
+      "id": "8d319a05-677b-944f-b9b4-ca0fb42e883c",
+      "text": "Use NAT Gateway instead of Outbound Rules for Production Workloads",
+      "description": "Outbound rules for Standard Public Load Balancer involve manual port allocation for backend pools, limiting scalability and risk of SNAT port exhaustion. NAT Gateway is recommended for its dynamic scaling and secure internet connectivity.",
+      "severity": "Medium",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "armService": "Microsoft.Network/loadBalancers",
+      "link": "https://learn.microsoft.com/azure/architecture/checklist/resiliency-per-service#azure-load-balancer",
+      "graph": "// Azure Resource Graph Query\n// Find all LoadBalancers with Outbound rules configured\nresources\n| where type =~ 'Microsoft.Network/loadBalancers'\n| extend outboundRules = array_length(properties.outboundRules)\n| where outboundRules > 0\n| project recommendationId = \"8d319a05-677b-944f-b9b4-ca0fb42e883c\", name, id, tags, Param1 = \"outboundRules: >=1\"\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "4e35fbf5-0ae2-48b2-97ce-753353edbd1a",
+      "technology": "Azure Application Delivery Networking (Network Appdelivery Checklist)",
+      "technologySlug": "azure-application-delivery-networking-network-appdelivery-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure Application Delivery Networking",
+      "sourceKind": "checklists",
+      "checklist": "Azure Application Delivery Networking",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Load Balancer",
+      "id": "A01.04",
+      "text": "Ensure you are using the Standard SKU for your Azure Load Balancers",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "link": "https://learn.microsoft.com/azure/load-balancer/load-balancer-overview",
+      "graph": "resources | where type == 'microsoft.network/loadbalancers' | project id, compliant=(tolower(sku.name) == 'standard')",
+      "sourcePath": "checklists/network_appdelivery_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/network_appdelivery_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "9432621a-8397-4654-a882-5bc856b7ef83",
+      "technology": "Azure Application Delivery Networking (Network Appdelivery Checklist)",
+      "technologySlug": "azure-application-delivery-networking-network-appdelivery-checklist",
+      "technologyStatus": "GA",
+      "technologyMaturityBucket": "GA",
+      "usageConfidence": "High",
+      "technologyQualityScore": 93,
+      "family": "Azure Application Delivery Networking",
+      "sourceKind": "checklists",
+      "checklist": "Azure Application Delivery Networking",
+      "category": "Network Topology and Connectivity",
+      "subcategory": "Load Balancer",
+      "id": "A01.05",
+      "text": "Ensure your Load Balancers frontend IP addresses are zone-redundant (unless you require zonal frontends).",
+      "severity": "Medium",
+      "waf": "Security",
+      "service": "Azure Load Balancer",
+      "serviceCanonical": "Azure Load Balancer",
+      "serviceSlug": "azure-load-balancer",
+      "link": "https://learn.microsoft.com/azure/load-balancer/load-balancer-standard-availability-zones",
+      "sourcePath": "checklists/network_appdelivery_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/network_appdelivery_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [],
+    "publicRegionCount": 59,
+    "availableRegionCount": 57,
+    "unavailableRegionCount": 2,
+    "restrictedRegionCount": 10,
+    "earlyAccessRegionCount": 1,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 55,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "exact",
+    "matchedOfferingName": "Azure Load Balancer",
+    "matchedServiceLabel": "Azure Load Balancer",
+    "matchedSkuHints": [],
+    "regions": [
+      {
+        "regionName": "Australia Central",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Central 2",
+        "geographyName": "Australia",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia East",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Australia Southeast",
+        "geographyName": "Australia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Austria East",
+        "geographyName": "Austria",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil South",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Brazil Southeast",
+        "geographyName": "Brazil",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada Central",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Canada East",
+        "geographyName": "Canada",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Chile Central",
+        "geographyName": "Chile",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Denmark East",
+        "geographyName": "Denmark",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "East US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France Central",
+        "geographyName": "France",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "France South",
+        "geographyName": "France",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany North",
+        "geographyName": "Germany",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Germany West Central",
+        "geographyName": "Germany",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Indonesia Central",
+        "geographyName": "Indonesia",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Israel Central",
+        "geographyName": "Israel",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Italy North",
+        "geographyName": "Italy",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan East",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Japan West",
+        "geographyName": "Japan",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea Central",
+        "geographyName": "Korea",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Korea South",
+        "geographyName": "Korea",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Mexico Central",
+        "geographyName": "Mexico",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "New Zealand North",
+        "geographyName": "New Zealand",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "North Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway East",
+        "geographyName": "Norway",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Norway West",
+        "geographyName": "Norway",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Poland Central",
+        "geographyName": "Poland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Qatar Central",
+        "geographyName": "Qatar",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa North",
+        "geographyName": "Africa",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Africa West",
+        "geographyName": "Africa",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "South India",
+        "geographyName": "India",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Southeast Asia",
+        "geographyName": "Asia Pacific",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Spain Central",
+        "geographyName": "Spain",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden Central",
+        "geographyName": "Sweden",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Sweden South",
+        "geographyName": "Sweden",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland North",
+        "geographyName": "Switzerland",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Switzerland West",
+        "geographyName": "Switzerland",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "Taiwan North",
+        "geographyName": "Taiwan",
+        "accessState": "EarlyAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE Central",
+        "geographyName": "United Arab Emirates",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UAE North",
+        "geographyName": "United Arab Emirates",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK South",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "UK West",
+        "geographyName": "United Kingdom",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Central US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West Europe",
+        "geographyName": "Europe",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West India",
+        "geographyName": "India",
+        "accessState": "ReservedAccess",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 2",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      },
+      {
+        "regionName": "West US 3",
+        "geographyName": "United States",
+        "accessState": "Open",
+        "availabilityState": "GA",
+        "skuStates": [
+          {
+            "skuName": "Basic",
+            "state": "Retiring"
+          },
+          {
+            "skuName": "General availability",
+            "state": "GA"
+          },
+          {
+            "skuName": "Standard",
+            "state": "GA"
+          }
+        ]
+      }
+    ],
+    "unavailableRegions": [
+      {
+        "regionName": "Belgium Central",
+        "geographyName": "Belgium",
+        "accessState": "Open"
+      },
+      {
+        "regionName": "Malaysia West",
+        "geographyName": "Malaysia",
+        "accessState": "Open"
+      }
+    ],
+    "globalSkuStates": []
+  }
+}

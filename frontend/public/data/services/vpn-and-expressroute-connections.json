@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "vpn-and-expressroute-connections",
+    "service": "VPN and ExpressRoute connections",
+    "aliases": [
+      "Microsoft.Network/connections"
+    ],
+    "itemCount": 2,
+    "highSeverityCount": 1,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "High Availability",
+      "Scalability"
+    ],
+    "wafPillars": [],
+    "description": "VPN and ExpressRoute connections appears across 2 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": false,
+      "matchedSkuHints": [],
+      "notes": [
+        "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": false,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "aprl-checklist-aprl-checklist",
+        "technology": "APRL Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 327,
+        "highSeverityCount": 162,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "a5f3a4bd-4cf1-4196-a3cb-f5a0876198b2",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "High Availability",
+      "subcategory": "Microsoft.Network/connections",
+      "id": "a5f3a4bd-4cf1-4196-a3cb-f5a0876198b2",
+      "text": "Configure an Azure Resource Lock on connections to prevent accidental deletion",
+      "description": "Configure an Azure Resource lock for Gateway Connection resources to prevent accidental deletion and maintain connectivity between on-premises networks and Azure workloads.",
+      "severity": "High",
+      "service": "VPN and ExpressRoute connections",
+      "serviceCanonical": "VPN and ExpressRoute connections",
+      "serviceSlug": "vpn-and-expressroute-connections",
+      "armService": "Microsoft.Network/connections",
+      "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?tabs=json",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    },
+    {
+      "guid": "f6a14b32-a727-4ace-b5fa-7b1c6bdff402",
+      "technology": "APRL Checklist",
+      "technologySlug": "aprl-checklist-aprl-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "APRL Checklist",
+      "sourceKind": "checklists-ext",
+      "checklist": "APRL Checklist",
+      "category": "Scalability",
+      "subcategory": "Microsoft.Network/connections",
+      "id": "f6a14b32-a727-4ace-b5fa-7b1c6bdff402",
+      "text": "For better data path performance enable FastPath on ExpressRoute Direct and Gateway",
+      "description": "ExpressRoute gateways facilitate network traffic and route exchanges. FastPath enhances on-premises to virtual network data path performance by directing traffic straight to virtual machines, bypassing the gateway for improved resiliency through reduced gateway utilization.",
+      "severity": "Medium",
+      "service": "VPN and ExpressRoute connections",
+      "serviceCanonical": "VPN and ExpressRoute connections",
+      "serviceSlug": "vpn-and-expressroute-connections",
+      "armService": "Microsoft.Network/connections",
+      "link": "https://learn.microsoft.com/en-us/azure/expressroute/about-fastpath",
+      "graph": "// under-development\n\n",
+      "sourcePath": "checklists-ext/aprl_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists-ext/aprl_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "inferred",
+        "severity": "normalized",
+        "waf": "unavailable",
+        "service": "normalized",
+        "description": "source"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": false,
+    "notes": [
+      "An official Azure Product Availability by Region offering could not be matched automatically for this service."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": false,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": []
+  }
+}

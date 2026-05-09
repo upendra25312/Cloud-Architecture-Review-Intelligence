@@ -1,0 +1,181 @@
+/* ── Main requirements layout ──────────────────────────────────────── */
+.requirementsLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Status bar — max 80px ────────────────────────────────────────── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  max-height: 80px;
+  flex-wrap: wrap;
+}
+
+/* ── Summary metrics — max 120px ──────────────────────────────────── */
+.summaryMetrics {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  max-height: 120px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* ── Filter row ───────────────────────────────────────────────────── */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* ── Criticality badge ────────────────────────────────────────────── */
+.criticalityBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.criticalityBadge--high   { background: #D92B2B; }
+.criticalityBadge--medium { background: #B45309; }
+
+/* ── Status badge ─────────────────────────────────────────────────── */
+.statusBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusBadge--pending  { background: #F3F4F6; color: #6B7280; }
+.statusBadge--accepted { background: #E6F4EA; color: #059669; }
+.statusBadge--rejected { background: #FEE2E2; color: #D92B2B; }
+
+/* ── Filter chips ─────────────────────────────────────────────────── */
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border, #D1D5DB);
+  background: transparent;
+  color: var(--t2, #6B7280);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filterChip:hover {
+  border-color: #0078D4;
+}
+
+.filterChipActive {
+  background: #0078D4;
+  color: #fff;
+  border-color: #0078D4;
+}
+
+/* ── Group section ────────────────────────────────────────────────── */
+.groupSection {
+  border: 1px solid var(--border, #E5E7EB);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 20px 12px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: var(--bg, #F9FAFB);
+  border: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.groupHeader:hover {
+  background: var(--surf-hover, #F3F4F6);
+}
+
+/* ── Card grid ────────────────────────────────────────────────────── */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+/* ── Requirement card ─────────────────────────────────────────────── */
+.requirementCard {
+  border: 1px solid var(--border, #E5E7EB);
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+  transition: box-shadow 0.15s;
+}
+
+.requirementCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Metric value ─────────────────────────────────────────────────── */
+.metricValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metricValue--green { color: #059669; }
+.metricValue--amber { color: #B45309; }
+.metricValue--red   { color: #D92B2B; }
+
+/* ── Full-width shell override ────────────────────────────────────── */
+.fullWidthShell {
+  grid-template-columns: 1fr;
+}
+
+/* ── Chevron ──────────────────────────────────────────────────────── */
+.chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 0.75rem;
+}
+
+.chevronExpanded {
+  transform: rotate(90deg);
+}
+
+/* ── Responsive: below 1280px ─────────────────────────────────────── */
+@media (max-width: 1279px) {
+  .summaryMetrics {
+    flex-wrap: wrap;
+    max-height: none;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterRow {
+    flex-wrap: wrap;
+  }
+}

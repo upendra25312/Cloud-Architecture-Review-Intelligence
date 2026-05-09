@@ -1,0 +1,204 @@
+{
+  "generatedAt": "2026-05-08T18:00:27.107Z",
+  "service": {
+    "slug": "azure-ad-b2c",
+    "service": "Azure AD B2C",
+    "aliases": [],
+    "itemCount": 3,
+    "highSeverityCount": 0,
+    "familyCount": 1,
+    "gaFamilyCount": 0,
+    "previewFamilyCount": 1,
+    "mixedFamilyCount": 0,
+    "deprecatedFamilyCount": 0,
+    "categories": [
+      "Operations Management"
+    ],
+    "wafPillars": [
+      "Performance",
+      "Reliability"
+    ],
+    "description": "Azure AD B2C appears across 3 normalized findings in 1 checklist families. 1 lower-confidence families broaden design coverage.",
+    "whatThisMeans": "This service is covered mainly by preview or mixed-confidence guidance. Use it for specialist review with explicit validation.",
+    "regionalFitSummary": {
+      "mapped": true,
+      "matchType": "manual",
+      "matchedOfferingName": "Azure Active Directory B2C",
+      "matchedServiceLabel": "Azure AD B2C",
+      "matchedSkuHints": [],
+      "notes": [
+        "Microsoft's availability feed lists this identity service as a global, non-regional offering.",
+        "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+      ],
+      "publicRegionCount": 59,
+      "availableRegionCount": 0,
+      "unavailableRegionCount": 0,
+      "restrictedRegionCount": 0,
+      "earlyAccessRegionCount": 0,
+      "previewRegionCount": 0,
+      "retiringRegionCount": 0,
+      "isGlobalService": true,
+      "generatedAt": "2026-05-08T18:00:27.107Z",
+      "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+      "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+    },
+    "families": [
+      {
+        "slug": "identity-review-checklist-identity-checklist",
+        "technology": "Identity Review Checklist",
+        "status": "Preview",
+        "maturityBucket": "Preview",
+        "itemCount": 9,
+        "highSeverityCount": 0,
+        "quality": {
+          "label": "Preview · Medium confidence",
+          "qualityScore": 89,
+          "metadataCompleteness": 83,
+          "severityConfidence": 100,
+          "sourceCoverageQuality": 100,
+          "recommendedUsageConfidence": "Medium",
+          "generatedDate": "2026-05-08T18:00:27.107Z",
+          "maturityBucket": "Preview",
+          "summary": "Use with architectural judgment. Preview content is valuable, but it should not be treated as equivalent to mature review baselines."
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "guid": "3e3553a4-c873-4964-ab66-2d6c15f51296",
+      "technology": "Identity Review Checklist",
+      "technologySlug": "identity-review-checklist-identity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Identity Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Identity Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "AAD B2C",
+      "id": "A02.02",
+      "text": "Custom brand assets should be hosted on a CDN",
+      "severity": "Medium",
+      "waf": "Performance",
+      "service": "Azure AD B2C",
+      "serviceCanonical": "Azure AD B2C",
+      "serviceSlug": "azure-ad-b2c",
+      "link": "https://learn.microsoft.com/entra/architecture/resilient-end-user-experience#use-a-content-delivery-network",
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "503547c1-447e-4c66-828a-71f0f1ce16dd",
+      "technology": "Identity Review Checklist",
+      "technologySlug": "identity-review-checklist-identity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Identity Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Identity Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "AAD B2C",
+      "id": "A02.01",
+      "text": "Make sure that your sign-in user flows are backed up and resilient. Make sure that the code that you use to sign-in your users are backed up and recoverable. Resilient interfaces with external processes",
+      "severity": "Medium",
+      "waf": "Reliability",
+      "service": "Azure AD B2C",
+      "serviceCanonical": "Azure AD B2C",
+      "serviceSlug": "azure-ad-b2c",
+      "link": "https://learn.microsoft.com/azure/active-directory-b2c/deploy-custom-policies-devops",
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    },
+    {
+      "guid": "5398e6df-d237-4de1-93b1-6c21d79a9b64",
+      "technology": "Identity Review Checklist",
+      "technologySlug": "identity-review-checklist-identity-checklist",
+      "technologyStatus": "Preview",
+      "technologyMaturityBucket": "Preview",
+      "usageConfidence": "Medium",
+      "technologyQualityScore": 89,
+      "family": "Identity Review Checklist",
+      "sourceKind": "checklists",
+      "checklist": "Identity Review Checklist",
+      "category": "Operations Management",
+      "subcategory": "AAD B2C",
+      "id": "A02.03",
+      "text": "Have multiple identiy providers (i.e., login with your microsoft, google, facebook accounts)",
+      "severity": "Low",
+      "waf": "Reliability",
+      "service": "Azure AD B2C",
+      "serviceCanonical": "Azure AD B2C",
+      "serviceSlug": "azure-ad-b2c",
+      "link": "https://learn.microsoft.com/entra/identity/monitoring-health/reference-sla-performance",
+      "sourcePath": "checklists/identity_checklist.en.json",
+      "sourceUrl": "https://github.com/Azure/review-checklists/blob/main/checklists/identity_checklist.en.json",
+      "normalizedAt": "2026-05-08T18:00:27.107Z",
+      "provenance": {
+        "technology": "normalized",
+        "technologyStatus": "normalized",
+        "category": "source",
+        "subcategory": "source",
+        "severity": "normalized",
+        "waf": "normalized",
+        "service": "normalized",
+        "description": "unavailable"
+      }
+    }
+  ],
+  "regionalFit": {
+    "mapped": true,
+    "notes": [
+      "Microsoft's availability feed lists this identity service as a global, non-regional offering.",
+      "Microsoft lists this as a global or non-regional service, so region-by-region availability is not applicable in the same way as regional services."
+    ],
+    "publicRegionCount": 59,
+    "availableRegionCount": 0,
+    "unavailableRegionCount": 0,
+    "restrictedRegionCount": 0,
+    "earlyAccessRegionCount": 0,
+    "previewRegionCount": 0,
+    "retiringRegionCount": 0,
+    "isGlobalService": true,
+    "generatedAt": "2026-05-08T18:00:27.107Z",
+    "availabilitySourceUrl": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table",
+    "regionsSourceUrl": "https://learn.microsoft.com/en-us/azure/reliability/regions-list",
+    "matchType": "manual",
+    "matchedOfferingName": "Azure Active Directory B2C",
+    "matchedServiceLabel": "Azure AD B2C",
+    "matchedSkuHints": [],
+    "regions": [],
+    "unavailableRegions": [],
+    "globalSkuStates": [
+      {
+        "skuName": "General availability",
+        "state": "GA"
+      }
+    ]
+  }
+}

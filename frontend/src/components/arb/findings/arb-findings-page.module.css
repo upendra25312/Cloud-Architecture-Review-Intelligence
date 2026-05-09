@@ -1,0 +1,315 @@
+/* ── Main findings layout ─────────────────────────────────────────── */
+.findingsLayout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  height: 100%;
+}
+
+/* ── Status bar ──────────────────────────────────────────────────── */
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  max-height: 100px;
+  flex-wrap: wrap;
+}
+
+.metricBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--t2);
+  white-space: nowrap;
+}
+
+.metricBadge strong {
+  color: var(--t1);
+}
+
+.blockerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--high);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.blockerBadge strong {
+  color: var(--high);
+}
+
+/* ── Master-detail grid ──────────────────────────────────────────── */
+.masterDetail {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 1px;
+  background: var(--border);
+  min-height: 0;
+}
+
+/* ── List panel (left) ───────────────────────────────────────────── */
+.listPanel {
+  background: var(--bg);
+  overflow-y: auto;
+  max-width: 400px;
+}
+
+/* ── Detail panel (right) ────────────────────────────────────────── */
+.detailPanel {
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* ── Severity color bars ─────────────────────────────────────────── */
+.severityHigh {
+  border-left: 4px solid var(--high);
+}
+
+.severityMedium {
+  border-left: 4px solid var(--med);
+}
+
+.severityLow {
+  border-left: 4px solid var(--brand);
+}
+
+/* ── Finding list items ──────────────────────────────────────────── */
+.findingItem {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  transition: background 0.12s ease;
+}
+
+.findingItem:hover {
+  background: var(--surf-hover);
+}
+
+.findingItemSelected {
+  background: var(--brand-dim);
+}
+
+.findingItemSelected:hover {
+  background: var(--brand-dim);
+}
+
+.findingItemTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.findingItemMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  color: var(--t3);
+}
+
+.domainTag {
+  background: var(--surf-hover);
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.blockerTag {
+  background: var(--high);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* ── Filter chips ────────────────────────────────────────────────── */
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px;
+  align-items: center;
+}
+
+.chipActive {
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.chipInactive {
+  background: transparent;
+  color: var(--t1);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.chipInactive:hover {
+  border-color: var(--border-md);
+  background: var(--surf-hover);
+}
+
+.clearFilters {
+  background: none;
+  border: none;
+  color: var(--brand);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+}
+
+.clearFilters:hover {
+  text-decoration: underline;
+}
+
+.filterCount {
+  font-size: 0.85rem;
+  color: var(--t3);
+}
+
+/* ── Detail panel sections ───────────────────────────────────────── */
+.detailHeader {
+  margin-bottom: 24px;
+}
+
+.detailTitle {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.detailHeaderMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.detailSection {
+  margin-bottom: 20px;
+}
+
+.sectionHeading {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+  margin: 0 0 6px;
+}
+
+.sectionHeadingDanger {
+  composes: sectionHeading;
+  color: var(--high);
+}
+
+.sectionBody {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--t1);
+}
+
+.sectionList {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.sectionList li {
+  line-height: 1.6;
+  color: var(--t1);
+}
+
+.sectionDivider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+.learnMoreLink {
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.referenceRelevance {
+  color: var(--t3);
+  font-size: 0.85rem;
+}
+
+.evidenceSource {
+  color: var(--t3);
+  font-size: 0.85rem;
+}
+
+/* ── Confidence badge (in list + detail header) ──────────────────── */
+.confidenceBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.confidenceHigh   { background: #059669; }
+.confidenceMedium { background: #B45309; }
+.confidenceLow    { background: #D92B2B; }
+
+/* ── Low-coverage warning banner ─────────────────────────────────── */
+.lowCoverageBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #FEF3C7;
+  border: 1px solid #D97706;
+  margin-bottom: 20px;
+  font-size: 0.875rem;
+  color: #92400E;
+  line-height: 1.5;
+}
+
+/* ── Full-width shell override ───────────────────────────────────── */
+.fullWidthShell {
+  grid-template-columns: 1fr;
+}
+
+/* ── Responsive: below 1280px stack to single column ─────────────── */
+@media (max-width: 1279px) {
+  .masterDetail {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .listPanel {
+    max-width: none;
+    max-height: 40vh;
+  }
+}
