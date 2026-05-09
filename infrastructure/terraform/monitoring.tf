@@ -30,19 +30,19 @@ resource "azurerm_consumption_budget_resource_group" "main" {
     start_date = "2025-01-01T00:00:00Z" # Update to current month on first deploy
   }
 
-  # Warning at $40 (66.7% of budget)
+  # Warning at ~$40 (67% of $60 budget)
   notification {
     enabled        = true
-    threshold      = 66.7
+    threshold      = 67
     operator       = "GreaterThan"
     threshold_type = "Actual"
     contact_emails = [var.alert_email]
   }
 
-  # Hard alert at $55 (91.7% of budget) — take action before hitting $60
+  # Hard alert at ~$55 (92% of $60 budget) — take action before hitting cap
   notification {
     enabled        = true
-    threshold      = 91.7
+    threshold      = 92
     operator       = "GreaterThan"
     threshold_type = "Actual"
     contact_emails = [var.alert_email]

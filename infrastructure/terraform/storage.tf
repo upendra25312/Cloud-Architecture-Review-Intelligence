@@ -27,14 +27,14 @@ resource "azurerm_storage_account" "main" {
 # ARB uploaded review documents
 resource "azurerm_storage_container" "arb_inputfiles" {
   name                  = "arb-inputfiles"
-  storage_account_name  = azurerm_storage_account.main.name
+  storage_account_id    = azurerm_storage_account.main.id
   container_access_type = "private"
 }
 
 # Foundry IQ knowledge files (rubrics, guidance, schema)
 resource "azurerm_storage_container" "arb_knowledge" {
   name                  = "arb-agent-knowledge"
-  storage_account_name  = azurerm_storage_account.main.name
+  storage_account_id    = azurerm_storage_account.main.id
   container_access_type = "private"
 }
 
@@ -68,7 +68,7 @@ resource "azurerm_storage_table" "arb_projects" {
 # All files organized under {projectId}/{reviewId}/ prefix (FR-PROJ-003)
 resource "azurerm_storage_container" "arb_outputfiles" {
   name                  = "arb-outputfiles"
-  storage_account_name  = azurerm_storage_account.main.name
+  storage_account_id    = azurerm_storage_account.main.id
   container_access_type = "private"
 }
 
