@@ -72,7 +72,7 @@ jobs:
           terraform plan \
             -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
             -var="alert_email=${{ secrets.ALERT_EMAIL }}" \
-            -var="github_actions_principal_id=${{ secrets.GITHUB_ACTIONS_PRINCIPAL_ID }}" \
+            -var="github_actions_principal_id=${{ secrets.GH_ACTIONS_PRINCIPAL_ID }}" \
             -out=tfplan \
             -no-color 2>&1 | tee plan_output.txt
         continue-on-error: true
@@ -100,7 +100,7 @@ jobs:
           terraform apply \
             -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
             -var="alert_email=${{ secrets.ALERT_EMAIL }}" \
-            -var="github_actions_principal_id=${{ secrets.GITHUB_ACTIONS_PRINCIPAL_ID }}" \
+            -var="github_actions_principal_id=${{ secrets.GH_ACTIONS_PRINCIPAL_ID }}" \
             -auto-approve tfplan
 
       - name: Capture Outputs
