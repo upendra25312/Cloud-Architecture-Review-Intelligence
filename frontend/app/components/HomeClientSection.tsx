@@ -14,7 +14,6 @@ import ReviewCockpitPreview from "./home/ReviewCockpitPreview";
 import SampleFindingCard from "./home/SampleFindingCard";
 import FrameworkAlignment from "./home/FrameworkAlignment";
 import CloudReviewTracks from "./home/CloudReviewTracks";
-import LandingZoneDiagram from "./home/LandingZoneDiagram";
 import ReportPackPreview from "./home/ReportPackPreview";
 import TrustTiles from "./home/TrustTiles";
 import FinalCtaSection from "./home/FinalCtaSection";
@@ -106,7 +105,6 @@ export default function HomeClientSection() {
       <SampleFindingCard />
       <FrameworkAlignment />
       <CloudReviewTracks />
-      <LandingZoneDiagram />
       <ReportPackPreview />
       <TrustTiles />
       <FinalCtaSection getStartedHref={getStartedHref} />
