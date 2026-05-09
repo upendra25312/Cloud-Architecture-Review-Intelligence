@@ -55,3 +55,44 @@ resource "azurerm_storage_table" "arb_quota" {
   name                 = "arbquota"
   storage_account_name = azurerm_storage_account.main.name
 }
+
+# Project metadata table — partitioned by userId, keyed by ULID projectId (FR-PROJ-001)
+resource "azurerm_storage_table" "arb_projects" {
+  name                 = "arbprojects"
+  storage_account_name = azurerm_storage_account.main.name
+}
+
+# ── Output Container (Project Workspace) ──────────────────────────────────────
+
+# Review exports: scorecard JSON, findings JSON, PDF/XLSX reports, project ZIP exports
+# All files organized under {projectId}/{reviewId}/ prefix (FR-PROJ-003)
+resource "azurerm_storage_container" "arb_outputfiles" {
+  name                  = "arb-outputfiles"
+  storage_account_name  = azurerm_storage_account.main.name
+  container_access_type = "private"
+}
+
+# ── Blob Lifecycle — auto-delete input files after 30 days ───────────────────
+# FR-PROJ-014 (P1): ZIP project exports are cleaned up via application-level
+# logic in arbCleanupExpired.js — blob tag filtering is not available in the
+# azurerm_storage_management_policy filters block in this provider version.
+
+resource "azurerm_storage_management_policy" "main" {
+  storage_account_id = azurerm_storage_account.main.id
+
+  rule {
+    name    = "delete-input-files-after-30-days"
+    enabled = true
+
+    filters {
+      prefix_match = ["arb-inputfiles/"]
+      blob_types   = ["blockBlob"]
+    }
+
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = 30
+      }
+    }
+  }
+}

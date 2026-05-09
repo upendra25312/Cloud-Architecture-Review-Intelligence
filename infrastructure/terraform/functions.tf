@@ -61,6 +61,12 @@ resource "azurerm_linux_function_app" "main" {
     # Storage — Managed Identity auth for blob/table ops; key used only by Functions host
     "AZURE_STORAGE_ACCOUNT_NAME" = azurerm_storage_account.main.name
 
+    # Storage account URL — for Table Storage SDK with Managed Identity (DefaultAzureCredential)
+    "STORAGE_ACCOUNT_URL" = azurerm_storage_account.main.primary_blob_endpoint
+
+    # Azure AI Vision — diagram image analysis (PRD audit C-01, ai_vision.tf)
+    "AZURE_VISION_ENDPOINT" = azurerm_cognitive_account.vision.endpoint
+
     # Foundry Agent ID — only secret; stored in Key Vault
     "FOUNDRY_AGENT_ID" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.main.vault_uri}secrets/foundry-agent-id/)"
   }
@@ -68,7 +74,6 @@ resource "azurerm_linux_function_app" "main" {
   tags = azurerm_resource_group.main.tags
 
   depends_on = [
-    azurerm_role_assignment.func_kv_secrets_user,
     azurerm_cognitive_deployment.gpt41mini,
     azapi_resource.foundry_project,
   ]

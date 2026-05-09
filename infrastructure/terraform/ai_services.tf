@@ -12,7 +12,7 @@ resource "azurerm_cognitive_account" "ai_services" {
   }
 
   # Disable local (key-based) auth — all callers must use Managed Identity
-  disable_local_auth = true
+  local_auth_enabled = false
 
   tags = azurerm_resource_group.main.tags
 }
@@ -67,7 +67,7 @@ resource "azurerm_cognitive_account" "doc_intel" {
   }
 
   # Managed Identity only — no local key auth
-  disable_local_auth = true
+  local_auth_enabled = false
 
   tags = azurerm_resource_group.main.tags
 }

@@ -56,6 +56,13 @@ resource "azurerm_role_assignment" "func_docint_user" {
   principal_id         = local.func_principal_id
 }
 
+# Cognitive Services User — call Azure AI Vision for diagram analysis (PRD audit C-01)
+resource "azurerm_role_assignment" "func_vision_user" {
+  scope                = azurerm_cognitive_account.vision.id
+  role_definition_name = "Cognitive Services User"
+  principal_id         = local.func_principal_id
+}
+
 # ─── FOUNDRY HUB MANAGED IDENTITY ──────────────────────────────────────────────
 
 # Storage Blob Data Contributor — Foundry reads knowledge files from blob container
@@ -90,7 +97,9 @@ data "azurerm_resource_group" "main" {
 }
 
 # Website Contributor — deploy Function App code via GitHub Actions
+# count = 0 when github_actions_principal_id is not yet set (fill after Step 2.1)
 resource "azurerm_role_assignment" "gh_func_contributor" {
+  count                = var.github_actions_principal_id != "" ? 1 : 0
   scope                = azurerm_linux_function_app.main.id
   role_definition_name = "Website Contributor"
   principal_id         = var.github_actions_principal_id
@@ -98,6 +107,7 @@ resource "azurerm_role_assignment" "gh_func_contributor" {
 
 # Static Web Apps Contributor — deploy frontend via GitHub Actions
 resource "azurerm_role_assignment" "gh_swa_contributor" {
+  count                = var.github_actions_principal_id != "" ? 1 : 0
   scope                = azurerm_static_web_app.main.id
   role_definition_name = "Contributor"
   principal_id         = var.github_actions_principal_id
@@ -105,6 +115,7 @@ resource "azurerm_role_assignment" "gh_swa_contributor" {
 
 # Terraform state storage — GitHub Actions reads/writes Terraform state
 resource "azurerm_role_assignment" "gh_tf_state" {
+  count                = var.github_actions_principal_id != "" ? 1 : 0
   scope                = "/subscriptions/${var.subscription_id}/resourceGroups/rg-tf-state"
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = var.github_actions_principal_id
