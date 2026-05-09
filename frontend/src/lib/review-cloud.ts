@@ -12,7 +12,7 @@ import type {
 } from "@/types";
 import { readBackendErrorMessage } from "@/lib/backend-error";
 
-export type AuthProvider = "aad" | "github";
+export type AuthProvider = "aad";
 
 type AuthProviderOption = {
   id: AuthProvider;
@@ -20,18 +20,11 @@ type AuthProviderOption = {
   enabled: boolean;
 };
 
-export const GITHUB_AUTH_ENABLED = process.env.NEXT_PUBLIC_ENABLE_GITHUB_AUTH !== "false";
-
 const AUTH_PROVIDER_OPTIONS: AuthProviderOption[] = [
   {
     id: "aad",
     label: "Microsoft",
     enabled: true
-  },
-  {
-    id: "github",
-    label: "GitHub",
-    enabled: GITHUB_AUTH_ENABLED
   }
 ];
 
@@ -135,10 +128,6 @@ export function formatIdentityProvider(provider: string | undefined) {
     case "aad":
     case "azureactivedirectory":
       return "Microsoft";
-    case "github":
-      return "GitHub";
-    case "google":
-      return "Google";
     default:
       return provider || "Account";
   }
