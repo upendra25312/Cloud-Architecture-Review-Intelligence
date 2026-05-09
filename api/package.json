@@ -16,7 +16,7 @@
     "@azure/functions": "^4.14.0",
     "@azure/identity": "^4.13.0",
     "@azure/storage-blob": "^12.28.0",
-    "parse-multipart-data": "^1.5.0",
-    "xlsx": "^0.18.5"
+    "exceljs": "^4.4.0",
+    "parse-multipart-data": "^1.5.0"
   }
 }

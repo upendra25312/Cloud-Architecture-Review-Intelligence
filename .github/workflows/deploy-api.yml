@@ -72,9 +72,7 @@ jobs:
 
       - name: Audit npm Dependencies
         working-directory: api
-        run: npm audit --audit-level=critical
-        # xlsx has a known high-severity advisory with no upstream fix available.
-        # Auditing at critical level blocks only unmitigated critical CVEs.
+        run: npm audit --audit-level=high
 
   # ─── Deploy ──────────────────────────────────────────────────────────────────
   deploy:

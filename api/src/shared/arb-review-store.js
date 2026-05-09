@@ -1,6 +1,6 @@
 const crypto = require("node:crypto");
 const path = require("node:path");
-const XLSX = require("xlsx");
+const ExcelJS = require("exceljs");
 const {
   ARB_INPUT_CONTAINER_NAME,
   ARB_OUTPUT_CONTAINER_NAME,
@@ -332,31 +332,42 @@ function supportsImageExtraction(fileName) {
   return IMAGE_EXTRACTABLE_EXTENSIONS.has(getFileExtension(fileName));
 }
 
-const SPREADSHEET_MAX_BYTES = 10 * 1024 * 1024; // 10 MB hard cap before xlsx parse
+const SPREADSHEET_MAX_BYTES = 10 * 1024 * 1024; // 10 MB hard cap before parse
 const SPREADSHEET_MAX_SHEETS = 20;
 const SPREADSHEET_MAX_CSV_CHARS = 500_000;
 
-// xlsx 0.18.5 (SheetJS CE) has known prototype-pollution advisories and no upstream
-// security fix on npm. Guard by rejecting oversized buffers before parsing and
-// limiting sheet count and output length so a crafted file cannot exhaust memory.
-function extractSpreadsheetText(buffer) {
+async function extractSpreadsheetText(buffer) {
   if (buffer.length > SPREADSHEET_MAX_BYTES) {
     throw new Error(
       `Spreadsheet exceeds the ${SPREADSHEET_MAX_BYTES / (1024 * 1024)} MB limit and cannot be parsed.`
     );
   }
 
-  const workbook = XLSX.read(buffer, { type: "buffer", cellDates: true, dense: true });
-  const parts = [];
-  const sheetNames = workbook.SheetNames.slice(0, SPREADSHEET_MAX_SHEETS);
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer);
 
-  for (const sheetName of sheetNames) {
-    const sheet = workbook.Sheets[sheetName];
-    const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+  const parts = [];
+  let sheetCount = 0;
+
+  workbook.eachSheet((worksheet) => {
+    if (sheetCount >= SPREADSHEET_MAX_SHEETS) return;
+    sheetCount++;
+
+    const rows = [];
+    worksheet.eachRow((row) => {
+      const cells = [];
+      row.eachCell({ includeEmpty: true }, (cell) => {
+        const val = cell.text ?? "";
+        cells.push(val.includes(",") ? `"${val.replace(/"/g, '""')}"` : val);
+      });
+      rows.push(cells.join(","));
+    });
+
+    const csv = rows.join("\n");
     if (csv.trim()) {
-      parts.push(`=== Sheet: ${sheetName} ===\n${csv.slice(0, SPREADSHEET_MAX_CSV_CHARS)}`);
+      parts.push(`=== Sheet: ${worksheet.name} ===\n${csv.slice(0, SPREADSHEET_MAX_CSV_CHARS)}`);
     }
-  }
+  });
 
   return parts.join("\n\n");
 }
@@ -2208,7 +2219,7 @@ async function startArbExtraction(principal, reviewId) {
           continue;
         }
 
-        const text = extractSpreadsheetText(buffer);
+        const text = await extractSpreadsheetText(buffer);
 
         if (!text || !text.trim()) {
           nextFiles.push({
