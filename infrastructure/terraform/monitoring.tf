@@ -27,7 +27,7 @@ resource "azurerm_consumption_budget_resource_group" "main" {
   time_grain = "Monthly"
 
   time_period {
-    start_date = "2025-01-01T00:00:00Z" # Update to current month on first deploy
+    start_date = "2026-05-01T00:00:00Z"
   }
 
   # Warning at ~$40 (67% of $60 budget)

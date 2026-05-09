@@ -4,7 +4,7 @@
 resource "azurerm_search_service" "main" {
   name                = "srch-${var.prefix}-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
+  location            = "eastus" # eastus2 Free tier at capacity; using eastus
   sku                 = "free"
   replica_count       = 1
   partition_count     = 1

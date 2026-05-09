@@ -65,12 +65,9 @@ resource "azurerm_role_assignment" "func_vision_user" {
 
 # ─── FOUNDRY HUB MANAGED IDENTITY ──────────────────────────────────────────────
 
-# Storage Blob Data Contributor — Foundry reads knowledge files from blob container
-resource "azurerm_role_assignment" "hub_storage_blob" {
-  scope                = azurerm_storage_account.main.id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = local.hub_principal_id
-}
+# NOTE: hub_storage_blob (Storage Blob Data Contributor) is auto-created by Azure
+# when provisioning the Foundry Hub. Defining it here causes a 409 Conflict.
+# Managed by Azure — do not add to Terraform.
 
 # Cognitive Services OpenAI User — Foundry Hub calls AI Services for embeddings
 resource "azurerm_role_assignment" "hub_ai_user" {
