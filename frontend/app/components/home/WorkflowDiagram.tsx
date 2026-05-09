@@ -8,6 +8,7 @@
  * Pure presentational component.
  */
 
+import Image from "next/image";
 import { Fragment, type ReactNode } from "react";
 import { HOME_COPY } from "./home-copy";
 
@@ -181,8 +182,23 @@ export default function WorkflowDiagram() {
     >
       <div className="review-section-head">
         <p className="review-eyebrow">Review workflow</p>
-        <h2 id="workflow-title">How it works</h2>
+        <h2 id="workflow-title">From evidence to board-ready decision — in one review session.</h2>
       </div>
+
+      {/* Full-width process diagram */}
+      <div className="review-workflow-diagram-wrap">
+        <Image
+          src="/arb-workflow.png"
+          alt="ARB review workflow: Evidence Intake → Review Readiness → Findings & Risks → Decisions & Exceptions → Board Pack Export. Produces Decision Log, Exception Register, and Stakeholder Sign-off. Outcomes: Reduce Rework, Improve Governance, Track Decisions, Delivery Confidence."
+          width={1200}
+          height={420}
+          className="review-workflow-diagram-img"
+          priority={false}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+        />
+      </div>
+
+      <p className="review-eyebrow" style={{ marginTop: "2.5rem", textAlign: "center" }}>Step by step</p>
       <ol className="review-workflow-grid" aria-label="Review workflow steps">
         {steps.map((step, index) => {
           const Icon = STEP_ICONS[index] ?? UploadIcon;

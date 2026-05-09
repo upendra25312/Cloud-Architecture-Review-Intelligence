@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: SITE_NAME }]
+    images: [{ url: "/arb-workflow.png", width: 1200, height: 630, alt: `${SITE_NAME} — evidence-to-decision workflow` }]
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/og-image.svg"]
+    images: ["/arb-workflow.png"]
   },
   robots: {
     index: true,

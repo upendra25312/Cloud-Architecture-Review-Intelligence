@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   createArbExport,
@@ -151,11 +152,11 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
   function renderContent() {
     if (!hasData && review?.workflowState === "Draft") {
       return (
-        <div style={{ padding: 40, textAlign: "center" }}>
+        <div style={{ padding: "32px 40px 40px", textAlign: "center" }}>
           <p style={{ fontSize: "1.1rem", color: "var(--t1)", marginBottom: 8 }}>
             Start by uploading your architecture documents
           </p>
-          <p style={{ fontSize: "0.9rem", color: "var(--t2)", marginBottom: 20 }}>
+          <p style={{ fontSize: "0.9rem", color: "var(--t2)", marginBottom: 24 }}>
             Upload SOW, design docs, and supporting artifacts to begin the review workflow.
           </p>
           <a
@@ -164,6 +165,39 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           >
             Go to Upload
           </a>
+
+          <div style={{
+            marginTop: 36,
+            borderRadius: 12,
+            overflow: "hidden",
+            boxShadow: "0 2px 14px rgba(0,0,0,0.08)",
+            background: "#f0f6ff",
+            lineHeight: 0,
+            maxWidth: 860,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}>
+            <p style={{
+              fontSize: "0.75rem",
+              color: "var(--t3)",
+              lineHeight: 1,
+              padding: "10px 16px 8px",
+              textAlign: "left",
+              background: "#e8f0fb",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}>
+              Review process overview
+            </p>
+            <Image
+              src="/arb-workflow.png"
+              alt="5-step ARB review workflow: Evidence Intake → Review Readiness → Findings & Risks → Decisions & Exceptions → Board Pack Export"
+              width={860}
+              height={300}
+              style={{ width: "100%", height: "auto", display: "block" }}
+              priority={false}
+            />
+          </div>
         </div>
       );
     }

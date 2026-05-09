@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -269,6 +270,18 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
           <li>Every finding scored 0–100 and linked to a Microsoft Learn source</li>
           <li>Sign in is required to save uploads, findings, exports, and final sign-off</li>
         </ul>
+
+        <div className="arb-signin-workflow-diagram" aria-label="ARB review workflow overview">
+          <Image
+            src="/arb-workflow.png"
+            alt="Review workflow: Evidence Intake → Review Readiness → Findings & Risks → Decisions & Exceptions → Board Pack Export"
+            width={900}
+            height={315}
+            className="arb-signin-workflow-img"
+            priority={false}
+          />
+        </div>
+
         <div className="arb-preview-card" aria-label="Example review output">
           <div className="arb-preview-header">
             <div>
