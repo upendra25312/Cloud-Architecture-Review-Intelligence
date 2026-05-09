@@ -1,0 +1,607 @@
+const test = require("node:test");
+const assert = require("node:assert/strict");
+
+function createMockTableModule() {
+  const ARB_REVIEW_TABLE_NAME = "arbreviews";
+  const tables = new Map();
+
+  function encodeTableKey(value) {
+    return Buffer.from(String(value ?? ""), "utf8").toString("base64url");
+  }
+
+  function getTable(name) {
+    if (!tables.has(name)) {
+      tables.set(name, new Map());
+    }
+
+    return tables.get(name);
+  }
+
+  async function getTableClient(name) {
+    const table = getTable(name);
+
+    return {
+      async getEntity(partitionKey, rowKey) {
+        const entity = table.get(`${partitionKey}|${rowKey}`);
+
+        if (!entity) {
+          const error = new Error("Not found");
+          error.statusCode = 404;
+          throw error;
+        }
+
+        return structuredClone(entity);
+      },
+      async upsertEntity(entity, mode) {
+        const key = `${entity.partitionKey}|${entity.rowKey}`;
+        const existing = table.get(key) ?? {};
+        const nextEntity = mode === "Merge" ? { ...existing, ...entity } : entity;
+        table.set(key, structuredClone(nextEntity));
+      },
+      async *listEntities(options) {
+        const filterStr = options?.queryOptions?.filter ?? "";
+        // Support simple OData equality filters: RowKey eq 'val' and PartitionKey eq 'val'
+        const rowKeyMatch = filterStr.match(/RowKey eq '([^']*)'/);
+        const partitionKeyMatch = filterStr.match(/PartitionKey eq '([^']*)'/);
+        for (const entity of table.values()) {
+          if (rowKeyMatch && entity.rowKey !== rowKeyMatch[1]) continue;
+          if (partitionKeyMatch && entity.partitionKey !== partitionKeyMatch[1]) continue;
+          yield structuredClone(entity);
+        }
+      }
+    };
+  }
+
+  return {
+    ARB_REVIEW_TABLE_NAME,
+    encodeTableKey,
+    getTableClient
+  };
+}
+
+function createMockStorageModule() {
+  const ARB_INPUT_CONTAINER_NAME = "arb-inputfiles";
+  const ARB_OUTPUT_CONTAINER_NAME = "arb-outputfiles";
+  const ARB_PROCESSING_CACHE_CONTAINER_NAME = "arb-processing-cache";
+  const NOTES_CONTAINER_NAME = "review-notes";
+  const ARTIFACTS_CONTAINER_NAME = "review-artifacts";
+  const COMMERCIAL_CACHE_CONTAINER_NAME = "commercial-cache";
+  const containers = new Map();
+
+  function ensureContainer(name) {
+    if (!containers.has(name)) {
+      containers.set(name, new Map());
+    }
+
+    return containers.get(name);
+  }
+
+  function sanitizePathSegment(value) {
+    return String(value ?? "unknown")
+      .trim()
+      .replace(/[^a-zA-Z0-9._-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 120);
+  }
+
+  async function getContainerClient(name) {
+    ensureContainer(name);
+    return { name };
+  }
+
+  async function readJsonBlob(containerClient, blobName) {
+    const payload = ensureContainer(containerClient.name).get(blobName);
+    return payload ? structuredClone(payload) : null;
+  }
+
+  async function readTextBlob(containerClient, blobName) {
+    const payload = ensureContainer(containerClient.name).get(blobName);
+
+    if (payload == null) {
+      return null;
+    }
+
+    if (Buffer.isBuffer(payload)) {
+      return payload.toString("utf8");
+    }
+
+    if (typeof payload === "string") {
+      return payload;
+    }
+
+    return JSON.stringify(payload);
+  }
+
+  async function uploadJsonBlob(containerClient, blobName, payload) {
+    ensureContainer(containerClient.name).set(blobName, structuredClone(payload));
+    return { name: blobName };
+  }
+
+  async function uploadTextBlob(containerClient, blobName, payload) {
+    ensureContainer(containerClient.name).set(blobName, String(payload));
+    return { name: blobName };
+  }
+
+  async function uploadBinaryBlob(containerClient, blobName, payload) {
+    const buffer = Buffer.isBuffer(payload) ? payload : Buffer.from(payload);
+    ensureContainer(containerClient.name).set(blobName, buffer);
+    return { name: blobName };
+  }
+
+  async function deleteBlobIfExists(containerClient, blobName) {
+    ensureContainer(containerClient.name).delete(blobName);
+  }
+
+  return {
+    ARB_INPUT_CONTAINER_NAME,
+    ARB_OUTPUT_CONTAINER_NAME,
+    ARB_PROCESSING_CACHE_CONTAINER_NAME,
+    NOTES_CONTAINER_NAME,
+    ARTIFACTS_CONTAINER_NAME,
+    COMMERCIAL_CACHE_CONTAINER_NAME,
+    buildArtifactBlobName(userId, filename) {
+      return `${sanitizePathSegment(userId)}/${filename}`;
+    },
+    buildNotesBlobName(userId) {
+      return `${sanitizePathSegment(userId)}/review-records.json`;
+    },
+    buildProjectReviewBlobName(userId, reviewId) {
+      return `${sanitizePathSegment(userId)}/project-reviews/${sanitizePathSegment(reviewId)}.json`;
+    },
+    buildProjectReviewStateBlobName(userId) {
+      return `${sanitizePathSegment(userId)}/project-review-state.json`;
+    },
+    deleteBlobIfExists,
+    getContainerClient,
+    readJsonBlob,
+    readTextBlob,
+    sanitizePathSegment,
+    uploadBinaryBlob,
+    uploadJsonBlob,
+    uploadTextBlob
+  };
+}
+
+function createMockCopilotModule() {
+  return {
+    getCopilotConfiguration() {
+      return {
+        configured: false
+      };
+    },
+    async runCopilot() {
+      throw new Error("Copilot not configured in unit tests.");
+    }
+  };
+}
+
+function loadArbReviewStore() {
+  const tableStoragePath = require.resolve("./table-storage");
+  const storagePath = require.resolve("./storage");
+  const copilotPath = require.resolve("./copilot");
+  const storePath = require.resolve("./arb-review-store");
+
+  delete require.cache[tableStoragePath];
+  delete require.cache[storagePath];
+  delete require.cache[copilotPath];
+  delete require.cache[storePath];
+
+  const mockTableStorage = createMockTableModule();
+  const mockStorage = createMockStorageModule();
+  const mockCopilot = createMockCopilotModule();
+
+  require.cache[tableStoragePath] = {
+    id: tableStoragePath,
+    filename: tableStoragePath,
+    loaded: true,
+    exports: mockTableStorage
+  };
+  require.cache[storagePath] = {
+    id: storagePath,
+    filename: storagePath,
+    loaded: true,
+    exports: mockStorage
+  };
+  require.cache[copilotPath] = {
+    id: copilotPath,
+    filename: copilotPath,
+    loaded: true,
+    exports: mockCopilot
+  };
+
+  const store = require("./arb-review-store");
+
+  return {
+    store,
+    cleanup() {
+      delete require.cache[tableStoragePath];
+      delete require.cache[storagePath];
+      delete require.cache[copilotPath];
+      delete require.cache[storePath];
+    }
+  };
+}
+
+test("ARB review lifecycle persists summary, findings, scorecard, and decision state", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-1",
+    userDetails: "architect@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "contoso-hadr",
+      projectName: "Contoso HA/DR",
+      customerName: "Contoso"
+    });
+
+    assert.equal(created.reviewId, "arb-contoso-hadr");
+    assert.equal(created.projectName, "Contoso HA/DR");
+    assert.equal(created.createdByUserId, principal.userId);
+
+    const loaded = await store.getArbReview(principal, created.reviewId);
+    const findings = await store.getArbFindings(principal, created.reviewId);
+    const scorecard = await store.getArbScorecard(principal, created.reviewId);
+    const beforeDecision = await store.getArbDecision(principal, created.reviewId);
+    const decision = await store.recordArbDecision(principal, created.reviewId, {
+      finalDecision: "Approved",
+      rationale: "Ready for pilot rollout after evidence review."
+    });
+    const afterDecision = await store.getArbReview(principal, created.reviewId);
+    const loadedDecision = await store.getArbDecision(principal, created.reviewId);
+
+    assert.equal(loaded.projectName, "Contoso HA/DR");
+    assert.equal(findings.length, 2);
+    assert.equal(findings[0].reviewId, created.reviewId);
+    assert.equal(scorecard.overallScore, 78);
+    assert.equal(scorecard.recommendation, "Needs Revision");
+    assert.equal(scorecard.evidenceReadinessState, "Ready with Gaps");
+    assert.equal(scorecard.reviewerOverride, null);
+    assert.equal(scorecard.domainScores[1].linkedFindings[0], `${created.reviewId}-find-001`);
+    assert.equal(beforeDecision, null);
+    assert.equal(decision.reviewerDecision, "Approved");
+    assert.equal(decision.rationale, "Ready for pilot rollout after evidence review.");
+    assert.equal(loadedDecision?.reviewerDecision, "Approved");
+    assert.equal(loadedDecision?.rationale, "Ready for pilot rollout after evidence review.");
+    assert.equal(afterDecision.finalDecision, "Approved");
+    assert.equal(afterDecision.workflowState, "Decision Recorded");
+
+    const scorecardAfterDecision = await store.getArbScorecard(principal, created.reviewId);
+    assert.equal(scorecardAfterDecision.reviewerOverride?.overrideDecision, "Approved");
+    assert.equal(
+      scorecardAfterDecision.reviewerOverride?.overrideRationale,
+      "Ready for pilot rollout after evidence review."
+    );
+  } finally {
+    cleanup();
+  }
+});
+
+test("updating a finding changes persisted finding state and derived scorecard output", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-5",
+    userDetails: "owner@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "finding-updates",
+      projectName: "Finding Updates"
+    });
+
+    const updatedFinding = await store.updateArbFinding(
+      principal,
+      created.reviewId,
+      `${created.reviewId}-find-001`,
+      {
+        status: "Closed",
+        owner: "Security Lead",
+        dueDate: "2026-04-20",
+        reviewerNote: "Boundary controls were documented after review.",
+        criticalBlocker: false
+      }
+    );
+
+    const findings = await store.getArbFindings(principal, created.reviewId);
+    const scorecard = await store.getArbScorecard(principal, created.reviewId);
+
+    assert.equal(updatedFinding.status, "Closed");
+    assert.equal(updatedFinding.owner, "Security Lead");
+    assert.equal(updatedFinding.dueDate, "2026-04-20");
+    assert.equal(updatedFinding.reviewerNote, "Boundary controls were documented after review.");
+    assert.equal(findings[0].status, "Closed");
+    assert.equal(findings[0].owner, "Security Lead");
+    assert.equal(scorecard.overallScore, 80);
+    assert.equal(scorecard.domainScores[1].domain, "Security");
+    assert.deepEqual(scorecard.domainScores[1].linkedFindings, []);
+  } finally {
+    cleanup();
+  }
+});
+
+test("creating an action from a finding persists a first-class ARB action record", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-6",
+    userDetails: "pm@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "actions-demo",
+      projectName: "Actions Demo"
+    });
+
+    const action = await store.createArbAction(principal, created.reviewId, {
+      sourceFindingId: `${created.reviewId}-find-001`
+    });
+    const actions = await store.getArbActions(principal, created.reviewId);
+
+    assert.equal(action.actionId, `${created.reviewId}-action-001`);
+    assert.equal(action.sourceFindingId, `${created.reviewId}-find-001`);
+    assert.equal(action.status, "Open");
+    assert.equal(action.owner, "Security Architect");
+    assert.equal(action.reviewerVerificationRequired, false);
+    assert.equal(actions.length, 1);
+    assert.equal(actions[0].actionSummary, "Document a clear ingress and boundary protection pattern before final approval.");
+  } finally {
+    cleanup();
+  }
+});
+
+test("updating an action persists owner, due date, status, and closure notes", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-7",
+    userDetails: "ops@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "action-updates",
+      projectName: "Action Updates"
+    });
+
+    const action = await store.createArbAction(principal, created.reviewId, {
+      sourceFindingId: `${created.reviewId}-find-002`
+    });
+
+    const updatedAction = await store.updateArbAction(principal, created.reviewId, action.actionId, {
+      owner: "Operations Lead",
+      dueDate: "2026-04-25",
+      status: "Closed",
+      closureNotes: "Runbook owner assigned and documented.",
+      reviewerVerificationRequired: true
+    });
+    const actions = await store.getArbActions(principal, created.reviewId);
+
+    assert.equal(updatedAction.owner, "Operations Lead");
+    assert.equal(updatedAction.dueDate, "2026-04-25");
+    assert.equal(updatedAction.status, "Closed");
+    assert.equal(updatedAction.closureNotes, "Runbook owner assigned and documented.");
+    assert.equal(updatedAction.reviewerVerificationRequired, true);
+    assert.equal(actions[0].status, "Closed");
+    assert.equal(actions[0].closureNotes, "Runbook owner assigned and documented.");
+  } finally {
+    cleanup();
+  }
+});
+
+test("demo-review is auto-seeded for the signed-in user", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-2",
+    userDetails: "reviewer@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const review = await store.getArbReview(principal, "demo-review");
+    const findings = await store.getArbFindings(principal, "demo-review");
+
+    assert.equal(review.reviewId, "demo-review");
+    assert.equal(review.createdByUserId, principal.userId);
+    assert.equal(findings[0].reviewId, "demo-review");
+  } finally {
+    cleanup();
+  }
+});
+
+test("uploading files persists ARB file inventory and recalculates readiness", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-upload",
+    userDetails: "uploader@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "upload-ready",
+      projectName: "Upload Ready"
+    });
+
+    const uploadResult = await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "solution-sow.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("The solution must use Azure services and document security controls.")
+      },
+      {
+        fileName: "architecture-design.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Architecture uses Azure Front Door and App Service with monitoring.")
+      }
+    ]);
+    const files = await store.getArbFiles(principal, created.reviewId);
+    const review = await store.getArbReview(principal, created.reviewId);
+
+    assert.equal(uploadResult.addedCount, 2);
+    assert.equal(files.length, 2);
+    assert.equal(review.documentCount, 2);
+    assert.equal(review.requiredEvidencePresent, true);
+    assert.equal(review.evidenceReadinessState, "Ready with Gaps");
+    assert.deepEqual(review.missingRequiredItems, []);
+  } finally {
+    cleanup();
+  }
+});
+
+test("starting extraction produces requirements and evidence from text files", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-extract",
+    userDetails: "extractor@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "extract-now",
+      projectName: "Extract Now"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "solution-sow.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from(
+          [
+            "The platform must enforce security controls across Azure services.",
+            "Monitoring and logging are required for operations.",
+            "The design should include backup and recovery planning."
+          ].join("\n")
+        )
+      },
+      {
+        fileName: "design-doc.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from(
+          [
+            "Azure Front Door provides the ingress layer.",
+            "Azure App Service hosts the application workload.",
+            "Networking boundaries and identity controls must be explicit."
+          ].join("\n")
+        )
+      }
+    ]);
+
+    const extraction = await store.startArbExtraction(principal, created.reviewId);
+    const requirements = await store.getArbRequirements(principal, created.reviewId);
+    const evidence = await store.getArbEvidence(principal, created.reviewId);
+    const exportsList = await store.listArbExports(principal, created.reviewId);
+    const review = await store.getArbReview(principal, created.reviewId);
+
+    assert.equal(extraction.state, "Completed");
+    assert.ok(requirements.length >= 2);
+    assert.ok(evidence.length >= 2);
+    assert.deepEqual(
+      exportsList.map((artifact) => artifact.format).sort(),
+      ["csv", "html", "markdown"]
+    );
+    assert.equal(review.workflowState, "Review In Progress");
+    assert.equal(review.evidenceReadinessState, "Ready with Gaps");
+    assert.equal(extraction.extractionConfidencePercent, 100);
+    assert.equal(extraction.fileStatuses.every((file) => file.extractionStatus === "Completed"), true);
+  } finally {
+    cleanup();
+  }
+});
+
+test("creating an ARB export writes export metadata", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-export",
+    userDetails: "exporter@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "export-now",
+      projectName: "Export Now"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "solution-sow.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("The design must support reliability and security evidence.")
+      },
+      {
+        fileName: "design-doc.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Azure Front Door and App Service are in scope for the review.")
+      }
+    ]);
+    await store.startArbExtraction(principal, created.reviewId);
+
+    const exportRecord = await store.createArbExport(principal, created.reviewId, {
+      format: "html",
+      includeFindings: true,
+      includeScorecard: true,
+      includeActions: true
+    });
+    const downloaded = await store.downloadArbExport(
+      principal,
+      created.reviewId,
+      exportRecord.exportId
+    );
+
+    assert.equal(exportRecord.reviewId, created.reviewId);
+    assert.equal(exportRecord.format, "html");
+    assert.match(exportRecord.blobPath, /output|exports/i);
+    assert.match(downloaded.body, /<html/i);
+  } finally {
+    cleanup();
+  }
+});
+
+test("ARB reviews are isolated per signed-in user and can be listed", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const firstPrincipal = {
+    userId: "arb-user-3",
+    userDetails: "first@example.com",
+    identityProvider: "aad"
+  };
+  const secondPrincipal = {
+    userId: "arb-user-4",
+    userDetails: "second@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    await store.createArbReview(firstPrincipal, {
+      projectCode: "shared-slug",
+      projectName: "Shared Slug"
+    });
+    await store.createArbReview(secondPrincipal, {
+      projectCode: "shared-slug",
+      projectName: "Shared Slug"
+    });
+
+    const firstList = await store.listArbReviews(firstPrincipal);
+    const secondList = await store.listArbReviews(secondPrincipal);
+
+    assert.equal(firstList.reviews.length, 1);
+    assert.equal(secondList.reviews.length, 1);
+    assert.equal(firstList.reviews[0].createdByUserId, firstPrincipal.userId);
+    assert.equal(secondList.reviews[0].createdByUserId, secondPrincipal.userId);
+    assert.equal(firstList.reviews[0].reviewId, "arb-shared-slug");
+    assert.equal(secondList.reviews[0].reviewId, "arb-shared-slug");
+  } finally {
+    cleanup();
+  }
+});

@@ -1,0 +1,29 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AZURE_STORAGE_ACCOUNT_NAME": "",
+    "AZURE_STORAGE_CONNECTION_STRING": "UseDevelopmentStorage=true",
+    "AZURE_STORAGE_REVIEW_CONTAINER_NAME": "review-notes",
+    "AZURE_STORAGE_REVIEW_ARTIFACT_CONTAINER_NAME": "review-artifacts",
+    "AZURE_STORAGE_COMMERCIAL_CACHE_CONTAINER_NAME": "commercial-data-cache",
+    "AZURE_STORAGE_ARB_INPUT_CONTAINER_NAME": "arb-inputfiles",
+    "AZURE_STORAGE_ARB_OUTPUT_CONTAINER_NAME": "arb-outputfiles",
+    "AZURE_STORAGE_REVIEW_USER_TABLE_NAME": "reviewusers",
+    "AZURE_STORAGE_PROJECT_REVIEW_TABLE_NAME": "projectreviews",
+    "AZURE_STORAGE_ARB_REVIEW_TABLE_NAME": "arbreviews",
+    "AZURE_STORAGE_TELEMETRY_TABLE_NAME": "reviewtelemetry",
+    "FOUNDRY_PROJECT_ENDPOINT": "",
+    "FOUNDRY_AGENT_ID": "",
+    "AZURE_SEARCH_ENDPOINT": "",
+    "AZURE_SEARCH_INDEX_NAME": "arb-documents",
+    "AZURE_DOCINT_ENDPOINT": "",
+    "AZURE_VISION_ENDPOINT": ""
+  },
+  "_comments": {
+    "auth": "All Azure service calls use DefaultAzureCredential (Managed Identity in production, az login locally). No API keys required.",
+    "local_storage": "Set AZURE_STORAGE_ACCOUNT_NAME to a real storage account for local MI auth, or leave blank to use Azurite via AZURE_STORAGE_CONNECTION_STRING.",
+    "FOUNDRY_PROJECT_ENDPOINT": "https://<hub-name>.<region>.api.azureml.ms — from Terraform output foundry_project_endpoint"
+  }
+}

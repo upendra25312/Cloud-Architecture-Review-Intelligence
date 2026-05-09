@@ -1,0 +1,3000 @@
+const crypto = require("node:crypto");
+const path = require("node:path");
+const XLSX = require("xlsx");
+const {
+  ARB_INPUT_CONTAINER_NAME,
+  ARB_OUTPUT_CONTAINER_NAME,
+  getContainerClient,
+  readBinaryBlob,
+  readTextBlob,
+  sanitizePathSegment,
+  uploadBinaryBlob,
+  uploadTextBlob
+} = require("./storage");
+const { getCopilotConfiguration, runCopilot } = require("./copilot");
+const { ensureArbSearchIndex, indexArbDocumentChunks, getSearchConfiguration } = require("./arb-search");
+const { describeImageForReview, getFoundryConfiguration } = require("./arb-foundry-agent");
+const {
+  getDocumentIntelligenceConfiguration,
+  supportsDocumentIntelligenceExtraction,
+  extractDocumentText
+} = require("./arb-document-intelligence");
+const {
+  getVisionServiceConfiguration,
+  supportsVisionExtraction,
+  extractTextWithVision
+} = require("./arb-vision-service");
+const {
+  ARB_REVIEW_TABLE_NAME,
+  encodeTableKey,
+  getTableClient
+} = require("./table-storage");
+const { checkAndReserveQuota } = require("./arb-extraction-quota");
+
+const SUMMARY_ROW_KEY = "SUMMARY";
+const FINDINGS_ROW_KEY = "FINDINGS";
+const SCORECARD_ROW_KEY = "SCORECARD";
+const DECISION_ROW_KEY = "DECISION_LATEST";
+const ACTIONS_ROW_KEY = "ACTIONS";
+const FILES_ROW_KEY = "FILES";
+const EXTRACTION_ROW_KEY = "EXTRACTION";
+const REQUIREMENTS_ROW_KEY = "REQUIREMENTS";
+const EVIDENCE_ROW_KEY = "EVIDENCE";
+const EXPORTS_ROW_KEY = "EXPORTS";
+const REQUIRED_LOGICAL_CATEGORIES = ["sow", "design_doc"];
+const RECOMMENDED_LOGICAL_CATEGORIES = [
+  "diagram",
+  "security_note",
+  "cost_assumptions",
+  "dr_ha_note",
+  "ops_monitoring_note"
+];
+const TEXT_EXTRACTABLE_EXTENSIONS = new Set([
+  // Plain text
+  ".txt", ".md", ".markdown",
+  // Structured data
+  ".csv", ".json", ".xml", ".yaml", ".yml",
+  // IaC / config
+  ".bicep", ".tf", ".hcl", ".toml",
+  // Diagrams (XML-based, fully readable)
+  ".drawio", ".draw.io",
+  // Whiteboard / diagramming (text-based)
+  ".excalidraw", ".mmd", ".mermaid", ".puml", ".plantuml",
+  // Markup
+  ".html", ".htm",
+  // Scripts & automation
+  ".ps1", ".psm1", ".sh", ".azcli",
+  // API & schema definitions
+  ".proto", ".graphql", ".gql", ".wsdl", ".xsd",
+  // Notebooks (JSON-based)
+  ".ipynb",
+  // Rich text
+  ".rtf",
+  // Vector graphics (XML-based, fully readable as text)
+  ".svg", ".svgz"
+]);
+const SPREADSHEET_EXTRACTABLE_EXTENSIONS = new Set([
+  ".xlsx", ".xls", ".ods"
+]);
+const IMAGE_EXTRACTABLE_EXTENSIONS = new Set([
+  ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".svg", ".svgz"
+]);
+const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
+  // Documents
+  ".pdf", ".doc", ".docx", ".rtf", ".odt",
+  // Presentations
+  ".ppt", ".pptx", ".odp",
+  // Spreadsheets & data
+  ".xls", ".xlsx", ".csv", ".ods",
+  // Diagrams
+  ".drawio", ".draw.io", ".vsdx", ".svg", ".svgz",
+  // Whiteboard / diagramming tools
+  ".excalidraw", ".mmd", ".mermaid", ".puml", ".plantuml",
+  // Images / screenshots
+  ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff",
+  // Text & markup
+  ".txt", ".md", ".markdown", ".html", ".htm",
+  // Structured / IaC
+  ".json", ".xml", ".yaml", ".yml", ".bicep", ".tf", ".hcl", ".toml",
+  // Scripts & automation (Azure PowerShell, Azure CLI, Bash)
+  ".ps1", ".psm1", ".sh", ".azcli",
+  // API & schema definitions
+  ".proto", ".graphql", ".gql", ".wsdl", ".xsd",
+  // Notebooks
+  ".ipynb",
+  // Archives
+  ".zip", ".7z", ".tar", ".tgz"
+]);
+const EXTRACTION_KEYWORD_MAP = [
+  // Security
+  ["security", "Security"],
+  ["encryption", "Security"],
+  ["tls", "Security"],
+  ["ssl", "Security"],
+  ["firewall", "Security"],
+  ["nsg", "Security"],
+  ["network security group", "Security"],
+  ["private endpoint", "Security"],
+  ["private link", "Security"],
+  ["waf", "Security"],
+  ["zero trust", "Security"],
+  ["defender", "Security"],
+  ["threat", "Security"],
+  // Identity
+  ["identity", "Identity"],
+  ["authentication", "Identity"],
+  ["authoris", "Identity"],
+  ["authoriz", "Identity"],
+  ["iam", "Identity"],
+  ["rbac", "Identity"],
+  ["role-based", "Identity"],
+  ["entra", "Identity"],
+  ["managed identity", "Identity"],
+  ["service principal", "Identity"],
+  ["pim", "Identity"],
+  ["mfa", "Identity"],
+  ["multi-factor", "Identity"],
+  ["secret", "Identity"],
+  ["credential", "Identity"],
+  ["key vault", "Identity"],
+  // Networking
+  ["network", "Networking"],
+  ["vnet", "Networking"],
+  ["subnet", "Networking"],
+  ["vpn", "Networking"],
+  ["expressroute", "Networking"],
+  ["dns", "Networking"],
+  ["load balanc", "Networking"],
+  ["traffic manager", "Networking"],
+  ["front door", "Networking"],
+  ["application gateway", "Networking"],
+  ["api management", "Networking"],
+  ["apim", "Networking"],
+  // Cost
+  ["cost", "Cost"],
+  ["pricing", "Cost"],
+  ["budget", "Cost"],
+  ["reserved instance", "Cost"],
+  ["savings plan", "Cost"],
+  ["autoscale", "Cost"],
+  ["auto-scale", "Cost"],
+  ["right-siz", "Cost"],
+  ["commercial", "Cost"],
+  // Operations
+  ["monitor", "Operations"],
+  ["logging", "Operations"],
+  ["log analytics", "Operations"],
+  ["application insights", "Operations"],
+  ["alerting", "Operations"],
+  ["alert", "Operations"],
+  ["dashboard", "Operations"],
+  ["observability", "Operations"],
+  ["telemetry", "Operations"],
+  ["runbook", "Operations"],
+  ["iac", "Operations"],
+  ["terraform", "Operations"],
+  ["bicep", "Operations"],
+  ["pipeline", "Operations"],
+  ["ci/cd", "Operations"],
+  ["devops", "Operations"],
+  ["tagging", "Operations"],
+  // Reliability
+  ["resilien", "Reliability"],
+  ["recovery", "Reliability"],
+  ["backup", "Reliability"],
+  ["availability", "Reliability"],
+  ["rto", "Reliability"],
+  ["rpo", "Reliability"],
+  ["failover", "Reliability"],
+  ["geo-redundant", "Reliability"],
+  ["geo redundant", "Reliability"],
+  ["grs", "Reliability"],
+  ["zrs", "Reliability"],
+  ["multi-region", "Reliability"],
+  ["sla", "Reliability"],
+  ["uptime", "Reliability"],
+  ["disaster recovery", "Reliability"],
+  // Governance
+  ["govern", "Governance"],
+  ["policy", "Governance"],
+  ["landing zone", "Governance"],
+  ["subscription", "Governance"],
+  ["management group", "Governance"],
+  ["alz", "Governance"],
+  ["compliance", "Governance"],
+  ["regulatory", "Governance"],
+  ["audit", "Governance"],
+  ["gdpr", "Governance"],
+  ["hipaa", "Governance"],
+  ["pci", "Governance"],
+  ["iso 27001", "Governance"],
+  ["nist", "Governance"]
+];
+
+function encodePrincipalKey(userId) {
+  return encodeTableKey(userId);
+}
+
+function getRowKey(baseRowKey, userId) {
+  return `${baseRowKey}|${encodePrincipalKey(userId)}`;
+}
+
+function createHttpError(statusCode, message) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+}
+
+function sanitizeReviewSegment(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+function normalizeReviewId(rawValue, fallback = "demo-review") {
+  const normalized = sanitizeReviewSegment(rawValue);
+  return normalized || fallback;
+}
+
+function sanitizeFilename(value) {
+  return String(value ?? "upload.bin")
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 180) || "upload.bin";
+}
+
+function getFileExtension(value) {
+  return path.extname(String(value ?? "")).toLowerCase();
+}
+
+function normalizeLogicalCategory(value, fallback = "supporting_artifact") {
+  const normalized = String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+  return normalized || fallback;
+}
+
+function inferLogicalCategory(fileName) {
+  const lowered = String(fileName ?? "").toLowerCase();
+  const ext = lowered.slice(lowered.lastIndexOf("."));
+
+  // Extension-based overrides
+  if (ext === ".drawio" || ext === ".vsdx") return "diagram";
+  if (ext === ".bicep" || ext === ".tf") return "design_doc";
+  if (ext === ".yaml" || ext === ".yml") return "design_doc";
+  if (ext === ".zip") return "supporting_artifact";
+
+  // Filename keyword rules
+  if (lowered.includes("sow") || lowered.includes("statement-of-work") || lowered.includes("statement_of_work")) {
+    return "sow";
+  }
+
+  if (lowered.includes("diagram") || lowered.includes("drawio") || lowered.includes("topology") || lowered.includes("network-map")) {
+    return "diagram";
+  }
+
+  if (lowered.includes("security") || lowered.includes("threat-model") || lowered.includes("pentest")) {
+    return "security_note";
+  }
+
+  if (lowered.includes("cost") || lowered.includes("pricing") || lowered.includes("budget")) {
+    return "cost_assumptions";
+  }
+
+  if (lowered.includes("dr") || lowered.includes("ha") || lowered.includes("resilien") || lowered.includes("disaster") || lowered.includes("recovery")) {
+    return "dr_ha_note";
+  }
+
+  if (lowered.includes("ops") || lowered.includes("monitor") || lowered.includes("runbook") || lowered.includes("alerting") || lowered.includes("observ")) {
+    return "ops_monitoring_note";
+  }
+
+  if (lowered.includes("design") || lowered.includes("hld") || lowered.includes("lld") || lowered.includes("architecture") || lowered.includes("landing-zone") || lowered.includes("landing_zone")) {
+    return "design_doc";
+  }
+
+  return "supporting_artifact";
+}
+
+function inferSourceRole(logicalCategory) {
+  switch (logicalCategory) {
+    case "sow":
+      return "Project Manager";
+    case "security_note":
+      return "Security Architect";
+    case "cost_assumptions":
+      return "Pre-sales Architect";
+    case "ops_monitoring_note":
+      return "Platform Lead";
+    default:
+      return "Architect";
+  }
+}
+
+function supportsTextExtraction(fileName) {
+  return TEXT_EXTRACTABLE_EXTENSIONS.has(getFileExtension(fileName));
+}
+
+function supportsSpreadsheetExtraction(fileName) {
+  return SPREADSHEET_EXTRACTABLE_EXTENSIONS.has(getFileExtension(fileName));
+}
+
+function supportsImageExtraction(fileName) {
+  return IMAGE_EXTRACTABLE_EXTENSIONS.has(getFileExtension(fileName));
+}
+
+const SPREADSHEET_MAX_BYTES = 10 * 1024 * 1024; // 10 MB hard cap before xlsx parse
+const SPREADSHEET_MAX_SHEETS = 20;
+const SPREADSHEET_MAX_CSV_CHARS = 500_000;
+
+// xlsx 0.18.5 (SheetJS CE) has known prototype-pollution advisories and no upstream
+// security fix on npm. Guard by rejecting oversized buffers before parsing and
+// limiting sheet count and output length so a crafted file cannot exhaust memory.
+function extractSpreadsheetText(buffer) {
+  if (buffer.length > SPREADSHEET_MAX_BYTES) {
+    throw new Error(
+      `Spreadsheet exceeds the ${SPREADSHEET_MAX_BYTES / (1024 * 1024)} MB limit and cannot be parsed.`
+    );
+  }
+
+  const workbook = XLSX.read(buffer, { type: "buffer", cellDates: true, dense: true });
+  const parts = [];
+  const sheetNames = workbook.SheetNames.slice(0, SPREADSHEET_MAX_SHEETS);
+
+  for (const sheetName of sheetNames) {
+    const sheet = workbook.Sheets[sheetName];
+    const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+    if (csv.trim()) {
+      parts.push(`=== Sheet: ${sheetName} ===\n${csv.slice(0, SPREADSHEET_MAX_CSV_CHARS)}`);
+    }
+  }
+
+  return parts.join("\n\n");
+}
+
+function isSupportedUpload(fileName) {
+  const extension = getFileExtension(fileName);
+  return SUPPORTED_UPLOAD_EXTENSIONS.has(extension);
+}
+
+function buildFileId(reviewId, fileName, hash) {
+  return `${reviewId}-file-${hash.slice(0, 10)}-${sanitizePathSegment(fileName).slice(0, 24)}`;
+}
+
+function buildBlobPath(userId, reviewId, fileName) {
+  return `${sanitizePathSegment(userId)}/reviews/${sanitizePathSegment(reviewId)}/${Date.now()}-${sanitizeFilename(fileName)}`;
+}
+
+function normalizeLine(line) {
+  return String(line ?? "").replace(/\s+/g, " ").trim();
+}
+
+function extractMeaningfulLines(text) {
+  return String(text ?? "")
+    .split(/\r?\n/)
+    .map((line) => normalizeLine(line))
+    .filter((line) => line.length >= 24)
+    .slice(0, 60);
+}
+
+function buildRequirementCategory(line, fallback) {
+  const lowered = line.toLowerCase();
+
+  for (const [needle, label] of EXTRACTION_KEYWORD_MAP) {
+    if (lowered.includes(needle)) {
+      return label;
+    }
+  }
+
+  return fallback;
+}
+
+function uniqueBy(items, keySelector) {
+  const seen = new Set();
+  const output = [];
+
+  for (const item of items) {
+    const key = keySelector(item);
+
+    if (seen.has(key)) {
+      continue;
+    }
+
+    seen.add(key);
+    output.push(item);
+  }
+
+  return output;
+}
+
+function buildReadinessFromFiles(files) {
+  const categories = new Set((Array.isArray(files) ? files : []).map((file) => file.logicalCategory));
+  const missingRequiredItems = REQUIRED_LOGICAL_CATEGORIES.filter((category) => !categories.has(category));
+  const missingRecommendedItems = RECOMMENDED_LOGICAL_CATEGORIES.filter(
+    (category) => !categories.has(category)
+  );
+  const recommendedCoverage =
+    RECOMMENDED_LOGICAL_CATEGORIES.length === 0
+      ? 1
+      : (RECOMMENDED_LOGICAL_CATEGORIES.length - missingRecommendedItems.length) /
+        RECOMMENDED_LOGICAL_CATEGORIES.length;
+
+  let readinessOutcome = "Ready with Gaps";
+  let readinessNotes = "The package can proceed, but recommended evidence is still incomplete.";
+
+  if (missingRequiredItems.length > 0) {
+    readinessOutcome = "Insufficient Evidence";
+    readinessNotes = "At least one required upload category is still missing.";
+  } else if (missingRecommendedItems.length === 0) {
+    readinessOutcome = "Ready for Review";
+    readinessNotes = "Required and recommended evidence categories are present.";
+  }
+
+  return {
+    requiredEvidencePresent: missingRequiredItems.length === 0,
+    recommendedEvidenceCoverage: Number(recommendedCoverage.toFixed(2)),
+    missingRequiredItems,
+    missingRecommendedItems,
+    readinessOutcome,
+    readinessNotes
+  };
+}
+
+function buildDefaultExtractionStatus(review) {
+  return {
+    reviewId: review.reviewId,
+    jobId: `${review.reviewId}-extract-001`,
+    state: "Not Started",
+    extractionConfidencePercent: 0,
+    completedSteps: [],
+    failedSteps: [],
+    evidenceReadinessState: review.evidenceReadinessState,
+    extractionErrors: [],
+    lastStartedAt: null,
+    lastCompletedAt: null,
+    fileStatuses: []
+  };
+}
+
+function clampPercent(value) {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function calculateExtractionConfidencePercent({
+  files,
+  requirements,
+  evidence,
+  readiness,
+  extractionErrors
+}) {
+  const fileList = Array.isArray(files) ? files : [];
+
+  if (fileList.length === 0) {
+    return 0;
+  }
+
+  const completedFiles = fileList.filter((file) => file.extractionStatus === "Completed").length;
+  const limitedFiles = fileList.filter((file) => file.extractionStatus === "Limited Evidence").length;
+  const fileExtractionCoverage = (completedFiles + limitedFiles * 0.35) / fileList.length;
+  const completedFileBaseline = Math.max(1, completedFiles);
+  const evidenceDensity = Math.min(1, (Array.isArray(evidence) ? evidence.length : 0) / (completedFileBaseline * 2));
+  const requirementDensity = Math.min(
+    1,
+    (Array.isArray(requirements) ? requirements.length : 0) / completedFileBaseline
+  );
+  const requiredEvidenceScore = readiness?.requiredEvidencePresent ? 1 : 0;
+  const errorScore = Array.isArray(extractionErrors) && extractionErrors.length > 0 ? 0 : 1;
+
+  return clampPercent(
+    fileExtractionCoverage * 55 +
+      evidenceDensity * 20 +
+      requirementDensity * 10 +
+      requiredEvidenceScore * 10 +
+      errorScore * 5
+  );
+}
+
+function buildDefaultRequirements() {
+  return [];
+}
+
+function buildDefaultEvidence() {
+  return [];
+}
+
+function buildDefaultExports() {
+  return [];
+}
+
+function normalizeExportFormat(value) {
+  const normalized = String(value ?? "markdown").trim().toLowerCase();
+
+  if (normalized === "markdown" || normalized === "md") {
+    return "markdown";
+  }
+
+  if (normalized === "csv" || normalized === "html") {
+    return normalized;
+  }
+
+  throw createHttpError(400, "Supported ARB export formats are markdown, csv, and html.");
+}
+
+function getExportExtension(format) {
+  return format === "markdown" ? "md" : format;
+}
+
+function buildExportId(reviewId, format) {
+  return `${sanitizePathSegment(reviewId)}-review-output-${format}`;
+}
+
+function buildExportFileName(reviewId, format) {
+  return `${sanitizePathSegment(reviewId)}-reviewed-arb-output.${getExportExtension(format)}`;
+}
+
+function buildExportBlobPath(userId, reviewId, fileName) {
+  return `${sanitizePathSegment(userId)}/reviews/${sanitizePathSegment(reviewId)}/outputs/${fileName}`;
+}
+
+function escapeCsvValue(value) {
+  const normalized = String(value ?? "").replace(/\r?\n/g, " ");
+
+  if (/[",]/.test(normalized)) {
+    return `"${normalized.replace(/"/g, '""')}"`;
+  }
+
+  return normalized;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+async function buildAiSummary(review, files, requirements, evidence, findings, scorecard, actions) {
+  if (!getCopilotConfiguration().configured) {
+    return "";
+  }
+
+  try {
+    const copilotResponse = await runCopilot(
+      "Summarize this Azure architecture review package with key blockers, confidence, and next actions.",
+      buildReviewContextForCopilot(review, files, requirements, evidence, findings, scorecard, actions),
+      { mode: "leadership-summary", groundingMode: "arb-review-export" }
+    );
+
+    return String(copilotResponse.answer ?? "").trim();
+  } catch {
+    return "";
+  }
+}
+
+function renderMarkdownExportBody(review, files, requirements, evidence, findings, scorecard, actions, summaryText) {
+  return [
+    `# ${review.projectName} ARB Reviewed Output`,
+    "",
+    `- Review ID: ${review.reviewId}`,
+    `- Customer: ${review.customerName}`,
+    `- Workflow state: ${review.workflowState}`,
+    `- Evidence readiness: ${review.evidenceReadinessState}`,
+    `- Documents reviewed: ${files.length}`,
+    `- Requirements extracted: ${requirements.length}`,
+    `- Evidence facts extracted: ${evidence.length}`,
+    scorecard ? `- Overall score: ${scorecard.overallScore ?? "TBD"}` : null,
+    scorecard ? `- Recommendation: ${scorecard.recommendation}` : null,
+    "",
+    summaryText ? `## Assessment Summary\n\n${summaryText}` : null,
+    summaryText ? "" : null,
+    "## Uploaded Inputs",
+    "",
+    ...files.map(
+      (file) =>
+        `- ${file.fileName} (${file.logicalCategory}, ${file.extractionStatus}, ${file.supportedTextExtraction ? "text-ready" : "stored-only"})`
+    ),
+    "",
+    "## Reviewed Requirements",
+    "",
+    ...requirements.map(
+      (requirement) =>
+        `- [${requirement.category}/${requirement.criticality}] ${requirement.normalizedText}`
+    ),
+    "",
+    "## Reviewed Evidence",
+    "",
+    ...evidence.map(
+      (fact) => `- [${fact.factType}] ${fact.summary} (${fact.sourceFileName || "Derived summary"})`
+    ),
+    "",
+    "## Findings",
+    "",
+    ...findings.map((finding) => `- [${finding.severity}] ${finding.title} (${finding.status})`),
+    "",
+    "## Actions",
+    "",
+    ...actions.map((action) => `- ${action.actionSummary} (${action.status})`)
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function renderCsvExportBody(review, files, requirements, evidence, findings, scorecard, actions) {
+  const rows = [
+    [
+      "recordType",
+      "reviewId",
+      "projectName",
+      "category",
+      "title",
+      "details",
+      "sourceFile",
+      "status",
+      "severity",
+      "owner",
+      "dueDate",
+      "source"
+    ],
+    [
+      "review",
+      review.reviewId,
+      review.projectName,
+      "summary",
+      review.customerName,
+      `Workflow=${review.workflowState}; Readiness=${review.evidenceReadinessState}; Score=${scorecard?.overallScore ?? "TBD"}`,
+      "",
+      review.workflowState,
+      scorecard?.recommendation || "",
+      review.assignedReviewer || "",
+      review.targetReviewDate || "",
+      ""
+    ],
+    ...files.map((file) => [
+      "file",
+      review.reviewId,
+      review.projectName,
+      file.logicalCategory,
+      file.fileName,
+      `Extraction=${file.extractionStatus}; Size=${file.sizeBytes}`,
+      file.fileName,
+      file.extractionStatus,
+      "",
+      file.uploadedBy,
+      file.uploadedAt
+    ]),
+    ...requirements.map((requirement) => [
+      "requirement",
+      review.reviewId,
+      review.projectName,
+      requirement.category,
+      requirement.normalizedText,
+      requirement.reviewerStatus,
+      requirement.sourceFileName || "",
+      requirement.reviewerStatus,
+      requirement.criticality,
+      "",
+      ""
+    ]),
+    ...evidence.map((fact) => [
+      "evidence",
+      review.reviewId,
+      review.projectName,
+      fact.factType,
+      fact.summary,
+      fact.sourceExcerpt,
+      fact.sourceFileName || "",
+      fact.confidence,
+      "",
+      "",
+      ""
+    ]),
+    ...findings.map((finding) => [
+      "finding",
+      review.reviewId,
+      review.projectName,
+      finding.domain,
+      finding.title,
+      finding.findingStatement,
+      finding.evidenceFound.join(" | "),
+      finding.status,
+      finding.severity,
+      finding.owner || finding.suggestedOwner || "",
+      finding.dueDate || finding.suggestedDueDate || "",
+      finding.source || ""
+    ]),
+    ...actions.map((action) => [
+      "action",
+      review.reviewId,
+      review.projectName,
+      "remediation",
+      action.actionSummary,
+      action.closureNotes || "",
+      action.sourceFindingId,
+      action.status,
+      action.severity,
+      action.owner || "",
+      action.dueDate || ""
+    ])
+  ];
+
+  return rows.map((row) => row.map((value) => escapeCsvValue(value)).join(",")).join("\n");
+}
+
+function renderHtmlExportBody(review, files, requirements, evidence, findings, scorecard, actions, summaryText) {
+  const esc = escapeHtml;
+  const timestamp = new Date().toISOString();
+
+  /* ── colour helpers ── */
+  const severityBadge = (sev) => {
+    const s = String(sev || "").toLowerCase();
+    if (s === "high" || s === "critical")
+      return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEE2E2;color:#D92B2B;">${esc(sev)}</span>`;
+    if (s === "medium")
+      return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEF3C7;color:#B45309;">${esc(sev)}</span>`;
+    return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#DBEAFE;color:#0078D4;">${esc(sev)}</span>`;
+  };
+
+  const recommendationBadge = (rec) => {
+    const r = String(rec || "").toLowerCase();
+    let bg = "#FEF3C7"; let fg = "#B45309";
+    if (r === "approved" || r.includes("approve")) { bg = "#D1FAE5"; fg = "#065F46"; }
+    else if (r === "rejected" || r.includes("reject")) { bg = "#FEE2E2"; fg = "#D92B2B"; }
+    return `<span style="display:inline-block;padding:3px 14px;border-radius:12px;font-size:13px;font-weight:600;background:${bg};color:${fg};">${esc(rec)}</span>`;
+  };
+
+  const confidenceBadge = (conf) => {
+    const c = String(conf || "").toLowerCase();
+    let bg = "#FEE2E2"; let fg = "#D92B2B";
+    if (c === "high") { bg = "#D1FAE5"; fg = "#065F46"; }
+    else if (c === "medium") { bg = "#FEF3C7"; fg = "#B45309"; }
+    return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:${bg};color:${fg};">${esc(conf)}</span>`;
+  };
+
+  const scoreColor = (score) => {
+    const n = Number(score);
+    if (n >= 85) return "#059669";
+    if (n >= 70) return "#B45309";
+    return "#D92B2B";
+  };
+
+  const overallScore = scorecard?.overallScore ?? null;
+  const recommendation = scorecard?.recommendation ?? "Pending";
+  const domainScores = scorecard?.domainScores || [];
+
+  /* ── score bar helper ── */
+  const scoreBar = (score, maxVal = 100) => {
+    const pct = Math.min(100, Math.max(0, Math.round((Number(score) / maxVal) * 100)));
+    const color = scoreColor(score);
+    return `<div style="display:flex;align-items:center;gap:10px;">` +
+      `<div style="flex:1;height:10px;background:#E5E7EB;border-radius:5px;overflow:hidden;">` +
+      `<div style="width:${pct}%;height:100%;background:${color};border-radius:5px;"></div></div>` +
+      `<span style="font-size:13px;font-weight:600;color:${color};min-width:40px;text-align:right;">${esc(score)}</span></div>`;
+  };
+
+  /* ── section divider ── */
+  const divider = `<hr style="border:none;border-top:1px solid #E5E7EB;margin:32px 0;" />`;
+
+  /* ── build HTML parts ── */
+  const parts = [];
+
+  /* doctype + head */
+  parts.push(
+    `<!DOCTYPE html>`,
+    `<html lang="en">`,
+    `<head>`,
+    `<meta charset="utf-8" />`,
+    `<meta name="viewport" content="width=device-width, initial-scale=1" />`,
+    `<title>${esc(review.projectName)} \u2014 Architecture Review Pack</title>`,
+    `</head>`,
+    `<body style="margin:0;padding:0;background:#ffffff;color:#1F2937;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.6;">`
+  );
+
+  /* page wrapper */
+  parts.push(`<div style="max-width:900px;margin:0 auto;padding:40px 24px;">`);
+
+  /* ── HEADER ── */
+  parts.push(
+    `<div style="margin-bottom:8px;">`,
+    `<h1 style="margin:0 0 4px;font-size:26px;font-weight:700;color:#0F172A;letter-spacing:-0.3px;">${esc(review.projectName)}</h1>`,
+    `<p style="margin:0;font-size:14px;color:#64748B;">Architecture Review Pack</p>`,
+    `</div>`
+  );
+
+  /* ── METADATA CARD ── */
+  parts.push(
+    `<div style="margin:20px 0 32px;padding:20px 24px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;">`,
+    `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Review ID</td><td style="padding:4px 0;font-weight:500;">${esc(review.reviewId)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Customer</td><td style="padding:4px 0;font-weight:500;">${esc(review.customerName)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Workflow State</td><td style="padding:4px 0;font-weight:500;">${esc(review.workflowState)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Evidence Readiness</td><td style="padding:4px 0;font-weight:500;">${esc(review.evidenceReadinessState)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Overall Score</td><td style="padding:4px 0;font-weight:600;">${overallScore !== null ? esc(overallScore) + " / 100" : "TBD"}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Recommendation</td><td style="padding:4px 0;">${recommendationBadge(recommendation)}</td></tr>`,
+    `</table>`,
+    `</div>`
+  );
+
+  /* ── OVERALL SCORE BAR ── */
+  if (overallScore !== null) {
+    parts.push(
+      `<div style="margin-bottom:32px;">`,
+      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Overall Score</h2>`,
+      `<div style="padding:16px 20px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;">`,
+      `<div style="display:flex;align-items:center;gap:12px;">`,
+      `<span style="font-size:32px;font-weight:700;color:${scoreColor(overallScore)};">${esc(overallScore)}</span>`,
+      `<span style="font-size:14px;color:#64748B;">/ 100</span>`,
+      `<div style="flex:1;margin-left:8px;">`,
+      `<div style="height:12px;background:#E5E7EB;border-radius:6px;overflow:hidden;">`,
+      `<div style="width:${Math.min(100, Math.max(0, Number(overallScore)))}%;height:100%;background:${scoreColor(overallScore)};border-radius:6px;"></div>`,
+      `</div></div></div></div></div>`
+    );
+  }
+
+  /* ── ASSESSMENT SUMMARY ── */
+  if (summaryText) {
+    parts.push(
+      divider,
+      `<div style="margin-bottom:32px;">`,
+      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Assessment Summary</h2>`,
+      `<div style="padding:16px 20px;background:#EFF6FF;border-left:4px solid #0078D4;border-radius:4px;font-size:14px;line-height:1.7;color:#1E3A5F;">`,
+      `${esc(summaryText)}`,
+      `</div></div>`
+    );
+  }
+
+  /* ── DOMAIN SCORES ── */
+  if (domainScores.length > 0) {
+    parts.push(
+      divider,
+      `<div style="margin-bottom:32px;">`,
+      `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Domain Scores</h2>`
+    );
+    for (const ds of domainScores) {
+      const pct = ds.weight > 0 ? Math.round((Number(ds.score) / Number(ds.weight)) * 100) : 0;
+      const color = scoreColor(pct >= 85 ? 85 : pct >= 70 ? 75 : 50);
+      parts.push(
+        `<div style="margin-bottom:14px;">`,
+        `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">`,
+        `<span style="font-size:13px;font-weight:600;color:#1F2937;">${esc(ds.domain)}</span>`,
+        `<span style="font-size:12px;color:#64748B;">${esc(ds.score)} / ${esc(ds.weight)} (${pct}%)</span>`,
+        `</div>`,
+        `<div style="height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;">`,
+        `<div style="width:${Math.min(100, Math.max(0, pct))}%;height:100%;background:${color};border-radius:4px;"></div>`,
+        `</div>`,
+        ds.reason ? `<p style="margin:4px 0 0;font-size:12px;color:#64748B;">${esc(ds.reason)}</p>` : "",
+        `</div>`
+      );
+    }
+    parts.push(`</div>`);
+  }
+
+  /* ── FINDINGS TABLE ── */
+  parts.push(divider);
+  parts.push(
+    `<div style="margin-bottom:32px;">`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Findings</h2>`
+  );
+  if (findings.length === 0) {
+    parts.push(`<p style="color:#64748B;font-style:italic;">No findings recorded.</p>`);
+  } else {
+    parts.push(
+      `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
+      `<thead>`,
+      `<tr style="border-bottom:2px solid #E2E8F0;">`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Severity</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Finding</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Domain</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Recommendation</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Status</th>`,
+      `</tr>`,
+      `</thead>`,
+      `<tbody>`
+    );
+    for (const f of findings) {
+      parts.push(
+        `<tr style="border-bottom:1px solid #F1F5F9;">`,
+        `<td style="padding:10px;vertical-align:top;">${severityBadge(f.severity)}</td>`,
+        `<td style="padding:10px;vertical-align:top;"><strong style="color:#0F172A;">${esc(f.title)}</strong><br/><span style="color:#64748B;font-size:12px;">${esc(f.findingStatement || "")}</span></td>`,
+        `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(f.domain || "")}</td>`,
+        `<td style="padding:10px;vertical-align:top;color:#475569;font-size:12px;">${esc(f.recommendation || "")}</td>`,
+        `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(f.status)}</span></td>`,
+        `</tr>`
+      );
+    }
+    parts.push(`</tbody></table>`);
+  }
+  parts.push(`</div>`);
+
+  /* ── ACTIONS TABLE ── */
+  parts.push(divider);
+  parts.push(
+    `<div style="margin-bottom:32px;">`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Actions</h2>`
+  );
+  if (actions.length === 0) {
+    parts.push(`<p style="color:#64748B;font-style:italic;">No actions recorded.</p>`);
+  } else {
+    parts.push(
+      `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
+      `<thead>`,
+      `<tr style="border-bottom:2px solid #E2E8F0;">`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Action</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Owner</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Due Date</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Status</th>`,
+      `</tr>`,
+      `</thead>`,
+      `<tbody>`
+    );
+    for (const a of actions) {
+      parts.push(
+        `<tr style="border-bottom:1px solid #F1F5F9;">`,
+        `<td style="padding:10px;vertical-align:top;">${esc(a.actionSummary)}</td>`,
+        `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(a.owner || "Unassigned")}</td>`,
+        `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(a.dueDate || "\u2014")}</td>`,
+        `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(a.status)}</span></td>`,
+        `</tr>`
+      );
+    }
+    parts.push(`</tbody></table>`);
+  }
+  parts.push(`</div>`);
+
+  /* ── EVIDENCE CARDS ── */
+  parts.push(divider);
+  parts.push(
+    `<div style="margin-bottom:32px;">`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Evidence</h2>`
+  );
+  if (evidence.length === 0) {
+    parts.push(`<p style="color:#64748B;font-style:italic;">No evidence recorded.</p>`);
+  } else {
+    for (const ev of evidence) {
+      parts.push(
+        `<div style="margin-bottom:12px;padding:14px 18px;border:1px solid #E2E8F0;border-radius:6px;background:#FFFFFF;">`,
+        `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">`,
+        `<span style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">${esc(ev.factType || "Evidence")}</span>`,
+        confidenceBadge(ev.confidence),
+        `</div>`,
+        `<p style="margin:0 0 6px;font-size:14px;font-weight:500;color:#1F2937;">${esc(ev.summary)}</p>`,
+        `<p style="margin:0;font-size:12px;color:#94A3B8;">Source: ${esc(ev.sourceFileName || "Derived summary")}</p>`,
+        ev.sourceExcerpt ? `<div style="margin-top:8px;padding:8px 12px;background:#F8FAFC;border-radius:4px;font-size:12px;color:#475569;font-style:italic;border-left:3px solid #CBD5E1;">${esc(ev.sourceExcerpt)}</div>` : "",
+        `</div>`
+      );
+    }
+  }
+  parts.push(`</div>`);
+
+  /* ── UPLOADED INPUTS ── */
+  parts.push(divider);
+  parts.push(
+    `<div style="margin-bottom:32px;">`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Uploaded Inputs</h2>`
+  );
+  if (files.length === 0) {
+    parts.push(`<p style="color:#64748B;font-style:italic;">No files uploaded.</p>`);
+  } else {
+    parts.push(
+      `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
+      `<thead>`,
+      `<tr style="border-bottom:2px solid #E2E8F0;">`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">File Name</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Category</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Extraction Status</th>`,
+      `</tr>`,
+      `</thead>`,
+      `<tbody>`
+    );
+    for (const file of files) {
+      parts.push(
+        `<tr style="border-bottom:1px solid #F1F5F9;">`,
+        `<td style="padding:8px 10px;">${esc(file.fileName)}</td>`,
+        `<td style="padding:8px 10px;color:#475569;">${esc(file.logicalCategory)}</td>`,
+        `<td style="padding:8px 10px;color:#475569;">${esc(file.extractionStatus)}</td>`,
+        `</tr>`
+      );
+    }
+    parts.push(`</tbody></table>`);
+  }
+  parts.push(`</div>`);
+
+  /* ── REQUIREMENTS ── */
+  parts.push(divider);
+  parts.push(
+    `<div style="margin-bottom:32px;">`,
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Reviewed Requirements</h2>`
+  );
+  if (requirements.length === 0) {
+    parts.push(`<p style="color:#64748B;font-style:italic;">No requirements recorded.</p>`);
+  } else {
+    parts.push(
+      `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
+      `<thead>`,
+      `<tr style="border-bottom:2px solid #E2E8F0;">`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Category</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Criticality</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Requirement</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Source</th>`,
+      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Status</th>`,
+      `</tr>`,
+      `</thead>`,
+      `<tbody>`
+    );
+    for (const req of requirements) {
+      parts.push(
+        `<tr style="border-bottom:1px solid #F1F5F9;">`,
+        `<td style="padding:8px 10px;font-weight:500;">${esc(req.category)}</td>`,
+        `<td style="padding:8px 10px;">${severityBadge(req.criticality)}</td>`,
+        `<td style="padding:8px 10px;color:#1F2937;">${esc(req.normalizedText)}</td>`,
+        `<td style="padding:8px 10px;color:#94A3B8;font-size:12px;">${esc(req.sourceFileName || "\u2014")}</td>`,
+        `<td style="padding:8px 10px;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(req.reviewerStatus)}</span></td>`,
+        `</tr>`
+      );
+    }
+    parts.push(`</tbody></table>`);
+  }
+  parts.push(`</div>`);
+
+  /* ── FOOTER ── */
+  parts.push(
+    divider,
+    `<div style="text-align:center;padding:16px 0 8px;font-size:12px;color:#94A3B8;">`,
+    `Generated by Azure Review Assistant &middot; ${esc(timestamp)}`,
+    `</div>`
+  );
+
+  /* close wrapper + body + html */
+  parts.push(`</div></body></html>`);
+
+  return parts.filter(Boolean).join("\n");
+}
+
+function mergeExportRecords(existingExports, nextRecord) {
+  return [...(existingExports || []).filter((record) => record.exportId !== nextRecord.exportId), nextRecord].sort(
+    (left, right) => String(right.generatedAt).localeCompare(String(left.generatedAt))
+  );
+}
+
+async function writeArbOutputArtifact({
+  principal,
+  review,
+  files,
+  requirements,
+  evidence,
+  findings,
+  scorecard,
+  actions,
+  format,
+  generatedAt,
+  summaryText,
+  existingExports
+}) {
+  const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
+  const fileName = buildExportFileName(review.reviewId, format);
+  const blobPath = buildExportBlobPath(principal.userId, review.reviewId, fileName);
+  let body;
+  let contentType;
+
+  if (format === "csv") {
+    body = renderCsvExportBody(review, files, requirements, evidence, findings, scorecard, actions);
+    contentType = "text/csv; charset=utf-8";
+  } else if (format === "html") {
+    body = renderHtmlExportBody(
+      review,
+      files,
+      requirements,
+      evidence,
+      findings,
+      scorecard,
+      actions,
+      summaryText
+    );
+    contentType = "text/html; charset=utf-8";
+  } else {
+    body = renderMarkdownExportBody(
+      review,
+      files,
+      requirements,
+      evidence,
+      findings,
+      scorecard,
+      actions,
+      summaryText
+    );
+    contentType = "text/markdown; charset=utf-8";
+  }
+
+  await uploadTextBlob(outputContainer, blobPath, body, contentType);
+
+  const exportRecord = {
+    exportId: buildExportId(review.reviewId, format),
+    reviewId: review.reviewId,
+    format,
+    includeFindings: true,
+    includeScorecard: true,
+    includeActions: true,
+    blobPath,
+    fileName,
+    contentType,
+    generatedAt: generatedAt || new Date().toISOString()
+  };
+
+  return {
+    exportRecord,
+    exportsList: mergeExportRecords(existingExports, exportRecord)
+  };
+}
+
+async function syncArbReviewedOutputs({
+  principal,
+  review,
+  files,
+  requirements,
+  evidence,
+  findings,
+  scorecard,
+  actions,
+  formats,
+  generatedAt,
+  existingExports
+}) {
+  const summaryText = await buildAiSummary(
+    review,
+    files,
+    requirements,
+    evidence,
+    findings,
+    scorecard,
+    actions
+  );
+  const requestedFormats = Array.isArray(formats) && formats.length > 0 ? formats : ["markdown"];
+  const normalizedFormats = [...new Set(requestedFormats.map((format) => normalizeExportFormat(format)))];
+  let nextExports = existingExports || [];
+  const createdArtifacts = [];
+
+  for (const format of normalizedFormats) {
+    const result = await writeArbOutputArtifact({
+      principal,
+      review,
+      files,
+      requirements,
+      evidence,
+      findings,
+      scorecard,
+      actions,
+      format,
+      generatedAt,
+      summaryText,
+      existingExports: nextExports
+    });
+
+    nextExports = result.exportsList;
+    createdArtifacts.push(result.exportRecord);
+  }
+
+  return {
+    exportsList: nextExports,
+    artifacts: createdArtifacts
+  };
+}
+
+function deriveRequirementsAndEvidence(review, files, fileTexts) {
+  const requirements = [];
+  const evidence = [];
+
+  for (const file of files) {
+    const text = fileTexts.get(file.fileId) || "";
+    const lines = extractMeaningfulLines(text);
+
+    if (["sow", "design_doc", "cost_assumptions", "dr_ha_note", "ops_monitoring_note"].includes(file.logicalCategory)) {
+      for (const line of lines.slice(0, 10)) {
+        requirements.push({
+          requirementId: `${review.reviewId}-req-${requirements.length + 1}`,
+          reviewId: review.reviewId,
+          sourceFileId: file.fileId,
+          sourceFileName: file.fileName,
+          normalizedText: line,
+          category: buildRequirementCategory(line, file.logicalCategory),
+          criticality:
+            /must|required|critical|mandatory|non-negotiable/i.test(line) ? "High" : "Medium",
+          reviewerStatus: "Pending"
+        });
+      }
+    }
+
+    for (const line of lines.slice(0, 12)) {
+      if (!/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service/i.test(line)) {
+        continue;
+      }
+
+      evidence.push({
+        evidenceId: `${review.reviewId}-ev-${evidence.length + 1}`,
+        reviewId: review.reviewId,
+        sourceFileId: file.fileId,
+        sourceFileName: file.fileName,
+        factType: buildRequirementCategory(line, "Architecture"),
+        summary: line,
+        sourceExcerpt: line,
+        confidence: supportsTextExtraction(file.fileName) ? "Medium" : "Low"
+      });
+    }
+  }
+
+  if (requirements.length === 0) {
+    requirements.push({
+      requirementId: `${review.reviewId}-req-1`,
+      reviewId: review.reviewId,
+      sourceFileId: null,
+      sourceFileName: null,
+      normalizedText: `${review.projectName} requires a grounded Azure review package before final board sign-off.`,
+      category: "Architecture",
+      criticality: "High",
+      reviewerStatus: "Pending"
+    });
+  }
+
+  return {
+    requirements: uniqueBy(requirements, (item) => `${item.sourceFileId}:${item.normalizedText}`),
+    evidence: uniqueBy(evidence, (item) => `${item.sourceFileId}:${item.summary}`)
+  };
+}
+
+function buildReviewContextForCopilot(review, files, requirements, evidence, findings, scorecard, actions) {
+  return {
+    review: {
+      id: review.reviewId,
+      name: review.projectName,
+      audience: review.assignedReviewer || review.createdBy || "Architecture Review Board",
+      businessScope: review.notes || `${review.projectName} architecture review package`,
+      targetRegions: []
+    },
+    services: [],
+    findings: findings.map((finding) => ({
+      guid: finding.findingId,
+      serviceName: finding.domain,
+      finding: finding.findingStatement,
+      severity: finding.severity,
+      decision: finding.status,
+      comments: finding.reviewerNote || finding.recommendation,
+      owner: finding.owner || finding.suggestedOwner,
+      dueDate: finding.dueDate || finding.suggestedDueDate
+    })),
+    sources: [
+      ...files.map((file) => ({
+        label: file.fileName,
+        note: `${file.logicalCategory} · ${file.extractionStatus}`
+      })),
+      {
+        label: `${requirements.length} normalized requirements`,
+        note: `${evidence.length} evidence facts · ${actions.length} actions · ${scorecard.overallScore ?? "TBD"} score`
+      }
+    ]
+  };
+}
+
+function getPartitionKey(reviewId) {
+  return encodeTableKey(reviewId);
+}
+
+function buildDefaultReview(reviewId, principal, input = {}) {
+  const now = new Date().toISOString();
+  const architectName = String(input.architectName ?? "").trim() || principal.userDetails || principal.userId;
+  const readiness = buildReadinessFromFiles([]);
+
+  return {
+    reviewId,
+    projectName: String(input.projectName ?? "").trim() || "Sample ARB Review",
+    customerName: String(input.customerName ?? "").trim() || "Contoso",
+    architectName,
+    createdBy: architectName,
+    createdByUserId: principal.userId,
+    createdAt: now,
+    workflowState: "Review In Progress",
+    evidenceReadinessState: "Ready with Gaps",
+    assignedReviewer: input.assignedReviewer
+      ? String(input.assignedReviewer).trim()
+      : (principal.userDetails || principal.userId || null),
+    targetReviewDate: normalizeNullableString(input.targetReviewDate),
+    notes: normalizeNullableString(input.notes),
+    overallScore: Number.isFinite(Number(input.overallScore)) ? Number(input.overallScore) : null,
+    recommendation: String(input.recommendation ?? "").trim() || "Needs Revision",
+    finalDecision: input.finalDecision ? String(input.finalDecision).trim() : null,
+    requiredEvidencePresent: readiness.requiredEvidencePresent,
+    recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
+    missingRequiredItems: readiness.missingRequiredItems,
+    missingRecommendedItems: readiness.missingRecommendedItems,
+    readinessOutcome: readiness.readinessOutcome,
+    readinessNotes: readiness.readinessNotes,
+    documentCount: 0,
+    lastUpdated: now
+  };
+}
+
+function buildDefaultFindings(review) {
+  return [
+    {
+      findingId: `${review.reviewId}-find-001`,
+      reviewId: review.reviewId,
+      severity: "High",
+      domain: "Security",
+      findingType: "Best Practice Missing",
+      title: `${review.projectName}: boundary control pattern not yet explicit`,
+      findingStatement:
+        "The current design does not yet document an explicit boundary control pattern for internet-facing access.",
+      whyItMatters:
+        "Unclear edge and boundary controls increase security and governance risk during design review.",
+      evidenceFound: [],
+      missingEvidence: ["No explicit WAF, APIM, or access restriction statement found yet."],
+      recommendation:
+        "Document a clear ingress and boundary protection pattern before final approval.",
+      references: [],
+      confidence: "Medium",
+      criticalBlocker: false,
+      suggestedOwner: "Security Architect",
+      suggestedDueDate: null,
+      owner: null,
+      dueDate: null,
+      reviewerNote: null,
+      status: "Open",
+      source: "scaffold"
+    },
+    {
+      findingId: `${review.reviewId}-find-002`,
+      reviewId: review.reviewId,
+      severity: "Medium",
+      domain: "Operational Excellence",
+      findingType: "Improvement Opportunity",
+      title: `${review.projectName}: runbook ownership needs clarification`,
+      findingStatement:
+        "The design package does not clearly assign operational ownership for deployment and incident procedures.",
+      whyItMatters:
+        "Unclear ownership slows incident response and weakens operational readiness.",
+      evidenceFound: [],
+      missingEvidence: ["No named runbook owner or support handoff model documented."],
+      recommendation:
+        "Assign an operational owner and define the runbook accountability model.",
+      references: [],
+      confidence: "Medium",
+      criticalBlocker: false,
+      suggestedOwner: "Platform Lead",
+      suggestedDueDate: null,
+      owner: null,
+      dueDate: null,
+      reviewerNote: null,
+      status: "Open",
+      source: "scaffold"
+    }
+  ];
+}
+
+function isActiveFinding(finding) {
+  return finding.status !== "Closed" && finding.status !== "Not Applicable";
+}
+
+function normalizeNullableString(value) {
+  const normalized = String(value ?? "").trim();
+  return normalized ? normalized : null;
+}
+
+function buildDefaultScorecard(review) {
+  return {
+    overallScore: review.overallScore,
+    recommendation: review.recommendation,
+    confidence: "Medium",
+    criticalBlockers: 0,
+    domainScores: [
+      {
+        domain: "Requirements Coverage",
+        weight: 20,
+        score: 16,
+        reason: "Baseline requirement mapping scaffold.",
+        linkedFindings: []
+      },
+      {
+        domain: "Security",
+        weight: 20,
+        score: 12,
+        reason: "Security rationale scaffold.",
+        linkedFindings: [`${review.reviewId}-find-001`]
+      },
+      {
+        domain: "Operational Excellence",
+        weight: 20,
+        score: 16,
+        reason: "Operational ownership still needs explicit assignment.",
+        linkedFindings: [`${review.reviewId}-find-002`]
+      },
+      {
+        domain: "Reliability And Resilience",
+        weight: 20,
+        score: 18,
+        reason: "No critical reliability blockers have been identified in the current scaffold.",
+        linkedFindings: []
+      },
+      {
+        domain: "Documentation Completeness",
+        weight: 20,
+        score: 16,
+        reason: "The review package is usable, but still has evidence and clarity gaps to close.",
+        linkedFindings: []
+      }
+    ],
+    evidenceReadinessState: review.evidenceReadinessState,
+    reviewerOverride: null
+  };
+}
+
+function buildDefaultActions() {
+  return [];
+}
+
+function toSummaryEntity(review) {
+  const {
+    missingRequiredItems,
+    missingRecommendedItems,
+    ...persistableReview
+  } = review;
+
+  return {
+    partitionKey: getPartitionKey(review.reviewId),
+    rowKey: getRowKey(SUMMARY_ROW_KEY, review.createdByUserId),
+    ...persistableReview,
+    assignedReviewer: review.assignedReviewer ?? "",
+    finalDecision: review.finalDecision ?? "",
+    targetReviewDate: review.targetReviewDate ?? "",
+    notes: review.notes ?? "",
+    missingRequiredItemsJson: JSON.stringify(missingRequiredItems ?? []),
+    missingRecommendedItemsJson: JSON.stringify(missingRecommendedItems ?? [])
+  };
+}
+
+function toFilesEntity(reviewId, userId, files) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(FILES_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    filesJson: JSON.stringify(files),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toExtractionEntity(reviewId, userId, extraction) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(EXTRACTION_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    extractionJson: JSON.stringify(extraction),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toRequirementsEntity(reviewId, userId, requirements) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(REQUIREMENTS_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    requirementsJson: JSON.stringify(requirements),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toEvidenceEntity(reviewId, userId, evidence) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(EVIDENCE_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    evidenceJson: JSON.stringify(evidence),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toExportsEntity(reviewId, userId, exportsList) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(EXPORTS_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    exportsJson: JSON.stringify(exportsList),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toFindingsEntity(reviewId, userId, findings) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(FINDINGS_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    findingsJson: JSON.stringify(findings),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toScorecardEntity(reviewId, userId, scorecard) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(SCORECARD_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    overallScore: scorecard.overallScore ?? null,
+    recommendation: scorecard.recommendation,
+    confidence: scorecard.confidence,
+    criticalBlockers: scorecard.criticalBlockers ?? 0,
+    domainScoresJson: JSON.stringify(scorecard.domainScores ?? []),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function toDecisionEntity(reviewId, userId, decision) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(DECISION_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    aiRecommendation: decision.aiRecommendation,
+    reviewerDecision: decision.reviewerDecision,
+    rationale: decision.rationale,
+    reviewerName: decision.reviewerName ?? null,
+    reviewerRole: decision.reviewerRole ?? null,
+    recordedAt: decision.recordedAt
+  };
+}
+
+function toActionsEntity(reviewId, userId, actions) {
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(ACTIONS_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    actionsJson: JSON.stringify(actions),
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function fromSummaryEntity(entity) {
+  if (!entity) {
+    return null;
+  }
+
+  return {
+    reviewId: entity.reviewId,
+    projectName: entity.projectName,
+    customerName: entity.customerName,
+    architectName: entity.architectName || null,
+    createdBy: entity.createdBy || null,
+    createdByUserId: entity.createdByUserId,
+    createdAt: entity.createdAt,
+    workflowState: entity.workflowState,
+    evidenceReadinessState: entity.evidenceReadinessState,
+    assignedReviewer: entity.assignedReviewer || null,
+    targetReviewDate: entity.targetReviewDate || null,
+    notes: entity.notes || null,
+    overallScore: entity.overallScore != null ? Number(entity.overallScore) : null,
+    recommendation: entity.recommendation,
+    finalDecision: entity.finalDecision || null,
+    requiredEvidencePresent: Boolean(entity.requiredEvidencePresent),
+    recommendedEvidenceCoverage: Number(entity.recommendedEvidenceCoverage ?? 0),
+    missingRequiredItems: entity.missingRequiredItemsJson ? JSON.parse(entity.missingRequiredItemsJson) : [],
+    missingRecommendedItems: entity.missingRecommendedItemsJson
+      ? JSON.parse(entity.missingRecommendedItemsJson)
+      : [],
+    readinessOutcome: entity.readinessOutcome || entity.evidenceReadinessState,
+    readinessNotes: entity.readinessNotes || null,
+    documentCount: Number(entity.documentCount ?? 0),
+    lastUpdated: entity.lastUpdated
+  };
+}
+
+function fromFilesEntity(entity) {
+  if (!entity?.filesJson) {
+    return [];
+  }
+
+  return JSON.parse(entity.filesJson);
+}
+
+function fromFindingsEntity(entity, reviewId) {
+  if (!entity?.findingsJson) {
+    return buildDefaultFindings({ reviewId, projectName: "Sample ARB Review" });
+  }
+
+  const raw = JSON.parse(entity.findingsJson);
+  // Normalize findings to ensure all required array/object fields exist
+  return (Array.isArray(raw) ? raw : []).map((f) => ({
+    ...f,
+    missingEvidence: Array.isArray(f.missingEvidence) ? f.missingEvidence : [],
+    references: Array.isArray(f.references) ? f.references : [],
+    evidenceFound: Array.isArray(f.evidenceFound) ? f.evidenceFound : [],
+    reviewId: f.reviewId ?? reviewId
+  }));
+}
+
+function fromScorecardEntity(entity, review) {
+  if (!entity) {
+    return buildDefaultScorecard(review);
+  }
+
+  return {
+    overallScore: entity.overallScore != null ? Number(entity.overallScore) : (review.overallScore ?? null),
+    recommendation: entity.recommendation || review.recommendation,
+    confidence: entity.confidence || "Medium",
+    criticalBlockers: Number(entity.criticalBlockers ?? 0),
+    domainScores: entity.domainScoresJson ? JSON.parse(entity.domainScoresJson) : [],
+    evidenceReadinessState: entity.evidenceReadinessState || review.evidenceReadinessState,
+    reviewerOverride: entity.reviewerOverrideJson ? JSON.parse(entity.reviewerOverrideJson) : null,
+    reviewSummary: entity.reviewSummary || null,
+    strengths: entity.strengthsJson ? JSON.parse(entity.strengthsJson) : [],
+    missingEvidence: entity.missingEvidenceJson ? JSON.parse(entity.missingEvidenceJson) : [],
+    criticalBlockersList: entity.criticalBlockersJson ? JSON.parse(entity.criticalBlockersJson) : [],
+    nextActions: entity.nextActionsJson ? JSON.parse(entity.nextActionsJson) : []
+  };
+}
+
+function fromActionsEntity(entity) {
+  if (!entity?.actionsJson) {
+    return buildDefaultActions();
+  }
+
+  return JSON.parse(entity.actionsJson);
+}
+
+function fromExtractionEntity(entity, review) {
+  if (!entity?.extractionJson) {
+    return buildDefaultExtractionStatus(review);
+  }
+
+  const extraction = JSON.parse(entity.extractionJson);
+
+  if (typeof extraction.extractionConfidencePercent !== "number") {
+    const fileStatuses = Array.isArray(extraction.fileStatuses) ? extraction.fileStatuses : [];
+    extraction.extractionConfidencePercent = calculateExtractionConfidencePercent({
+      files: fileStatuses,
+      requirements: [],
+      evidence: [],
+      readiness: {
+        requiredEvidencePresent: review.requiredEvidencePresent,
+        recommendedEvidenceCoverage: review.recommendedEvidenceCoverage
+      },
+      extractionErrors: extraction.extractionErrors
+    });
+  }
+
+  return extraction;
+}
+
+function fromRequirementsEntity(entity) {
+  if (!entity?.requirementsJson) {
+    return buildDefaultRequirements();
+  }
+
+  return JSON.parse(entity.requirementsJson);
+}
+
+function fromEvidenceEntity(entity) {
+  if (!entity?.evidenceJson) {
+    return buildDefaultEvidence();
+  }
+
+  return JSON.parse(entity.evidenceJson);
+}
+
+function fromExportsEntity(entity) {
+  if (!entity?.exportsJson) {
+    return buildDefaultExports();
+  }
+
+  return JSON.parse(entity.exportsJson);
+}
+
+function buildActionId(reviewId, actions) {
+  return `${reviewId}-action-${String(actions.length + 1).padStart(3, "0")}`;
+}
+
+function calculateDomainScore(domain, weight, findings, review) {
+  const linkedFindings = findings.filter(
+    (finding) => finding.domain === domain && isActiveFinding(finding)
+  );
+
+  if (domain === "Requirements Coverage") {
+    return {
+      domain,
+      weight,
+      score: review.evidenceReadinessState === "Ready for Review" ? 18 : 16,
+      reason:
+        review.evidenceReadinessState === "Ready for Review"
+          ? "Evidence is ready for review and requirement coverage is broadly documented."
+          : "Most explicit requirements were mapped, but some evidence still needs clarification.",
+      linkedFindings: linkedFindings.map((finding) => finding.findingId)
+    };
+  }
+
+  if (linkedFindings.length === 0) {
+    return {
+      domain,
+      weight,
+      score: 16,
+      reason: `No active ${domain.toLowerCase()} blockers are currently open in this scaffold.`,
+      linkedFindings: []
+    };
+  }
+
+  const penalty = linkedFindings.reduce((total, finding) => {
+    if (finding.severity === "Critical") {
+      return total + 8;
+    }
+
+    if (finding.severity === "High") {
+      return total + 6;
+    }
+
+    if (finding.severity === "Medium") {
+      return total + 4;
+    }
+
+    return total + 2;
+  }, 0);
+
+  const hasCriticalBlocker = linkedFindings.some((f) => f.criticalBlocker && isActiveFinding(f));
+  const minScore = hasCriticalBlocker ? 0 : Math.round(weight * 0.1);
+
+  return {
+    domain,
+    weight,
+    score: Math.max(minScore, weight - penalty),
+    reason: `${linkedFindings.length} active finding${linkedFindings.length === 1 ? "" : "s"} currently influence this domain.`,
+    linkedFindings: linkedFindings.map((finding) => finding.findingId)
+  };
+}
+
+function buildDerivedScorecard(review, findings, decision) {
+  const domainDefinitions = [
+    ["Requirements Coverage", 20],
+    ["Security", 20],
+    ["Operational Excellence", 20],
+    ["Reliability And Resilience", 20],
+    ["Documentation Completeness", 20]
+  ];
+  const domainScores = domainDefinitions.map(([domain, weight]) =>
+    calculateDomainScore(domain, weight, findings, review)
+  );
+  const overallScore = domainScores.reduce((total, domainScore) => total + domainScore.score, 0);
+  const criticalBlockers = findings.filter(
+    (finding) => finding.criticalBlocker && isActiveFinding(finding)
+  ).length;
+
+  let recommendation = "Needs Revision";
+  let confidence = "Medium";
+
+  const readiness = review.evidenceReadinessState;
+  if (readiness === "Insufficient Evidence" || overallScore < 55) {
+    recommendation = "Rejected";
+    confidence = "Low";
+  } else if (criticalBlockers > 0 || overallScore < 70) {
+    recommendation = "Needs Revision";
+    confidence = "Medium";
+  } else if (overallScore >= 85 && (readiness === "Ready for Review" || readiness === "Ready with Gaps")) {
+    recommendation = "Approved";
+    confidence = readiness === "Ready for Review" ? "High" : "Medium";
+  } else if (overallScore >= 70 && (readiness === "Ready for Review" || readiness === "Ready with Gaps")) {
+    recommendation = "Needs Revision";
+    confidence = "Medium";
+  }
+
+  return {
+    reviewId: review.reviewId,
+    overallScore,
+    recommendation,
+    confidence,
+    criticalBlockers,
+    evidenceReadinessState: review.evidenceReadinessState,
+    domainScores,
+    reviewerOverride: decision
+      ? {
+          reviewerName: review.assignedReviewer || review.createdBy || review.createdByUserId,
+          overrideDecision: decision.reviewerDecision,
+          overrideRationale: decision.rationale,
+          overriddenAt: decision.recordedAt
+        }
+      : null
+  };
+}
+
+async function getEntity(client, reviewId, rowKey) {
+  try {
+    return await client.getEntity(getPartitionKey(reviewId), rowKey);
+  } catch (error) {
+    if (error?.statusCode === 404) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+async function getOwnedSummaryEntity(client, principal, reviewId) {
+  const entity = await getEntity(client, reviewId, getRowKey(SUMMARY_ROW_KEY, principal.userId));
+
+  if (!entity) {
+    return null;
+  }
+
+  return entity;
+}
+
+async function seedDemoReview(client, principal, reviewId) {
+  const review = buildDefaultReview(reviewId, principal, {});
+  const findings = buildDefaultFindings(review);
+  const scorecard = buildDefaultScorecard(review);
+  const actions = buildDefaultActions();
+  const extraction = buildDefaultExtractionStatus(review);
+
+  await client.upsertEntity(toSummaryEntity(review), "Replace");
+  await client.upsertEntity(toFindingsEntity(reviewId, principal.userId, findings), "Replace");
+  await client.upsertEntity(toScorecardEntity(reviewId, principal.userId, scorecard), "Replace");
+  await client.upsertEntity(toActionsEntity(reviewId, principal.userId, actions), "Replace");
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, []), "Replace");
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(toRequirementsEntity(reviewId, principal.userId, []), "Replace");
+  await client.upsertEntity(toEvidenceEntity(reviewId, principal.userId, []), "Replace");
+  await client.upsertEntity(toExportsEntity(reviewId, principal.userId, []), "Replace");
+
+  return review;
+}
+
+async function listArbReviews(principal, options = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const reviews = [];
+  const targetRowKey = getRowKey(SUMMARY_ROW_KEY, principal.userId);
+
+  for await (const entity of client.listEntities({
+    queryOptions: { filter: `RowKey eq '${targetRowKey}'` }
+  })) {
+    reviews.push(fromSummaryEntity(entity));
+  }
+
+  reviews.sort((left, right) => String(right.lastUpdated ?? "").localeCompare(String(left.lastUpdated ?? "")));
+
+  const limit = options.limit ?? 50;
+  const offset = options.offset ?? 0;
+  const total = reviews.length;
+  const page = reviews.slice(offset, offset + limit);
+
+  return {
+    reviews: page,
+    total,
+    limit,
+    offset,
+    hasMore: offset + limit < total
+  };
+}
+
+async function createArbReview(principal, input = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const baseId = input.reviewId || input.projectCode || input.projectName || "demo-review";
+  let reviewId = input.projectCode
+    ? normalizeReviewId(`arb-${baseId}`, "demo-review")
+    : normalizeReviewId(baseId, "demo-review");
+
+  // Auto-resolve name collision: append a short timestamp suffix so the upload
+  // always succeeds rather than showing "Unable to create the ARB review."
+  const existing = await getEntity(client, reviewId, getRowKey(SUMMARY_ROW_KEY, principal.userId));
+  if (existing) {
+    const suffix = Date.now().toString(36); // e.g. "lp5xtk"
+    reviewId = normalizeReviewId(`${reviewId}-${suffix}`, "demo-review");
+  }
+
+  const review = buildDefaultReview(reviewId, principal, input);
+  const findings = buildDefaultFindings(review);
+  const scorecard = buildDefaultScorecard(review);
+  const extraction = buildDefaultExtractionStatus(review);
+
+  await client.upsertEntity(toSummaryEntity(review), "Replace");
+  await client.upsertEntity(toFindingsEntity(reviewId, principal.userId, findings), "Replace");
+  await client.upsertEntity(toScorecardEntity(reviewId, principal.userId, scorecard), "Replace");
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, []), "Replace");
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(toRequirementsEntity(reviewId, principal.userId, []), "Replace");
+  await client.upsertEntity(toEvidenceEntity(reviewId, principal.userId, []), "Replace");
+  await client.upsertEntity(toExportsEntity(reviewId, principal.userId, []), "Replace");
+
+  return review;
+}
+
+async function deleteArbReview(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    throw createHttpError(404, `ARB review ${reviewId} was not found or you do not have permission to delete it.`);
+  }
+
+  // Delete all row keys for this review owned by this user
+  const rowKeys = [
+    SUMMARY_ROW_KEY,
+    FINDINGS_ROW_KEY,
+    SCORECARD_ROW_KEY,
+    DECISION_ROW_KEY,
+    ACTIONS_ROW_KEY,
+    FILES_ROW_KEY,
+    EXTRACTION_ROW_KEY,
+    REQUIREMENTS_ROW_KEY,
+    EVIDENCE_ROW_KEY,
+    EXPORTS_ROW_KEY
+  ];
+
+  const partitionKey = getPartitionKey(reviewId);
+  await Promise.all(
+    rowKeys.map(async (baseKey) => {
+      const rowKey = getRowKey(baseKey, principal.userId);
+      try {
+        await client.deleteEntity(partitionKey, rowKey);
+      } catch (error) {
+        // 404 means entity didn't exist — safe to ignore
+        if (error?.statusCode !== 404) throw error;
+      }
+    })
+  );
+
+  return { deleted: true, reviewId };
+}
+
+async function getArbFiles(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbFiles(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const filesEntity = await getEntity(client, reviewId, getRowKey(FILES_ROW_KEY, principal.userId));
+  return fromFilesEntity(filesEntity);
+}
+
+async function uploadArbFiles(principal, reviewId, filesInput = []) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return uploadArbFiles(principal, reviewId, filesInput);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const MAX_FILES_PER_REVIEW = 30;
+  const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;  // 50 MB per file
+  const MAX_TOTAL_SIZE_BYTES = 200 * 1024 * 1024; // 200 MB per review
+
+  const files = Array.isArray(filesInput) ? filesInput : [];
+
+  if (files.length === 0) {
+    throw createHttpError(400, "At least one upload file is required.");
+  }
+
+  const existingFilesEntity = await getEntity(client, reviewId, getRowKey(FILES_ROW_KEY, principal.userId));
+  const existingFiles = fromFilesEntity(existingFilesEntity);
+
+  if (existingFiles.length + files.length > MAX_FILES_PER_REVIEW) {
+    throw createHttpError(400, `Upload limit reached. A review may contain at most ${MAX_FILES_PER_REVIEW} files.`);
+  }
+
+  const existingTotalBytes = existingFiles.reduce((sum, f) => sum + (f.sizeBytes ?? 0), 0);
+  const incomingTotalBytes = files.reduce((sum, f) => sum + (Buffer.isBuffer(f.contentBuffer) ? f.contentBuffer.byteLength : 0), 0);
+
+  if (existingTotalBytes + incomingTotalBytes > MAX_TOTAL_SIZE_BYTES) {
+    throw createHttpError(400, `Total upload size would exceed the ${MAX_TOTAL_SIZE_BYTES / (1024 * 1024)} MB review limit.`);
+  }
+
+  const inputContainer = await getContainerClient(ARB_INPUT_CONTAINER_NAME);
+  const now = new Date().toISOString();
+  const persistedFiles = [];
+
+  for (const file of files) {
+    const fileName = sanitizeFilename(file.fileName);
+
+    if (!isSupportedUpload(fileName)) {
+      throw createHttpError(400, `Unsupported file type for ${fileName}.`);
+    }
+
+    const contentBuffer = Buffer.isBuffer(file.contentBuffer)
+      ? file.contentBuffer
+      : Buffer.from(file.contentBuffer || []);
+
+    if (contentBuffer.byteLength > MAX_FILE_SIZE_BYTES) {
+      throw createHttpError(400, `File ${fileName} exceeds the ${MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB per-file limit.`);
+    }
+
+    if (contentBuffer.byteLength === 0) {
+      throw createHttpError(400, `File ${fileName} is empty and cannot be uploaded.`);
+    }
+    const contentHash = `sha256:${crypto.createHash("sha256").update(contentBuffer).digest("hex")}`;
+    const logicalCategory = normalizeLogicalCategory(file.logicalCategory, inferLogicalCategory(fileName));
+
+    if (
+      existingFiles.some(
+        (existing) => existing.fileName === fileName && existing.contentHash === contentHash
+      )
+    ) {
+      continue;
+    }
+
+    const fileId = buildFileId(reviewId, fileName, contentHash.replace(/^sha256:/, ""));
+    const blobPath = buildBlobPath(principal.userId, reviewId, fileName);
+    const contentType = file.contentType || "application/octet-stream";
+
+    await uploadBinaryBlob(inputContainer, blobPath, contentBuffer, contentType);
+
+    persistedFiles.push({
+      fileId,
+      reviewId,
+      fileName,
+      fileType: getFileExtension(fileName).replace(/^\./, "") || "bin",
+      logicalCategory,
+      blobPath,
+      uploadedBy: principal.userDetails || principal.userId,
+      uploadedAt: now,
+      contentHash,
+      extractionStatus: (supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)) ? "Pending" : "Limited Evidence",
+      extractionError: null,
+      sourceRole: normalizeNullableString(file.sourceRole) || inferSourceRole(logicalCategory),
+      sizeBytes: contentBuffer.byteLength,
+      contentType,
+      supportedTextExtraction: supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)
+    });
+  }
+
+  const nextFiles = [...existingFiles, ...persistedFiles];
+  const readiness = buildReadinessFromFiles(nextFiles);
+  const nextEvidenceState =
+    readiness.readinessOutcome === "Ready for Review"
+      ? "Ready for Review"
+      : readiness.readinessOutcome === "Insufficient Evidence"
+        ? "Insufficient Evidence"
+        : "Ready with Gaps";
+
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, nextFiles), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: nextFiles.length > 0 ? "Evidence Ready" : "Draft",
+      evidenceReadinessState: nextEvidenceState,
+      requiredEvidencePresent: readiness.requiredEvidencePresent,
+      recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
+      readinessOutcome: readiness.readinessOutcome,
+      readinessNotes: readiness.readinessNotes,
+      missingRequiredItemsJson: JSON.stringify(readiness.missingRequiredItems),
+      missingRecommendedItemsJson: JSON.stringify(readiness.missingRecommendedItems),
+      documentCount: nextFiles.length,
+      lastUpdated: now
+    },
+    "Merge"
+  );
+
+  return {
+    files: nextFiles,
+    addedCount: persistedFiles.length,
+    evidenceReadinessState: nextEvidenceState,
+    readiness
+  };
+}
+
+async function deleteArbFile(principal, reviewId, fileId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const filesEntity = await getEntity(client, reviewId, getRowKey(FILES_ROW_KEY, principal.userId));
+  const existingFiles = fromFilesEntity(filesEntity);
+  const fileToDelete = existingFiles.find((f) => f.fileId === fileId);
+
+  if (!fileToDelete) {
+    throw createHttpError(404, `File ${fileId} was not found in review ${reviewId}.`);
+  }
+
+  const nextFiles = existingFiles.filter((f) => f.fileId !== fileId);
+
+  if (fileToDelete.blobPath) {
+    const inputContainer = await getContainerClient(ARB_INPUT_CONTAINER_NAME);
+    const { deleteBlobIfExists } = require("./storage");
+    await deleteBlobIfExists(inputContainer, fileToDelete.blobPath);
+  }
+
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, nextFiles), "Replace");
+
+  const readiness = buildReadinessFromFiles(nextFiles);
+  const nextEvidenceState =
+    readiness.readinessOutcome === "Ready for Review"
+      ? "Ready for Review"
+      : readiness.readinessOutcome === "Insufficient Evidence"
+        ? "Insufficient Evidence"
+        : "Ready with Gaps";
+
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: nextFiles.length > 0 ? "Evidence Ready" : "Draft",
+      evidenceReadinessState: nextEvidenceState,
+    },
+    "Merge"
+  );
+
+  return { deletedFileId: fileId, remainingCount: nextFiles.length };
+}
+
+async function startArbExtraction(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const files = await getArbFiles(principal, reviewId);
+
+  if (files.length === 0) {
+    throw createHttpError(400, "Upload files before starting extraction.");
+  }
+
+  // STRIDE REC-07: reserve per-user hourly DI quota before the extraction loop.
+  // Only counts files that will actually hit Document Intelligence.
+  if (getDocumentIntelligenceConfiguration().configured) {
+    const diEligibleCount = files.filter(
+      (f) => supportsDocumentIntelligenceExtraction(f.fileName)
+    ).length;
+    await checkAndReserveQuota(principal, diEligibleCount);
+  }
+
+  const inputContainer = await getContainerClient(ARB_INPUT_CONTAINER_NAME);
+  const jobId = `${reviewId}-extract-${Date.now()}`;
+  const startedAt = new Date().toISOString();
+  const nextFiles = [];
+  const extractionErrors = [];
+  const fileTexts = new Map();
+  let searchIndexed = false;
+
+  if (getSearchConfiguration().configured) {
+    try {
+      await ensureArbSearchIndex();
+      searchIndexed = true;
+    } catch {
+      // Search indexing is best-effort; extraction continues without it
+    }
+  }
+
+  const visionAvailable = getFoundryConfiguration().configured;
+
+  for (const file of files) {
+    const isSpreadsheet = supportsSpreadsheetExtraction(file.fileName);
+    const isImage = supportsImageExtraction(file.fileName);
+
+    // ── Spreadsheet extraction via SheetJS ──────────────────────────────────
+    if (isSpreadsheet) {
+      try {
+        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+
+        if (!buffer || buffer.length === 0) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "Spreadsheet file could not be read from storage."
+          });
+          extractionErrors.push(`${file.fileName}: empty blob.`);
+          continue;
+        }
+
+        const text = extractSpreadsheetText(buffer);
+
+        if (!text || !text.trim()) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "No data rows could be extracted from the spreadsheet."
+          });
+          extractionErrors.push(`${file.fileName}: no data rows found.`);
+          continue;
+        }
+
+        fileTexts.set(file.fileId, text);
+        nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
+
+        if (searchIndexed) {
+          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
+        nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
+        extractionErrors.push(`${file.fileName}: ${message}`);
+      }
+      continue;
+    }
+
+    // ── Image description via multimodal vision ──────────────────────────────
+    if (isImage) {
+      if (!visionAvailable) {
+        nextFiles.push({
+          ...file,
+          extractionStatus: "Limited Evidence",
+          extractionError: "Vision analysis requires FOUNDRY_PROJECT_ENDPOINT to be configured."
+        });
+        continue;
+      }
+
+      try {
+        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+
+        if (!buffer || buffer.length === 0) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "Image file could not be read from storage."
+          });
+          extractionErrors.push(`${file.fileName}: empty blob.`);
+          continue;
+        }
+
+        const description = await describeImageForReview(buffer, file.fileName, getFileExtension(file.fileName));
+
+        if (!description || !description.trim()) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "Vision model returned no description for the image."
+          });
+          extractionErrors.push(`${file.fileName}: vision returned empty response.`);
+          continue;
+        }
+
+        const text = `[Architecture diagram: ${file.fileName}]\n\n${description}`;
+        fileTexts.set(file.fileId, text);
+        nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
+
+        if (searchIndexed) {
+          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown image analysis error.";
+        nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
+        extractionErrors.push(`${file.fileName}: ${message}`);
+      }
+      continue;
+    }
+
+    // ── Azure AI Document Intelligence (PDF, DOCX, PPTX, DOC, PPT) ─────────
+    // Fallback: when DI is unavailable or returns no text, Azure Vision Service
+    // OCR is attempted for PDF and image formats before marking Limited Evidence.
+    if (supportsDocumentIntelligenceExtraction(file.fileName)) {
+      const diConfig = getDocumentIntelligenceConfiguration();
+      const visionConfig = getVisionServiceConfiguration();
+      const canUseVisionFallback = visionConfig.configured && supportsVisionExtraction(file.fileName);
+
+      if (!diConfig.configured && !canUseVisionFallback) {
+        nextFiles.push({
+          ...file,
+          extractionStatus: "Limited Evidence",
+          extractionError:
+            "Azure AI Document Intelligence is not configured (AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT missing). " +
+            "Text extraction is unavailable for this file format."
+        });
+        continue;
+      }
+
+      try {
+        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+
+        if (!buffer || buffer.length === 0) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "Document file could not be read from storage."
+          });
+          extractionErrors.push(`${file.fileName}: empty blob.`);
+          continue;
+        }
+
+        let text = null;
+        let extractionSource = "Document Intelligence";
+
+        if (diConfig.configured) {
+          text = await extractDocumentText(buffer, file.contentType, file.fileName);
+        }
+
+        // Vision Service OCR fallback — used when DI is not configured or returned no text.
+        // Only applies to formats Vision Read API accepts (PDF, JPEG, PNG, TIFF, BMP, GIF).
+        if ((!text || !text.trim()) && canUseVisionFallback) {
+          text = await extractTextWithVision(buffer, file.contentType, file.fileName);
+          extractionSource = "Azure Vision Service (OCR fallback)";
+        }
+
+        if (!text || !text.trim()) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: diConfig.configured
+              ? "Azure AI Document Intelligence returned no text for this document."
+              : "Document Intelligence is not configured and Azure Vision Service OCR returned no text."
+          });
+          extractionErrors.push(`${file.fileName}: ${extractionSource} returned no text.`);
+          continue;
+        }
+
+        fileTexts.set(file.fileId, text);
+        nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
+
+        if (searchIndexed) {
+          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown Document Intelligence error.";
+        nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
+        extractionErrors.push(`${file.fileName}: ${message}`);
+      }
+      continue;
+    }
+
+    // ── Plain-text extraction (existing path) ────────────────────────────────
+    if (!file.supportedTextExtraction) {
+      nextFiles.push({
+        ...file,
+        extractionStatus: "Limited Evidence",
+        extractionError:
+          file.extractionError ||
+          "File is stored successfully but needs a richer text extraction worker for this format."
+      });
+      continue;
+    }
+
+    try {
+      const text = await readTextBlob(inputContainer, file.blobPath);
+
+      if (!text || !text.trim()) {
+        nextFiles.push({
+          ...file,
+          extractionStatus: "Failed",
+          extractionError: "No readable text could be extracted from the uploaded file."
+        });
+        extractionErrors.push(`${file.fileName}: no readable text could be extracted.`);
+        continue;
+      }
+
+      fileTexts.set(file.fileId, text);
+      nextFiles.push({
+        ...file,
+        extractionStatus: "Completed",
+        extractionError: null
+      });
+
+      // Index text chunks into Azure AI Search (best-effort)
+      if (searchIndexed) {
+        indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown extraction error.";
+      nextFiles.push({
+        ...file,
+        extractionStatus: "Failed",
+        extractionError: message
+      });
+      extractionErrors.push(`${file.fileName}: ${message}`);
+    }
+  }
+
+  const derived = deriveRequirementsAndEvidence(review, nextFiles, fileTexts);
+  const completedAt = new Date().toISOString();
+  const readiness = buildReadinessFromFiles(nextFiles);
+  const evidenceReadinessState =
+    derived.requirements.length > 0 && readiness.requiredEvidencePresent
+      ? readiness.missingRecommendedItems.length === 0
+        ? "Ready for Review"
+        : "Ready with Gaps"
+      : "Insufficient Evidence";
+  const extractionState = extractionErrors.length > 0 ? "Completed with Issues" : "Completed";
+  const extractionConfidencePercent = calculateExtractionConfidencePercent({
+    files: nextFiles,
+    requirements: derived.requirements,
+    evidence: derived.evidence,
+    readiness,
+    extractionErrors
+  });
+  const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
+  const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
+  const exportsEntity = await getEntity(client, reviewId, getRowKey(EXPORTS_ROW_KEY, principal.userId));
+  const findings = fromFindingsEntity(findingsEntity, reviewId);
+  const actions = fromActionsEntity(actionsEntity);
+  const nextReview = {
+    ...review,
+    workflowState: "Review In Progress",
+    evidenceReadinessState,
+    requiredEvidencePresent: readiness.requiredEvidencePresent,
+    recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
+    missingRequiredItems: readiness.missingRequiredItems,
+    missingRecommendedItems: readiness.missingRecommendedItems,
+    readinessOutcome: readiness.readinessOutcome,
+    readinessNotes: readiness.readinessNotes,
+    documentCount: nextFiles.length,
+    lastUpdated: completedAt
+  };
+  const scorecard = buildDerivedScorecard(nextReview, findings, null);
+  const extraction = {
+    reviewId,
+    jobId,
+    state: extractionState,
+    extractionConfidencePercent,
+    completedSteps: [
+      "files-registered",
+      "blob-read",
+      "requirements-normalized",
+      "evidence-normalized",
+      ...(searchIndexed ? ["search-indexed"] : [])
+    ],
+    failedSteps: extractionErrors.length > 0 ? ["text-extraction"] : [],
+    evidenceReadinessState,
+    extractionErrors,
+    lastStartedAt: startedAt,
+    lastCompletedAt: completedAt,
+    fileStatuses: nextFiles.map((file) => ({
+      fileId: file.fileId,
+      fileName: file.fileName,
+      extractionStatus: file.extractionStatus,
+      extractionError: file.extractionError
+    }))
+  };
+
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, nextFiles), "Replace");
+  await client.upsertEntity(toRequirementsEntity(reviewId, principal.userId, derived.requirements), "Replace");
+  await client.upsertEntity(toEvidenceEntity(reviewId, principal.userId, derived.evidence), "Replace");
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(
+    {
+      ...toScorecardEntity(reviewId, principal.userId, scorecard),
+      evidenceReadinessState: scorecard.evidenceReadinessState,
+      reviewerOverrideJson: JSON.stringify(scorecard.reviewerOverride)
+    },
+    "Replace"
+  );
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: "Review In Progress",
+      evidenceReadinessState,
+      requiredEvidencePresent: readiness.requiredEvidencePresent,
+      recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
+      readinessOutcome: readiness.readinessOutcome,
+      readinessNotes: readiness.readinessNotes,
+      missingRequiredItemsJson: JSON.stringify(readiness.missingRequiredItems),
+      missingRecommendedItemsJson: JSON.stringify(readiness.missingRecommendedItems),
+      documentCount: nextFiles.length,
+      lastUpdated: completedAt
+    },
+    "Merge"
+  );
+
+  const syncedOutputs = await syncArbReviewedOutputs({
+    principal,
+    review: nextReview,
+    files: nextFiles,
+    requirements: derived.requirements,
+    evidence: derived.evidence,
+    findings,
+    scorecard,
+    actions,
+    formats: ["markdown", "csv", "html"],
+    generatedAt: completedAt,
+    existingExports: fromExportsEntity(exportsEntity)
+  });
+
+  await client.upsertEntity(
+    toExportsEntity(reviewId, principal.userId, syncedOutputs.exportsList),
+    "Replace"
+  );
+
+  return extraction;
+}
+
+async function getArbExtractionStatus(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const extractionEntity = await getEntity(client, reviewId, getRowKey(EXTRACTION_ROW_KEY, principal.userId));
+  return fromExtractionEntity(extractionEntity, review);
+}
+
+async function getArbRequirements(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbRequirements(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const requirementsEntity = await getEntity(
+    client,
+    reviewId,
+    getRowKey(REQUIREMENTS_ROW_KEY, principal.userId)
+  );
+  return fromRequirementsEntity(requirementsEntity);
+}
+
+async function getArbEvidence(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbEvidence(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const evidenceEntity = await getEntity(client, reviewId, getRowKey(EVIDENCE_ROW_KEY, principal.userId));
+  return fromEvidenceEntity(evidenceEntity);
+}
+
+async function listArbExports(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return listArbExports(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const exportsEntity = await getEntity(client, reviewId, getRowKey(EXPORTS_ROW_KEY, principal.userId));
+  return fromExportsEntity(exportsEntity);
+}
+
+async function downloadArbExport(principal, reviewId, exportId) {
+  const exportsList = await listArbExports(principal, reviewId);
+  const artifact = exportsList.find((candidate) => candidate.exportId === exportId);
+
+  if (!artifact) {
+    throw createHttpError(404, `ARB export ${exportId} was not found.`);
+  }
+
+  const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
+  const body = await readTextBlob(outputContainer, artifact.blobPath);
+
+  if (body == null) {
+    throw createHttpError(404, `ARB export ${exportId} is missing from blob storage.`);
+  }
+
+  return {
+    ...artifact,
+    body
+  };
+}
+
+async function createArbExport(principal, reviewId, input = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const files = await getArbFiles(principal, reviewId);
+  const requirements = await getArbRequirements(principal, reviewId);
+  const evidence = await getArbEvidence(principal, reviewId);
+  const findings = await getArbFindings(principal, reviewId);
+  const actions = await getArbActions(principal, reviewId);
+  const scorecard = await getArbScorecard(principal, reviewId);
+  const exportsEntity = await getEntity(client, reviewId, getRowKey(EXPORTS_ROW_KEY, principal.userId));
+  const exportsList = fromExportsEntity(exportsEntity);
+  const format = normalizeExportFormat(input.format);
+  const syncedOutputs = await syncArbReviewedOutputs({
+    principal,
+    review: {
+      ...review,
+      documentCount: files.length
+    },
+    files,
+    requirements,
+    evidence,
+    findings,
+    scorecard,
+    actions,
+    formats: [format],
+    generatedAt: new Date().toISOString(),
+    existingExports: exportsList
+  });
+
+  await client.upsertEntity(toExportsEntity(reviewId, principal.userId, syncedOutputs.exportsList), "Replace");
+  return syncedOutputs.artifacts[0];
+}
+
+async function getArbReview(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  let summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity && reviewId === "demo-review") {
+    await seedDemoReview(client, principal, reviewId);
+    summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+  }
+
+  if (!summaryEntity) {
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  return fromSummaryEntity(summaryEntity);
+}
+
+async function getArbFindings(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbFindings(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
+  return fromFindingsEntity(findingsEntity, reviewId);
+}
+
+async function updateArbFinding(principal, reviewId, findingId, input = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return updateArbFinding(principal, reviewId, findingId, input);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
+  const findings = fromFindingsEntity(findingsEntity, reviewId);
+  const findingIndex = findings.findIndex((finding) => finding.findingId === findingId);
+
+  if (findingIndex === -1) {
+    throw createHttpError(404, `ARB finding ${findingId} was not found.`);
+  }
+
+  const currentFinding = findings[findingIndex];
+  const nextFinding = {
+    ...currentFinding,
+    status: normalizeNullableString(input.status) || currentFinding.status,
+    owner:
+      Object.prototype.hasOwnProperty.call(input, "owner")
+        ? normalizeNullableString(input.owner)
+        : currentFinding.owner ?? null,
+    dueDate:
+      Object.prototype.hasOwnProperty.call(input, "dueDate")
+        ? normalizeNullableString(input.dueDate)
+        : currentFinding.dueDate ?? null,
+    reviewerNote:
+      Object.prototype.hasOwnProperty.call(input, "reviewerNote")
+        ? normalizeNullableString(input.reviewerNote)
+        : currentFinding.reviewerNote ?? null,
+    criticalBlocker:
+      typeof input.criticalBlocker === "boolean"
+        ? input.criticalBlocker
+        : currentFinding.criticalBlocker
+  };
+
+  findings[findingIndex] = nextFinding;
+  const lastUpdated = new Date().toISOString();
+
+  await client.upsertEntity(toFindingsEntity(reviewId, principal.userId, findings), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      lastUpdated
+    },
+    "Merge"
+  );
+
+  return nextFinding;
+}
+
+async function getArbActions(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbActions(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
+  return fromActionsEntity(actionsEntity);
+}
+
+async function createArbAction(principal, reviewId, input = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return createArbAction(principal, reviewId, input);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const sourceFindingId = normalizeNullableString(input.sourceFindingId);
+
+  if (!sourceFindingId) {
+    throw createHttpError(400, "A sourceFindingId is required before an ARB action can be created.");
+  }
+
+  const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
+  const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
+  const findings = fromFindingsEntity(findingsEntity, reviewId);
+  const actions = fromActionsEntity(actionsEntity);
+  const sourceFinding = findings.find((finding) => finding.findingId === sourceFindingId);
+
+  if (!sourceFinding) {
+    throw createHttpError(404, `ARB finding ${sourceFindingId} was not found.`);
+  }
+
+  if (actions.some((action) => action.sourceFindingId === sourceFindingId)) {
+    throw createHttpError(409, `An ARB action already exists for finding ${sourceFindingId}.`);
+  }
+
+  const action = {
+    actionId: buildActionId(reviewId, actions),
+    reviewId,
+    sourceFindingId,
+    actionSummary:
+      normalizeNullableString(input.actionSummary) || sourceFinding.recommendation || sourceFinding.title,
+    owner:
+      normalizeNullableString(input.owner) || sourceFinding.owner || sourceFinding.suggestedOwner || null,
+    dueDate: normalizeNullableString(input.dueDate) || sourceFinding.dueDate || sourceFinding.suggestedDueDate || null,
+    severity: sourceFinding.severity,
+    status: normalizeNullableString(input.status) || "Open",
+    closureNotes: normalizeNullableString(input.closureNotes),
+    reviewerVerificationRequired:
+      typeof input.reviewerVerificationRequired === "boolean"
+        ? input.reviewerVerificationRequired
+        : Boolean(sourceFinding.criticalBlocker),
+    createdAt: new Date().toISOString()
+  };
+
+  actions.push(action);
+
+  await client.upsertEntity(toActionsEntity(reviewId, principal.userId, actions), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      lastUpdated: new Date().toISOString()
+    },
+    "Merge"
+  );
+
+  return action;
+}
+
+async function updateArbAction(principal, reviewId, actionId, input = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return updateArbAction(principal, reviewId, actionId, input);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
+  const actions = fromActionsEntity(actionsEntity);
+  const actionIndex = actions.findIndex((action) => action.actionId === actionId);
+
+  if (actionIndex === -1) {
+    throw createHttpError(404, `ARB action ${actionId} was not found.`);
+  }
+
+  const currentAction = actions[actionIndex];
+  const updatedAction = {
+    ...currentAction,
+    owner:
+      Object.prototype.hasOwnProperty.call(input, "owner")
+        ? normalizeNullableString(input.owner)
+        : currentAction.owner ?? null,
+    dueDate:
+      Object.prototype.hasOwnProperty.call(input, "dueDate")
+        ? normalizeNullableString(input.dueDate)
+        : currentAction.dueDate ?? null,
+    status: normalizeNullableString(input.status) || currentAction.status,
+    closureNotes:
+      Object.prototype.hasOwnProperty.call(input, "closureNotes")
+        ? normalizeNullableString(input.closureNotes)
+        : currentAction.closureNotes ?? null,
+    reviewerVerificationRequired:
+      typeof input.reviewerVerificationRequired === "boolean"
+        ? input.reviewerVerificationRequired
+        : currentAction.reviewerVerificationRequired
+  };
+
+  actions[actionIndex] = updatedAction;
+
+  await client.upsertEntity(toActionsEntity(reviewId, principal.userId, actions), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      lastUpdated: new Date().toISOString()
+    },
+    "Merge"
+  );
+
+  return updatedAction;
+}
+
+async function getArbScorecard(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
+  const decisionEntity = await getEntity(client, reviewId, getRowKey(DECISION_ROW_KEY, principal.userId));
+  const findings = fromFindingsEntity(findingsEntity, reviewId);
+  const decision = decisionEntity
+    ? {
+        aiRecommendation: decisionEntity.aiRecommendation,
+        reviewerDecision: decisionEntity.reviewerDecision,
+        rationale: decisionEntity.rationale,
+        recordedAt: decisionEntity.recordedAt
+      }
+    : null;
+  const derivedScorecard = buildDerivedScorecard(review, findings, decision);
+
+  await client.upsertEntity(
+    {
+      ...toScorecardEntity(reviewId, principal.userId, derivedScorecard),
+      evidenceReadinessState: derivedScorecard.evidenceReadinessState,
+      reviewerOverrideJson: JSON.stringify(derivedScorecard.reviewerOverride)
+    },
+    "Replace"
+  );
+
+  return derivedScorecard;
+}
+
+async function getArbDecision(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbDecision(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const decisionEntity = await getEntity(client, reviewId, getRowKey(DECISION_ROW_KEY, principal.userId));
+
+  if (!decisionEntity) {
+    return null;
+  }
+
+  return {
+    aiRecommendation: decisionEntity.aiRecommendation,
+    reviewerDecision: decisionEntity.reviewerDecision,
+    rationale: decisionEntity.rationale,
+    reviewerName: decisionEntity.reviewerName ?? null,
+    reviewerRole: decisionEntity.reviewerRole ?? null,
+    recordedAt: decisionEntity.recordedAt
+  };
+}
+
+async function recordArbDecision(principal, reviewId, input = {}) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return recordArbDecision(principal, reviewId, input);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const review = fromSummaryEntity(summaryEntity);
+  const recordedAt = new Date().toISOString();
+  const decision = {
+    aiRecommendation: review.recommendation,
+    reviewerDecision: String(input.finalDecision ?? "").trim() || "Needs Revision",
+    rationale:
+      String(input.rationale ?? "").trim() ||
+      "Decision recorded against the persisted ARB review.",
+    reviewerName: normalizeNullableString(input.reviewerName) || principal.userDetails || null,
+    reviewerRole: normalizeNullableString(input.reviewerRole) || null,
+    recordedAt
+  };
+
+  await client.upsertEntity(toDecisionEntity(reviewId, principal.userId, decision), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      finalDecision: decision.reviewerDecision,
+      workflowState: "Decision Recorded",
+      lastUpdated: recordedAt
+    },
+    "Merge"
+  );
+
+  return decision;
+}
+
+module.exports = {
+  buildDefaultActions,
+  buildDefaultEvidence,
+  buildDefaultExports,
+  buildDefaultFindings,
+  buildDefaultExtractionStatus,
+  buildDefaultRequirements,
+  buildDefaultReview,
+  buildDefaultScorecard,
+  createArbExport,
+  createArbAction,
+  createArbReview,
+  deleteArbReview,
+  deleteArbFile,
+  downloadArbExport,
+  getArbEvidence,
+  getArbActions,
+  getArbDecision,
+  getArbExtractionStatus,
+  listArbExports,
+  getArbFiles,
+  getArbRequirements,
+  listArbReviews,
+  getArbFindings,
+  getArbReview,
+  getArbScorecard,
+  recordArbDecision,
+  startArbExtraction,
+  syncArbReviewedOutputs,
+  uploadArbFiles,
+  updateArbAction,
+  updateArbFinding
+};
