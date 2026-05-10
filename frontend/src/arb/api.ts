@@ -552,14 +552,13 @@ export async function runArbAgentReview(reviewId: string): Promise<{
 }
 
 export async function downloadArbExport(reviewId: string, exportArtifact: ArbExportArtifact) {
-  const response = await fetch(
-    `/api/arb/reviews/${encodeURIComponent(reviewId)}/exports/${encodeURIComponent(exportArtifact.exportId)}/download`,
-    {
-      method: "GET",
-      cache: "no-store",
-      credentials: "same-origin"
-    }
-  );
+  const downloadUrl = `/api/arb/reviews/${encodeURIComponent(reviewId)}/exports/${encodeURIComponent(exportArtifact.exportId)}/download`;
+
+  const response = await fetch(downloadUrl, {
+    method: "GET",
+    cache: "no-store",
+    credentials: "same-origin"
+  });
 
   if (!response.ok) {
     let message = `Unable to download ARB reviewed output (${response.status}).`;
@@ -581,15 +580,13 @@ export async function downloadArbExport(reviewId: string, exportArtifact: ArbExp
     );
   }
 
-  const blob = await response.blob();
-  const objectUrl = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
 
-  anchor.href = objectUrl;
+  anchor.href = downloadUrl;
   anchor.download = exportArtifact.fileName;
+  anchor.rel = "noopener";
   anchor.style.display = "none";
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
-  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }

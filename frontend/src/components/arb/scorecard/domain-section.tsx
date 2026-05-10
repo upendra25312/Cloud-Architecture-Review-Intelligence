@@ -26,11 +26,26 @@ const SEVERITY_CLASS: Record<string, string> = {
   Low: styles.severityBadgeLow,
 };
 
+function getDomainReason(domainScore: ArbDomainScore, percent: number) {
+  const reason = domainScore.reason?.trim() ?? "";
+  if (!reason) return "";
+
+  const isLegacyScaffoldReason =
+    /^No active .+ blockers are currently open in this scaffold\.$/i.test(reason);
+
+  if (isLegacyScaffoldReason && percent < 100) {
+    return "No active blockers are open, but this domain remains capped below full score until positive evidence and reviewer sign-off confirm the remaining controls.";
+  }
+
+  return reason;
+}
+
 export function DomainSection({ domainScore, findings, reviewId, defaultExpanded }: DomainSectionProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   const percent = getDomainScorePercent(domainScore);
   const tone = getScoreTone(percent);
+  const reason = getDomainReason(domainScore, percent);
 
   const linkedFindingObjects = domainScore.linkedFindings
     .map((id) => findings.find((f) => f.findingId === id))
@@ -71,9 +86,9 @@ export function DomainSection({ domainScore, findings, reviewId, defaultExpanded
 
       {expanded && (
         <div className={styles.domainBody}>
-          {domainScore.reason && (
+          {reason && (
             <p style={{ margin: "0 0 8px", color: "var(--t1)", lineHeight: 1.6 }}>
-              {domainScore.reason}
+              {reason}
             </p>
           )}
 
