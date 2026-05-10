@@ -97,6 +97,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
               <p className="site-footer-brand-desc">
                 Evidence-backed Azure review guidance for internal Rackspace teams. Aligned to Microsoft Well-Architected Framework, CAF, ALZ, and Zero Trust.
               </p>
+              {/* Updated footer copy for enterprise branding */}
               <p className="site-footer-legal">© {new Date().getFullYear()} Rackspace Technology. Internal use only.</p>
             </div>
 
