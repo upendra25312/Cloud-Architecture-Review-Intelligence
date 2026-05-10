@@ -17,6 +17,13 @@ resource "azurerm_role_assignment" "deployer_kv_secrets_officer" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = data.azurerm_client_config.current.object_id
+
+  lifecycle {
+    # Bootstrap assignment: keep the original provisioning principal stable.
+    # In CI, current.object_id is the GitHub Actions OIDC principal, and
+    # replacing this assignment requires roleAssignments/delete permission.
+    ignore_changes = [principal_id]
+  }
 }
 
 # Foundry Agent ID — written here as a placeholder; real value set in Phase 2
