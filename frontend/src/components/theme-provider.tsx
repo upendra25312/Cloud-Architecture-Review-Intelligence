@@ -111,14 +111,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
             <div className="site-footer-links">
               <p className="site-footer-link-group-label">Resources</p>
-              <a href="https://github.com/upendra25312/AzureCheckLists" target="_blank" rel="noopener noreferrer" className="site-footer-link">GitHub</a>
-              <a href="https://github.com/upendra25312/AzureCheckLists/wiki" target="_blank" rel="noopener noreferrer" className="site-footer-link">Wiki</a>
-              <a href="https://github.com/upendra25312/AzureCheckLists/releases" target="_blank" rel="noopener noreferrer" className="site-footer-link">Releases</a>
+              <a href="https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence" target="_blank" rel="noopener noreferrer" className="site-footer-link">GitHub</a>
+              <a href="https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/wiki" target="_blank" rel="noopener noreferrer" className="site-footer-link">Wiki</a>
+              <a href="https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/releases" target="_blank" rel="noopener noreferrer" className="site-footer-link">Releases</a>
             </div>
 
             <div className="site-footer-links">
               <p className="site-footer-link-group-label">Trust &amp; Security</p>
-              <a href="https://github.com/upendra25312/AzureCheckLists/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer" className="site-footer-link">Security Policy</a>
+              <a href="https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer" className="site-footer-link">Security Policy</a>
               <span className="site-footer-notice">
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" style={{display:"inline",verticalAlign:"-2px",marginRight:4}}><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M6.5 4v3.5M6.5 9v.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
                 Internal Rackspace use only
