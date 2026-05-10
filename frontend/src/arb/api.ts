@@ -552,35 +552,14 @@ export async function runArbAgentReview(reviewId: string): Promise<{
 }
 
 export async function downloadArbExport(reviewId: string, exportArtifact: ArbExportArtifact) {
-  const response = await fetch(
-    `/api/arb/reviews/${reviewId}/exports/${exportArtifact.exportId}/download`,
-    {
-      method: "GET",
-      cache: "no-store"
-    }
-  );
-
-  if (!response.ok) {
-    let message = `Unable to download ARB reviewed output (${response.status}).`;
-
-    try {
-      const payload = (await response.json()) as { error?: string };
-      message = payload.error || message;
-    } catch {
-      message = `Unable to download ARB reviewed output (${response.status}).`;
-    }
-
-    throw new Error(message);
-  }
-
-  const blob = await response.blob();
-  const objectUrl = URL.createObjectURL(blob);
+  const href = `/api/arb/reviews/${encodeURIComponent(reviewId)}/exports/${encodeURIComponent(exportArtifact.exportId)}/download`;
   const anchor = document.createElement("a");
 
-  anchor.href = objectUrl;
+  anchor.href = href;
   anchor.download = exportArtifact.fileName;
+  anchor.rel = "noopener";
+  anchor.style.display = "none";
   document.body.appendChild(anchor);
   anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(objectUrl);
+  document.body.removeChild(anchor);
 }

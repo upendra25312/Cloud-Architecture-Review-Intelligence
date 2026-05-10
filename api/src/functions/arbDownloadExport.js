@@ -2,6 +2,11 @@ const { app } = require("@azure/functions");
 const { jsonResponse, requireAuthenticated, safeErrorResponse } = require("../shared/auth");
 const { downloadArbExport } = require("../shared/arb-review-store");
 
+function encodeContentDispositionFilename(fileName) {
+  const safeName = String(fileName || "arb-reviewed-output.txt").replace(/[\r\n"]/g, "_");
+  return `attachment; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`;
+}
+
 async function handleArbDownloadExport(request, context) {
   const auth = requireAuthenticated(request);
   if (auth.response) {
@@ -24,7 +29,8 @@ async function handleArbDownloadExport(request, context) {
       body: artifact.body,
       headers: {
         "Content-Type": artifact.contentType,
-        "Content-Disposition": `attachment; filename="${artifact.fileName}"`,
+        "Content-Disposition": encodeContentDispositionFilename(artifact.fileName),
+        "X-Download-Options": "noopen",
         "Cache-Control": "no-store"
       }
     };
@@ -41,5 +47,6 @@ app.http("arbDownloadExport", {
 });
 
 module.exports = {
-  handleArbDownloadExport
+  handleArbDownloadExport,
+  encodeContentDispositionFilename
 };

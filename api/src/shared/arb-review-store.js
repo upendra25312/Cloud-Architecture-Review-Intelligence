@@ -1739,11 +1739,16 @@ function calculateDomainScore(domain, weight, findings, review) {
   }
 
   if (linkedFindings.length === 0) {
+    const readinessQualifier =
+      review.evidenceReadinessState === "Ready for Review"
+        ? "No active blockers are open, but the domain remains capped below full score until reviewer sign-off confirms the positive control evidence."
+        : "No active blockers are open, but the domain remains capped below full score because the submitted package still has evidence gaps.";
+
     return {
       domain,
       weight,
       score: 16,
-      reason: `No active ${domain.toLowerCase()} blockers are currently open in this scaffold.`,
+      reason: readinessQualifier,
       linkedFindings: []
     };
   }
