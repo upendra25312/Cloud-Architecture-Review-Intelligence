@@ -570,6 +570,26 @@ function escapeCsvValue(value) {
   return normalized;
 }
 
+function formatEvidenceReference(value) {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+
+  if (typeof value === "object") {
+    const evidenceId = value.evidenceId || value.id || "";
+    const summary = value.summary || value.evidenceSummary || value.title || value.findingStatement || "";
+    const source = value.sourceFileName || value.fileName || value.source || "";
+    const parts = [evidenceId, summary, source].filter(Boolean);
+    if (parts.length > 0) return parts.join(" - ");
+  }
+
+  return String(value);
+}
+
+function formatEvidenceReferences(values) {
+  if (!Array.isArray(values)) return formatEvidenceReference(values);
+  return values.map(formatEvidenceReference).filter(Boolean).join(" | ");
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -598,6 +618,11 @@ async function buildAiSummary(review, files, requirements, evidence, findings, s
 }
 
 function renderMarkdownExportBody(review, files, requirements, evidence, findings, scorecard, actions, summaryText) {
+  const domainScores = scorecard?.domainScores || [];
+  const actionLines = actions.length
+    ? actions.map((action) => `- ${action.actionSummary} (${action.status})`)
+    : ["_No actions recorded._"];
+
   return [
     `# ${review.projectName} ARB Reviewed Output`,
     "",
@@ -633,13 +658,29 @@ function renderMarkdownExportBody(review, files, requirements, evidence, finding
       (fact) => `- [${fact.factType}] ${fact.summary} (${fact.sourceFileName || "Derived summary"})`
     ),
     "",
+    "## Scorecard",
+    "",
+    ...domainScores.map(
+      (domainScore) =>
+        `- ${domainScore.domain}: ${domainScore.score}/${domainScore.weight} - ${domainScore.reason || "No rationale recorded."}`
+    ),
+    "",
     "## Findings",
     "",
-    ...findings.map((finding) => `- [${finding.severity}] ${finding.title} (${finding.status})`),
+    ...findings.map((finding) =>
+      [
+        `- [${finding.severity}] ${finding.title} (${finding.status})`,
+        finding.findingStatement ? `  - Finding: ${finding.findingStatement}` : null,
+        finding.recommendation ? `  - Recommendation: ${finding.recommendation}` : null,
+        finding.source ? `  - Source: ${finding.source}` : null
+      ]
+        .filter(Boolean)
+        .join("\n")
+    ),
     "",
     "## Actions",
     "",
-    ...actions.map((action) => `- ${action.actionSummary} (${action.status})`)
+    ...actionLines
   ]
     .filter(Boolean)
     .join("\n");
@@ -721,7 +762,7 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       finding.domain,
       finding.title,
       finding.findingStatement,
-      finding.evidenceFound.join(" | "),
+      formatEvidenceReferences(finding.evidenceFound),
       finding.status,
       finding.severity,
       finding.owner || finding.suggestedOwner || "",
@@ -763,7 +804,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
   const recommendationBadge = (rec) => {
     const r = String(rec || "").toLowerCase();
     let bg = "#FEF3C7"; let fg = "#B45309";
-    if (r === "approved" || r.includes("approve")) { bg = "#D1FAE5"; fg = "#065F46"; }
+    if (r === "approved") { bg = "#D1FAE5"; fg = "#065F46"; }
     else if (r === "rejected" || r.includes("reject")) { bg = "#FEE2E2"; fg = "#D92B2B"; }
     return `<span style="display:inline-block;padding:3px 14px;border-radius:12px;font-size:13px;font-weight:600;background:${bg};color:${fg};">${esc(rec)}</span>`;
   };
