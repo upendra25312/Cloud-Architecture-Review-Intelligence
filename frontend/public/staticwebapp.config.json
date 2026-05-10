@@ -44,6 +44,11 @@
   },
   "routes": [
     {
+      "route": "/",
+      "redirect": "/arb",
+      "statusCode": 302
+    },
+    {
       "route": "/explorer",
       "redirect": "/services",
       "statusCode": 301
