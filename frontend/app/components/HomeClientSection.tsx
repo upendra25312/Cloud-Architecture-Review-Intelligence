@@ -9,9 +9,11 @@ import { buildPrimaryLoginUrl } from "@/lib/review-cloud";
 import { trackArbEvent } from "@/lib/telemetry";
 import HeroSection from "./home/HeroSection";
 import PlatformValueCards from "./home/PlatformValueCards";
+import TimeSavingsVisual from "./home/TimeSavingsVisual";
 import WorkflowDiagram from "./home/WorkflowDiagram";
 import ReviewCockpitPreview from "./home/ReviewCockpitPreview";
 import SampleFindingCard from "./home/SampleFindingCard";
+import GroundingTiersVisual from "./home/GroundingTiersVisual";
 import FrameworkAlignment from "./home/FrameworkAlignment";
 import CloudReviewTracks from "./home/CloudReviewTracks";
 import ReportPackPreview from "./home/ReportPackPreview";
@@ -100,9 +102,11 @@ export default function HomeClientSection() {
         resumeStatus={latestReview?.workflowState ?? null}
       />
       <PlatformValueCards />
+      <TimeSavingsVisual />
       <WorkflowDiagram />
       <ReviewCockpitPreview />
       <SampleFindingCard />
+      <GroundingTiersVisual />
       <FrameworkAlignment />
       <CloudReviewTracks />
       <ReportPackPreview />

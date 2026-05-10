@@ -173,7 +173,6 @@ function Chevron() {
 }
 
 export default function WorkflowDiagram() {
-  const steps = HOME_COPY.workflow;
   return (
     <section
       className="review-section"
@@ -183,9 +182,9 @@ export default function WorkflowDiagram() {
       <div className="review-section-head">
         <p className="review-eyebrow">Review workflow</p>
         <h2 id="workflow-title">From evidence to board-ready decision — in one review session.</h2>
+        <p>Five stages, three deliverables, four business outcomes — fully traceable from uploaded document to signed decision.</p>
       </div>
 
-      {/* Full-width process diagram */}
       <div className="review-workflow-diagram-wrap">
         <Image
           src="/arb-workflow.png"
@@ -197,34 +196,6 @@ export default function WorkflowDiagram() {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
         />
       </div>
-
-      <p className="review-eyebrow" style={{ marginTop: "2.5rem", textAlign: "center" }}>Step by step</p>
-      <ol className="review-workflow-grid" aria-label="Review workflow steps">
-        {steps.map((step, index) => {
-          const Icon = STEP_ICONS[index] ?? UploadIcon;
-          return (
-            <Fragment key={step.number}>
-              <li className="review-workflow-step">
-                <span className="review-workflow-step-number" aria-hidden="true">
-                  {step.number}
-                </span>
-                <Icon label={step.label} />
-                <h3>{step.label}</h3>
-                <p>{step.explanation}</p>
-              </li>
-              {index < steps.length - 1 ? (
-                <span
-                  className="review-workflow-connector"
-                  aria-hidden="true"
-                  role="presentation"
-                >
-                  <Chevron />
-                </span>
-              ) : null}
-            </Fragment>
-          );
-        })}
-      </ol>
     </section>
   );
 }

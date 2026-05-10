@@ -21,7 +21,7 @@ const WAF_PILLARS = [
 ] as const;
 
 const ARIA_LABEL =
-  "Sample Architecture Review Cockpit: score 78 out of 100, 16 findings across four severity levels, all five WAF pillars covered, board pack ready for export.";
+  "Sample Architecture Review Cockpit: score 78 out of 100, decision Approved with Conditions, 16 findings across four severity levels, all five WAF pillars covered.";
 
 export default function HeroDashboardMockup({
   overallScore = 78,
@@ -101,9 +101,9 @@ export default function HeroDashboardMockup({
           <span className="rhm-status-value">5 / 5</span>
           <span className="rhm-status-label">Pillars reviewed</span>
         </div>
-        <div className="rhm-status-tile rhm-status-tile--green">
-          <span className="rhm-status-value">Board-ready</span>
-          <span className="rhm-status-label">Export pack</span>
+        <div className="rhm-status-tile rhm-status-tile--amber">
+          <span className="rhm-status-value">Approved with Conditions</span>
+          <span className="rhm-status-label">Score 78 / 100</span>
         </div>
       </div>
     </div>

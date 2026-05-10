@@ -13,14 +13,15 @@ export const HOME_COPY = {
     eyebrow: "Architecture Review Intelligence",
     title: "Turn uploaded architecture evidence into board-ready review decisions.",
     kicker:
-      "Starting with Azure. Expanding to AWS and Google Cloud.",
+      "What used to take 4–12 hours now takes under 5 minutes. Starting with Azure, expanding to AWS and Google Cloud.",
     sub: "Upload your architecture documents, get evidence-linked findings and framework-aligned decisions, then export a board-ready review pack — reviewed and signed off by your architects.",
     primaryCta: "Start a Review",
     secondaryCta: "View Sample Output",
     trustBar: [
+      "< 5 min from upload to findings",
       "Evidence-linked findings",
-      "Framework-aligned",
-      "Human-reviewed decisions",
+      "Framework-aligned decisions",
+      "Human-reviewed sign-off",
     ] as const,
   },
 
@@ -204,32 +205,32 @@ export const HOME_COPY = {
    * claims (Req 10.4).
    */
   trust: {
-    sectionTitle: "Trust and Governance",
+    sectionTitle: "Built for Enterprise Security and Governance",
     tiles: [
       {
-        label: "Permission-aware",
+        label: "Zero Secrets in Code",
         description:
-          "Respects user roles across projects, findings, and exports.",
+          "Managed Identity everywhere. No API keys, passwords, or connection strings in code or environment variables.",
       },
       {
-        label: "Evidence-linked",
+        label: "Immutable Audit Trail",
         description:
-          "Findings cite the supporting document or artifact.",
+          "Append-only record of every finding state transition, reviewer decision, and export. Nothing is deleted or overwritten.",
       },
       {
-        label: "Human-reviewed",
+        label: "East US 2 Data Residency",
         description:
-          "Architects approve each finding before decisions are recorded.",
+          "All customer documents and review data stay in East US 2. No cross-region replication.",
       },
       {
-        label: "Export-controlled",
+        label: "Encrypted End-to-End",
         description:
-          "Exports capture reviewer intent and evidence version.",
+          "TLS 1.2+ in transit, AES-256 at rest. Architecture documents are never stored in plain text.",
       },
       {
-        label: "Enterprise-ready",
+        label: "Least-Privilege RBAC",
         description:
-          "Fits existing frameworks, review practices, and governance.",
+          "Each service has its own Managed Identity with only the permissions it needs. No shared credentials.",
       },
     ] as const,
   },
