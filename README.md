@@ -19,6 +19,7 @@ This repository is documented in a **Microsoft-style enterprise architecture for
 - [What the platform does](#what-the-platform-does)
 - [Core capabilities](#core-capabilities)
 - [Reference architecture](#reference-architecture)
+- [Architecture diagram](#architecture-diagram)
 - [Deployed Azure resource footprint](#deployed-azure-resource-footprint)
 - [Repository structure](#repository-structure)
 - [Technology stack](#technology-stack)
@@ -137,6 +138,74 @@ The detailed architecture planning document in [`docs/arb-foundry-agents-solutio
 - Document Intelligence
 - Computer Vision
 - Application Insights and Log Analytics
+
+## Architecture diagram
+
+The following diagram reflects the **current deployed Azure platform** and the **target-state evolution** toward deeper Foundry agent orchestration.
+
+```mermaid
+flowchart TB
+    User[Architecture Reviewer / Architect / ARB User]
+    Browser[Browser]
+    SWA[Azure Static Web App\nswa-arb-review-prod\nNext.js frontend]
+    FUNC[Azure Function App\nfunc-arb-review-api]
+    PLAN[App Service Plan\nasp-arb-review-prod]
+    STORAGE[Azure Storage\nstarbrevprod01\nfiles / state / review artifacts]
+    KV[Azure Key Vault\nkv-arb-review-prod]
+    AI[Azure AI Foundry\nai-arb-review-prod]
+    HUB[Azure AI Hub\nhub-arb-review-prod]
+    PROJ[Azure AI Project\nproj-arb-review-prod]
+    FPROJ[Foundry Project\narb-review-proj]
+    SEARCH[Azure AI Search\nsrch-arb-review-prod]
+    DOCINT[Azure Document Intelligence\ndi-arb-review-prod]
+    VISION[Azure Computer Vision\nvision-arb-review-prod]
+    APPI[Application Insights\nappi-arb-review-prod]
+    LAW[Log Analytics\nlaw-arb-review-prod]
+    ALERTS[Metric Alerts / Smart Detector Alerts]
+    AG[Action Group\nag-arb-review-prod]
+    USERSUB[Architecture documents / review evidence]
+    KNOWLEDGE[Architecture guidance / rubrics / review knowledge]
+    TARGET[Target-state\nAzure AI Foundry Agents API orchestration]
+
+    User --> Browser --> SWA
+    SWA --> FUNC
+    PLAN -. hosts .-> FUNC
+
+    USERSUB --> SWA
+    SWA -->|upload / submit review| FUNC
+
+    FUNC --> STORAGE
+    FUNC --> KV
+    FUNC --> AI
+    FUNC --> PROJ
+    FUNC --> SEARCH
+    FUNC --> DOCINT
+    FUNC --> VISION
+
+    HUB --> PROJ
+    AI --> FPROJ
+    PROJ --> TARGET
+    FPROJ --> TARGET
+
+    KNOWLEDGE --> SEARCH
+    KNOWLEDGE --> TARGET
+
+    DOCINT -->|extracted text / structure| FUNC
+    VISION -->|visual analysis signals| FUNC
+    SEARCH -->|retrieval / grounding| FUNC
+    STORAGE -->|review data / artifacts| FUNC
+    KV -->|secrets / config| FUNC
+
+    FUNC -->|findings / scorecards / status| SWA
+    SWA --> Browser --> User
+
+    FUNC --> APPI
+    APPI --> LAW
+    APPI --> ALERTS
+    ALERTS --> AG
+```
+
+For a dedicated diagram page and explanation, see [`docs/architecture/solution-architecture-diagram.md`](./docs/architecture/solution-architecture-diagram.md).
 
 ## Deployed Azure resource footprint
 
@@ -340,9 +409,10 @@ Primary documentation is available in:
 Recommended reading order:
 1. Review this README for the solution overview and current deployed platform summary
 2. Read [`ARCHITECTURE.md`](./ARCHITECTURE.md)
-3. Read [`docs/arb-foundry-agents-solution-plan.md`](./docs/arb-foundry-agents-solution-plan.md)
-4. Read [`docs/arb-implementation-test-validation-guide.md`](./docs/arb-implementation-test-validation-guide.md)
-5. Explore the `frontend/`, `api/`, and `infrastructure/` directories for implementation detail
+3. Read [`docs/architecture/solution-architecture-diagram.md`](./docs/architecture/solution-architecture-diagram.md)
+4. Read [`docs/arb-foundry-agents-solution-plan.md`](./docs/arb-foundry-agents-solution-plan.md)
+5. Read [`docs/arb-implementation-test-validation-guide.md`](./docs/arb-implementation-test-validation-guide.md)
+6. Explore the `frontend/`, `api/`, and `infrastructure/` directories for implementation detail
 
 ## Target users and scenarios
 
