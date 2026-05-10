@@ -5,7 +5,7 @@
   "auth": {
     "identityProviders": {
       "azureActiveDirectory": {
-        "userDetailsClaim": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+        "userDetailsClaim": "preferred_username",
         "registration": {
           "openIdIssuer": "https://login.microsoftonline.com/5f51e0e9-4a52-494f-8068-27a3527967de/v2.0",
           "clientIdSettingName": "AZURE_CLIENT_ID",
