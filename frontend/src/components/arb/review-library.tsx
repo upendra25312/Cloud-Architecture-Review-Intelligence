@@ -52,6 +52,21 @@ function getPrimaryHref(review: ArbReviewSummary, focus: ArbReviewLibraryFocus):
   return getArbStepHref(reviewId, "overview");
 }
 
+const MAX_ARB_UPLOAD_FILE_SIZE = 20 * 1024 * 1024;
+const MAX_ARB_UPLOAD_TOTAL_SIZE = 100 * 1024 * 1024;
+
+function formatFileSize(bytes: number) {
+  if (bytes >= 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  if (bytes >= 1024) {
+    return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  }
+
+  return `${Math.max(1, bytes)} B`;
+}
+
 function hasValidReviewId(review: ArbReviewSummary): boolean {
   const reviewId = String(review.reviewId ?? "").trim();
   return Boolean(reviewId) && reviewId !== "undefined" && reviewId !== "null";
@@ -235,7 +250,31 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
       return;
     }
 
-    setSelectedFiles(Array.from(fileList));
+    const files = Array.from(fileList);
+    const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+    const oversizedFiles = files.filter((file) => file.size > MAX_ARB_UPLOAD_FILE_SIZE);
+
+    if (oversizedFiles.length > 0) {
+      setSelectedFiles([]);
+      setError(
+        `One or more selected files exceed the maximum per-file limit of ${formatFileSize(
+          MAX_ARB_UPLOAD_FILE_SIZE
+        )}. Remove ${oversizedFiles.length} file${oversizedFiles.length === 1 ? "" : "s"} and try again.`
+      );
+      return;
+    }
+
+    if (totalBytes > MAX_ARB_UPLOAD_TOTAL_SIZE) {
+      setSelectedFiles([]);
+      setError(
+        `Selected files total ${formatFileSize(totalBytes)}, which exceeds the ${formatFileSize(
+          MAX_ARB_UPLOAD_TOTAL_SIZE
+        )} package limit. Reduce the number of files or upload fewer large files.`
+      );
+      return;
+    }
+
+    setSelectedFiles(files);
     setError(null);
   }
 
@@ -385,7 +424,9 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
             Optional but recommended. If you select files here, the new review opens with those files already staged and ready for analysis.
           </p>
           <p className="microcopy">
-            Accepted: PDF, Word, PowerPoint (.ppt or .pptx), Excel, diagrams, images, Markdown, text, IaC, and archive files. Convert legacy .ppt to .pptx for review extraction.
+            Accepted: PDF, Word, PowerPoint (.ppt or .pptx), Excel, diagrams, images, Markdown, text, IaC, and archive files.
+            Max per file: {formatFileSize(MAX_ARB_UPLOAD_FILE_SIZE)} · Max total package: {formatFileSize(MAX_ARB_UPLOAD_TOTAL_SIZE)}.
+            Convert legacy .ppt to .pptx for review extraction.
           </p>
           {selectedFiles.length > 0 ? (
             <div className="arb-selected-files">
@@ -404,6 +445,10 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
               <p className="arb-selected-files-list">
                 {selectedFiles.slice(0, 4).map((file) => file.name).join(", ")}
                 {selectedFiles.length > 4 ? ` +${selectedFiles.length - 4} more` : ""}
+              </p>
+              <p className="microcopy" style={{ marginTop: 8 }}>
+                Total selected: {formatFileSize(selectedFiles.reduce((sum, file) => sum + file.size, 0))} across {selectedFiles.length} file{selectedFiles.length === 1 ? "" : "s"}.
+                Remove or replace files when you need a smaller upload package.
               </p>
             </div>
           ) : (

@@ -141,6 +141,9 @@ function formatCategory(category: string): string {
   return CATEGORY_LABELS[category] ?? category.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const MAX_ARB_UPLOAD_FILE_SIZE = 20 * 1024 * 1024;
+const MAX_ARB_UPLOAD_TOTAL_SIZE = 100 * 1024 * 1024;
+
 function formatFileSize(bytes: number) {
   if (bytes >= 1024 * 1024) {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -306,13 +309,35 @@ export function ArbLiveReviewStep(props: {
       return;
     }
 
+    const files = Array.from(fileList);
+    const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+    const oversizedFiles = files.filter((file) => file.size > MAX_ARB_UPLOAD_FILE_SIZE);
+
+    if (oversizedFiles.length > 0) {
+      setUploadError(
+        `One or more files exceed the maximum per-file limit of ${formatFileSize(
+          MAX_ARB_UPLOAD_FILE_SIZE
+        )}. Remove ${oversizedFiles.length} file${oversizedFiles.length === 1 ? "" : "s"} and try again.`
+      );
+      return;
+    }
+
+    if (totalBytes > MAX_ARB_UPLOAD_TOTAL_SIZE) {
+      setUploadError(
+        `Selected files total ${formatFileSize(totalBytes)}, which exceeds the ${formatFileSize(
+          MAX_ARB_UPLOAD_TOTAL_SIZE
+        )} package limit. Upload fewer files or split the package.`
+      );
+      return;
+    }
+
     try {
       setUploadSaving(true);
       setUploadError(null);
 
       const payload = await uploadArbFiles({
         reviewId,
-        files: Array.from(fileList)
+        files
       });
 
       setUploadedFiles(payload.files);
@@ -753,8 +778,12 @@ export function ArbLiveReviewStep(props: {
               }}
             />
           </label>
-          <div className="arb-upload-helper-text" style={{marginTop: '0.5rem', marginBottom: '0.5rem'}}>
-            Accepted: PDF, DOCX, PPTX, XLSX, images, diagrams, Markdown, and more. Convert legacy .ppt to .pptx before starting review extraction.
+          <div className="arb-upload-helper-text" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
+            Accepted: PDF, DOCX, PPTX, XLSX, images, diagrams, Markdown, and more.
+            Max per file: {formatFileSize(MAX_ARB_UPLOAD_FILE_SIZE)} · Max total upload: {formatFileSize(
+              MAX_ARB_UPLOAD_TOTAL_SIZE
+            )}.
+            Convert legacy .ppt to .pptx before starting review extraction.
           </div>
           {uploadSaving ? (
             <p className="arb-upload-status arb-upload-status-progress">Uploading files…</p>
