@@ -44,6 +44,7 @@ import type {
 } from "@/arb/types";
 import { ArbPlaceholderPage } from "@/components/arb/placeholder-page";
 import { ArbReviewShell } from "@/components/arb/review-shell";
+import { EvidenceGuidancePanel } from "@/components/arb/evidence-guidance";
 import { SUPPORTED_ARB_UPLOAD_EXTENSIONS } from "@/components/arb/upload-extensions";
 import { SeverityBadge } from "@/components/severity-badge";
 
@@ -724,6 +725,8 @@ export function ArbLiveReviewStep(props: {
             </p>
           </article>
         </div>
+
+        <EvidenceGuidancePanel />
 
         <section
           id="upload-documents"

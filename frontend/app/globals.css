@@ -7297,6 +7297,49 @@ button.chip:disabled:hover {
   font-weight: 700;
 }
 
+.arb-evidence-guidance {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.arb-evidence-guidance .board-card-head {
+  align-items: flex-start;
+}
+
+.arb-evidence-matrix {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.arb-evidence-matrix-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) minmax(0, 1.2fr);
+  gap: 14px;
+  min-height: 132px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surf-1);
+}
+
+.arb-evidence-matrix-row strong,
+.arb-evidence-matrix-row span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--t1);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.arb-evidence-matrix-row p {
+  margin: 0;
+  color: var(--t2);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
 .arb-create-upload {
   display: flex;
   flex-direction: column;
@@ -7785,6 +7828,14 @@ button.chip:disabled:hover {
 }
 
 @media (max-width: 980px) {
+  .arb-evidence-matrix {
+    grid-template-columns: 1fr;
+  }
+
+  .arb-evidence-matrix-row {
+    min-height: 0;
+  }
+
   .arb-create-fields {
     grid-template-columns: 1fr;
   }
@@ -7810,6 +7861,19 @@ button.chip:disabled:hover {
 }
 
 @media (max-width: 640px) {
+  .arb-evidence-guidance .board-card-head {
+    flex-direction: column;
+  }
+
+  .arb-evidence-guidance .secondary-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .arb-evidence-matrix-row {
+    grid-template-columns: 1fr;
+  }
+
   .arb-create-card {
     padding: 24px 20px;
   }

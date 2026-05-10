@@ -8,6 +8,7 @@ import { createArbReview, listArbReviews, uploadArbFiles, deleteArbReview } from
 import { getArbStepHref } from "@/arb/routes";
 import type { ArbReviewSummary } from "@/arb/types";
 import { useAuthSession } from "@/components/auth-session-provider";
+import { EvidenceGuidancePanel } from "@/components/arb/evidence-guidance";
 import { SUPPORTED_ARB_UPLOAD_EXTENSIONS } from "@/components/arb/upload-extensions";
 import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
 import { trackArbEvent } from "@/lib/telemetry";
@@ -381,6 +382,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
             <span className="arb-proof-chip">Board-ready sign-off workflow</span>
           </div>
         </div>
+        <EvidenceGuidancePanel />
         <section
           className={`arb-create-upload arb-upload-dropzone${uploadDropActive ? " arb-upload-dropzone-active" : ""}`}
           onDragOver={(event) => {
