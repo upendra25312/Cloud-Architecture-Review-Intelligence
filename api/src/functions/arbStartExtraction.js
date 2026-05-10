@@ -21,20 +21,13 @@ async function handleArbStartExtraction(request, context) {
       return jsonResponse(400, { error: "Upload files before starting extraction." });
     }
 
-    // Return 202 immediately — the heavy extraction pipeline runs in the background.
-    // startArbExtraction updates each file's extractionStatus in Table Storage as it
-    // progresses, so arbGetExtractionStatus can report real-time progress.
-    setImmediate(() => {
-      startArbExtraction(auth.principal, reviewId).catch((err) => {
-        context.log(`[arbStartExtraction] Background extraction error for ${reviewId}:`, err?.message ?? err);
-      });
-    });
+    const extraction = await startArbExtraction(auth.principal, reviewId);
 
-    return jsonResponse(202, {
+    return jsonResponse(200, {
       reviewId,
-      status: "queued",
+      status: "completed",
       fileCount: files.length,
-      message: "Extraction started. Poll /api/arb/reviews/{reviewId}/extraction-status for progress."
+      extraction
     });
   } catch (error) {
     return safeErrorResponse(error, "Unable to start ARB extraction.", context);

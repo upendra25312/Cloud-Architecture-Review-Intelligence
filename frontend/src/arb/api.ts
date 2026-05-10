@@ -380,16 +380,37 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
     throw new Error(err.error ?? `Unable to start ARB extraction (${startResponse.status}).`);
   }
 
-  // The start endpoint returns 202 Accepted with queuing info only.
-  // Fetch the actual extraction status object from the dedicated status endpoint.
-  const statusResponse = await fetch(`/api/arb/reviews/${reviewId}/extract/status`, {
-    headers: { Accept: "application/json" }
-  });
-  const payload = await readJsonResponse<{ extraction: ArbExtractionStatus }>(
-    statusResponse,
-    `Unable to load extraction status (${statusResponse.status}).`
-  );
-  return payload.extraction;
+  const startPayload = await startResponse.json().catch(() => ({})) as {
+    extraction?: ArbExtractionStatus;
+    status?: string;
+  };
+
+  if (startPayload.extraction) {
+    return startPayload.extraction;
+  }
+
+  const maxPollMs = 300_000;
+  const pollIntervalMs = 4_000;
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < maxPollMs) {
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+
+    const statusResponse = await fetch(`/api/arb/reviews/${reviewId}/extract/status`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store"
+    });
+    const payload = await readJsonResponse<{ extraction: ArbExtractionStatus }>(
+      statusResponse,
+      `Unable to load extraction status (${statusResponse.status}).`
+    );
+
+    if (payload.extraction.state !== "Not Started") {
+      return payload.extraction;
+    }
+  }
+
+  throw new Error("Analysis did not report progress within 5 minutes. Refresh this page and check the extraction status.");
 }
 
 export async function fetchArbRequirements(reviewId: string): Promise<ArbRequirement[]> {
