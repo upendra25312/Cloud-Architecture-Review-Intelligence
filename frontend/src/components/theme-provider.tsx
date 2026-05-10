@@ -92,10 +92,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           <div className="site-footer-inner">
             {/* Brand + mission */}
             <div className="site-footer-brand">
-              <img src="/rackspace-logo-red.png" alt="Rackspace Technology" className="site-footer-logo site-footer-logo-wordmark" />
-              <span className="site-footer-brand-name">Rackspace Cloud Architecture Review Intelligence</span>
+              <img src="/rackspace-icon.jpg" alt="Rackspace logo" className="site-footer-logo" />
+              <span className="site-footer-brand-name">Cloud Architecture Review Intelligence</span>
               <p className="site-footer-brand-desc">
-                Internal review intelligence for evidence-backed cloud architecture reviews. Built for Azure architecture guidance with Microsoft Well‑Architected, Cloud Adoption Framework, Azure Landing Zone, and Zero Trust alignment. AWS and Google Cloud review tracks are planned for future expansion.
+                Evidence-backed Azure review guidance for internal Rackspace teams. Aligned to Microsoft Well-Architected Framework, CAF, ALZ, and Zero Trust.
               </p>
               <p className="site-footer-legal">© {new Date().getFullYear()} Rackspace Technology. Internal use only.</p>
             </div>

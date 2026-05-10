@@ -585,29 +585,26 @@ pre {
 
 .site-footer-inner {
   display: grid;
-  grid-template-columns: 1.4fr 0.9fr 0.9fr 1fr;
-  gap: 32px;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
   max-width: 1120px;
-  margin: 0 auto 32px;
+  margin: 0 auto 28px;
 }
 
 .site-footer-brand {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  max-width: 320px;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .site-footer-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   object-fit: contain;
-}
-
-.site-footer-logo-wordmark {
-  width: auto;
-  height: 24px;
-  border-radius: 0;
 }
 
 .site-footer-legal {
@@ -617,16 +614,18 @@ pre {
 }
 
 .site-footer-brand-name {
-  font-size: 0.95rem;
+  font-size: 1rem;
+  line-height: 1.4;
   font-weight: 700;
   color: #0F172A;
+  letter-spacing: -0.02em;
   font-family: "Segoe UI Semibold", "Segoe UI", sans-serif;
 }
 
 .site-footer-brand-desc {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: #475569;
-  line-height: 1.7;
+  line-height: 1.6;
   max-width: 320px;
   margin: 0;
 }
