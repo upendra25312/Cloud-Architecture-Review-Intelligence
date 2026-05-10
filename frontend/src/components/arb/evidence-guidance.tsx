@@ -6,7 +6,7 @@ type ReviewArea = {
   id: string;
   title: string;
   summary: string;
-  symbol: string;
+  iconSrc: string;
   services: string;
   evidence: string[];
   links: Array<[string, string]>;
@@ -17,7 +17,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "security",
     title: "Security",
     summary: "Identity, access, secrets, encryption, threat protection",
-    symbol: "ID",
+    iconSrc: "/azure-icons/readiness/security-key-vault.svg",
     services: "Microsoft Entra ID • Azure RBAC • Key Vault • Defender",
     evidence: [
       "Microsoft Entra ID and Azure RBAC model",
@@ -34,7 +34,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "networking",
     title: "Networking",
     summary: "Connectivity, segmentation, private access, DNS, routing",
-    symbol: "VNet",
+    iconSrc: "/azure-icons/readiness/networking-virtual-network.svg",
     services: "Virtual Network • Azure Firewall • Private Link • ExpressRoute",
     evidence: [
       "Azure Virtual Network, hub-spoke, or Virtual WAN design",
@@ -52,7 +52,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "reliability",
     title: "Reliability",
     summary: "Availability, backup, recovery, failover, RTO/RPO",
-    symbol: "AZ",
+    iconSrc: "/azure-icons/readiness/reliability-recovery-services.svg",
     services: "Availability Zones • Azure Backup • Site Recovery • Front Door",
     evidence: [
       "Availability zone and region design",
@@ -69,7 +69,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "operations",
     title: "Operational Excellence",
     summary: "Monitoring, diagnostics, alerting, runbooks",
-    symbol: "Ops",
+    iconSrc: "/azure-icons/readiness/operations-monitor.svg",
     services: "Azure Monitor • Log Analytics • Application Insights • Automation",
     evidence: [
       "Azure Monitor and Log Analytics workspace design",
@@ -86,7 +86,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "cost",
     title: "Cost Optimization",
     summary: "Estimates, sizing, budgets, reservations, optimization",
-    symbol: "Cost",
+    iconSrc: "/azure-icons/readiness/cost-management.svg",
     services: "Cost Management • Azure Advisor • Reservations • Savings Plan",
     evidence: [
       "Azure pricing estimate",
@@ -103,7 +103,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "performance",
     title: "Performance Efficiency",
     summary: "Capacity, latency, scaling, throughput",
-    symbol: "Scale",
+    iconSrc: "/azure-icons/readiness/performance-load-testing.svg",
     services: "Azure Monitor • Autoscale • Azure Load Testing • Redis",
     evidence: [
       "Capacity and throughput assumptions",
@@ -120,7 +120,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "governance",
     title: "Governance and ALZ",
     summary: "Policy, subscriptions, governance, landing zone",
-    symbol: "ALZ",
+    iconSrc: "/azure-icons/readiness/governance-landing-zone.svg",
     services: "Management Groups • Azure Policy • Template Specs • RBAC",
     evidence: [
       "Management group hierarchy",
@@ -137,7 +137,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "ai-landing-zone",
     title: "Azure AI Landing Zone",
     summary: "Private access, grounding, evaluation, responsible AI",
-    symbol: "AI",
+    iconSrc: "/azure-icons/readiness/ai-content-safety.svg",
     services: "Azure AI Foundry • AI Search • Content Safety • Private Endpoint",
     evidence: [
       "Azure AI Foundry architecture",
@@ -154,7 +154,7 @@ const REVIEW_AREAS: ReviewArea[] = [
     id: "migration",
     title: "Migration Readiness",
     summary: "Discovery, assessment, wave planning, validation",
-    symbol: "Mig",
+    iconSrc: "/azure-icons/readiness/migration-azure-migrate.svg",
     services: "Azure Migrate • Dependency Mapping • Cutover • Rollback",
     evidence: [
       "Azure Migrate discovery and assessment output",
@@ -214,15 +214,18 @@ export function EvidenceGuidancePanel() {
                 aria-controls={panelId}
                 onClick={() => setExpandedId((current) => (current === item.id ? null : item.id))}
               >
-                <span className="arb-readiness-symbol" aria-hidden="true">
-                  {item.symbol}
+                <span className="arb-readiness-symbol">
+                  <img src={item.iconSrc} alt="" aria-hidden="true" loading="lazy" />
                 </span>
                 <span className="arb-readiness-card-copy">
                   <strong>{item.title}</strong>
                   <span>{item.summary}</span>
                 </span>
-                <span className="arb-readiness-action">
-                  {expanded ? "Hide guidance" : "View evidence guidance"}
+                <span className="arb-readiness-action-wrap">
+                  <span className="arb-readiness-action">
+                    {expanded ? "Hide guidance" : "View evidence guidance"}
+                  </span>
+                  <span className="arb-readiness-chevron" aria-hidden="true">⌄</span>
                 </span>
               </button>
 
