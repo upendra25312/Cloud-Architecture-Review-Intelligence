@@ -370,16 +370,24 @@ export async function deleteArbFile(reviewId: string, fileId: string): Promise<{
 }
 
 export async function startArbExtraction(reviewId: string): Promise<ArbExtractionStatus> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/extract`, {
+  const startResponse = await fetch(`/api/arb/reviews/${reviewId}/extract`, {
     method: "POST",
-    headers: {
-      Accept: "application/json"
-    }
+    headers: { Accept: "application/json" }
   });
 
+  if (!startResponse.ok) {
+    const err = await startResponse.json().catch(() => ({})) as { error?: string };
+    throw new Error(err.error ?? `Unable to start ARB extraction (${startResponse.status}).`);
+  }
+
+  // The start endpoint returns 202 Accepted with queuing info only.
+  // Fetch the actual extraction status object from the dedicated status endpoint.
+  const statusResponse = await fetch(`/api/arb/reviews/${reviewId}/extract/status`, {
+    headers: { Accept: "application/json" }
+  });
   const payload = await readJsonResponse<{ extraction: ArbExtractionStatus }>(
-    response,
-    `Unable to start ARB extraction (${response.status}).`
+    statusResponse,
+    `Unable to load extraction status (${statusResponse.status}).`
   );
   return payload.extraction;
 }
