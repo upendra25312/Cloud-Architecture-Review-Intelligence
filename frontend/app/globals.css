@@ -568,8 +568,8 @@ pre {
 
 /* Footer */
 .site-footer {
-  margin-top: 80px;
-  padding: 56px 32px 32px;
+  margin-top: 40px;
+  padding: 40px 24px 24px;
   border-top: 1px solid rgba(200, 16, 46, 0.10);
   background: #F8FAFD;
   position: relative;
@@ -580,15 +580,15 @@ pre {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #C8102E 0%, #e0243f 50%, #C8102E 100%);
+  background: linear-gradient(90deg, #C8102E 0%, #E0243F 50%, #C8102E 100%);
 }
 
 .site-footer-inner {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.2fr;
-  gap: 40px;
-  max-width: 1100px;
-  margin: 0 auto 40px;
+  grid-template-columns: 1.4fr 0.9fr 0.9fr 1fr;
+  gap: 32px;
+  max-width: 1120px;
+  margin: 0 auto 32px;
 }
 
 .site-footer-brand {
@@ -624,10 +624,10 @@ pre {
 }
 
 .site-footer-brand-desc {
-  font-size: 0.8rem;
-  color: #64748B;
-  line-height: 1.6;
-  max-width: 280px;
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.7;
+  max-width: 320px;
   margin: 0;
 }
 
@@ -638,19 +638,19 @@ pre {
 }
 
 .site-footer-link-group-label {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #94A3B8;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
 }
 
 .site-footer-link {
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   color: #475569;
   text-decoration: none;
-  line-height: 1.5;
+  line-height: 1.6;
   transition: color 0.15s ease;
 }
 
@@ -659,9 +659,9 @@ pre {
 }
 
 .site-footer-notice {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: #64748B;
-  line-height: 1.5;
+  line-height: 1.7;
 }
 
 .site-footer-copy {
@@ -670,11 +670,11 @@ pre {
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: #94A3B8;
   padding-top: 24px;
   border-top: 1px solid rgba(200,16,46,0.08);
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
@@ -1681,44 +1681,6 @@ button.chip:disabled:hover {
   border-radius: 999px;
   background: radial-gradient(circle, rgba(198, 107, 46, 0.12), transparent 68%);
   pointer-events: none;
-}
-
-.site-footer {
-  margin-top: 20px;
-}
-
-.site-footer-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.site-footer-column {
-  padding-top: 6px;
-}
-
-.site-footer-column h3 {
-  margin: 0 0 10px;
-  font-size: 1rem;
-}
-
-.site-footer-column p {
-  margin: 0;
-  color: var(--text-muted);
-  line-height: 1.7;
-}
-
-.site-footer-link {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--t2);
-  text-decoration: none;
-  line-height: 1.7;
-}
-
-.site-footer-link:hover {
-  color: var(--brand);
-  text-decoration: underline;
 }
 
 .trust-banner {
