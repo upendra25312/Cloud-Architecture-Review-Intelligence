@@ -1,0 +1,164 @@
+{
+  "rules": [
+    {
+      "ruleId": "REG-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Reliability",
+      "domain": "Reliability",
+      "severity": "Medium",
+      "title": "Target Azure region is not evidenced",
+      "failureMessage": "The submitted evidence does not clearly identify the Azure target region or region-pair strategy.",
+      "recommendation": "Document target Azure regions and region-pair assumptions. See https://learn.microsoft.com/azure/well-architected/reliability/regions-availability-zones.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/reliability/regions-availability-zones",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["region", "uk south", "uk west", "east us 2", "availability zone", "zone redundant"]
+      }
+    },
+    {
+      "ruleId": "REG-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Reliability",
+      "domain": "Reliability",
+      "severity": "Medium",
+      "title": "Availability-zone design is not evidenced",
+      "failureMessage": "The design does not evidence availability zones, zone redundancy, or an explicit non-zone requirement.",
+      "recommendation": "Document zone redundancy or justify why it is not required. See https://learn.microsoft.com/azure/well-architected/reliability/regions-availability-zones.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/reliability/regions-availability-zones",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["availability zone", "zone redundant", "zonal", "zone-redundant"]
+      }
+    },
+    {
+      "ruleId": "IAM-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "High",
+      "title": "Identity and access model is not evidenced",
+      "failureMessage": "The submission does not evidence an Entra ID, RBAC, managed identity, PIM, or privileged access model.",
+      "recommendation": "Document identity, RBAC, managed identity, and privileged access controls. See https://learn.microsoft.com/azure/well-architected/security/identity-access.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/identity-access",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["entra", "azure ad", "managed identity", "rbac", "pim", "conditional access"]
+      }
+    },
+    {
+      "ruleId": "IAM-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "Medium",
+      "title": "Privileged access controls are not evidenced",
+      "failureMessage": "The design does not evidence PIM, privileged role governance, or least-privilege access review.",
+      "recommendation": "Add privileged access management and least-privilege role review. See https://learn.microsoft.com/azure/well-architected/security/identity-access.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/identity-access",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["pim", "privileged", "least privilege", "access review"]
+      }
+    },
+    {
+      "ruleId": "NET-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "Critical",
+      "title": "Internet-facing boundary control is not evidenced",
+      "failureMessage": "The design appears to include public or internet-facing services without evidenced WAF, firewall, Application Gateway, Front Door, APIM, or NSG boundary control.",
+      "recommendation": "Document boundary protection for public entry points using WAF, Azure Firewall, Application Gateway, Front Door, APIM, or NSGs. See https://learn.microsoft.com/azure/well-architected/security/networking.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/networking",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["public", "internet", "web", "app service", "front end", "frontend"],
+        "requiresEvidenceAbsence": ["waf", "firewall", "application gateway", "front door", "apim", "nsg"]
+      }
+    },
+    {
+      "ruleId": "NET-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "High",
+      "title": "Private connectivity is not evidenced",
+      "failureMessage": "The design does not evidence private endpoints, private DNS, VNet integration, or equivalent private connectivity for platform services.",
+      "recommendation": "Document private connectivity and DNS design for platform services. See https://learn.microsoft.com/azure/well-architected/security/networking.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/networking",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["private endpoint", "private link", "private dns", "vnet integration"]
+      }
+    },
+    {
+      "ruleId": "REL-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Reliability",
+      "domain": "Reliability",
+      "severity": "High",
+      "title": "Backup and disaster recovery strategy is not evidenced",
+      "failureMessage": "The submission does not evidence backup, restore, DR, RTO, or RPO commitments.",
+      "recommendation": "Document backup, restore testing, DR pattern, RTO, and RPO. See https://learn.microsoft.com/azure/well-architected/reliability/backup-restore.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/reliability/backup-restore",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["backup", "restore", "disaster recovery", "dr", "rto", "rpo"]
+      }
+    },
+    {
+      "ruleId": "REL-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Reliability",
+      "domain": "Reliability",
+      "severity": "Medium",
+      "title": "Health and failover behavior is not evidenced",
+      "failureMessage": "The design does not evidence health probes, retry behavior, failover, or resilience testing.",
+      "recommendation": "Document health probes, retry policies, failover, and resilience test plans. See https://learn.microsoft.com/azure/well-architected/reliability/.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/reliability/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["health probe", "retry", "failover", "resilience test", "chaos"]
+      }
+    },
+    {
+      "ruleId": "OPS-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Operational Excellence",
+      "domain": "Operations",
+      "severity": "Medium",
+      "title": "Monitoring and alerting are not evidenced",
+      "failureMessage": "The submission does not evidence Azure Monitor, Log Analytics, Application Insights, alerting, or operational dashboards.",
+      "recommendation": "Document monitoring, logs, alerts, dashboards, and ownership. See https://learn.microsoft.com/azure/well-architected/operational-excellence/monitoring.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/operational-excellence/monitoring",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["azure monitor", "log analytics", "application insights", "alert", "dashboard"]
+      }
+    },
+    {
+      "ruleId": "OPS-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Operational Excellence",
+      "domain": "Operations",
+      "severity": "Medium",
+      "title": "Infrastructure-as-code and CI/CD are not evidenced",
+      "failureMessage": "The design does not evidence Terraform, Bicep, ARM, CI/CD, deployment automation, or runbooks.",
+      "recommendation": "Document IaC, CI/CD, release controls, and runbooks. See https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["terraform", "bicep", "arm template", "ci/cd", "pipeline", "runbook"]
+      }
+    }
+  ]
+}

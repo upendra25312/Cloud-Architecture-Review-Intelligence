@@ -23,6 +23,11 @@ output "ai_services_endpoint" {
   value       = azurerm_cognitive_account.ai_services.endpoint
 }
 
+output "foundry_agent_model_deployment" {
+  description = "Chat model deployment used by the ARB review runtime"
+  value       = azurerm_cognitive_deployment.model_router.name
+}
+
 output "doc_intel_endpoint" {
   description = "Document Intelligence endpoint (set as AZURE_DOCINT_ENDPOINT)"
   value       = azurerm_cognitive_account.doc_intel.endpoint
@@ -46,7 +51,7 @@ output "static_web_app_deploy_token" {
 
 output "foundry_project_endpoint" {
   description = "Foundry project endpoint (set as FOUNDRY_PROJECT_ENDPOINT)"
-  value       = "https://${azapi_resource.foundry_project.name}.${var.location}.api.azureml.ms"
+  value       = var.foundry_project_endpoint
 }
 
 output "key_vault_uri" {

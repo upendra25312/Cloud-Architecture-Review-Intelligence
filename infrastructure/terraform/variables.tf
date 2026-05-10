@@ -43,10 +43,28 @@ variable "alert_email" {
   type        = string
 }
 
-variable "gpt_model_version" {
-  description = "gpt-4.1-mini model version"
+variable "model_router_deployment_name" {
+  description = "Azure AI model router deployment name used by the ARB review runtime"
   type        = string
-  default     = "2025-04-14"
+  default     = "model-router"
+}
+
+variable "model_router_version" {
+  description = "model-router model version"
+  type        = string
+  default     = "2025-11-18"
+}
+
+variable "model_router_capacity" {
+  description = "Model router GlobalStandard deployment capacity in thousands of TPM"
+  type        = number
+  default     = 125
+}
+
+variable "foundry_project_endpoint" {
+  description = "Runtime Foundry project endpoint used by the Function App"
+  type        = string
+  default     = "https://ai-arb-review-prod.services.ai.azure.com/api/projects/arb-review-proj"
 }
 
 variable "embedding_model_version" {

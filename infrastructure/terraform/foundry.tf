@@ -20,6 +20,13 @@ resource "azapi_resource" "foundry_hub" {
 
   tags = azurerm_resource_group.main.tags
 
+  lifecycle {
+    ignore_changes = [
+      tags["__SYSTEM__AIServices_ai-services-connection"],
+      tags["__SYSTEM__AzureOpenAI_ai-services-connection_aoai"],
+    ]
+  }
+
   depends_on = [
     azurerm_storage_account.main,
     azurerm_key_vault.main,
@@ -51,7 +58,7 @@ resource "azapi_resource" "foundry_project" {
 }
 
 # AI Services connection — links the Foundry Hub to the AI Services account
-# so the agent can use gpt-4.1-mini and text-embedding-3-large deployments
+# so the agent can use model-router and text-embedding-3-large deployments
 resource "azapi_resource" "ai_services_connection" {
   type      = "Microsoft.MachineLearningServices/workspaces/connections@2024-07-01-preview"
   name      = "ai-services-connection"
@@ -64,9 +71,9 @@ resource "azapi_resource" "ai_services_connection" {
       authType      = "AAD" # Managed Identity — no API key
       isSharedToAll = true
       metadata = {
-        ApiVersion      = "2024-05-01-preview"
-        ApiType         = "azure"
-        ResourceId      = azurerm_cognitive_account.ai_services.id
+        ApiVersion = "2024-05-01-preview"
+        ApiType    = "azure"
+        ResourceId = azurerm_cognitive_account.ai_services.id
       }
     }
   }

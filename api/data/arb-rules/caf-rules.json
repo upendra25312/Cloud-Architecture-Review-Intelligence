@@ -1,0 +1,68 @@
+{
+  "rules": [
+    {
+      "ruleId": "GOV-001",
+      "framework": "CAF",
+      "frameworkPillar": "CAF:Govern",
+      "domain": "Governance",
+      "severity": "High",
+      "title": "Azure Policy governance is not evidenced",
+      "failureMessage": "The submission does not evidence Azure Policy assignments, initiatives, deny controls, diagnostics policies, or tag enforcement.",
+      "recommendation": "Document policy initiatives, assignments, exemptions, and compliance ownership. See https://learn.microsoft.com/azure/cloud-adoption-framework/govern/policy-compliance/.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/cloud-adoption-framework/govern/policy-compliance/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["azure policy", "policy assignment", "initiative", "deny", "tagging", "diagnostic setting"]
+      }
+    },
+    {
+      "ruleId": "GOV-002",
+      "framework": "CAF",
+      "frameworkPillar": "CAF:Ready",
+      "domain": "Governance",
+      "severity": "High",
+      "title": "Landing zone organization is not evidenced",
+      "failureMessage": "The submission does not evidence management group hierarchy, subscription vending, platform landing zones, or workload landing zone placement.",
+      "recommendation": "Document ALZ management groups, subscription organization, and platform/application landing zones. See https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["management group", "subscription vending", "platform landing zone", "application landing zone", "landing zone"]
+      }
+    },
+    {
+      "ruleId": "COST-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Cost Optimization",
+      "domain": "Cost",
+      "severity": "Medium",
+      "title": "Cost model and budget guardrails are not evidenced",
+      "failureMessage": "The submission does not evidence cost estimates, budgets, alerts, tagging, or FinOps ownership.",
+      "recommendation": "Document cost estimates, budget alerts, tagging, and FinOps governance. See https://learn.microsoft.com/azure/well-architected/cost-optimization/.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/cost-optimization/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["cost", "budget", "finops", "tagging", "reserved", "savings plan"]
+      }
+    },
+    {
+      "ruleId": "COST-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Cost Optimization",
+      "domain": "Cost",
+      "severity": "Low",
+      "title": "Right-sizing rationale is not evidenced",
+      "failureMessage": "The design does not evidence SKU sizing, autoscale economics, reserved capacity, or utilization assumptions.",
+      "recommendation": "Document SKU sizing rationale, autoscale assumptions, and reservation/savings analysis. See https://learn.microsoft.com/azure/well-architected/cost-optimization/design-review-checklist.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/cost-optimization/design-review-checklist",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["sku", "right-size", "autoscale", "reserved", "utilization"]
+      }
+    }
+  ]
+}

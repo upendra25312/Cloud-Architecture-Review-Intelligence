@@ -1,0 +1,32 @@
+{
+  "rules": [
+    {
+      "ruleId": "DOC-001",
+      "framework": "Internal",
+      "frameworkPillar": "Documentation",
+      "domain": "Architecture",
+      "severity": "Medium",
+      "title": "Review evidence package is thin",
+      "failureMessage": "The review package has too few uploaded artifacts or extracted requirements to support a complete ARB assessment.",
+      "recommendation": "Upload HLD, SOW or requirements, architecture diagrams, IaC, operational runbooks, and governance evidence before board submission.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/",
+      "blockerFlag": false,
+      "minimumFileCount": 1,
+      "minimumRequirementCount": 1
+    },
+    {
+      "ruleId": "DOC-002",
+      "framework": "Internal",
+      "frameworkPillar": "Documentation",
+      "domain": "Architecture",
+      "severity": "High",
+      "title": "Insufficient extracted evidence for full assessment",
+      "failureMessage": "The extracted evidence set is too small to fairly assess all ARB domains.",
+      "recommendation": "Provide additional evidence such as identity design, network topology, DR plan, monitoring plan, cost model, and IaC before final ARB sign-off.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/",
+      "blockerFlag": true,
+      "minimumEvidenceCount": 3,
+      "minimumRequirementCount": 2
+    }
+  ]
+}

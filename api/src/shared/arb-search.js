@@ -47,14 +47,14 @@ const INDEX_SCHEMA = {
     { name: "chunkIndex", type: "Edm.Int32", filterable: true, sortable: true },
     { name: "content", type: "Edm.String", searchable: true, retrievable: true, analyzer: "en.microsoft" }
   ],
-  semanticSearch: {
+  semantic: {
     defaultConfiguration: SEMANTIC_CONFIG_NAME,
     configurations: [
       {
         name: SEMANTIC_CONFIG_NAME,
         prioritizedFields: {
-          contentFields: [{ fieldName: "content" }],
-          keywordsFields: [{ fieldName: "fileName" }, { fieldName: "logicalCategory" }]
+          prioritizedContentFields: [{ fieldName: "content" }],
+          prioritizedKeywordsFields: [{ fieldName: "fileName" }, { fieldName: "logicalCategory" }]
         }
       }
     ]

@@ -4,8 +4,16 @@ resource "azurerm_static_web_app" "main" {
   name                = "swa-${var.prefix}-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
-  sku_tier            = "Free"
-  sku_size            = "Free"
+  sku_tier            = "Standard"
+  sku_size            = "Standard"
 
   tags = azurerm_resource_group.main.tags
+
+  lifecycle {
+    ignore_changes = [
+      app_settings,
+      repository_branch,
+      repository_url,
+    ]
+  }
 }

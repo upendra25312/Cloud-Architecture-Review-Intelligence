@@ -1,6 +1,6 @@
 const path = require("node:path");
 
-const RULES_DIR = path.resolve(__dirname, "../../../data/arb-rules");
+const RULES_DIR = path.resolve(__dirname, "../../data/arb-rules");
 
 let _cachedRules = null;
 

@@ -9,6 +9,13 @@ prefix_short    = "arbrev"
 alert_email     = "your-email@example.com"
 budget_amount   = 60
 
+# ARB review chat deployment. model-router is the preferred deployment because
+# it routes prompts to eligible underlying models without deploying each one.
+model_router_deployment_name = "model-router"
+model_router_version         = "2025-11-18"
+model_router_capacity        = 125
+foundry_project_endpoint     = "https://ai-arb-review-prod.services.ai.azure.com/api/projects/arb-review-proj"
+
 # GitHub Actions federated identity principal ID
 # Run: az ad sp show --id <app-id> --query id -o tsv
 github_actions_principal_id = "<github-actions-service-principal-object-id>"

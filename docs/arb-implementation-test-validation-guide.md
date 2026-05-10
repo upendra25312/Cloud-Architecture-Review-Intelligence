@@ -59,10 +59,10 @@ az role assignment list \
 Run before provisioning — quota requests take up to 24 hours.
 
 ```bash
-# Check gpt-4.1-mini GlobalStandard quota in East US 2
+# Check model-router GlobalStandard quota in East US 2
 az cognitiveservices usage list \
   --location eastus2 \
-  --query "[?contains(name.value, 'OpenAI.Standard.gpt-4.1-mini')]" \
+  --query "[?contains(name.value, 'OpenAI.Standard.model-router')]" \
   -o table
 
 # Check text-embedding-3-large quota
@@ -74,7 +74,7 @@ az cognitiveservices usage list \
 
 **Gate 0 — Proceed only if:**
 - [ ] All team members can run `az account show` against the subscription
-- [ ] `gpt-4.1-mini` GlobalStandard quota ≥ 100K TPM available in East US 2
+- [ ] `model-router` GlobalStandard quota ≥ 100K TPM available in East US 2
 - [ ] `text-embedding-3-large` GlobalStandard quota ≥ 120K TPM available in East US 2
 
 ---
@@ -198,13 +198,13 @@ Expected roles for Function App MI (7 total — all Managed Identity, zero keys)
 AI_NAME="ai-arb-review-prod"
 RG="rg-arb-review-prod"
 
-# Deploy gpt-4.1-mini (GlobalStandard, 100K TPM)
+# Deploy model-router (GlobalStandard, 100K TPM)
 az cognitiveservices account deployment create \
   --name $AI_NAME \
   --resource-group $RG \
-  --deployment-name arb-gpt41mini \
-  --model-name gpt-4.1-mini \
-  --model-version 2025-04-14 \
+  --deployment-name model-router \
+  --model-name model-router \
+  --model-version 2025-11-18 \
   --model-format OpenAI \
   --sku-name GlobalStandard \
   --sku-capacity 100
@@ -307,7 +307,7 @@ AGENT_ID=$(curl -s -X POST \
   -H "Content-Type: application/json" \
   -d "$(jq -n \
     --arg name "ARB-Review-Agent" \
-    --arg model "arb-gpt41mini" \
+    --arg model "model-router" \
     --arg instructions "$SYSTEM_PROMPT" \
     --arg vsid "$VECTOR_STORE_ID" \
     '{
@@ -1225,10 +1225,10 @@ If the monthly cost alert fires at $40:
 
 1. Check which resource is consuming most: **Azure portal → Cost Management → Cost by resource**
 2. Highest likely culprits in order:
-   - `gpt-4.1-mini` token usage spike → check if any review loop is retrying repeatedly
+   - `model-router` token usage spike → check if any review loop is retrying repeatedly
    - Document Intelligence pages → check if large batches are being re-extracted
    - Storage transactions → check for runaway polling loops from frontend
-3. If `gpt-4.1-mini` cost is spike driver: check App Insights for agent runs > 50K input tokens (indicates prompt bloat)
+3. If `model-router` cost is spike driver: check App Insights for agent runs > 50K input tokens (indicates prompt bloat)
 4. If projected to exceed $60: disable agent review endpoint temporarily via Function App setting `DISABLE_AGENT_REVIEW=true` until root cause is fixed
 
 ### Rollback Procedure

@@ -1,11 +1,12 @@
 # AI Services account — hosts OpenAI model deployments and Foundry Agents API endpoint
 resource "azurerm_cognitive_account" "ai_services" {
-  name                  = "ai-${var.prefix}-${var.env}"
-  location              = azurerm_resource_group.main.location
-  resource_group_name   = azurerm_resource_group.main.name
-  kind                  = "AIServices"
-  sku_name              = "S0"
-  custom_subdomain_name = "ai-${var.prefix}-${var.env}"
+  name                       = "ai-${var.prefix}-${var.env}"
+  location                   = azurerm_resource_group.main.location
+  resource_group_name        = azurerm_resource_group.main.name
+  kind                       = "AIServices"
+  sku_name                   = "S0"
+  custom_subdomain_name      = "ai-${var.prefix}-${var.env}"
+  project_management_enabled = true
 
   identity {
     type = "SystemAssigned"
@@ -17,20 +18,25 @@ resource "azurerm_cognitive_account" "ai_services" {
   tags = azurerm_resource_group.main.tags
 }
 
-# gpt-4.1-mini — primary reasoning model for ARB agent reviews
-resource "azurerm_cognitive_deployment" "gpt41mini" {
-  name                 = "arb-gpt41mini"
+moved {
+  from = azurerm_cognitive_deployment.gpt41mini
+  to   = azurerm_cognitive_deployment.model_router
+}
+
+# model-router — routes each ARB review prompt to the best eligible chat model
+resource "azurerm_cognitive_deployment" "model_router" {
+  name                 = var.model_router_deployment_name
   cognitive_account_id = azurerm_cognitive_account.ai_services.id
 
   model {
     format  = "OpenAI"
-    name    = "gpt-4.1-mini"
-    version = var.gpt_model_version
+    name    = "model-router"
+    version = var.model_router_version
   }
 
   sku {
     name     = "GlobalStandard"
-    capacity = 100 # 100K TPM
+    capacity = var.model_router_capacity
   }
 }
 
@@ -51,7 +57,7 @@ resource "azurerm_cognitive_deployment" "embedding" {
   }
 
   # Deploy sequentially to avoid capacity conflicts
-  depends_on = [azurerm_cognitive_deployment.gpt41mini]
+  depends_on = [azurerm_cognitive_deployment.model_router]
 }
 
 # Azure Document Intelligence — PDF/DOCX extraction (Free: 500 pages/month)

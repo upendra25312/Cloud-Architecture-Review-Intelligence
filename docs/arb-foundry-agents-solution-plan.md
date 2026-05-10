@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary *(Senior Director, Cloud Solutions Architecture)*
 
-The ARB Review solution will be re-deployed from scratch in a new Azure subscription using **Azure AI Foundry Agents API** as the AI backbone. This eliminates the Chat Completions boilerplate, delegates system prompt management to the Foundry portal, and enables built-in File Search (vector retrieval) without requiring Azure AI Search to leave the Free tier.
+The ARB Review solution will be re-deployed from scratch in a new Azure subscription using **Azure AI Foundry Agents API** as the AI backbone. The primary chat deployment is **model-router**, so the runtime can route each ARB prompt to the most suitable eligible model without deploying every underlying GPT model separately. This eliminates the Chat Completions boilerplate, delegates system prompt management to the Foundry portal, and enables built-in File Search (vector retrieval) without requiring Azure AI Search to leave the Free tier.
 
 **Key strategic decisions:**
 - Foundry Agents API replaces raw Chat Completions — cleaner separation of AI logic from application code
@@ -46,7 +46,7 @@ The ARB Review solution will be re-deployed from scratch in a new Azure subscrip
 │  │  ├ Blob (files) │  │  ┌────────────────┐  │  │ arb-docs    ││
 │  │  ├ Table (jobs) │  │  │ ARB-Review-    │  │  │ index       ││
 │  │  └ Queue        │  │  │ Agent          │  │  └──────────────┘│
-│  └─────────────────┘  │  │ ├ gpt-4.1-mini │  │                  │
+│  └─────────────────┘  │  │ ├ model-router │  │                  │
 │                        │  │ ├ System Prompt│  │  ┌──────────────┐│
 │  ┌─────────────────┐  │  │ └ File Search  │  │  │  Document   ││
 │  │  Key Vault      │  │  │   vector store │  │  │  Intel.     ││
@@ -105,7 +105,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 | Model | Deployment Name | SKU | TPM |
 |---|---|---|---|
-| `gpt-4.1-mini` | `arb-gpt41mini` | GlobalStandard | 100K |
+| `model-router` | `model-router` | GlobalStandard | 100K |
 | `text-embedding-3-large` | `arb-embedding` | GlobalStandard | 120K |
 
 ---
@@ -130,8 +130,8 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 | Component | Cost | Notes |
 |---|---|---|
-| gpt-4.1-mini input (~14K tokens) | $0.0056 | User message with review data |
-| gpt-4.1-mini output (~4K tokens) | $0.0064 | Findings + scorecard JSON |
+| model-router input (~14K tokens) | Variable by routed model | User message with review data |
+| model-router output (~4K tokens) | Variable by routed model | Findings + scorecard JSON |
 | File Search tool overhead (~2K tokens) | $0.0008 | Agent retrieves knowledge chunks |
 | text-embedding-3-large (~1K tokens) | $0.00013 | Doc chunk indexing at upload |
 | Document Intelligence | $0 | Within 500-page free tier |
@@ -157,7 +157,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 ### Phase 0 — Prerequisites (Day 0, ~2 hours)
 - [ ] Confirm Contributor access to target Azure subscription
-- [ ] Confirm East US 2 quota for `gpt-4.1-mini` GlobalStandard (request if needed — can take 24h)
+- [ ] Confirm East US 2 quota for `model-router` GlobalStandard (request if needed — can take 24h)
 - [ ] Clone source repository + confirm code is available
 - [ ] `az login` + `az account set --subscription <your-subscription-id>`
 
@@ -168,7 +168,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 - [ ] Assign RBAC roles (Managed Identity → Storage, AI Services, Search, Key Vault)
 
 ### Phase 2 — Foundry Agent Setup (Day 1–2, ~2 hours)
-- [ ] Deploy `gpt-4.1-mini` + `text-embedding-3-large` model deployments
+- [ ] Deploy `model-router` + `text-embedding-3-large` model deployments
 - [ ] Upload 3 knowledge files to Foundry
 - [ ] Create vector store from knowledge files
 - [ ] Create `ARB-Review-Agent` with system prompt + File Search tool
@@ -232,7 +232,7 @@ az deployment group create \
 **AI Services (S0)** — Hosts both model deployments and the Foundry Agents API endpoint. System-assigned managed identity enabled.
 
 **Model Deployments:**
-- `gpt-4.1-mini` on GlobalStandard (100K TPM) — primary reasoning model
+- `model-router` on GlobalStandard (100K TPM) — primary chat deployment for ARB reviews
 - `text-embedding-3-large` on GlobalStandard (120K TPM) — vector store embeddings
 
 **AI Foundry Hub + Project** — Hub owns Key Vault and Storage references. Project is the agent host. Hub MI gets Storage Blob Data Contributor for knowledge file access.
@@ -397,7 +397,7 @@ AGENT_ID=$(curl -s -X POST \
   -H "Content-Type: application/json" \
   -d "{
     \"name\": \"ARB-Review-Agent\",
-    \"model\": \"arb-gpt41mini\",
+    \"model\": \"model-router\",
     \"instructions\": \"<system prompt>\",
     \"tools\": [{\"type\": \"file_search\"}],
     \"tool_resources\": {
@@ -439,7 +439,7 @@ All roles use **Managed Identity — no secrets in code or config files** except
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| `gpt-4.1-mini` quota not available in East US 2 | Medium | High | Pre-check quota Day 0; fallback to East US or West US 2 |
+| `model-router` quota not available in East US 2 | Medium | High | Pre-check quota Day 0; fallback to East US or West US 2 |
 | Agents API polling timeout on large reviews | Medium | Medium | 4-minute max poll; fallback to `buildFallbackAgentReview()` already implemented |
 | Free AI Search 50 MB limit hit | Low | Medium | Monitor index size via App Insights; cleanup old review indexes on expiry |
 | Static Web App Free tier rate limit | Low | Low | Generous limits; upgrade to Standard ($9/month) if needed |

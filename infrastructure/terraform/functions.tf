@@ -47,16 +47,19 @@ resource "azurerm_linux_function_app" "main" {
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.main.connection_string
 
     # Foundry Agents API — Managed Identity auth (no key needed)
-    "FOUNDRY_PROJECT_ENDPOINT" = "https://${azapi_resource.foundry_project.name}.${var.location}.api.azureml.ms"
+    "FOUNDRY_PROJECT_ENDPOINT" = var.foundry_project_endpoint
+    "FOUNDRY_AGENT_NAME"       = "cari-arb-review-agent"
+    "FOUNDRY_AGENT_VERSION"    = "7"
+    "FOUNDRY_AGENT_MODEL"      = azurerm_cognitive_deployment.model_router.name
 
     # AI Search — Managed Identity auth (Search Index Data Contributor role assigned in rbac.tf)
-    "AZURE_SEARCH_ENDPOINT"    = "https://${azurerm_search_service.main.name}.search.windows.net"
-    "AZURE_SEARCH_INDEX_NAME"  = "arb-documents"
-    "AZURE_SEARCH_USE_MI"      = "true" # Signals code to use DefaultAzureCredential
+    "AZURE_SEARCH_ENDPOINT"   = "https://${azurerm_search_service.main.name}.search.windows.net"
+    "AZURE_SEARCH_INDEX_NAME" = "arb-documents"
+    "AZURE_SEARCH_USE_MI"     = "true" # Signals code to use DefaultAzureCredential
 
     # Document Intelligence — Managed Identity auth (Cognitive Services User role in rbac.tf)
-    "AZURE_DOCINT_ENDPOINT"    = azurerm_cognitive_account.doc_intel.endpoint
-    "AZURE_DOCINT_USE_MI"      = "true" # Signals code to use DefaultAzureCredential
+    "AZURE_DOCINT_ENDPOINT" = azurerm_cognitive_account.doc_intel.endpoint
+    "AZURE_DOCINT_USE_MI"   = "true" # Signals code to use DefaultAzureCredential
 
     # Storage — Managed Identity auth for blob/table ops; key used only by Functions host
     "AZURE_STORAGE_ACCOUNT_NAME" = azurerm_storage_account.main.name
@@ -73,8 +76,15 @@ resource "azurerm_linux_function_app" "main" {
 
   tags = azurerm_resource_group.main.tags
 
+  lifecycle {
+    ignore_changes = [
+      app_settings,
+      auth_settings_v2,
+    ]
+  }
+
   depends_on = [
-    azurerm_cognitive_deployment.gpt41mini,
+    azurerm_cognitive_deployment.model_router,
     azapi_resource.foundry_project,
   ]
 }

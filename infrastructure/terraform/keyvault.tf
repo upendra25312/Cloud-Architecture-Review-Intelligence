@@ -5,8 +5,8 @@ resource "azurerm_key_vault" "main" {
   resource_group_name        = azurerm_resource_group.main.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "standard"
-  rbac_authorization_enabled = true   # RBAC mode — no legacy access policies
-  purge_protection_enabled   = false  # Allow hard-delete in non-prod
+  rbac_authorization_enabled = true  # RBAC mode — no legacy access policies
+  purge_protection_enabled   = false # Allow hard-delete in non-prod
   soft_delete_retention_days = 7
 
   tags = azurerm_resource_group.main.tags
@@ -28,7 +28,10 @@ resource "azurerm_key_vault_secret" "foundry_agent_id" {
   key_vault_id = azurerm_key_vault.main.id
 
   lifecycle {
-    ignore_changes = [value] # Phase 2 CLI command sets the real value
+    ignore_changes = [
+      value, # Phase 2 CLI command sets the real value
+      tags,
+    ]
   }
 
   depends_on = [azurerm_role_assignment.deployer_kv_secrets_officer]
