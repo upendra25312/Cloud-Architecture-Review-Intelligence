@@ -24,9 +24,9 @@ export function AuthStatusChip() {
             key={provider.id}
             href={buildLoginUrl(provider.id)}
             className="auth-chip"
-            title={`Continue with ${provider.label}`}
+            title={`Sign in with ${provider.label}`}
           >
-            {provider.label}
+            Sign in with {provider.label}
           </a>
         ))}
       </div>

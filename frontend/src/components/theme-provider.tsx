@@ -95,10 +95,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
               <img src="/rackspace-icon.jpg" alt="Rackspace logo" className="site-footer-logo" />
               <span className="site-footer-brand-name">Cloud Architecture Review Intelligence</span>
               <p className="site-footer-brand-desc">
-                Evidence-backed Azure review guidance for internal Rackspace teams. Aligned to Microsoft Well-Architected Framework, CAF, ALZ, and Zero Trust.
+                Evidence-backed Azure architecture review guidance for internal Rackspace teams.
+                Aligned to Microsoft WAF, CAF, ALZ, and Zero Trust.
               </p>
-              {/* Updated footer copy for enterprise branding */}
-              <p className="site-footer-legal">© {new Date().getFullYear()} Rackspace Technology. Internal use only.</p>
             </div>
 
             {/* Trust links */}
@@ -128,9 +127,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="site-footer-copy">
-            <span>© 2026 Rackspace Technology. Rackspace Cloud Architecture Review Intelligence v0.1.0.</span>
-            <span className="site-footer-copy-sep">·</span>
-            <span>Built on Azure Static Web Apps · Microsoft Learn-backed guidance · Rackspace internal use</span>
+            <span>© 2026 Rackspace Technology. Internal use only. v0.1.0.</span>
           </div>
         </footer>
       </div>

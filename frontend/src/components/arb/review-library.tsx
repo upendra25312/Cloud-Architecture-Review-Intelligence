@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -55,6 +54,30 @@ function getPrimaryHref(review: ArbReviewSummary, focus: ArbReviewLibraryFocus):
 
 const MAX_ARB_UPLOAD_FILE_SIZE = 20 * 1024 * 1024;
 const MAX_ARB_UPLOAD_TOTAL_SIZE = 100 * 1024 * 1024;
+
+const HERO_TRUST_CHIPS = [
+  "Microsoft Learn-backed",
+  "Human sign-off",
+  "Rackspace internal",
+  "Board-ready export",
+  "WAF + CAF + ALZ",
+];
+
+const LANDING_WORKFLOW_STEPS = [
+  "Upload",
+  "Extract Evidence",
+  "Score Findings",
+  "Review Decisions",
+  "Export Pack",
+];
+
+const EXAMPLE_SCORES = [
+  { label: "Security", score: 84 },
+  { label: "Reliability", score: 91 },
+  { label: "Cost", score: 72 },
+  { label: "Operations", score: 88 },
+  { label: "Architecture", score: 78 },
+];
 
 function formatFileSize(bytes: number) {
   if (bytes >= 1024 * 1024) {
@@ -288,72 +311,115 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
   // --- Session diagnostics always visible ---
   if (!principal) {
     return (
-      <div className="arb-signin-hero arb-session-diagnostics">
-        <img src="/rackspace-icon.jpg" alt="Rackspace Technology" className="arb-signin-mark" />
-        <p className="arb-signin-kicker">Architecture review mode</p>
-        <h1 className="arb-signin-headline">
-          Upload your design documents and get a framework-validated architecture review in minutes.
-        </h1>
-        {ENABLED_AUTH_PROVIDERS.map((provider, index) => (
-          <a
-            key={provider.id}
-            href={buildLoginUrl(provider.id)}
-            className={index === 0 ? "arb-signin-cta" : "arb-signin-cta arb-signin-cta--secondary"}
-            style={index > 0 ? { marginTop: 10 } : undefined}
-          >
-            Sign in with {provider.label} to start →
-          </a>
-        ))}
-        <ul className="arb-signin-bullets">
-          <li>PDF, Word, PowerPoint (.pptx), or Markdown — drag and drop your documents</li>
-          <li>Automated coverage across WAF · CAF · ALZ · HA/DR · Security · Networking · Monitoring</li>
-          <li>Every finding scored 0–100 and linked to a Microsoft Learn source</li>
-          <li>Sign in is required to save uploads, findings, exports, and final sign-off</li>
-        </ul>
-
-        <div className="arb-signin-workflow-diagram" aria-label="ARB review workflow overview">
-          <Image
-            src="/arb-workflow.png"
-            alt="Review workflow: Evidence Intake → Review Readiness → Findings & Risks → Decisions & Exceptions → Board Pack Export"
-            width={900}
-            height={315}
-            className="arb-signin-workflow-img"
-            priority={false}
-          />
-        </div>
-
-        <div className="arb-preview-card" aria-label="Example review output">
-          <div className="arb-preview-header">
-            <div>
-              <p className="arb-preview-label">Example output</p>
-              <p className="arb-preview-project">Contoso Landing Zone Modernization</p>
+      <div className="arb-landing-experience arb-session-diagnostics">
+        <section className="arb-product-hero" aria-labelledby="arb-landing-title">
+          <div className="arb-product-hero-copy">
+            <p className="arb-signin-kicker">Rackspace internal product</p>
+            <h1 id="arb-landing-title" className="arb-signin-headline">
+              Architecture reviews from evidence, not guesswork.
+            </h1>
+            <p className="arb-signin-sub">
+              Upload Azure design documents and get a framework-aligned review across WAF, CAF, ALZ, security, networking, and migration readiness.
+            </p>
+            <div className="arb-signin-actions" aria-label="Review actions">
+              {ENABLED_AUTH_PROVIDERS.map((provider, index) => (
+                <a
+                  key={provider.id}
+                  href={buildLoginUrl(provider.id)}
+                  className={index === 0 ? "arb-signin-cta" : "arb-signin-cta arb-signin-cta--secondary"}
+                >
+                  Sign in with {provider.label}
+                </a>
+              ))}
+              <a href="/demo" className="arb-signin-cta arb-signin-cta--secondary">
+                View live demo
+              </a>
             </div>
-            <span className="arb-preview-approved">Approved</span>
+            <p className="arb-demo-helper">No account required for demo mode.</p>
+            <div className="arb-trust-chips" aria-label="Product trust signals">
+              {HERO_TRUST_CHIPS.map((chip) => (
+                <span key={chip} className="arb-trust-chip">{chip}</span>
+              ))}
+            </div>
           </div>
-          <div className="arb-preview-domains">
-            {[
-              { label: "Security", score: 84 },
-              { label: "Reliability", score: 91 },
-              { label: "Cost", score: 72 },
-              { label: "Operations", score: 88 },
-              { label: "Architecture", score: 78 },
-            ].map(({ label, score }) => (
-              <div key={label} className="arb-preview-domain-row">
-                <span className="arb-preview-domain-label">{label}</span>
-                <div className="arb-preview-bar-track" aria-hidden="true">
-                  <div className="arb-preview-bar-fill" style={{ width: `${score}%` }} />
+
+          <div className="arb-product-hero-proof">
+            <div className="arb-preview-card" aria-label="Example review output">
+              <div className="arb-preview-header">
+                <div>
+                  <p className="arb-preview-label">Example Output</p>
+                  <p className="arb-preview-project">Contoso Landing Zone Modernization</p>
                 </div>
-                <span className="arb-preview-score">{score}</span>
+                <span className="arb-preview-approved">Status: Approved</span>
               </div>
-            ))}
+              <div className="arb-preview-domains">
+                {EXAMPLE_SCORES.map(({ label, score }) => (
+                  <div key={label} className="arb-preview-domain-row">
+                    <span className="arb-preview-domain-label">{label}</span>
+                    <div
+                      className="arb-preview-bar-track"
+                      role="progressbar"
+                      aria-label={`${label} score ${score} out of 100`}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={score}
+                    >
+                      <div className="arb-preview-bar-fill" style={{ width: `${score}%` }} />
+                    </div>
+                    <span className="arb-preview-score">{score}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="arb-preview-footer">23 findings · 5 framework domains · Board-ready sign-off</p>
+            </div>
+
+            <ol className="arb-compact-workflow arb-compact-workflow--hero" aria-label="Compact review workflow">
+              {LANDING_WORKFLOW_STEPS.map((step, index) => (
+                <li key={step} className="arb-compact-workflow-step">
+                  <span className="arb-compact-workflow-icon" aria-hidden="true">{index + 1}</span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
           </div>
-          <p className="arb-preview-footer">23 findings &nbsp;·&nbsp; 5 framework domains &nbsp;·&nbsp; Board-ready sign-off</p>
-        </div>
-        <p className="arb-signin-demo-link">
-          Not ready to sign in?{" "}
-          <a href="/demo" className="arb-signin-demo-anchor">View the live demo →</a>
-          {" "}No account required.
-        </p>
+        </section>
+
+        <section className="arb-workflow-section" aria-labelledby="arb-workflow-title">
+          <div>
+            <p className="arb-section-kicker">How it works</p>
+            <h2 id="arb-workflow-title" className="arb-section-title">Five steps to a board pack.</h2>
+          </div>
+          <ol className="arb-compact-workflow" aria-label="Review workflow">
+            {LANDING_WORKFLOW_STEPS.map((step, index) => (
+              <li key={step} className="arb-compact-workflow-step">
+                <span className="arb-compact-workflow-icon" aria-hidden="true">{index + 1}</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <EvidenceGuidancePanel />
+
+        <section className="arb-start-review-panel" aria-labelledby="arb-start-review-title">
+          <div>
+            <p className="arb-section-kicker">Start review</p>
+            <h2 id="arb-start-review-title" className="arb-section-title">Prepare evidence, then sign in to upload.</h2>
+            <p className="arb-start-review-copy">
+              Keep SOWs, HLDs, landing zone diagrams, workbooks, and migration notes ready before opening the secure review workspace.
+            </p>
+          </div>
+          <div className="arb-start-review-actions">
+            {ENABLED_AUTH_PROVIDERS.map((provider) => (
+              <a key={provider.id} href={buildLoginUrl(provider.id)} className="arb-signin-cta">
+                Sign in with {provider.label}
+              </a>
+            ))}
+            <a href="/demo" className="arb-signin-cta arb-signin-cta--secondary">
+              View live demo
+            </a>
+          </div>
+        </section>
       </div>
     );
   }
