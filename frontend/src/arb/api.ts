@@ -372,7 +372,11 @@ export async function deleteArbFile(reviewId: string, fileId: string): Promise<{
 export async function startArbExtraction(reviewId: string): Promise<ArbExtractionStatus> {
   const startResponse = await fetch(`/api/arb/reviews/${reviewId}/extract`, {
     method: "POST",
-    headers: { Accept: "application/json" }
+    headers: {
+      Accept: "application/json",
+      "Cache-Control": "no-store"
+    },
+    cache: "no-store"
   });
 
   if (!startResponse.ok) {
@@ -396,14 +400,7 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
   while (Date.now() - startedAt < maxPollMs) {
     await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
 
-    const statusResponse = await fetch(`/api/arb/reviews/${reviewId}/extract/status`, {
-      headers: { Accept: "application/json" },
-      cache: "no-store"
-    });
-    const payload = await readJsonResponse<{ extraction: ArbExtractionStatus }>(
-      statusResponse,
-      `Unable to load extraction status (${statusResponse.status}).`
-    );
+    const payload = { extraction: await fetchArbExtractionStatus(reviewId) };
 
     if (payload.extraction.state !== "Not Started") {
       return payload.extraction;
@@ -411,6 +408,22 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
   }
 
   throw new Error("Analysis did not report progress within 5 minutes. Refresh this page and check the extraction status.");
+}
+
+export async function fetchArbExtractionStatus(reviewId: string): Promise<ArbExtractionStatus> {
+  const response = await fetch(`/api/arb/reviews/${reviewId}/extract/status`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Cache-Control": "no-store"
+    },
+    cache: "no-store"
+  });
+  const payload = await readJsonResponse<{ extraction: ArbExtractionStatus }>(
+    response,
+    `Unable to load extraction status (${response.status}).`
+  );
+  return payload.extraction;
 }
 
 export async function fetchArbRequirements(reviewId: string): Promise<ArbRequirement[]> {

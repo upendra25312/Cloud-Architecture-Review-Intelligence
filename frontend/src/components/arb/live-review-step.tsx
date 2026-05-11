@@ -10,6 +10,7 @@ import {
   fetchArbEvidence,
   fetchArbActions,
   fetchArbDecision,
+  fetchArbExtractionStatus,
   fetchArbExports,
   fetchArbFindings,
   fetchArbRequirements,
@@ -262,6 +263,7 @@ export function ArbLiveReviewStep(props: {
   const [evidenceFacts, setEvidenceFacts] = useState<ArbEvidenceFact[]>([]);
   const [exportArtifacts, setExportArtifacts] = useState<ArbExportArtifact[]>([]);
   const [extractionStatus, setExtractionStatus] = useState<ArbExtractionStatus | null>(null);
+  const [extractionStatusRefreshing, setExtractionStatusRefreshing] = useState(false);
   const [confidentialityConfirmed, setConfidentialityConfirmed] = useState(false);
   const [uploadSaving, setUploadSaving] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -438,6 +440,22 @@ export function ArbLiveReviewStep(props: {
     }
   }
 
+  async function refreshExtractionStatus() {
+    try {
+      setExtractionStatusRefreshing(true);
+      const nextExtraction = await fetchArbExtractionStatus(reviewId);
+      setExtractionStatus(nextExtraction);
+    } catch (refreshError) {
+      setUploadError(
+        refreshError instanceof Error
+          ? refreshError.message
+          : "Unable to refresh extraction status."
+      );
+    } finally {
+      setExtractionStatusRefreshing(false);
+    }
+  }
+
   function renderOutputArtifactsCard() {
     return (
       <section className="trace-card arb-summary-card">
@@ -555,6 +573,16 @@ export function ArbLiveReviewStep(props: {
       cancelled = true;
     };
   }, [reviewId, activeStep]);
+
+  useEffect(() => {
+    if (activeStep !== "upload" || !extractionStatus) return;
+
+    const intervalId = window.setInterval(() => {
+      void refreshExtractionStatus();
+    }, extractionStatus.visualExtractionErrors?.length ? 5000 : 15000);
+
+    return () => window.clearInterval(intervalId);
+  }, [activeStep, extractionStatus?.jobId, extractionStatus?.state, extractionStatus?.visualExtractionErrors?.length, reviewId]);
 
   const shellReview =
     review ??
@@ -928,8 +956,19 @@ export function ArbLiveReviewStep(props: {
             </p>
           ) : extractionStatus ? (
             <div className="arb-upload-status arb-upload-status-progress" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span>
-                Status: {extractionStatus.state} · Evidence readiness: {extractionStatus.evidenceReadinessState} · Extraction confidence: {extractionStatus.extractionConfidencePercent}%
+              <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                <span>
+                  Status: {extractionStatus.state} · Evidence readiness: {extractionStatus.evidenceReadinessState} · Extraction confidence: {extractionStatus.extractionConfidencePercent}%
+                </span>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  style={{ minHeight: 32, padding: "6px 12px" }}
+                  disabled={extractionStatusRefreshing}
+                  onClick={() => void refreshExtractionStatus()}
+                >
+                  {extractionStatusRefreshing ? "Refreshing…" : "Refresh status"}
+                </button>
               </span>
               <span>
                 Text: {extractionStatus.textExtractionStatus ?? "Completed"} · Tables: {extractionStatus.tableExtractionStatus ?? "CompletedOrNotApplicable"} · Figures: {extractionStatus.figureExtractionStatus ?? "NotStarted"} · Visual analysis: {extractionStatus.visualAnalysisStatus ?? "NotStarted"} · Visual evidence: {extractionStatus.visualEvidenceCount ?? 0}
