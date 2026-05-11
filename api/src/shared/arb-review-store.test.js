@@ -531,6 +531,52 @@ test("starting extraction produces requirements and evidence from text files", a
   }
 });
 
+test("single comprehensive design pack can start review with gaps when SOW is missing", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-design-pack",
+    userDetails: "designpack@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "design-pack",
+      projectName: "Design Pack"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "Azure_Landing_Zone_Architecture.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from(
+          [
+            "Azure landing zone architecture must define management groups and subscription governance.",
+            "Security controls include Azure Firewall, private link, RBAC, policy, and Zero Trust identity.",
+            "Network topology uses hub spoke virtual networks, private endpoints, and DNS resolution.",
+            "Cost assumptions include SKU choices, budget controls, right sizing, and reservation planning.",
+            "High availability and DR include availability zones, backup, recovery, RTO, and RPO targets.",
+            "Operations evidence includes Azure Monitor, Log Analytics, alerting, automation, and deployment pipelines."
+          ].join("\n")
+        )
+      }
+    ]);
+
+    const extraction = await store.startArbExtraction(principal, created.reviewId);
+    const review = await store.getArbReview(principal, created.reviewId);
+
+    assert.equal(extraction.state, "Completed");
+    assert.equal(extraction.evidenceReadinessState, "Ready with Gaps");
+    assert.equal(review.evidenceReadinessState, "Ready with Gaps");
+    assert.equal(review.requiredEvidencePresent, false);
+    assert.deepEqual(review.missingRequiredItems, ["sow"]);
+    assert.match(review.readinessNotes, /standalone SOW is not uploaded/i);
+  } finally {
+    cleanup();
+  }
+});
+
 test("starting extraction produces visual evidence from Draw.io diagrams", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const principal = {

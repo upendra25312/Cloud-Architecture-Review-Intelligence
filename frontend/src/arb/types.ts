@@ -158,6 +158,9 @@ export interface ArbExtractionStatus {
   visualAnalysisStatus?: string;
   visualEvidenceCount?: number;
   visualExtractionErrors?: string[];
+  missingRequiredItems?: string[];
+  missingRecommendedItems?: string[];
+  readinessNotes?: string;
   lastStartedAt: string | null;
   lastCompletedAt: string | null;
   fileStatuses: ArbExtractionFileStatus[];

@@ -111,6 +111,27 @@ function buildBullets(
   }
 }
 
+function formatEvidenceCategoryLabel(value: string) {
+  switch (value) {
+    case "sow":
+      return "Statement of Work / scope";
+    case "design_doc":
+      return "Architecture design document";
+    case "diagram":
+      return "Architecture diagram";
+    case "security_note":
+      return "Security notes";
+    case "cost_assumptions":
+      return "Cost assumptions";
+    case "dr_ha_note":
+      return "HA/DR notes";
+    case "ops_monitoring_note":
+      return "Operations and monitoring notes";
+    default:
+      return value.replace(/_/g, " ");
+  }
+}
+
 function summarizeActions(actions: ArbAction[]) {
   const openActions = actions.filter((action) => action.status !== "Closed");
   const blockedActions = openActions.filter((action) => action.status === "Blocked");
@@ -973,6 +994,21 @@ export function ArbLiveReviewStep(props: {
               <span>
                 Text: {extractionStatus.textExtractionStatus ?? "Completed"} · Tables: {extractionStatus.tableExtractionStatus ?? "CompletedOrNotApplicable"} · Figures: {extractionStatus.figureExtractionStatus ?? "NotStarted"} · Visual analysis: {extractionStatus.visualAnalysisStatus ?? "NotStarted"} · Visual evidence: {extractionStatus.visualEvidenceCount ?? 0}
               </span>
+              {extractionStatus.readinessNotes ? (
+                <span>{extractionStatus.readinessNotes}</span>
+              ) : null}
+              {extractionStatus.missingRequiredItems?.length ? (
+                <span>
+                  Missing required artifact for final sign-off:{" "}
+                  {extractionStatus.missingRequiredItems.map(formatEvidenceCategoryLabel).join(", ")}.
+                </span>
+              ) : null}
+              {extractionStatus.missingRecommendedItems?.length ? (
+                <span>
+                  Recommended supporting artifacts still missing:{" "}
+                  {extractionStatus.missingRecommendedItems.map(formatEvidenceCategoryLabel).join(", ")}.
+                </span>
+              ) : null}
               {extractionStatus.visualExtractionErrors?.length ? (
                 <span style={{ color: "#B45309" }}>
                   Visual evidence extraction failed: {extractionStatus.visualExtractionErrors.join(" | ")}. The review may not include all diagram-derived architecture findings.

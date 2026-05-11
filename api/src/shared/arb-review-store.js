@@ -937,6 +937,55 @@ function buildReadinessFromFiles(files) {
   };
 }
 
+function assessExtractedContentReadiness({ files, requirements, evidence, visualEvidence }) {
+  const fileList = Array.isArray(files) ? files : [];
+  const requirementList = Array.isArray(requirements) ? requirements : [];
+  const evidenceList = Array.isArray(evidence) ? evidence : [];
+  const visualList = Array.isArray(visualEvidence) ? visualEvidence : [];
+  const combinedText = [
+    ...evidenceList.map((item) => `${item.factType || ""} ${item.summary || ""} ${item.sourceExcerpt || ""}`),
+    ...visualList.map((item) => `${item.summary || ""} ${(item.detectedAzureServices || []).join(" ")} ${(item.detectedArchitecturePatterns || []).join(" ")}`)
+  ].join("\n");
+
+  const hasCompletedDesignEvidence = fileList.some(
+    (file) =>
+      file.extractionStatus === "Completed" &&
+      ["design_doc", "diagram", "supporting_artifact"].includes(file.logicalCategory)
+  );
+  const coveredRecommendedItems = new Set();
+
+  if (visualList.length > 0 || fileList.some((file) => file.logicalCategory === "diagram")) {
+    coveredRecommendedItems.add("diagram");
+  }
+  if (/\bsecurity\b|\bzero trust\b|\brbac\b|\bpolicy\b|\bdefender\b|\bfirewall\b|\bprivate link\b/i.test(combinedText)) {
+    coveredRecommendedItems.add("security_note");
+  }
+  if (/\bcost\b|\bpricing\b|\bbudget\b|\bsku\b|\bright.?siz/i.test(combinedText)) {
+    coveredRecommendedItems.add("cost_assumptions");
+  }
+  if (/\bdr\b|\bha\b|\bavailability\b|\bdisaster recovery\b|\bbackup\b|\brecovery\b|\bresilien/i.test(combinedText)) {
+    coveredRecommendedItems.add("dr_ha_note");
+  }
+  if (/\bmonitor\b|\blog analytics\b|\balert\b|\bautomation\b|\boperations\b|\bobservability\b|\bpipeline\b/i.test(combinedText)) {
+    coveredRecommendedItems.add("ops_monitoring_note");
+  }
+
+  const recommendedCoverage =
+    RECOMMENDED_LOGICAL_CATEGORIES.length === 0
+      ? 1
+      : coveredRecommendedItems.size / RECOMMENDED_LOGICAL_CATEGORIES.length;
+
+  return {
+    sufficient:
+      hasCompletedDesignEvidence &&
+      requirementList.length >= 3 &&
+      (evidenceList.length >= 5 || visualList.length > 0) &&
+      coveredRecommendedItems.size >= 3,
+    coveredRecommendedItems: [...coveredRecommendedItems],
+    recommendedCoverage: Number(recommendedCoverage.toFixed(2))
+  };
+}
+
 function buildDefaultExtractionStatus(review) {
   return {
     reviewId: review.reviewId,
@@ -3151,12 +3200,30 @@ async function startArbExtraction(principal, reviewId) {
   const derived = deriveRequirementsAndEvidence(review, nextFilesWithVisualEvidence, fileTexts);
   const completedAt = new Date().toISOString();
   const readiness = buildReadinessFromFiles(nextFilesWithVisualEvidence);
+  const contentReadiness = assessExtractedContentReadiness({
+    files: nextFilesWithVisualEvidence,
+    requirements: derived.requirements,
+    evidence: derived.evidence,
+    visualEvidence
+  });
+  const missingRecommendedItems = readiness.missingRecommendedItems.filter(
+    (item) => !contentReadiness.coveredRecommendedItems.includes(item)
+  );
+  const recommendedEvidenceCoverage = Math.max(
+    readiness.recommendedEvidenceCoverage,
+    contentReadiness.recommendedCoverage
+  );
+  const hasEnoughExtractedEvidence = readiness.requiredEvidencePresent || contentReadiness.sufficient;
   const evidenceReadinessState =
-    derived.requirements.length > 0 && readiness.requiredEvidencePresent
-      ? readiness.missingRecommendedItems.length === 0
+    derived.requirements.length > 0 && hasEnoughExtractedEvidence
+      ? readiness.requiredEvidencePresent && missingRecommendedItems.length === 0
         ? "Ready for Review"
         : "Ready with Gaps"
       : "Insufficient Evidence";
+  const readinessNotes =
+    contentReadiness.sufficient && !readiness.requiredEvidencePresent
+      ? "A standalone SOW is not uploaded, but the extracted architecture pack contains enough design, visual, security, cost, HA/DR, and operations evidence to start review with gaps."
+      : readiness.readinessNotes;
   const extractionState = extractionErrors.length > 0 || visualExtractionErrors.length > 0 ? "Completed with Issues" : "Completed";
   const extractionConfidencePercent = calculateExtractionConfidencePercent({
     files: nextFilesWithVisualEvidence,
@@ -3175,11 +3242,11 @@ async function startArbExtraction(principal, reviewId) {
     workflowState: "Review In Progress",
     evidenceReadinessState,
     requiredEvidencePresent: readiness.requiredEvidencePresent,
-    recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
+    recommendedEvidenceCoverage,
     missingRequiredItems: readiness.missingRequiredItems,
-    missingRecommendedItems: readiness.missingRecommendedItems,
-    readinessOutcome: readiness.readinessOutcome,
-    readinessNotes: readiness.readinessNotes,
+    missingRecommendedItems,
+    readinessOutcome: evidenceReadinessState,
+    readinessNotes,
     documentCount: nextFilesWithVisualEvidence.length,
     lastUpdated: completedAt
   };
@@ -3210,6 +3277,9 @@ async function startArbExtraction(principal, reviewId) {
     visualEvidenceCount: visualEvidence.length,
     visualExtractionErrors,
     evidenceReadinessState,
+    missingRequiredItems: readiness.missingRequiredItems,
+    missingRecommendedItems,
+    readinessNotes,
     extractionErrors,
     lastStartedAt: startedAt,
     lastCompletedAt: completedAt,
@@ -3241,11 +3311,11 @@ async function startArbExtraction(principal, reviewId) {
       workflowState: "Review In Progress",
       evidenceReadinessState,
       requiredEvidencePresent: readiness.requiredEvidencePresent,
-      recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
-      readinessOutcome: readiness.readinessOutcome,
-      readinessNotes: readiness.readinessNotes,
+      recommendedEvidenceCoverage,
+      readinessOutcome: evidenceReadinessState,
+      readinessNotes,
       missingRequiredItemsJson: JSON.stringify(readiness.missingRequiredItems),
-      missingRecommendedItemsJson: JSON.stringify(readiness.missingRecommendedItems),
+      missingRecommendedItemsJson: JSON.stringify(missingRecommendedItems),
       documentCount: nextFilesWithVisualEvidence.length,
       lastUpdated: completedAt
     },
