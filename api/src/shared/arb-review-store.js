@@ -561,21 +561,21 @@ function extractOfficeMediaArtifacts(buffer, fileName) {
 
 async function renderOfficeVisualArtifacts(buffer, fileName) {
   const ext = getFileExtension(fileName);
-  if (![".docx", ".pptx", ".xlsx"].includes(ext)) {
+  if (![".docx", ".pptx", ".xlsx", ".pdf"].includes(ext)) {
     return { artifacts: [], warnings: [] };
   }
 
   if (!OFFICE_RENDERER_ENDPOINT) {
     return {
       artifacts: [],
-      warnings: [`${fileName}: Office renderer is not configured (OFFICE_RENDERER_ENDPOINT missing).`]
+      warnings: [`${fileName}: document renderer is not configured (OFFICE_RENDERER_ENDPOINT missing).`]
     };
   }
 
   if (buffer.length > OFFICE_RENDERER_MAX_FILE_BYTES) {
     return {
       artifacts: [],
-      warnings: [`${fileName}: Office renderer skipped because file exceeds ${OFFICE_RENDERER_MAX_FILE_BYTES} bytes.`]
+      warnings: [`${fileName}: document renderer skipped because file exceeds ${OFFICE_RENDERER_MAX_FILE_BYTES} bytes.`]
     };
   }
 
@@ -595,7 +595,9 @@ async function renderOfficeVisualArtifacts(buffer, fileName) {
       body: JSON.stringify({
         fileName,
         fileBase64: buffer.toString("base64"),
-        maxPages: OFFICE_RENDERER_MAX_PAGES
+        maxPages: ext === ".pdf" ? 6 : OFFICE_RENDERER_MAX_PAGES,
+        startPage: ext === ".pdf" ? 4 : undefined,
+        endPage: ext === ".pdf" ? 9 : undefined
       })
     });
 
@@ -620,13 +622,19 @@ async function renderOfficeVisualArtifacts(buffer, fileName) {
         contentType: image.contentType || "image/png",
         sourceName: image.fileName || `${fileName}-render-${image.index || artifacts.length + 1}.png`,
         extension: ".png",
-        summaryText: `Rendered Office visual artifact ${image.index || artifacts.length + 1} from ${fileName}.`,
+        summaryText: ext === ".pdf"
+          ? `Rendered PDF page ${image.sourcePage || image.index || artifacts.length + 1} from ${fileName}.`
+          : `Rendered Office visual artifact ${image.index || artifacts.length + 1} from ${fileName}.`,
         sourcePage: image.sourcePage ?? null,
         sourceSlide: image.sourceSlide ?? null,
         sourceSheet: image.sourceSheet ?? null,
-        sourceExcerpt: `Rendered Office visual artifact from ${fileName}.`,
+        sourceExcerpt: ext === ".pdf"
+          ? `Rendered full-page PDF visual artifact from ${fileName}.`
+          : `Rendered Office visual artifact from ${fileName}.`,
         extractionSource:
-          ext === ".pptx"
+          ext === ".pdf"
+            ? "PDF page render fallback + multimodal analysis"
+            : ext === ".pptx"
             ? "Office slide render fallback + multimodal analysis"
             : ext === ".xlsx"
               ? "Office sheet render fallback + multimodal analysis"
@@ -635,7 +643,7 @@ async function renderOfficeVisualArtifacts(buffer, fileName) {
     }
 
     if (artifacts.length === 0) {
-      return { artifacts: [], warnings: [`${fileName}: Office renderer completed but returned no images.`] };
+      return { artifacts: [], warnings: [`${fileName}: renderer completed but returned no images.`] };
     }
 
     return { artifacts, warnings: [] };
@@ -643,7 +651,7 @@ async function renderOfficeVisualArtifacts(buffer, fileName) {
     const message = error?.name === "AbortError"
       ? `Office renderer timed out after ${Math.round(OFFICE_RENDERER_TIMEOUT_MS / 1000)} seconds.`
       : (error instanceof Error ? error.message : String(error));
-    return { artifacts: [], warnings: [`${fileName}: Office renderer failed: ${message}`] };
+    return { artifacts: [], warnings: [`${fileName}: renderer failed: ${message}`] };
   } finally {
     clearTimeout(timeout);
   }
@@ -2797,14 +2805,15 @@ async function startArbExtraction(principal, reviewId) {
     }
   }
 
-  async function processPdfVisualEvidence(file, layout) {
+  async function processPdfVisualEvidence(file, layout, buffer) {
     const figures = Array.isArray(layout?.figures) ? layout.figures : [];
+    let persistedFigures = 0;
     for (const figure of figures) {
       if (!figure.buffer) {
         visualExtractionErrors.push(`${file.fileName}: Document Intelligence could not retrieve figure ${figure.figureId || "unknown"}.`);
         continue;
       }
-      await addVisualEvidenceRecord(file, {
+      const record = await addVisualEvidenceRecord(file, {
         sourceName: `${file.fileName}-${figure.figureId || "figure"}.png`,
         buffer: figure.buffer,
         extension: ".png",
@@ -2814,9 +2823,21 @@ async function startArbExtraction(principal, reviewId) {
         sourceExcerpt: `Visual analysis of embedded architecture figure ${figure.figureId || ""} in ${file.fileName}.`.trim(),
         extractionSource: "Document Intelligence figures + multimodal analysis"
       });
+      if (record) persistedFigures++;
     }
 
-    if (figures.length > 0) {
+    if (persistedFigures > 0) {
+      return;
+    }
+
+    const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
+    for (const warning of rendered.warnings) {
+      visualExtractionErrors.push(warning);
+    }
+    if (rendered.artifacts.length > 0) {
+      for (const artifact of rendered.artifacts) {
+        await addVisualEvidenceRecord(file, artifact);
+      }
       return;
     }
 
@@ -3031,7 +3052,7 @@ async function startArbExtraction(principal, reviewId) {
             try {
               const layout = await extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true });
               text = layout.text;
-              await processPdfVisualEvidence(file, layout);
+              await processPdfVisualEvidence(file, layout, buffer);
             } catch (figureError) {
               const message = figureError instanceof Error ? figureError.message : String(figureError);
               visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);

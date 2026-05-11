@@ -620,6 +620,14 @@ test("diagram prompt injection is persisted as untrusted visual evidence", async
   }
 });
 
+test("PDF visual fallback renders architecture pages through the document renderer", () => {
+  const source = require("node:fs").readFileSync(require.resolve("./arb-review-store"), "utf8");
+  assert.match(source, /startPage:\s*ext === "\.pdf" \? 4 : undefined/);
+  assert.match(source, /endPage:\s*ext === "\.pdf" \? 9 : undefined/);
+  assert.match(source, /PDF page render fallback \+ multimodal analysis/);
+  assert.match(source, /processPdfVisualEvidence\(file, layout, buffer\)/);
+});
+
 test("creating an ARB export writes export metadata", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const principal = {

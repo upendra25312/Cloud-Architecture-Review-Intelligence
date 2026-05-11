@@ -10,4 +10,8 @@ test("renderer service source defines budget and safety limits", () => {
   assert.match(source, /RENDERER_MAX_PAGES/);
   assert.match(source, /120000/);
   assert.match(source, /x-cari-renderer-token/);
+  assert.match(source, /\.pdf/);
+  assert.match(source, /pdftoppm/);
+  assert.match(source, /startPage/);
+  assert.match(source, /endPage/);
 });

@@ -1,8 +1,8 @@
 # CARI Office Renderer
 
-Containerized Office-to-PNG renderer for CARI ARB visual evidence extraction.
+Containerized Office/PDF-to-PNG renderer for CARI ARB visual evidence extraction.
 
-The CARI API calls this service only for Office native-shape fallback cases, such as PowerPoint SmartArt, charts, native drawing shapes, Word pages, or Excel sheets that are not stored as embedded media files.
+The CARI API calls this service for Office native-shape fallback cases, such as PowerPoint SmartArt, charts, native drawing shapes, Word pages, or Excel sheets that are not stored as embedded media files. It also renders selected PDF pages when Document Intelligence does not return usable cropped figure images.
 
 ## Runtime contract
 
@@ -15,7 +15,9 @@ The CARI API calls this service only for Office native-shape fallback cases, suc
 {
   "fileName": "architecture.pptx",
   "fileBase64": "<base64 Office file>",
-  "maxPages": 20
+  "maxPages": 20,
+  "startPage": 1,
+  "endPage": 20
 }
 ```
 

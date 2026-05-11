@@ -12,7 +12,7 @@ const COMMAND_TIMEOUT_MS = Number(process.env.RENDERER_COMMAND_TIMEOUT_MS || 120
 const RENDER_DPI = Number(process.env.RENDERER_DPI || 160);
 const SHARED_SECRET = process.env.RENDERER_SHARED_SECRET || "";
 
-const OFFICE_EXTENSIONS = new Set([".docx", ".pptx", ".xlsx"]);
+const RENDERABLE_EXTENSIONS = new Set([".docx", ".pptx", ".xlsx", ".pdf"]);
 
 function jsonResponse(res, statusCode, payload) {
   const body = JSON.stringify(payload);
@@ -60,10 +60,10 @@ function assertAuthorized(req) {
   }
 }
 
-async function renderOfficeToImages({ fileName, fileBase64, maxPages }) {
+async function renderDocumentToImages({ fileName, fileBase64, maxPages, startPage, endPage }) {
   const extension = path.extname(String(fileName || "").toLowerCase());
-  if (!OFFICE_EXTENSIONS.has(extension)) {
-    throw Object.assign(new Error(`Unsupported Office file type: ${extension || "unknown"}.`), { statusCode: 400 });
+  if (!RENDERABLE_EXTENSIONS.has(extension)) {
+    throw Object.assign(new Error(`Unsupported render file type: ${extension || "unknown"}.`), { statusCode: 400 });
   }
 
   const inputBuffer = Buffer.from(String(fileBase64 || ""), "base64");
@@ -75,6 +75,8 @@ async function renderOfficeToImages({ fileName, fileBase64, maxPages }) {
   }
 
   const limit = Math.max(1, Math.min(Number(maxPages || MAX_PAGES), MAX_PAGES));
+  const firstPage = Math.max(1, Number(startPage || 1));
+  const lastPage = Math.max(firstPage, Math.min(Number(endPage || firstPage + limit - 1), firstPage + limit - 1));
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), "cari-office-render-"));
   const inputPath = path.join(workDir, `input${extension}`);
   const outputDir = path.join(workDir, "out");
@@ -83,22 +85,28 @@ async function renderOfficeToImages({ fileName, fileBase64, maxPages }) {
     await fs.mkdir(outputDir, { recursive: true });
     await fs.writeFile(inputPath, inputBuffer);
 
-    await runCommand("libreoffice", [
-      "--headless",
-      "--nologo",
-      "--nofirststartwizard",
-      "--convert-to",
-      "pdf",
-      "--outdir",
-      outputDir,
-      inputPath
-    ]);
+    let pdfPath = inputPath;
+    if (extension !== ".pdf") {
+      await runCommand("libreoffice", [
+        "--headless",
+        "--nologo",
+        "--nofirststartwizard",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        outputDir,
+        inputPath
+      ]);
 
-    const pdfPath = path.join(outputDir, "input.pdf");
+      pdfPath = path.join(outputDir, "input.pdf");
+    }
     await fs.stat(pdfPath);
 
     const imagePrefix = path.join(outputDir, "page");
-    await runCommand("pdftoppm", ["-png", "-r", String(RENDER_DPI), pdfPath, imagePrefix]);
+    const pageArgs = extension === ".pdf" || startPage || endPage
+      ? ["-f", String(firstPage), "-l", String(lastPage)]
+      : [];
+    await runCommand("pdftoppm", ["-png", "-r", String(RENDER_DPI), ...pageArgs, pdfPath, imagePrefix]);
 
     const imageFiles = (await fs.readdir(outputDir))
       .filter((name) => /^page-\d+\.png$/i.test(name))
@@ -108,9 +116,10 @@ async function renderOfficeToImages({ fileName, fileBase64, maxPages }) {
     const images = [];
     for (const [index, imageName] of imageFiles.entries()) {
       const bytes = await fs.readFile(path.join(outputDir, imageName));
+      const renderedPage = firstPage + index;
       images.push({
         index: index + 1,
-        sourcePage: extension === ".docx" ? index + 1 : null,
+        sourcePage: extension === ".docx" || extension === ".pdf" ? renderedPage : null,
         sourceSlide: extension === ".pptx" ? index + 1 : null,
         sourceSheet: extension === ".xlsx" ? `rendered-page-${index + 1}` : null,
         fileName: imageName,
@@ -141,6 +150,7 @@ const server = http.createServer(async (req, res) => {
         status: "Healthy",
         renderer: "cari-office-renderer",
         libreOffice: true,
+        poppler: true,
         maxFileBytes: MAX_FILE_BYTES,
         maxPages: MAX_PAGES
       });
@@ -150,7 +160,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && req.url === "/render") {
       assertAuthorized(req);
       const body = await readRequestJson(req);
-      const result = await renderOfficeToImages(body);
+      const result = await renderDocumentToImages(body);
       jsonResponse(res, 200, result);
       return;
     }
