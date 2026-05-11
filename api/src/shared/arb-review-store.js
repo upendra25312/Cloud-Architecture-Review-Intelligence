@@ -3043,7 +3043,7 @@ async function startArbExtraction(principal, reviewId) {
     }
   }
 
-  async function addVisualEvidenceRecords(file, artifacts, concurrency = 3) {
+  async function addVisualEvidenceRecords(file, artifacts, concurrency = 1) {
     if (!Array.isArray(artifacts) || artifacts.length === 0) {
       return [];
     }

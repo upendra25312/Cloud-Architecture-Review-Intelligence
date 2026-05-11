@@ -30,6 +30,10 @@ const OPENAI_API_VERSION = "2025-01-01-preview";
 const MICROSOFT_LEARN_MCP_ENDPOINT = "https://learn.microsoft.com/api/mcp";
 const DEFAULT_HTTP_TIMEOUT_MS = 20000;
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = DEFAULT_HTTP_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -83,7 +87,8 @@ async function chatCompletionsRequest(messages, options = {}) {
     maxTokens = 8192,
     temperature = 0.2,
     responseFormat = { type: "json_object" },
-    timeoutMs = 120000
+    timeoutMs = 120000,
+    maxRetries = 3
   } = options;
   const base = getAiServicesBaseEndpoint();
   const url = `${base}/openai/deployments/${FOUNDRY_AGENT_MODEL}/chat/completions?api-version=${OPENAI_API_VERSION}`;
@@ -98,22 +103,42 @@ async function chatCompletionsRequest(messages, options = {}) {
     body.response_format = responseFormat;
   }
 
-  const res = await fetchWithTimeout(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify(body)
-  }, timeoutMs);
+  let lastError = null;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetchWithTimeout(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      }, timeoutMs);
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => `HTTP ${res.status}`);
-    throw new Error(`Foundry chat completions failed ${res.status}: ${text}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data?.choices?.[0]?.message?.content ?? "";
+      }
+
+      const text = await res.text().catch(() => `HTTP ${res.status}`);
+      lastError = new Error(`Foundry chat completions failed ${res.status}: ${text}`);
+
+      if (![429, 500, 502, 503, 504].includes(res.status) || attempt === maxRetries) {
+        throw lastError;
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      const retryableNetworkError =
+        /no healthy upstream|temporar|timeout|timed out|ECONNRESET|ETIMEDOUT|fetch failed/i.test(lastError.message);
+      if (!retryableNetworkError || attempt === maxRetries) {
+        throw lastError;
+      }
+    }
+
+    await sleep(Math.min(30000, 2000 * Math.pow(2, attempt)));
   }
 
-  const data = await res.json();
-  return data?.choices?.[0]?.message?.content ?? "";
+  throw lastError || new Error("Foundry chat completions failed.");
 }
 
 function extractResponsesText(data) {
@@ -793,7 +818,8 @@ async function describeImageForReview(imageBuffer, fileName, fileExtension) {
   return await chatCompletionsRequest(messages, {
     maxTokens: 1400,
     responseFormat: null,
-    timeoutMs: 45000
+    timeoutMs: 60000,
+    maxRetries: 4
   });
 }
 
