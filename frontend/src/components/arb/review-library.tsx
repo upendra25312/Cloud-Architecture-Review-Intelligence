@@ -327,14 +327,14 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
                   href={buildLoginUrl(provider.id)}
                   className={index === 0 ? "arb-signin-cta" : "arb-signin-cta arb-signin-cta--secondary"}
                 >
-                  Sign in with {provider.label}
+                  Sign in to start review
                 </a>
               ))}
               <a href="/demo" className="arb-signin-cta arb-signin-cta--secondary">
                 View live demo
               </a>
             </div>
-            <p className="arb-demo-helper">No account required for demo mode.</p>
+            <p className="arb-demo-helper">Use an approved CARI user email. Demo mode does not require sign-in.</p>
             <div className="arb-trust-chips" aria-label="Product trust signals">
               {HERO_TRUST_CHIPS.map((chip) => (
                 <span key={chip} className="arb-trust-chip">{chip}</span>
@@ -396,7 +396,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
           <div className="arb-start-review-actions">
             {ENABLED_AUTH_PROVIDERS.map((provider) => (
               <a key={provider.id} href={buildLoginUrl(provider.id)} className="arb-signin-cta">
-                Sign in with {provider.label}
+                Sign in to upload evidence
               </a>
             ))}
             <a href="/demo" className="arb-signin-cta arb-signin-cta--secondary">

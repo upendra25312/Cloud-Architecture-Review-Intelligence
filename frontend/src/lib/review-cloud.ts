@@ -23,7 +23,7 @@ type AuthProviderOption = {
 const AUTH_PROVIDER_OPTIONS: AuthProviderOption[] = [
   {
     id: "aad",
-    label: "Microsoft",
+    label: "email",
     enabled: true
   }
 ];
@@ -120,14 +120,14 @@ function formatHumanList(values: string[]) {
 }
 
 export function getAuthSupportLabel() {
-  return `${formatHumanList(ENABLED_AUTH_PROVIDERS.map((provider) => provider.label))} account supported`;
+  return "Email sign-in supported";
 }
 
 export function formatIdentityProvider(provider: string | undefined) {
   switch ((provider ?? "").toLowerCase()) {
     case "aad":
     case "azureactivedirectory":
-      return "Microsoft";
+      return "email";
     default:
       return provider || "Account";
   }

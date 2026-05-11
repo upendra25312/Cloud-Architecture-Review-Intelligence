@@ -24,9 +24,9 @@ export function AuthStatusChip() {
             key={provider.id}
             href={buildLoginUrl(provider.id)}
             className="auth-chip"
-            title={`Sign in with ${provider.label}`}
+            title="Sign in with your approved user email"
           >
-            Sign in with {provider.label}
+            Sign in
           </a>
         ))}
       </div>
