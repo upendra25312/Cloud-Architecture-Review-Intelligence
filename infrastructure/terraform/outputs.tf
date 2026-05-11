@@ -69,3 +69,23 @@ output "function_app_mi_principal_id" {
   description = "Function App Managed Identity principal ID (for RBAC verification)"
   value       = azurerm_linux_function_app.main.identity[0].principal_id
 }
+
+output "office_renderer_container_registry_name" {
+  description = "ACR name for the CARI Office Renderer image"
+  value       = azurerm_container_registry.cari_office_renderer.name
+}
+
+output "office_renderer_container_registry_login_server" {
+  description = "ACR login server for the CARI Office Renderer image"
+  value       = azurerm_container_registry.cari_office_renderer.login_server
+}
+
+output "office_renderer_container_app_name" {
+  description = "Azure Container App name for the CARI Office Renderer"
+  value       = azurerm_container_app.cari_office_renderer.name
+}
+
+output "office_renderer_endpoint" {
+  description = "HTTPS endpoint for the CARI Office Renderer"
+  value       = "https://${azurerm_container_app.cari_office_renderer.latest_revision_fqdn}"
+}

@@ -22,7 +22,12 @@
     "AZURE_SEARCH_ENDPOINT": "",
     "AZURE_SEARCH_INDEX_NAME": "arb-documents",
     "AZURE_DOCINT_ENDPOINT": "",
-    "AZURE_VISION_ENDPOINT": ""
+    "AZURE_VISION_ENDPOINT": "",
+    "OFFICE_RENDERER_ENDPOINT": "",
+    "OFFICE_RENDERER_SHARED_SECRET": "",
+    "OFFICE_RENDERER_MAX_FILE_BYTES": "52428800",
+    "OFFICE_RENDERER_MAX_PAGES": "20",
+    "OFFICE_RENDERER_TIMEOUT_MS": "120000"
   },
   "_comments": {
     "auth": "All Azure service calls use DefaultAzureCredential (Managed Identity in production, az login locally). No API keys required.",

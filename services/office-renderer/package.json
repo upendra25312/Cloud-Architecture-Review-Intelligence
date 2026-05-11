@@ -1,0 +1,15 @@
+{
+  "name": "cari-office-renderer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Containerized Office-to-image renderer for CARI ARB visual evidence extraction.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {}
+}

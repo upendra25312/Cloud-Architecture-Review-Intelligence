@@ -1,0 +1,130 @@
+name: Deploy — CARI Office Renderer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  NODE_VERSION: '20.x'
+  RESOURCE_GROUP: 'rg-arb-review-prod'
+  ACR_NAME: 'acrcariofficerenderprod'
+  CONTAINER_APP_NAME: 'ca-cari-office-renderer-prod'
+  FUNCTION_APP_NAME: 'func-arb-review-api'
+  IMAGE_NAME: 'cari-office-renderer'
+
+jobs:
+  test:
+    name: Test Renderer
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/office-renderer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: services/office-renderer/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm test
+
+  deploy:
+    name: Build and Deploy Renderer
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC — no secret)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify infrastructure exists
+        shell: bash
+        run: |
+          az acr show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --query name -o tsv
+          az containerapp show --name "$CONTAINER_APP_NAME" --resource-group "$RESOURCE_GROUP" --query name -o tsv
+
+      - name: Build and push renderer image
+        shell: bash
+        run: |
+          LOGIN_SERVER=$(az acr show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --query loginServer -o tsv)
+          echo "LOGIN_SERVER=$LOGIN_SERVER" >> "$GITHUB_ENV"
+          az acr login --name "$ACR_NAME"
+          docker build \
+            -t "$LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}" \
+            -t "$LOGIN_SERVER/$IMAGE_NAME:latest" \
+            services/office-renderer
+          docker push "$LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}"
+          docker push "$LOGIN_SERVER/$IMAGE_NAME:latest"
+
+      - name: Update Container App and API settings
+        shell: bash
+        run: |
+          RENDERER_TOKEN=$(openssl rand -hex 32)
+          IMAGE="$LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}"
+
+          az containerapp secret set \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --secrets "renderer-shared-secret=$RENDERER_TOKEN"
+
+          az containerapp update \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image "$IMAGE" \
+            --set-env-vars \
+              NODE_ENV=production \
+              PORT=8080 \
+              RENDERER_MAX_FILE_BYTES=52428800 \
+              RENDERER_MAX_PAGES=20 \
+              RENDERER_COMMAND_TIMEOUT_MS=120000 \
+              RENDERER_DPI=160 \
+              RENDERER_SHARED_SECRET=secretref:renderer-shared-secret \
+            --min-replicas 0 \
+            --max-replicas 1
+
+          FQDN=$(az containerapp show \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query properties.configuration.ingress.fqdn -o tsv)
+
+          az functionapp config appsettings set \
+            --name "$FUNCTION_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --settings \
+              "OFFICE_RENDERER_ENDPOINT=https://$FQDN" \
+              "OFFICE_RENDERER_SHARED_SECRET=$RENDERER_TOKEN" \
+              "OFFICE_RENDERER_MAX_FILE_BYTES=52428800" \
+              "OFFICE_RENDERER_MAX_PAGES=20" \
+              "OFFICE_RENDERER_TIMEOUT_MS=120000"
+
+      - name: Smoke test renderer
+        shell: bash
+        run: |
+          FQDN=$(az containerapp show \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query properties.configuration.ingress.fqdn -o tsv)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://$FQDN/health")
+          echo "Renderer health status: $STATUS"
+          [ "$STATUS" = "200" ]

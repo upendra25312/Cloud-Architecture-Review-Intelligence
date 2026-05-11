@@ -91,6 +91,11 @@ const OFFICE_VISUAL_EXTENSIONS = new Set([
 const MULTIMODAL_IMAGE_EXTENSIONS = new Set([
   ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".svg"
 ]);
+const OFFICE_RENDERER_ENDPOINT = (process.env.OFFICE_RENDERER_ENDPOINT || "").replace(/\/+$/, "");
+const OFFICE_RENDERER_SHARED_SECRET = process.env.OFFICE_RENDERER_SHARED_SECRET || "";
+const OFFICE_RENDERER_MAX_FILE_BYTES = Number(process.env.OFFICE_RENDERER_MAX_FILE_BYTES || 50 * 1024 * 1024);
+const OFFICE_RENDERER_MAX_PAGES = Number(process.env.OFFICE_RENDERER_MAX_PAGES || 20);
+const OFFICE_RENDERER_TIMEOUT_MS = Number(process.env.OFFICE_RENDERER_TIMEOUT_MS || 120000);
 const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
   // Documents
   ".pdf", ".doc", ".docx", ".rtf", ".odt",
@@ -552,6 +557,96 @@ function extractOfficeMediaArtifacts(buffer, fileName) {
   }
 
   return { artifacts, warnings };
+}
+
+async function renderOfficeVisualArtifacts(buffer, fileName) {
+  const ext = getFileExtension(fileName);
+  if (![".docx", ".pptx", ".xlsx"].includes(ext)) {
+    return { artifacts: [], warnings: [] };
+  }
+
+  if (!OFFICE_RENDERER_ENDPOINT) {
+    return {
+      artifacts: [],
+      warnings: [`${fileName}: Office renderer is not configured (OFFICE_RENDERER_ENDPOINT missing).`]
+    };
+  }
+
+  if (buffer.length > OFFICE_RENDERER_MAX_FILE_BYTES) {
+    return {
+      artifacts: [],
+      warnings: [`${fileName}: Office renderer skipped because file exceeds ${OFFICE_RENDERER_MAX_FILE_BYTES} bytes.`]
+    };
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), OFFICE_RENDERER_TIMEOUT_MS);
+
+  try {
+    const headers = { "Content-Type": "application/json" };
+    if (OFFICE_RENDERER_SHARED_SECRET) {
+      headers["x-cari-renderer-token"] = OFFICE_RENDERER_SHARED_SECRET;
+    }
+
+    const res = await fetch(`${OFFICE_RENDERER_ENDPOINT}/render`, {
+      method: "POST",
+      headers,
+      signal: controller.signal,
+      body: JSON.stringify({
+        fileName,
+        fileBase64: buffer.toString("base64"),
+        maxPages: OFFICE_RENDERER_MAX_PAGES
+      })
+    });
+
+    const payloadText = await res.text();
+    let payload = null;
+    try {
+      payload = payloadText ? JSON.parse(payloadText) : null;
+    } catch {
+      payload = null;
+    }
+
+    if (!res.ok) {
+      const detail = payload?.error || payloadText || `HTTP ${res.status}`;
+      return { artifacts: [], warnings: [`${fileName}: Office renderer failed: ${detail}`] };
+    }
+
+    const artifacts = [];
+    for (const image of Array.isArray(payload?.images) ? payload.images : []) {
+      if (!image.base64) continue;
+      artifacts.push({
+        buffer: Buffer.from(image.base64, "base64"),
+        contentType: image.contentType || "image/png",
+        sourceName: image.fileName || `${fileName}-render-${image.index || artifacts.length + 1}.png`,
+        extension: ".png",
+        summaryText: `Rendered Office visual artifact ${image.index || artifacts.length + 1} from ${fileName}.`,
+        sourcePage: image.sourcePage ?? null,
+        sourceSlide: image.sourceSlide ?? null,
+        sourceSheet: image.sourceSheet ?? null,
+        sourceExcerpt: `Rendered Office visual artifact from ${fileName}.`,
+        extractionSource:
+          ext === ".pptx"
+            ? "Office slide render fallback + multimodal analysis"
+            : ext === ".xlsx"
+              ? "Office sheet render fallback + multimodal analysis"
+              : "Office page render fallback + multimodal analysis"
+      });
+    }
+
+    if (artifacts.length === 0) {
+      return { artifacts: [], warnings: [`${fileName}: Office renderer completed but returned no images.`] };
+    }
+
+    return { artifacts, warnings: [] };
+  } catch (error) {
+    const message = error?.name === "AbortError"
+      ? `Office renderer timed out after ${Math.round(OFFICE_RENDERER_TIMEOUT_MS / 1000)} seconds.`
+      : (error instanceof Error ? error.message : String(error));
+    return { artifacts: [], warnings: [`${fileName}: Office renderer failed: ${message}`] };
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function extractOfficeRenderFallbackEvidence(buffer, fileName) {
@@ -2680,6 +2775,18 @@ async function startArbExtraction(principal, reviewId) {
 
     const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
     if (shouldRunFallback) {
+      const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
+      for (const warning of rendered.warnings) {
+        visualExtractionErrors.push(warning);
+      }
+      for (const artifact of rendered.artifacts) {
+        await addVisualEvidenceRecord(file, artifact);
+      }
+
+      if (rendered.artifacts.length > 0) {
+        return;
+      }
+
       const fallback = await extractOfficeRenderFallbackEvidence(buffer, file.fileName);
       for (const warning of fallback.warnings) {
         visualExtractionErrors.push(warning);
