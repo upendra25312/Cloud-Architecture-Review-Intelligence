@@ -1015,14 +1015,14 @@ export function ArbLiveReviewStep(props: {
             }}
           >
             {extractionStarting ? (
-              <><span className="arb-spinner" aria-hidden="true" /> Analyzing documents… typically 30–90 seconds per file</>
+              <><span className="arb-spinner" aria-hidden="true" /> Analyzing documents… typically 2–6 minutes for diagram-heavy PDFs</>
             ) : extractionStatus?.state === "Failed" ? (
               "Retry analysis →"
             ) : (
               "Start analysis →"
             )}
           </button>
-          <p className="microcopy">Typically 30–90 seconds per document. The agent reads every page.</p>
+          <p className="microcopy">Most text files complete in 30–90 seconds. PDFs with embedded diagrams or visual evidence can take 2–6 minutes.</p>
           {extractionStarting ? (
             <p className="arb-upload-status arb-upload-status-progress">
               Analysis running — do not close this page. Results will appear automatically.
