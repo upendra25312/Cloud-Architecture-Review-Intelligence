@@ -6,6 +6,7 @@ const {
   getArbFiles,
   getArbRequirements,
   getArbEvidence,
+  getArbVisualEvidence,
   getArbActions,
   syncArbReviewedOutputs
 } = require("../shared/arb-review-store");
@@ -74,11 +75,12 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
 
   log("Agent review started");
 
-  const [review, files, requirementsList, evidenceList, actionsList] = await Promise.all([
+  const [review, files, requirementsList, evidenceList, visualEvidenceList, actionsList] = await Promise.all([
     getArbReview(principal, reviewId),
     getArbFiles(principal, reviewId),
     getArbRequirements(principal, reviewId),
     getArbEvidence(principal, reviewId),
+    getArbVisualEvidence(principal, reviewId),
     getArbActions(principal, reviewId)
   ]);
 
@@ -95,7 +97,8 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
 
   log("Review data loaded", {
     files: files.length, extracted: extractedFiles.length,
-    requirements: requirementsList.length, evidence: evidenceList.length
+    requirements: requirementsList.length, evidence: evidenceList.length,
+    visualEvidence: visualEvidenceList.length
   });
 
   const searchQuery = buildArbSearchQuery(review, requirementsList, evidenceList);
@@ -111,7 +114,7 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
 
   // Run automated agent assessment — no timeout pressure since this runs in the background
   let agentResult = await runArbAgentReview({
-    review, files, requirements: requirementsList, evidence: evidenceList, searchChunks,
+    review, files, requirements: requirementsList, evidence: evidenceList, searchChunks, visualEvidence: visualEvidenceList,
     existingRuleFindings: ruleFindings
   });
 
@@ -150,14 +153,30 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
   });
 
   // Resolve evidence traceability
-  if (agentResult.findings && evidenceList.length > 0) {
+  if (agentResult.findings && (evidenceList.length > 0 || visualEvidenceList.length > 0)) {
     const evidenceById = new Map(evidenceList.map((e) => [e.evidenceId, e]));
+    const visualEvidenceById = new Map(visualEvidenceList.map((e) => [e.visualEvidenceId, e]));
     for (const finding of agentResult.findings) {
       const ids = Array.isArray(finding.evidenceIds) ? finding.evidenceIds : [];
-      finding.evidenceFound = ids
+      const visualIds = Array.isArray(finding.visualEvidenceIds) ? finding.visualEvidenceIds : [];
+      finding.evidenceFound = [
+        ...ids
         .map((id) => evidenceById.get(id)).filter(Boolean)
-        .map((e) => ({ evidenceId: e.evidenceId, summary: e.summary, sourceFileName: e.sourceFileName, sourceFileId: e.sourceFileId, factType: e.factType }));
-      if (finding.evidenceFound.length === 0 && finding.evidenceBasis) {
+        .map((e) => ({ evidenceId: e.evidenceId, summary: e.summary, sourceFileName: e.sourceFileName, sourceFileId: e.sourceFileId, factType: e.factType })),
+        ...visualIds
+          .map((id) => visualEvidenceById.get(id)).filter(Boolean)
+          .map((e) => ({
+            evidenceId: e.visualEvidenceId,
+            visualEvidenceId: e.visualEvidenceId,
+            summary: e.summary,
+            sourceFileName: e.sourceFileName,
+            sourceFileId: e.sourceFileId,
+            factType: e.factType,
+            imageUri: e.imageUri,
+            extractionSource: e.extractionSource
+          }))
+      ];
+      if (finding.evidenceFound.length === 0 && finding.evidenceBasis && evidenceList.length > 0) {
         const STOP = new Set(["the","a","an","and","or","for","to","of","in","on","at","is","are","be","with","from","that","this","by","as","its","it","will","we","our","all","any","not","have","has","can","was","were"]);
         const tokenize = (text) => new Set(String(text ?? "").toLowerCase().split(/\W+/).filter((t) => t.length > 3 && !STOP.has(t)));
         const basisTokens = tokenize(`${finding.evidenceBasis} ${finding.title ?? ""}`);
@@ -174,6 +193,7 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
           .map(({ e }) => ({ evidenceId: e.evidenceId, summary: e.summary, sourceFileName: e.sourceFileName, sourceFileId: e.sourceFileId, factType: e.factType }));
       }
       delete finding.evidenceIds;
+      delete finding.visualEvidenceIds;
     }
   }
 
@@ -199,10 +219,24 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
     }, "Replace");
   }
 
+  const evidenceForOutputs = [
+    ...evidenceList,
+    ...visualEvidenceList.map((v) => ({
+      evidenceId: v.visualEvidenceId,
+      reviewId: v.reviewId,
+      sourceFileId: v.sourceFileId,
+      sourceFileName: v.sourceFileName,
+      factType: v.factType,
+      summary: v.summary,
+      sourceExcerpt: v.sourceExcerpt,
+      confidence: v.confidence
+    }))
+  ];
+
   const syncedOutputs = await syncArbReviewedOutputs({
     principal,
     review: { ...review, workflowState: "Review In Progress", agentRecommendation: agentResult.recommendation ?? null, agentReviewedAt: now, lastUpdated: now },
-    files, requirements: requirementsList, evidence: evidenceList,
+    files, requirements: requirementsList, evidence: evidenceForOutputs,
     findings: agentResult.findings ?? [], scorecard: agentResult.scorecard ?? null,
     actions: actionsList, formats: ["markdown", "csv", "html"], generatedAt: now, existingExports: []
   });

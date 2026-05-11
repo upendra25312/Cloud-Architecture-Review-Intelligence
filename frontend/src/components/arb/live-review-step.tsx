@@ -821,6 +821,9 @@ export function ArbLiveReviewStep(props: {
                       <span className={upload.extractionStatus === "Completed" ? "arb-status-done" : undefined}>
                         {upload.extractionStatus}
                       </span>
+                      {typeof upload.visualEvidenceCount === "number" && upload.visualEvidenceCount > 0
+                        ? ` · ${upload.visualEvidenceCount} visual evidence`
+                        : ""}
                     </p>
                   </div>
                   <div className="arb-upload-file-actions">
@@ -924,14 +927,24 @@ export function ArbLiveReviewStep(props: {
               Analysis failed. Check that your files are not password-protected and try again.
             </p>
           ) : extractionStatus ? (
-            <p className="arb-upload-status arb-upload-status-progress">
-              Status: {extractionStatus.state} · Evidence readiness: {extractionStatus.evidenceReadinessState} · Extraction confidence: {extractionStatus.extractionConfidencePercent}%
-            </p>
+            <div className="arb-upload-status arb-upload-status-progress" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span>
+                Status: {extractionStatus.state} · Evidence readiness: {extractionStatus.evidenceReadinessState} · Extraction confidence: {extractionStatus.extractionConfidencePercent}%
+              </span>
+              <span>
+                Text: {extractionStatus.textExtractionStatus ?? "Completed"} · Tables: {extractionStatus.tableExtractionStatus ?? "CompletedOrNotApplicable"} · Figures: {extractionStatus.figureExtractionStatus ?? "NotStarted"} · Visual analysis: {extractionStatus.visualAnalysisStatus ?? "NotStarted"} · Visual evidence: {extractionStatus.visualEvidenceCount ?? 0}
+              </span>
+              {extractionStatus.visualExtractionErrors?.length ? (
+                <span style={{ color: "#B45309" }}>
+                  Visual evidence extraction failed: {extractionStatus.visualExtractionErrors.join(" | ")}. The review may not include all diagram-derived architecture findings.
+                </span>
+              ) : null}
+            </div>
           ) : null}
         </section>
 
         {/* Run Assessment CTA — shown once extraction is complete */}
-        {extractionStatus?.state === "Completed" ? (
+        {extractionStatus?.state?.startsWith("Completed") ? (
           <section className="surface-panel arb-action-panel arb-action-panel-highlight">
             <p className="arb-action-panel-label">Extraction complete — ready for framework assessment</p>
             <p className="section-copy">

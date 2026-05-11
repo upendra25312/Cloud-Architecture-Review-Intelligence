@@ -67,10 +67,13 @@ export interface ArbFindingReference {
 
 export interface ArbEvidenceLink {
   evidenceId: string;
+  visualEvidenceId?: string;
   summary: string;
   sourceFileName: string | null;
   sourceFileId: string | null;
   factType: string | null;
+  imageUri?: string | null;
+  extractionSource?: string | null;
 }
 
 export interface ArbFinding {
@@ -129,6 +132,7 @@ export interface ArbUploadedFile {
   sizeBytes: number;
   contentType: string;
   supportedTextExtraction: boolean;
+  visualEvidenceCount?: number;
 }
 
 export interface ArbExtractionFileStatus {
@@ -136,6 +140,7 @@ export interface ArbExtractionFileStatus {
   fileName: string;
   extractionStatus: string;
   extractionError: string | null;
+  visualEvidenceCount?: number;
 }
 
 export interface ArbExtractionStatus {
@@ -147,6 +152,12 @@ export interface ArbExtractionStatus {
   failedSteps: string[];
   evidenceReadinessState: ArbEvidenceReadiness | string;
   extractionErrors: string[];
+  textExtractionStatus?: string;
+  tableExtractionStatus?: string;
+  figureExtractionStatus?: string;
+  visualAnalysisStatus?: string;
+  visualEvidenceCount?: number;
+  visualExtractionErrors?: string[];
   lastStartedAt: string | null;
   lastCompletedAt: string | null;
   fileStatuses: ArbExtractionFileStatus[];
@@ -165,13 +176,26 @@ export interface ArbRequirement {
 
 export interface ArbEvidenceFact {
   evidenceId: string;
+  visualEvidenceId?: string;
   reviewId: string;
   sourceFileId: string | null;
   sourceFileName: string | null;
+  sourceFileType?: string | null;
+  sourcePage?: number | null;
+  sourceSlide?: number | null;
+  sourceSheet?: string | null;
+  figureId?: string | null;
+  imageUri?: string | null;
   factType: string;
   summary: string;
   sourceExcerpt: string;
   confidence: string;
+  detectedAzureServices?: string[];
+  detectedArchitecturePatterns?: string[];
+  extractionSource?: string;
+  promptInjectionRisk?: string;
+  analysisError?: string | null;
+  createdAt?: string;
 }
 
 export type ArbExportFormat = "markdown" | "csv" | "html";

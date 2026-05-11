@@ -134,14 +134,15 @@ export function buildLinkageMap(
   for (const finding of findings) {
     if (!finding.evidenceFound) continue;
     for (const link of finding.evidenceFound) {
-      if (!link.evidenceId) continue;
-      const list = map.get(link.evidenceId) ?? [];
+      const id = link.visualEvidenceId || link.evidenceId;
+      if (!id) continue;
+      const list = map.get(id) ?? [];
       list.push({
         findingId: finding.findingId,
         title: finding.title,
         severity: finding.severity,
       });
-      map.set(link.evidenceId, list);
+      map.set(id, list);
     }
   }
 

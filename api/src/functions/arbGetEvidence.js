@@ -1,6 +1,6 @@
 const { app } = require("@azure/functions");
 const { jsonResponse, requireAuthenticated, safeErrorResponse } = require("../shared/auth");
-const { getArbEvidence } = require("../shared/arb-review-store");
+const { getArbEvidence, getArbVisualEvidence } = require("../shared/arb-review-store");
 
 async function handleArbGetEvidence(request, context) {
   const auth = requireAuthenticated(request);
@@ -10,9 +10,14 @@ async function handleArbGetEvidence(request, context) {
 
   try {
     const reviewId = request.params?.reviewId || "demo-review";
+    const [evidence, visualEvidence] = await Promise.all([
+      getArbEvidence(auth.principal, reviewId),
+      getArbVisualEvidence(auth.principal, reviewId)
+    ]);
     return jsonResponse(200, {
       reviewId,
-      evidence: await getArbEvidence(auth.principal, reviewId)
+      evidence,
+      visualEvidence
     });
   } catch (error) {
     return safeErrorResponse(error, "Unable to load ARB evidence.", context);

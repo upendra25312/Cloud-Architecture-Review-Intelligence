@@ -18,7 +18,8 @@ const { describeImageForReview, getFoundryConfiguration } = require("./arb-found
 const {
   getDocumentIntelligenceConfiguration,
   supportsDocumentIntelligenceExtraction,
-  extractDocumentText
+  extractDocumentText,
+  extractDocumentLayout
 } = require("./arb-document-intelligence");
 const {
   getVisionServiceConfiguration,
@@ -82,6 +83,13 @@ const IMAGE_EXTRACTABLE_EXTENSIONS = new Set([
 ]);
 const DIAGRAM_EXTRACTABLE_EXTENSIONS = new Set([
   ".drawio", ".draw.io", ".vsdx"
+]);
+const OFFICE_VISUAL_EXTENSIONS = new Set([
+  ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".svg",
+  ".emf", ".wmf"
+]);
+const MULTIMODAL_IMAGE_EXTENSIONS = new Set([
+  ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".svg"
 ]);
 const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
   // Documents
@@ -489,6 +497,216 @@ async function extractDiagramText(buffer, fileName) {
   if (ext === ".drawio" || ext === ".draw.io") return extractDrawioText(buffer, fileName);
   if (ext === ".vsdx") return extractVsdxText(buffer, fileName);
   return "";
+}
+
+function getExtensionFromPath(value) {
+  return path.extname(String(value ?? "").toLowerCase());
+}
+
+function getVisualContentType(fileName) {
+  const ext = getExtensionFromPath(fileName);
+  const map = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".bmp": "image/bmp",
+    ".tif": "image/tiff",
+    ".tiff": "image/tiff",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml"
+  };
+  return map[ext] || "application/octet-stream";
+}
+
+function extractOfficeMediaArtifacts(buffer, fileName) {
+  const ext = getFileExtension(fileName);
+  const prefix =
+    ext === ".docx" ? "word/media/" :
+    ext === ".pptx" ? "ppt/media/" :
+    ext === ".xlsx" ? "xl/media/" :
+    null;
+
+  if (!prefix) return { artifacts: [], warnings: [] };
+
+  const artifacts = [];
+  const warnings = [];
+
+  for (const entry of readZipEntries(buffer)) {
+    if (!entry.name.toLowerCase().startsWith(prefix)) continue;
+    const mediaExt = getExtensionFromPath(entry.name);
+    if (!OFFICE_VISUAL_EXTENSIONS.has(mediaExt)) continue;
+
+    if (!MULTIMODAL_IMAGE_EXTENSIONS.has(mediaExt)) {
+      warnings.push(`${fileName}: embedded media ${entry.name} is ${mediaExt}; EMF/WMF conversion is not available in this Functions runtime.`);
+      continue;
+    }
+
+    artifacts.push({
+      buffer: entry.content,
+      contentType: getVisualContentType(entry.name),
+      sourceName: entry.name,
+      extension: mediaExt,
+      extractionSource: "Office embedded media extraction + multimodal analysis"
+    });
+  }
+
+  return { artifacts, warnings };
+}
+
+function extractOfficeRenderFallbackEvidence(buffer, fileName) {
+  const ext = getFileExtension(fileName);
+  const artifacts = [];
+  const warnings = [];
+
+  try {
+    const entries = readZipEntries(buffer);
+    const candidates = entries.filter((entry) => {
+      const name = entry.name.toLowerCase();
+      if (!name.endsWith(".xml")) return false;
+      if (ext === ".pptx") return name.startsWith("ppt/slides/");
+      if (ext === ".docx") return name.startsWith("word/document");
+      if (ext === ".xlsx") return name.startsWith("xl/worksheets/") || name.startsWith("xl/charts/");
+      return false;
+    });
+
+    for (const [index, entry] of candidates.slice(0, 12).entries()) {
+      const xml = entry.content.toString("utf8");
+      const textValues = [
+        ...extractXmlAttributeValues(xml, "val"),
+        ...extractXmlAttributeValues(xml, "name"),
+        ...[...xml.matchAll(/<a:t>([\s\S]*?)<\/a:t>/gi)].map((m) => cleanDiagramText(m[1])),
+        ...[...xml.matchAll(/<t[^>]*>([\s\S]*?)<\/t>/gi)].map((m) => cleanDiagramText(m[1]))
+      ].filter((value) => value && value.length > 1);
+
+      const unique = [...new Set(textValues)].slice(0, 80);
+      if (unique.length === 0 && !/(graphic|chart|smartart|diagram|shape|pic|cxnSp)/i.test(xml)) continue;
+
+      artifacts.push({
+        sourceName: entry.name,
+        summaryText: `[Rendered visual fallback candidate: ${entry.name}]\n${unique.map((v) => `- ${v}`).join("\n")}`,
+        sourceSlide: ext === ".pptx" ? index + 1 : null,
+        sourceSheet: ext === ".xlsx" ? entry.name.replace(/^xl\/worksheets\//i, "") : null,
+        extractionSource:
+          ext === ".pptx"
+            ? "Office slide render fallback + extracted slide XML evidence"
+            : ext === ".xlsx"
+              ? "Office sheet render fallback + extracted sheet XML evidence"
+              : "Office page render fallback + extracted document XML evidence"
+      });
+    }
+  } catch (error) {
+    warnings.push(`${fileName}: Office render fallback metadata extraction failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  if (artifacts.length === 0) {
+    warnings.push(`${fileName}: Office render fallback could not create image previews in the current Functions runtime.`);
+  }
+
+  return { artifacts, warnings };
+}
+
+function detectPromptInjectionRisk(text) {
+  return /ignore (all )?(previous|above) instructions|disregard (previous|above) instructions|mark .*approved|set .*approved|override .*instructions/i.test(String(text ?? ""))
+    ? "PossiblePromptInjection"
+    : "NoneDetected";
+}
+
+const AZURE_SERVICE_PATTERNS = [
+  ["Azure Firewall", /\bazure firewall\b|\bfirewall\b/i],
+  ["Azure Virtual Network", /\bvirtual network\b|\bvnet\b/i],
+  ["Azure Virtual WAN", /\bvirtual wan\b|\bvwan\b/i],
+  ["Azure Front Door", /\bfront door\b/i],
+  ["Application Gateway", /\bapplication gateway\b|\bapp gateway\b/i],
+  ["Azure API Management", /\bapi management\b|\bapim\b/i],
+  ["Private Endpoint", /\bprivate endpoint\b|\bprivate link\b/i],
+  ["Azure DNS Private Resolver", /\bdns private resolver\b/i],
+  ["Microsoft Entra ID", /\bentra\b|\baad\b|\bazure ad\b/i],
+  ["Azure Key Vault", /\bkey vault\b/i],
+  ["Azure Monitor", /\bazure monitor\b|\blog analytics\b|\bapplication insights\b/i],
+  ["Azure Kubernetes Service", /\baks\b|\bkubernetes\b/i],
+  ["Azure App Service", /\bapp service\b/i],
+  ["Azure Storage", /\bstorage account\b|\bblob storage\b/i],
+  ["Azure SQL", /\bazure sql\b|\bsql database\b/i],
+  ["Azure AI Foundry", /\bai foundry\b|\bfoundry\b/i]
+];
+
+const ARCHITECTURE_PATTERN_PATTERNS = [
+  ["Hub-spoke topology", /\bhub[- ]spoke\b|\bhub vnet\b|\bspoke vnet\b/i],
+  ["Private access", /\bprivate endpoint\b|\bprivate link\b|\bprivate access\b/i],
+  ["Centralized egress", /\begress\b|\bcentralized firewall\b|\bazure firewall\b/i],
+  ["Hybrid connectivity", /\bexpressroute\b|\bvpn\b|\bon-prem/i],
+  ["Multi-region design", /\bmulti-region\b|\bprimary\b.*\bsecondary\b|\bdr\b|\bdisaster recovery\b/i],
+  ["Zero Trust identity", /\bzero trust\b|\bpim\b|\bmfa\b|\brbac\b/i],
+  ["Landing zone governance", /\blanding zone\b|\bmanagement group\b|\bazure policy\b/i]
+];
+
+function detectTerms(text, patterns) {
+  return patterns.filter(([, pattern]) => pattern.test(text)).map(([name]) => name);
+}
+
+function buildVisualEvidenceId(reviewId, index) {
+  return `${reviewId}-visual-${String(index + 1).padStart(3, "0")}`;
+}
+
+async function persistAndAnalyzeVisualArtifact({
+  principal,
+  reviewId,
+  visualIndex,
+  sourceFile,
+  artifact,
+  outputContainer,
+  canUseMultimodal
+}) {
+  const visualEvidenceId = buildVisualEvidenceId(reviewId, visualIndex);
+  const extension = artifact.extension || getExtensionFromPath(artifact.sourceName || sourceFile.fileName) || ".png";
+  const imageUri = artifact.buffer
+    ? `${sanitizePathSegment(principal.userId)}/reviews/${sanitizePathSegment(reviewId)}/visual/${visualEvidenceId}${extension}`
+    : `${sanitizePathSegment(principal.userId)}/reviews/${sanitizePathSegment(reviewId)}/visual/${visualEvidenceId}.txt`;
+
+  if (artifact.buffer) {
+    await uploadBinaryBlob(outputContainer, imageUri, artifact.buffer, artifact.contentType || getVisualContentType(artifact.sourceName));
+  } else {
+    await uploadTextBlob(outputContainer, imageUri, artifact.summaryText || "", "text/plain; charset=utf-8");
+  }
+
+  let summary = artifact.summaryText || "";
+  let analysisError = null;
+  if (artifact.buffer && canUseMultimodal && MULTIMODAL_IMAGE_EXTENSIONS.has(extension)) {
+    try {
+      summary = await describeImageForReview(artifact.buffer, artifact.sourceName || sourceFile.fileName, extension);
+    } catch (error) {
+      analysisError = error instanceof Error ? error.message : String(error);
+      summary = artifact.summaryText || `Visual artifact ${artifact.sourceName || sourceFile.fileName} could not be analyzed by the multimodal model.`;
+    }
+  }
+
+  const promptInjectionRisk = detectPromptInjectionRisk(summary);
+  const detectedAzureServices = detectTerms(summary, AZURE_SERVICE_PATTERNS);
+  const detectedArchitecturePatterns = detectTerms(summary, ARCHITECTURE_PATTERN_PATTERNS);
+
+  return {
+    visualEvidenceId,
+    reviewId,
+    sourceFileId: sourceFile.fileId,
+    sourceFileName: sourceFile.fileName,
+    sourceFileType: getExtensionFromPath(sourceFile.fileName).replace(/^\./, "") || sourceFile.fileType || "",
+    sourcePage: artifact.sourcePage ?? artifact.pageNumber ?? null,
+    sourceSlide: artifact.sourceSlide ?? null,
+    sourceSheet: artifact.sourceSheet ?? null,
+    figureId: artifact.figureId ?? null,
+    imageUri,
+    factType: "VisualArchitecture",
+    summary: String(summary || "").slice(0, 6000),
+    detectedAzureServices,
+    detectedArchitecturePatterns,
+    sourceExcerpt: artifact.sourceExcerpt || `Visual analysis of ${artifact.sourceName || sourceFile.fileName}.`,
+    confidence: analysisError ? "Low" : "Medium",
+    extractionSource: artifact.extractionSource || "Visual artifact + multimodal analysis",
+    promptInjectionRisk,
+    analysisError,
+    createdAt: new Date().toISOString()
+  };
 }
 
 async function extractSpreadsheetText(buffer) {
@@ -1707,13 +1925,14 @@ function toRequirementsEntity(reviewId, userId, requirements) {
   };
 }
 
-function toEvidenceEntity(reviewId, userId, evidence) {
+function toEvidenceEntity(reviewId, userId, evidence, visualEvidence = []) {
   return {
     partitionKey: getPartitionKey(reviewId),
     rowKey: getRowKey(EVIDENCE_ROW_KEY, userId),
     reviewId,
     createdByUserId: userId,
     evidenceJson: JSON.stringify(evidence),
+    visualEvidenceJson: JSON.stringify(visualEvidence),
     lastUpdated: new Date().toISOString()
   };
 }
@@ -1906,6 +2125,15 @@ function fromEvidenceEntity(entity) {
   }
 
   return JSON.parse(entity.evidenceJson);
+}
+
+function fromVisualEvidenceEntity(entity) {
+  if (!entity?.visualEvidenceJson) {
+    return [];
+  }
+
+  const parsed = JSON.parse(entity.visualEvidenceJson);
+  return Array.isArray(parsed) ? parsed : [];
 }
 
 function fromExportsEntity(entity) {
@@ -2391,8 +2619,12 @@ async function startArbExtraction(principal, reviewId) {
   const startedAt = new Date().toISOString();
   const nextFiles = [];
   const extractionErrors = [];
+  const visualEvidence = [];
+  const visualExtractionErrors = [];
+  const visualCountsByFile = new Map();
   const fileTexts = new Map();
   let searchIndexed = false;
+  const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
 
   if (getSearchConfiguration().configured) {
     try {
@@ -2404,6 +2636,102 @@ async function startArbExtraction(principal, reviewId) {
   }
 
   const visionAvailable = getFoundryConfiguration().configured;
+
+  async function addVisualEvidenceRecord(file, artifact) {
+    try {
+      const record = await persistAndAnalyzeVisualArtifact({
+        principal,
+        reviewId,
+        visualIndex: visualEvidence.length,
+        sourceFile: file,
+        artifact,
+        outputContainer,
+        canUseMultimodal: visionAvailable
+      });
+      visualEvidence.push(record);
+      visualCountsByFile.set(file.fileId, (visualCountsByFile.get(file.fileId) || 0) + 1);
+      if (record.analysisError) {
+        visualExtractionErrors.push(`${file.fileName}: visual analysis warning for ${record.visualEvidenceId}: ${record.analysisError}`);
+      }
+      if (record.promptInjectionRisk && record.promptInjectionRisk !== "NoneDetected") {
+        visualExtractionErrors.push(`${file.fileName}: possible prompt-injection text detected in ${record.visualEvidenceId}; treated as untrusted evidence.`);
+      }
+      return record;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      visualExtractionErrors.push(`${file.fileName}: visual evidence extraction failed: ${message}`);
+      return null;
+    }
+  }
+
+  async function processOfficeVisualEvidence(file, buffer) {
+    const extension = getFileExtension(file.fileName);
+    if (![".docx", ".pptx", ".xlsx"].includes(extension)) {
+      return;
+    }
+
+    const { artifacts, warnings } = await extractOfficeMediaArtifacts(buffer, file.fileName);
+    for (const warning of warnings) {
+      visualExtractionErrors.push(warning);
+    }
+    for (const artifact of artifacts) {
+      await addVisualEvidenceRecord(file, artifact);
+    }
+
+    const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
+    if (shouldRunFallback) {
+      const fallback = await extractOfficeRenderFallbackEvidence(buffer, file.fileName);
+      for (const warning of fallback.warnings) {
+        visualExtractionErrors.push(warning);
+      }
+      for (const artifact of fallback.artifacts) {
+        await addVisualEvidenceRecord(file, artifact);
+      }
+    }
+  }
+
+  async function processPdfVisualEvidence(file, layout) {
+    const figures = Array.isArray(layout?.figures) ? layout.figures : [];
+    for (const figure of figures) {
+      if (!figure.buffer) {
+        visualExtractionErrors.push(`${file.fileName}: Document Intelligence could not retrieve figure ${figure.figureId || "unknown"}.`);
+        continue;
+      }
+      await addVisualEvidenceRecord(file, {
+        sourceName: `${file.fileName}-${figure.figureId || "figure"}.png`,
+        buffer: figure.buffer,
+        extension: ".png",
+        contentType: figure.contentType || "image/png",
+        sourcePage: figure.sourcePage ?? figure.pageNumber ?? null,
+        figureId: figure.figureId ?? null,
+        sourceExcerpt: `Visual analysis of embedded architecture figure ${figure.figureId || ""} in ${file.fileName}.`.trim(),
+        extractionSource: "Document Intelligence figures + multimodal analysis"
+      });
+    }
+
+    if (figures.length > 0) {
+      return;
+    }
+
+    const pages = Array.isArray(layout?.result?.pages) ? layout.result.pages : [];
+    const fallbackPages = pages
+      .filter((page) => Number(page.pageNumber) >= 4 && Number(page.pageNumber) <= 9)
+      .slice(0, 6);
+    for (const page of fallbackPages) {
+      const pageText = Array.isArray(page.lines)
+        ? page.lines.map((line) => line.content).filter(Boolean).join("\n")
+        : "";
+      await addVisualEvidenceRecord(file, {
+        sourceName: `${file.fileName}-page-${page.pageNumber}.txt`,
+        sourcePage: page.pageNumber ?? null,
+        summaryText: pageText
+          ? `PDF page ${page.pageNumber} was treated as visual evidence fallback. Extracted page labels:\n${pageText.slice(0, 4000)}`
+          : `PDF page ${page.pageNumber} was treated as visual evidence fallback because no cropped figures were returned by Document Intelligence.`,
+        sourceExcerpt: `Visual analysis fallback for full-page architecture content on page ${page.pageNumber}.`,
+        extractionSource: "PDF page render fallback + extracted page evidence"
+      });
+    }
+  }
 
   for (const file of files) {
     const isSpreadsheet = supportsSpreadsheetExtraction(file.fileName);
@@ -2424,6 +2752,8 @@ async function startArbExtraction(principal, reviewId) {
           extractionErrors.push(`${file.fileName}: empty blob.`);
           continue;
         }
+
+        await processOfficeVisualEvidence(file, buffer);
 
         const text = await extractSpreadsheetText(buffer);
 
@@ -2478,6 +2808,13 @@ async function startArbExtraction(principal, reviewId) {
           continue;
         }
 
+        await addVisualEvidenceRecord(file, {
+          sourceName: file.fileName,
+          summaryText: text,
+          sourceExcerpt: `Readable diagram labels and metadata extracted from ${file.fileName}.`,
+          extractionSource: "Native diagram file extraction + visual evidence normalization"
+        });
+
         fileTexts.set(file.fileId, text);
         nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
 
@@ -2494,15 +2831,6 @@ async function startArbExtraction(principal, reviewId) {
 
     // ── Image description via multimodal vision ──────────────────────────────
     if (isImage) {
-      if (!visionAvailable) {
-        nextFiles.push({
-          ...file,
-          extractionStatus: "Limited Evidence",
-          extractionError: "Vision analysis requires FOUNDRY_PROJECT_ENDPOINT to be configured."
-        });
-        continue;
-      }
-
       try {
         const buffer = await readBinaryBlob(inputContainer, file.blobPath);
 
@@ -2516,7 +2844,18 @@ async function startArbExtraction(principal, reviewId) {
           continue;
         }
 
-        const description = await describeImageForReview(buffer, file.fileName, getFileExtension(file.fileName));
+        const visualRecord = await addVisualEvidenceRecord(file, {
+          sourceName: file.fileName,
+          buffer,
+          extension: getFileExtension(file.fileName),
+          contentType: file.contentType,
+          summaryText: visionAvailable
+            ? ""
+            : "Standalone image uploaded as visual architecture evidence. Multimodal analysis is unavailable because FOUNDRY_PROJECT_ENDPOINT is not configured.",
+          sourceExcerpt: `Visual analysis of standalone uploaded image ${file.fileName}.`,
+          extractionSource: "Standalone image upload + multimodal analysis"
+        });
+        const description = visualRecord?.summary || "";
 
         if (!description || !description.trim()) {
           nextFiles.push({
@@ -2556,7 +2895,7 @@ async function startArbExtraction(principal, reviewId) {
           ...file,
           extractionStatus: "Limited Evidence",
           extractionError:
-            "Azure AI Document Intelligence is not configured (AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT missing). " +
+            "Azure AI Document Intelligence is not configured (AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT or AZURE_DOCINT_ENDPOINT missing). " +
             "Text extraction is unavailable for this file format."
         });
         continue;
@@ -2578,8 +2917,22 @@ async function startArbExtraction(principal, reviewId) {
         let text = null;
         let extractionSource = "Document Intelligence";
 
+        await processOfficeVisualEvidence(file, buffer);
+
         if (diConfig.configured) {
-          text = await extractDocumentText(buffer, file.contentType, file.fileName);
+          if (getFileExtension(file.fileName) === ".pdf") {
+            try {
+              const layout = await extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true });
+              text = layout.text;
+              await processPdfVisualEvidence(file, layout);
+            } catch (figureError) {
+              const message = figureError instanceof Error ? figureError.message : String(figureError);
+              visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
+              text = await extractDocumentText(buffer, file.contentType, file.fileName);
+            }
+          } else {
+            text = await extractDocumentText(buffer, file.contentType, file.fileName);
+          }
         }
 
         // Vision Service OCR fallback — used when DI is not configured or returned no text.
@@ -2662,22 +3015,26 @@ async function startArbExtraction(principal, reviewId) {
     }
   }
 
-  const derived = deriveRequirementsAndEvidence(review, nextFiles, fileTexts);
+  const nextFilesWithVisualEvidence = nextFiles.map((file) => ({
+    ...file,
+    visualEvidenceCount: visualCountsByFile.get(file.fileId) || 0
+  }));
+  const derived = deriveRequirementsAndEvidence(review, nextFilesWithVisualEvidence, fileTexts);
   const completedAt = new Date().toISOString();
-  const readiness = buildReadinessFromFiles(nextFiles);
+  const readiness = buildReadinessFromFiles(nextFilesWithVisualEvidence);
   const evidenceReadinessState =
     derived.requirements.length > 0 && readiness.requiredEvidencePresent
       ? readiness.missingRecommendedItems.length === 0
         ? "Ready for Review"
         : "Ready with Gaps"
       : "Insufficient Evidence";
-  const extractionState = extractionErrors.length > 0 ? "Completed with Issues" : "Completed";
+  const extractionState = extractionErrors.length > 0 || visualExtractionErrors.length > 0 ? "Completed with Issues" : "Completed";
   const extractionConfidencePercent = calculateExtractionConfidencePercent({
-    files: nextFiles,
+    files: nextFilesWithVisualEvidence,
     requirements: derived.requirements,
     evidence: derived.evidence,
     readiness,
-    extractionErrors
+    extractionErrors: [...extractionErrors, ...visualExtractionErrors]
   });
   const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
   const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
@@ -2694,7 +3051,7 @@ async function startArbExtraction(principal, reviewId) {
     missingRecommendedItems: readiness.missingRecommendedItems,
     readinessOutcome: readiness.readinessOutcome,
     readinessNotes: readiness.readinessNotes,
-    documentCount: nextFiles.length,
+    documentCount: nextFilesWithVisualEvidence.length,
     lastUpdated: completedAt
   };
   const scorecard = buildDerivedScorecard(nextReview, findings, null);
@@ -2706,26 +3063,39 @@ async function startArbExtraction(principal, reviewId) {
     completedSteps: [
       "files-registered",
       "blob-read",
+      "text-extraction",
+      "table-extraction",
       "requirements-normalized",
       "evidence-normalized",
+      ...(visualEvidence.length > 0 ? ["visual-evidence-extracted"] : []),
       ...(searchIndexed ? ["search-indexed"] : [])
     ],
-    failedSteps: extractionErrors.length > 0 ? ["text-extraction"] : [],
+    failedSteps: [
+      ...(extractionErrors.length > 0 ? ["text-extraction"] : []),
+      ...(visualExtractionErrors.length > 0 ? ["visual-extraction"] : [])
+    ],
+    textExtractionStatus: extractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    tableExtractionStatus: "CompletedOrNotApplicable",
+    figureExtractionStatus: visualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    visualAnalysisStatus: visualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    visualEvidenceCount: visualEvidence.length,
+    visualExtractionErrors,
     evidenceReadinessState,
     extractionErrors,
     lastStartedAt: startedAt,
     lastCompletedAt: completedAt,
-    fileStatuses: nextFiles.map((file) => ({
+    fileStatuses: nextFilesWithVisualEvidence.map((file) => ({
       fileId: file.fileId,
       fileName: file.fileName,
       extractionStatus: file.extractionStatus,
-      extractionError: file.extractionError
+      extractionError: file.extractionError,
+      visualEvidenceCount: file.visualEvidenceCount || 0
     }))
   };
 
-  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, nextFiles), "Replace");
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, nextFilesWithVisualEvidence), "Replace");
   await client.upsertEntity(toRequirementsEntity(reviewId, principal.userId, derived.requirements), "Replace");
-  await client.upsertEntity(toEvidenceEntity(reviewId, principal.userId, derived.evidence), "Replace");
+  await client.upsertEntity(toEvidenceEntity(reviewId, principal.userId, derived.evidence, visualEvidence), "Replace");
   await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
   await client.upsertEntity(
     {
@@ -2747,18 +3117,32 @@ async function startArbExtraction(principal, reviewId) {
       readinessNotes: readiness.readinessNotes,
       missingRequiredItemsJson: JSON.stringify(readiness.missingRequiredItems),
       missingRecommendedItemsJson: JSON.stringify(readiness.missingRecommendedItems),
-      documentCount: nextFiles.length,
+      documentCount: nextFilesWithVisualEvidence.length,
       lastUpdated: completedAt
     },
     "Merge"
   );
 
+  const evidenceForOutputs = [
+    ...derived.evidence,
+    ...visualEvidence.map((v) => ({
+      evidenceId: v.visualEvidenceId,
+      reviewId: v.reviewId,
+      sourceFileId: v.sourceFileId,
+      sourceFileName: v.sourceFileName,
+      factType: v.factType,
+      summary: v.summary,
+      sourceExcerpt: v.sourceExcerpt,
+      confidence: v.confidence
+    }))
+  ];
+
   const syncedOutputs = await syncArbReviewedOutputs({
     principal,
     review: nextReview,
-    files: nextFiles,
+    files: nextFilesWithVisualEvidence,
     requirements: derived.requirements,
-    evidence: derived.evidence,
+    evidence: evidenceForOutputs,
     findings,
     scorecard,
     actions,
@@ -2820,6 +3204,23 @@ async function getArbEvidence(principal, reviewId) {
   return fromEvidenceEntity(evidenceEntity);
 }
 
+async function getArbVisualEvidence(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
+
+  if (!summaryEntity) {
+    if (reviewId === "demo-review") {
+      await seedDemoReview(client, principal, reviewId);
+      return getArbVisualEvidence(principal, reviewId);
+    }
+
+    throw createHttpError(404, `ARB review ${reviewId} was not found.`);
+  }
+
+  const evidenceEntity = await getEntity(client, reviewId, getRowKey(EVIDENCE_ROW_KEY, principal.userId));
+  return fromVisualEvidenceEntity(evidenceEntity);
+}
+
 async function listArbExports(principal, reviewId) {
   const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
   const summaryEntity = await getOwnedSummaryEntity(client, principal, reviewId);
@@ -2864,6 +3265,7 @@ async function createArbExport(principal, reviewId, input = {}) {
   const files = await getArbFiles(principal, reviewId);
   const requirements = await getArbRequirements(principal, reviewId);
   const evidence = await getArbEvidence(principal, reviewId);
+  const visualEvidence = await getArbVisualEvidence(principal, reviewId);
   const findings = await getArbFindings(principal, reviewId);
   const actions = await getArbActions(principal, reviewId);
   const scorecard = await getArbScorecard(principal, reviewId);
@@ -2878,7 +3280,19 @@ async function createArbExport(principal, reviewId, input = {}) {
     },
     files,
     requirements,
-    evidence,
+    evidence: [
+      ...evidence,
+      ...visualEvidence.map((v) => ({
+        evidenceId: v.visualEvidenceId,
+        reviewId: v.reviewId,
+        sourceFileId: v.sourceFileId,
+        sourceFileName: v.sourceFileName,
+        factType: v.factType,
+        summary: v.summary,
+        sourceExcerpt: v.sourceExcerpt,
+        confidence: v.confidence
+      }))
+    ],
     findings,
     scorecard,
     actions,
@@ -3239,6 +3653,7 @@ module.exports = {
   deleteArbFile,
   downloadArbExport,
   getArbEvidence,
+  getArbVisualEvidence,
   getArbActions,
   getArbDecision,
   getArbExtractionStatus,

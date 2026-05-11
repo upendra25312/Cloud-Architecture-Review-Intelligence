@@ -438,11 +438,25 @@ export async function fetchArbEvidence(reviewId: string): Promise<ArbEvidenceFac
     cache: "no-store"
   });
 
-  const payload = await readJsonResponse<{ evidence: ArbEvidenceFact[] }>(
+  const payload = await readJsonResponse<{
+    evidence: ArbEvidenceFact[];
+    visualEvidence?: Array<Partial<ArbEvidenceFact> & { visualEvidenceId: string }>;
+  }>(
     response,
     `Unable to load ARB evidence (${response.status}).`
   );
-  return payload.evidence;
+  const visualEvidence: ArbEvidenceFact[] = (payload.visualEvidence ?? []).map((item) => ({
+    ...item,
+    evidenceId: item.visualEvidenceId || item.evidenceId || "",
+    reviewId: item.reviewId || reviewId,
+    sourceFileId: item.sourceFileId ?? null,
+    sourceFileName: item.sourceFileName ?? null,
+    factType: item.factType || "VisualArchitecture",
+    summary: item.summary || "",
+    sourceExcerpt: item.sourceExcerpt || "",
+    confidence: item.confidence || "Medium",
+  }));
+  return [...(payload.evidence ?? []), ...visualEvidence];
 }
 
 export async function createArbExport(input: {

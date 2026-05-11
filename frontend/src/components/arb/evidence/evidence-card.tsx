@@ -39,6 +39,12 @@ export function EvidenceCard({
   const fileNameFull = evidence.sourceFileName ?? "Unknown source";
   const hasExcerpt = Boolean(evidence.sourceExcerpt);
   const linkCount = linkedFindings.length;
+  const isVisualEvidence = evidence.factType === "VisualArchitecture" || Boolean(evidence.visualEvidenceId);
+  const sourceLocation = [
+    evidence.sourcePage ? `Page ${evidence.sourcePage}` : null,
+    evidence.sourceSlide ? `Slide ${evidence.sourceSlide}` : null,
+    evidence.sourceSheet ? `Sheet ${evidence.sourceSheet}` : null,
+  ].filter(Boolean).join(" · ");
 
   function handleToggle() {
     setExpanded((prev) => !prev);
@@ -72,7 +78,20 @@ export function EvidenceCard({
             Quoted
           </span>
         )}
+        {isVisualEvidence && (
+          <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#166534", background: "#DCFCE7", padding: "1px 6px", borderRadius: 3 }}>
+            Visual
+          </span>
+        )}
       </div>
+
+      {isVisualEvidence && (
+        <div style={{ marginBottom: 8, display: "flex", flexDirection: "column", gap: 4, fontSize: "0.78rem", color: "var(--t2)" }}>
+          <span><strong>ID:</strong> {evidence.visualEvidenceId || evidence.evidenceId}</span>
+          {sourceLocation ? <span><strong>Location:</strong> {sourceLocation}</span> : null}
+          {evidence.imageUri ? <span><strong>Artifact:</strong> {evidence.imageUri}</span> : null}
+        </div>
+      )}
 
       {/* Summary */}
       <p style={{ margin: "0 0 8px", fontSize: "0.9rem", color: "var(--t1)", lineHeight: 1.55 }}>
@@ -95,6 +114,24 @@ export function EvidenceCard({
       {expanded && hasExcerpt && (
         <div className={styles.excerptBlock}>
           {evidence.sourceExcerpt}
+        </div>
+      )}
+
+      {expanded && isVisualEvidence && (
+        <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6, fontSize: "0.82rem", color: "var(--t2)" }}>
+          {evidence.detectedAzureServices?.length ? (
+            <span><strong>Azure services:</strong> {evidence.detectedAzureServices.join(", ")}</span>
+          ) : null}
+          {evidence.detectedArchitecturePatterns?.length ? (
+            <span><strong>Patterns:</strong> {evidence.detectedArchitecturePatterns.join(", ")}</span>
+          ) : null}
+          {evidence.extractionSource ? <span><strong>Extraction:</strong> {evidence.extractionSource}</span> : null}
+          {evidence.promptInjectionRisk && evidence.promptInjectionRisk !== "NoneDetected" ? (
+            <span style={{ color: "#B45309" }}><strong>Prompt-injection risk:</strong> {evidence.promptInjectionRisk}</span>
+          ) : null}
+          {evidence.analysisError ? (
+            <span style={{ color: "#B91C1C" }}><strong>Visual analysis warning:</strong> {evidence.analysisError}</span>
+          ) : null}
         </div>
       )}
 
