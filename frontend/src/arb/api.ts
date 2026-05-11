@@ -394,10 +394,13 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
   };
 
   if (startPayload.extraction) {
-    return startPayload.extraction;
+    const state = startPayload.extraction.state || "";
+    if (state.startsWith("Completed") || state === "Failed") {
+      return startPayload.extraction;
+    }
   }
 
-  const maxPollMs = 300_000;
+  const maxPollMs = 900_000;
   const pollIntervalMs = 4_000;
   const startedAt = Date.now();
 
@@ -405,13 +408,14 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
     await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
 
     const payload = { extraction: await fetchArbExtractionStatus(reviewId) };
+    const state = payload.extraction.state || "";
 
-    if (payload.extraction.state !== "Not Started") {
+    if (state.startsWith("Completed") || state === "Failed") {
       return payload.extraction;
     }
   }
 
-  throw new Error("Analysis did not report progress within 5 minutes. Refresh this page and check the extraction status.");
+  throw new Error("Analysis is still running in the background. Refresh this page and check the extraction status.");
 }
 
 export async function fetchArbExtractionStatus(reviewId: string): Promise<ArbExtractionStatus> {

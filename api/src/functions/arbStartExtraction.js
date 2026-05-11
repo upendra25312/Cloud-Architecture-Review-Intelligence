@@ -1,7 +1,12 @@
-const { app } = require("@azure/functions");
+const { app, output } = require("@azure/functions");
 const { jsonResponse, requireAuthenticated, safeErrorResponse } = require("../shared/auth");
-const { startArbExtraction, getArbFiles } = require("../shared/arb-review-store");
+const { markArbExtractionQueued, getArbFiles } = require("../shared/arb-review-store");
 const { rateLimitResponse, EXTRACTION_LIMIT } = require("../shared/rate-limiter");
+
+const extractionQueueOutput = output.storageQueue({
+  queueName: "arb-extraction-jobs",
+  connection: "AzureWebJobsStorage"
+});
 
 async function handleArbStartExtraction(request, context) {
   const auth = requireAuthenticated(request);
@@ -21,11 +26,16 @@ async function handleArbStartExtraction(request, context) {
       return jsonResponse(400, { error: "Upload files before starting extraction." });
     }
 
-    const extraction = await startArbExtraction(auth.principal, reviewId);
-
-    return jsonResponse(200, {
+    const extraction = await markArbExtractionQueued(auth.principal, reviewId);
+    context.extraOutputs.set(extractionQueueOutput, JSON.stringify({
       reviewId,
-      status: "completed",
+      principal: auth.principal,
+      requestedAt: new Date().toISOString()
+    }));
+
+    return jsonResponse(202, {
+      reviewId,
+      status: "queued",
       fileCount: files.length,
       extraction
     });
@@ -38,6 +48,7 @@ app.http("arbStartExtraction", {
   route: "arb/reviews/{reviewId}/extract",
   methods: ["POST"],
   authLevel: "anonymous",
+  extraOutputs: [extractionQueueOutput],
   handler: handleArbStartExtraction
 });
 

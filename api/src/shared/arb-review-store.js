@@ -2238,6 +2238,32 @@ function toEvidenceEntity(reviewId, userId, evidence, visualEvidence = []) {
   };
 }
 
+function buildTransientExtractionStatus(review, state, input = {}) {
+  const startedAt = input.startedAt || new Date().toISOString();
+  return {
+    reviewId: review.reviewId,
+    jobId: input.jobId || `${review.reviewId}-extract-${Date.now()}`,
+    state,
+    extractionConfidencePercent: 0,
+    completedSteps: ["files-registered"],
+    failedSteps: [],
+    textExtractionStatus: "NotStarted",
+    tableExtractionStatus: "NotStarted",
+    figureExtractionStatus: "NotStarted",
+    visualAnalysisStatus: "NotStarted",
+    visualEvidenceCount: 0,
+    visualExtractionErrors: [],
+    evidenceReadinessState: review.evidenceReadinessState,
+    missingRequiredItems: review.missingRequiredItems || [],
+    missingRecommendedItems: review.missingRecommendedItems || [],
+    readinessNotes: input.readinessNotes || review.readinessNotes || null,
+    extractionErrors: input.error ? [input.error] : [],
+    lastStartedAt: startedAt,
+    lastCompletedAt: input.completedAt || null,
+    fileStatuses: Array.isArray(input.fileStatuses) ? input.fileStatuses : []
+  };
+}
+
 function toExportsEntity(reviewId, userId, exportsList) {
   return {
     partitionKey: getPartitionKey(reviewId),
@@ -3567,6 +3593,102 @@ async function startArbExtraction(principal, reviewId) {
   return extraction;
 }
 
+async function markArbExtractionQueued(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const files = await getArbFiles(principal, reviewId);
+
+  if (files.length === 0) {
+    throw createHttpError(400, "Upload files before starting extraction.");
+  }
+
+  const jobId = `${reviewId}-extract-${Date.now()}`;
+  const extraction = buildTransientExtractionStatus(review, "Queued", {
+    jobId,
+    readinessNotes: "Extraction has been queued. Large PDFs and visual evidence processing continue in the background.",
+    fileStatuses: files.map((file) => ({
+      fileId: file.fileId,
+      fileName: file.fileName,
+      extractionStatus: file.extractionStatus || "Pending",
+      extractionError: file.extractionError || null,
+      visualEvidenceCount: file.visualEvidenceCount || 0
+    }))
+  });
+
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: "Extraction Queued",
+      lastUpdated: new Date().toISOString()
+    },
+    "Merge"
+  );
+
+  return extraction;
+}
+
+async function markArbExtractionRunning(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const files = await getArbFiles(principal, reviewId);
+  const extraction = buildTransientExtractionStatus(review, "Running", {
+    readinessNotes: "Extraction is running. The system is reading text, tables, diagrams, and visual evidence.",
+    fileStatuses: files.map((file) => ({
+      fileId: file.fileId,
+      fileName: file.fileName,
+      extractionStatus: file.extractionStatus || "Pending",
+      extractionError: file.extractionError || null,
+      visualEvidenceCount: file.visualEvidenceCount || 0
+    }))
+  });
+
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: "Extraction Running",
+      lastUpdated: new Date().toISOString()
+    },
+    "Merge"
+  );
+
+  return extraction;
+}
+
+async function markArbExtractionFailed(principal, reviewId, errorMessage) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+  const files = await getArbFiles(principal, reviewId);
+  const extraction = buildTransientExtractionStatus(review, "Failed", {
+    error: errorMessage || "Extraction worker failed.",
+    completedAt: new Date().toISOString(),
+    readinessNotes: "Extraction failed before the review package could be normalized.",
+    fileStatuses: files.map((file) => ({
+      fileId: file.fileId,
+      fileName: file.fileName,
+      extractionStatus: file.extractionStatus || "Pending",
+      extractionError: file.extractionError || null,
+      visualEvidenceCount: file.visualEvidenceCount || 0
+    }))
+  });
+
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: "Extraction Failed",
+      lastUpdated: new Date().toISOString()
+    },
+    "Merge"
+  );
+
+  return extraction;
+}
+
 async function getArbExtractionStatus(principal, reviewId) {
   const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
   const review = await getArbReview(principal, reviewId);
@@ -4080,6 +4202,9 @@ module.exports = {
   getArbActions,
   getArbDecision,
   getArbExtractionStatus,
+  markArbExtractionQueued,
+  markArbExtractionRunning,
+  markArbExtractionFailed,
   listArbExports,
   getArbFiles,
   getArbRequirements,
