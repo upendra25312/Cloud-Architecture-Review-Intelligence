@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   createArbExport,
   createArbAction,
+  downloadArbExport,
   fetchArbActions,
   fetchArbFindings,
   fetchArbReview,
@@ -46,6 +47,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
   const [creatingActionForFindingId, setCreatingActionForFindingId] = useState<string | null>(null);
   const [findingError, setFindingError] = useState<string | null>(null);
   const [exportLoading, setExportLoading] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -169,15 +171,17 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
   async function handleExport() {
     try {
       setExportLoading(true);
-      await createArbExport({
+      setExportError(null);
+      const artifact = await createArbExport({
         reviewId,
         format: "markdown",
         includeFindings: true,
         includeScorecard: true,
         includeActions: true,
       });
-    } catch {
-      // Export error is non-blocking
+      await downloadArbExport(reviewId, artifact);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to export the board pack.");
     } finally {
       setExportLoading(false);
     }
@@ -285,6 +289,11 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
           onExport={handleExport}
           exportLoading={exportLoading}
         />
+        {exportError ? (
+          <p className="arb-upload-error" role="alert">
+            {exportError}
+          </p>
+        ) : null}
 
         <div className={styles.masterDetail}>
           <FindingsListPanel

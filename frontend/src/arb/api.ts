@@ -629,13 +629,19 @@ export async function downloadArbExport(reviewId: string, exportArtifact: ArbExp
     );
   }
 
+  const blob = await response.blob();
+  const objectUrl = window.URL.createObjectURL(blob);
   const anchor = document.createElement("a");
 
-  anchor.href = downloadUrl;
-  anchor.download = exportArtifact.fileName;
-  anchor.rel = "noopener";
-  anchor.style.display = "none";
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
+  try {
+    anchor.href = objectUrl;
+    anchor.download = exportArtifact.fileName;
+    anchor.rel = "noopener";
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+  } finally {
+    document.body.removeChild(anchor);
+    window.URL.revokeObjectURL(objectUrl);
+  }
 }
