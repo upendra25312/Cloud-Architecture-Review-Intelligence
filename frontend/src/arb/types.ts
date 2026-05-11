@@ -133,6 +133,11 @@ export interface ArbUploadedFile {
   contentType: string;
   supportedTextExtraction: boolean;
   visualEvidenceCount?: number;
+  parentPackageFileName?: string | null;
+  parentPackagePath?: string | null;
+  packageChildCount?: number;
+  packageSkippedCount?: number;
+  packageWarnings?: string[];
 }
 
 export interface ArbExtractionFileStatus {

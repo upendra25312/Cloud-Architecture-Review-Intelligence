@@ -9,7 +9,8 @@ export const SUPPORTED_ARB_UPLOAD_EXTENSIONS = [
   ".json", ".xml", ".yaml", ".yml", ".bicep", ".tf", ".hcl", ".toml",
   ".ps1", ".psm1", ".sh", ".azcli",
   ".proto", ".graphql", ".gql", ".wsdl", ".xsd",
-  ".ipynb"
+  ".ipynb",
+  ".zip"
 ] as const;
 
 export const SUPPORTED_ARB_ANALYZE_EXTENSIONS = [

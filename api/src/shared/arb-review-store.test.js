@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const JSZip = require("jszip");
 
 function createMockTableModule() {
   const ARB_REVIEW_TABLE_NAME = "arbreviews";
@@ -628,6 +629,54 @@ test("human approval is blocked until SOW or scope evidence is present", async (
     });
 
     assert.equal(decision.reviewerDecision, "Needs Revision");
+  } finally {
+    cleanup();
+  }
+});
+
+test("ZIP evidence package expands supported child files and skips unsafe entries", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-zip",
+    userDetails: "zipper@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "zip-package",
+      projectName: "ZIP Package"
+    });
+
+    const zip = new JSZip();
+    zip.file("SOW/scope-sow.md", "The SOW defines scope, assumptions, acceptance criteria, and approval responsibilities.");
+    zip.file("Design/landing-zone-design.md", "Azure landing zone design uses hub spoke networking, Azure Firewall, private endpoints, and Azure Monitor.");
+    zip.file("Diagrams/network-topology.drawio", "<mxfile><diagram><mxGraphModel><root><mxCell id=\"1\" value=\"Azure Firewall hub VNet\" /></root></mxGraphModel></diagram></mxfile>");
+    zip.file("nested.zip", "not a real zip");
+    zip.file("tools/legacy.exe", "binary");
+    const buffer = await zip.generateAsync({ type: "nodebuffer" });
+
+    const uploadResult = await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "review-evidence.zip",
+        logicalCategory: "evidence_package",
+        contentType: "application/zip",
+        contentBuffer: buffer
+      }
+    ]);
+    const files = await store.getArbFiles(principal, created.reviewId);
+    const extraction = await store.startArbExtraction(principal, created.reviewId);
+    const visualEvidence = await store.getArbVisualEvidence(principal, created.reviewId);
+
+    assert.equal(uploadResult.addedCount, 4);
+    assert.ok(files.some((file) => file.fileName === "review-evidence.zip" && file.extractionStatus === "ExpandedWithWarnings"));
+    assert.ok(files.some((file) => file.fileName === "scope-sow.md" && file.logicalCategory === "sow"));
+    assert.ok(files.some((file) => file.fileName === "landing-zone-design.md" && file.logicalCategory === "design_doc"));
+    assert.ok(files.some((file) => file.fileName === "network-topology.drawio" && file.logicalCategory === "diagram"));
+    assert.ok(files.find((file) => file.fileName === "review-evidence.zip").packageWarnings.some((warning) => /nested archives/i.test(warning)));
+    assert.ok(files.find((file) => file.fileName === "review-evidence.zip").packageWarnings.some((warning) => /not supported/i.test(warning)));
+    assert.equal(extraction.fileStatuses.find((file) => file.fileName === "review-evidence.zip").extractionStatus, "ExpandedWithWarnings");
+    assert.ok(visualEvidence.some((item) => /Azure Firewall hub VNet/.test(item.summary)));
   } finally {
     cleanup();
   }

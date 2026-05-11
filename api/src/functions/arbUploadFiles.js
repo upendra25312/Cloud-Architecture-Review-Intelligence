@@ -30,9 +30,8 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/x-yaml", "application/yaml",
   // Notebooks
   "application/x-ipynb+json",
-  // Archives
+  // Evidence package archives (.zip only)
   "application/zip", "application/x-zip-compressed",
-  "application/gzip", "application/x-gzip", "application/x-tar",
   // Generic binary — IaC files (Bicep, Terraform, etc.) are often sent as this
   "application/octet-stream",
 ]);
@@ -113,7 +112,7 @@ async function parseMultipartFiles(request, context) {
     }
 
     if (mime && !ALLOWED_MIME_TYPES.has(mime)) {
-      const err = new Error(`File "${part.filename}" has an unsupported type (${mime}). Accepted types: PDF, Office documents, images, text, JSON, YAML, archives.`);
+      const err = new Error(`File "${part.filename}" has an unsupported type (${mime}). Accepted types: PDF, Office documents, images, text, JSON, YAML, and ZIP evidence packages.`);
       err.statusCode = 415;
       throw err;
     }

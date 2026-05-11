@@ -854,13 +854,30 @@ export function ArbLiveReviewStep(props: {
               }}
             />
           </label>
+          <label htmlFor={`arb-upload-zip-${reviewId}`} className="arb-upload-label">
+            <span className="arb-upload-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M8 3v14M8 6h2M8 9h2M8 12h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></span>
+            <span>Upload Evidence ZIP</span>
+            <input
+              id={`arb-upload-zip-${reviewId}`}
+              className="field-input"
+              aria-label="Upload evidence ZIP package"
+              type="file"
+              multiple
+              accept=".zip"
+              style={{ display: 'none' }}
+              onChange={(event) => {
+                void handleFileUpload(event.target.files, "evidence_package");
+                event.currentTarget.value = "";
+              }}
+            />
+          </label>
           </div>
           <div className="arb-upload-helper-text" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
             Accepted for analysis: PDF, DOCX, PPTX, XLSX, images, diagrams, Markdown, and text.
             Max per file: {formatFileSize(MAX_ARB_UPLOAD_FILE_SIZE)} · Max total upload: {formatFileSize(
               MAX_ARB_UPLOAD_TOTAL_SIZE
             )}.
-            ZIP files can be stored, but archive contents are not analyzed yet. Upload the actual files directly.
+            ZIP packages are unpacked and analyzed file-by-file. Include SOW/scope, design documents, diagrams, cost workbooks, HA/DR notes, and operations notes. Unsupported or unsafe files are skipped with a visible reason.
           </div>
           {uploadSaving ? (
             <p className="arb-upload-status arb-upload-status-progress">Uploading files…</p>
@@ -898,7 +915,21 @@ export function ArbLiveReviewStep(props: {
                       {typeof upload.visualEvidenceCount === "number" && upload.visualEvidenceCount > 0
                         ? ` · ${upload.visualEvidenceCount} visual evidence`
                         : ""}
+                      {typeof upload.packageChildCount === "number"
+                        ? ` · ${upload.packageChildCount} extracted`
+                        : ""}
+                      {typeof upload.packageSkippedCount === "number" && upload.packageSkippedCount > 0
+                        ? ` · ${upload.packageSkippedCount} skipped`
+                        : ""}
                     </p>
+                    {upload.parentPackageFileName ? (
+                      <p className="microcopy">From ZIP: {upload.parentPackageFileName}</p>
+                    ) : null}
+                    {upload.packageWarnings?.length ? (
+                      <p className="microcopy" style={{ color: "#B45309" }}>
+                        ZIP warnings: {upload.packageWarnings.join(" | ")}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="arb-upload-file-actions">
                     <span className="pill">{upload.supportedTextExtraction ? "Supported" : "Limited"}</span>

@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 const path = require("node:path");
 const zlib = require("node:zlib");
 const ExcelJS = require("exceljs");
+const JSZip = require("jszip");
 const {
   ARB_INPUT_CONTAINER_NAME,
   ARB_OUTPUT_CONTAINER_NAME,
@@ -96,6 +97,8 @@ const OFFICE_RENDERER_SHARED_SECRET = process.env.OFFICE_RENDERER_SHARED_SECRET 
 const OFFICE_RENDERER_MAX_FILE_BYTES = Number(process.env.OFFICE_RENDERER_MAX_FILE_BYTES || 50 * 1024 * 1024);
 const OFFICE_RENDERER_MAX_PAGES = Number(process.env.OFFICE_RENDERER_MAX_PAGES || 20);
 const OFFICE_RENDERER_TIMEOUT_MS = Number(process.env.OFFICE_RENDERER_TIMEOUT_MS || 120000);
+const ZIP_MAX_FILES = Number(process.env.ARB_ZIP_MAX_FILES || 30);
+const ZIP_MAX_EXTRACTED_BYTES = Number(process.env.ARB_ZIP_MAX_EXTRACTED_BYTES || 100 * 1024 * 1024);
 const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
   // Documents
   ".pdf", ".doc", ".docx", ".rtf", ".odt",
@@ -119,8 +122,8 @@ const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
   ".proto", ".graphql", ".gql", ".wsdl", ".xsd",
   // Notebooks
   ".ipynb",
-  // Archives
-  ".zip", ".7z", ".tar", ".tgz"
+  // Evidence packages
+  ".zip"
 ]);
 const EXTRACTION_KEYWORD_MAP = [
   // Security
@@ -852,6 +855,151 @@ async function extractSpreadsheetText(buffer) {
 function isSupportedUpload(fileName) {
   const extension = getFileExtension(fileName);
   return SUPPORTED_UPLOAD_EXTENSIONS.has(extension);
+}
+
+function isZipUpload(fileName) {
+  return getFileExtension(fileName) === ".zip";
+}
+
+function isArchiveExtension(fileName) {
+  return [".zip", ".7z", ".rar", ".tar", ".tgz", ".gz"].includes(getFileExtension(fileName));
+}
+
+function isIgnorableZipEntry(name) {
+  const normalized = String(name ?? "").replace(/\\/g, "/");
+  return (
+    !normalized ||
+    normalized.endsWith("/") ||
+    normalized.includes("/__MACOSX/") ||
+    normalized.startsWith("__MACOSX/") ||
+    path.posix.basename(normalized).startsWith("._")
+  );
+}
+
+function validateZipEntryName(name) {
+  const normalized = String(name ?? "").replace(/\\/g, "/");
+  if (!normalized || normalized.startsWith("/") || /^[a-zA-Z]:\//.test(normalized)) {
+    return "absolute paths are not allowed";
+  }
+
+  const parts = normalized.split("/");
+  if (parts.some((part) => part === "..")) {
+    return "path traversal entries are not allowed";
+  }
+
+  return null;
+}
+
+function getUploadContentType(fileName, fallback = "application/octet-stream") {
+  const ext = getFileExtension(fileName);
+  const map = {
+    ".pdf": "application/pdf",
+    ".doc": "application/msword",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".xls": "application/vnd.ms-excel",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".csv": "text/csv",
+    ".txt": "text/plain",
+    ".md": "text/markdown",
+    ".markdown": "text/markdown",
+    ".json": "application/json",
+    ".xml": "application/xml",
+    ".yaml": "application/yaml",
+    ".yml": "application/yaml",
+    ".html": "text/html",
+    ".htm": "text/html",
+    ".zip": "application/zip"
+  };
+
+  if (IMAGE_EXTRACTABLE_EXTENSIONS.has(ext)) {
+    return getVisualContentType(fileName);
+  }
+
+  return map[ext] || fallback;
+}
+
+async function expandZipUpload(file, fileName, contentBuffer) {
+  let zip;
+  try {
+    zip = await JSZip.loadAsync(contentBuffer);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw createHttpError(400, `ZIP file ${fileName} could not be opened. Password-protected or invalid ZIP files are not supported. ${message}`);
+  }
+
+  const warnings = [];
+  const childFiles = [];
+  let extractedBytes = 0;
+  let inspectedEntries = 0;
+
+  for (const entry of Object.values(zip.files)) {
+    const rawName = entry.unsafeOriginalName || entry.name;
+    const normalizedName = String(rawName ?? "").replace(/\\/g, "/");
+
+    if (entry.dir || isIgnorableZipEntry(normalizedName)) {
+      continue;
+    }
+
+    inspectedEntries += 1;
+    if (inspectedEntries > ZIP_MAX_FILES) {
+      warnings.push(`${normalizedName}: skipped because ZIP contains more than ${ZIP_MAX_FILES} files.`);
+      continue;
+    }
+
+    const unsafeReason = validateZipEntryName(normalizedName);
+    if (unsafeReason) {
+      warnings.push(`${normalizedName || "entry"}: skipped because ${unsafeReason}.`);
+      continue;
+    }
+
+    const childFileName = sanitizeFilename(path.posix.basename(normalizedName));
+    if (!childFileName) {
+      warnings.push(`${normalizedName}: skipped because the file name is empty after sanitization.`);
+      continue;
+    }
+
+    if (isArchiveExtension(childFileName)) {
+      warnings.push(`${normalizedName}: skipped because nested archives are not supported.`);
+      continue;
+    }
+
+    if (!isSupportedUpload(childFileName)) {
+      warnings.push(`${normalizedName}: skipped because ${getFileExtension(childFileName) || "this file type"} is not supported for analysis.`);
+      continue;
+    }
+
+    const childBuffer = await entry.async("nodebuffer");
+    if (!childBuffer || childBuffer.byteLength === 0) {
+      warnings.push(`${normalizedName}: skipped because the file is empty.`);
+      continue;
+    }
+
+    extractedBytes += childBuffer.byteLength;
+    if (extractedBytes > ZIP_MAX_EXTRACTED_BYTES) {
+      warnings.push(`${normalizedName}: skipped because extracted ZIP content exceeds ${ZIP_MAX_EXTRACTED_BYTES / (1024 * 1024)} MB.`);
+      extractedBytes -= childBuffer.byteLength;
+      continue;
+    }
+
+    childFiles.push({
+      fileName: childFileName,
+      contentType: getUploadContentType(childFileName, "application/octet-stream"),
+      logicalCategory: inferLogicalCategory(childFileName),
+      sourceRole: file.sourceRole,
+      contentBuffer: childBuffer,
+      parentPackageFileName: fileName,
+      parentPackagePath: normalizedName
+    });
+  }
+
+  return {
+    childFiles,
+    warnings,
+    inspectedEntries,
+    extractedBytes
+  };
 }
 
 function buildFileId(reviewId, fileName, hash) {
@@ -2604,10 +2752,6 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
   const existingFilesEntity = await getEntity(client, reviewId, getRowKey(FILES_ROW_KEY, principal.userId));
   const existingFiles = fromFilesEntity(existingFilesEntity);
 
-  if (existingFiles.length + files.length > MAX_FILES_PER_REVIEW) {
-    throw createHttpError(400, `Upload limit reached. A review may contain at most ${MAX_FILES_PER_REVIEW} files.`);
-  }
-
   const existingTotalBytes = existingFiles.reduce((sum, f) => sum + (f.sizeBytes ?? 0), 0);
   const incomingTotalBytes = files.reduce((sum, f) => sum + (Buffer.isBuffer(f.contentBuffer) ? f.contentBuffer.byteLength : 0), 0);
 
@@ -2618,6 +2762,7 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
   const inputContainer = await getContainerClient(ARB_INPUT_CONTAINER_NAME);
   const now = new Date().toISOString();
   const persistedFiles = [];
+  const uploadWorkItems = [];
 
   for (const file of files) {
     const fileName = sanitizeFilename(file.fileName);
@@ -2637,8 +2782,40 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
     if (contentBuffer.byteLength === 0) {
       throw createHttpError(400, `File ${fileName} is empty and cannot be uploaded.`);
     }
+
+    uploadWorkItems.push({ file, fileName, contentBuffer, packageWarnings: null, packageChildFiles: [] });
+
+    if (isZipUpload(fileName)) {
+      const expanded = await expandZipUpload(file, fileName, contentBuffer);
+      uploadWorkItems[uploadWorkItems.length - 1].packageWarnings = expanded.warnings;
+      uploadWorkItems[uploadWorkItems.length - 1].packageChildFiles = expanded.childFiles;
+      for (const childFile of expanded.childFiles) {
+        uploadWorkItems.push({
+          file: childFile,
+          fileName: sanitizeFilename(childFile.fileName),
+          contentBuffer: childFile.contentBuffer,
+          packageWarnings: null,
+          packageChildFiles: []
+        });
+      }
+    }
+  }
+
+  if (existingFiles.length + uploadWorkItems.length > MAX_FILES_PER_REVIEW) {
+    throw createHttpError(400, `Upload limit reached. A review may contain at most ${MAX_FILES_PER_REVIEW} files including ZIP child files.`);
+  }
+
+  const expandedIncomingTotalBytes = uploadWorkItems.reduce((sum, item) => sum + item.contentBuffer.byteLength, 0);
+  if (existingTotalBytes + expandedIncomingTotalBytes > MAX_TOTAL_SIZE_BYTES) {
+    throw createHttpError(400, `Total upload size would exceed the ${MAX_TOTAL_SIZE_BYTES / (1024 * 1024)} MB review limit after ZIP expansion.`);
+  }
+
+  for (const workItem of uploadWorkItems) {
+    const { file, fileName, contentBuffer, packageWarnings, packageChildFiles } = workItem;
     const contentHash = `sha256:${crypto.createHash("sha256").update(contentBuffer).digest("hex")}`;
-    const logicalCategory = normalizeLogicalCategory(file.logicalCategory, inferLogicalCategory(fileName));
+    const logicalCategory = isZipUpload(fileName)
+      ? "evidence_package"
+      : normalizeLogicalCategory(file.logicalCategory, inferLogicalCategory(fileName));
 
     if (
       existingFiles.some(
@@ -2650,7 +2827,16 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
 
     const fileId = buildFileId(reviewId, fileName, contentHash.replace(/^sha256:/, ""));
     const blobPath = buildBlobPath(principal.userId, reviewId, fileName);
-    const contentType = file.contentType || "application/octet-stream";
+    const contentType = file.contentType || getUploadContentType(fileName, "application/octet-stream");
+    const extractable =
+      !isZipUpload(fileName) &&
+      (
+        supportsTextExtraction(fileName) ||
+        supportsSpreadsheetExtraction(fileName) ||
+        supportsDiagramExtraction(fileName) ||
+        supportsImageExtraction(fileName) ||
+        supportsDocumentIntelligenceExtraction(fileName)
+      );
 
     await uploadBinaryBlob(inputContainer, blobPath, contentBuffer, contentType);
 
@@ -2664,12 +2850,19 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
       uploadedBy: principal.userDetails || principal.userId,
       uploadedAt: now,
       contentHash,
-      extractionStatus: (supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsDiagramExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)) ? "Pending" : "Limited Evidence",
-      extractionError: null,
+      extractionStatus: isZipUpload(fileName)
+        ? (packageWarnings?.length ? "ExpandedWithWarnings" : "Expanded")
+        : (extractable ? "Pending" : "Limited Evidence"),
+      extractionError: packageWarnings?.length ? packageWarnings.join(" | ") : null,
       sourceRole: normalizeNullableString(file.sourceRole) || inferSourceRole(logicalCategory),
       sizeBytes: contentBuffer.byteLength,
       contentType,
-      supportedTextExtraction: supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsDiagramExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)
+      supportedTextExtraction: extractable,
+      parentPackageFileName: file.parentPackageFileName || null,
+      parentPackagePath: file.parentPackagePath || null,
+      packageChildCount: isZipUpload(fileName) ? packageChildFiles.length : undefined,
+      packageSkippedCount: isZipUpload(fileName) ? (packageWarnings?.length || 0) : undefined,
+      packageWarnings: isZipUpload(fileName) ? (packageWarnings || []) : undefined
     });
   }
 
@@ -3154,6 +3347,15 @@ async function startArbExtraction(principal, reviewId) {
     }
 
     // ── Plain-text extraction (existing path) ────────────────────────────────
+    if (file.logicalCategory === "evidence_package") {
+      nextFiles.push({
+        ...file,
+        extractionStatus: file.extractionStatus || "Expanded",
+        extractionError: file.extractionError || null
+      });
+      continue;
+    }
+
     if (!file.supportedTextExtraction) {
       nextFiles.push({
         ...file,
