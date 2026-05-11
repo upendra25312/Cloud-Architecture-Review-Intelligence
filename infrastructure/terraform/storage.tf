@@ -76,6 +76,12 @@ resource "azurerm_storage_table" "arb_projects" {
   storage_account_name = azurerm_storage_account.main.name
 }
 
+# Queue Storage for asynchronous ARB document extraction jobs
+resource "azurerm_storage_queue" "arb_extraction_jobs" {
+  name                 = "arb-extraction-jobs"
+  storage_account_name = azurerm_storage_account.main.name
+}
+
 # ── Output Container (Project Workspace) ──────────────────────────────────────
 
 # Review exports: scorecard JSON, findings JSON, PDF/XLSX reports, project ZIP exports
