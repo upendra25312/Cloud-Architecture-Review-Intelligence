@@ -60,7 +60,6 @@ const HERO_TRUST_CHIPS = [
   "Human sign-off",
   "Rackspace internal",
   "Board-ready export",
-  "WAF + CAF + ALZ",
 ];
 
 const LANDING_WORKFLOW_STEPS = [
@@ -319,7 +318,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
               Architecture reviews from evidence, not guesswork.
             </h1>
             <p className="arb-signin-sub">
-              Upload Azure design documents and get a framework-aligned review across WAF, CAF, ALZ, security, networking, and migration readiness.
+              Upload Azure design documents and generate a framework-aligned review across WAF, CAF, ALZ, security, networking, and migration readiness.
             </p>
             <div className="arb-signin-actions" aria-label="Review actions">
               {ENABLED_AUTH_PROVIDERS.map((provider, index) => (
@@ -384,29 +383,14 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
           </div>
         </section>
 
-        <section className="arb-workflow-section" aria-labelledby="arb-workflow-title">
-          <div>
-            <p className="arb-section-kicker">How it works</p>
-            <h2 id="arb-workflow-title" className="arb-section-title">Five steps to a board pack.</h2>
-          </div>
-          <ol className="arb-compact-workflow" aria-label="Review workflow">
-            {LANDING_WORKFLOW_STEPS.map((step, index) => (
-              <li key={step} className="arb-compact-workflow-step">
-                <span className="arb-compact-workflow-icon" aria-hidden="true">{index + 1}</span>
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
-
         <EvidenceGuidancePanel />
 
         <section className="arb-start-review-panel" aria-labelledby="arb-start-review-title">
           <div>
             <p className="arb-section-kicker">Start review</p>
-            <h2 id="arb-start-review-title" className="arb-section-title">Prepare evidence, then sign in to upload.</h2>
+            <h2 id="arb-start-review-title" className="arb-section-title">Ready to start your review?</h2>
             <p className="arb-start-review-copy">
-              Keep SOWs, HLDs, landing zone diagrams, workbooks, and migration notes ready before opening the secure review workspace.
+              Sign in to upload your evidence package, generate findings, and prepare a board-ready review pack.
             </p>
           </div>
           <div className="arb-start-review-actions">

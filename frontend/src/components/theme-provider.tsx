@@ -96,7 +96,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
               <span className="site-footer-brand-name">Cloud Architecture Review Intelligence</span>
               <p className="site-footer-brand-desc">
                 Evidence-backed Azure architecture review guidance for internal Rackspace teams.
-                Aligned to Microsoft WAF, CAF, ALZ, and Zero Trust.
               </p>
             </div>
 

@@ -190,11 +190,10 @@ export function EvidenceGuidancePanel() {
         <div>
           <p className="board-card-subtitle">Review criteria</p>
           <h2 id="arb-evidence-guidance-title" className="section-title">
-            Prepare your Azure review package
+            Prepare your evidence package
           </h2>
           <p className="arb-readiness-subtitle">
-            Gather evidence across the Azure architecture areas below before starting the review. Expand each area
-            for examples and Microsoft guidance.
+            Gather evidence across the Azure architecture areas below. Expand each area for examples and Microsoft guidance.
           </p>
         </div>
         <a
@@ -226,8 +225,8 @@ export function EvidenceGuidancePanel() {
                 aria-controls={panelId}
                 onClick={() => setExpandedId((current) => (current === item.id ? null : item.id))}
               >
-                <span className={`arb-readiness-symbol${item.icons.length > 1 ? " arb-readiness-symbol-stack" : ""}`}>
-                  {item.icons.map((iconSrc, iconIndex) => (
+                <span className="arb-readiness-symbol">
+                    {item.icons.slice(0, 1).map((iconSrc, iconIndex) => (
                     <img
                       key={iconSrc}
                       src={iconSrc}
@@ -244,7 +243,7 @@ export function EvidenceGuidancePanel() {
                 </span>
                 <span className="arb-readiness-action-wrap">
                   <span className="arb-readiness-action">
-                    {expanded ? "Hide guidance" : "View evidence guidance"}
+                    {expanded ? "Hide details" : "View details"}
                   </span>
                   <span className="arb-readiness-chevron" aria-hidden="true">⌄</span>
                 </span>
@@ -262,7 +261,7 @@ export function EvidenceGuidancePanel() {
                   <div>
                     <span className="arb-readiness-panel-label">What to prepare</span>
                     <ul>
-                      {item.evidence.map((evidence) => (
+                      {item.evidence.slice(0, 4).map((evidence) => (
                         <li key={evidence}>{evidence}</li>
                       ))}
                     </ul>
