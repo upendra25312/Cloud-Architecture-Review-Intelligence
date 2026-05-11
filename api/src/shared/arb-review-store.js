@@ -777,7 +777,8 @@ async function persistAndAnalyzeVisualArtifact({
   let analysisError = null;
   if (artifact.buffer && canUseMultimodal && MULTIMODAL_IMAGE_EXTENSIONS.has(extension)) {
     try {
-      summary = await describeImageForReview(artifact.buffer, artifact.sourceName || sourceFile.fileName, extension);
+      const analyzedSummary = await describeImageForReview(artifact.buffer, artifact.sourceName || sourceFile.fileName, extension);
+      summary = String(analyzedSummary || "").trim() || summary;
     } catch (error) {
       analysisError = error instanceof Error ? error.message : String(error);
       summary = artifact.summaryText || `Visual artifact ${artifact.sourceName || sourceFile.fileName} could not be analyzed by the multimodal model.`;

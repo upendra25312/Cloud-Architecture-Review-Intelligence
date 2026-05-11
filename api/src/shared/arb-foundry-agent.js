@@ -78,22 +78,32 @@ function getFoundryConfiguration() {
 // - Microsoft Learn MCP grounding is injected directly into the user message
 // FOUNDRY_AGENT_ID is retained in getFoundryConfiguration() as a portal-only reference
 // so the Foundry portal agent (Azure-ARB-Agent) stays in sync with ARB_SYSTEM_PROMPT.
-async function chatCompletionsRequest(messages) {
+async function chatCompletionsRequest(messages, options = {}) {
+  const {
+    maxTokens = 8192,
+    temperature = 0.2,
+    responseFormat = { type: "json_object" }
+  } = options;
   const base = getAiServicesBaseEndpoint();
   const url = `${base}/openai/deployments/${FOUNDRY_AGENT_MODEL}/chat/completions?api-version=${OPENAI_API_VERSION}`;
   const token = await getFoundryToken();
+  const body = {
+    messages,
+    max_tokens: maxTokens,
+    temperature
+  };
+
+  if (responseFormat) {
+    body.response_format = responseFormat;
+  }
+
   const res = await fetchWithTimeout(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
-    body: JSON.stringify({
-      messages,
-      max_tokens: 8192,
-      temperature: 0.2,
-      response_format: { type: "json_object" }
-    })
+    body: JSON.stringify(body)
   }, 120000);
 
   if (!res.ok) {
@@ -772,7 +782,10 @@ async function describeImageForReview(imageBuffer, fileName, fileExtension) {
     }
   ];
 
-  return await chatCompletionsRequest(messages);
+  return await chatCompletionsRequest(messages, {
+    maxTokens: 3000,
+    responseFormat: null
+  });
 }
 
 async function runArbAgentReview({ review, files, requirements, evidence, searchChunks, visualEvidence = [] }) {

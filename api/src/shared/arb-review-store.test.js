@@ -1,5 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 
 function createMockTableModule() {
   const ARB_REVIEW_TABLE_NAME = "arbreviews";
@@ -714,4 +716,24 @@ test("ARB reviews are isolated per signed-in user and can be listed", async () =
   } finally {
     cleanup();
   }
+});
+
+test("visual image analysis does not force JSON chat response format", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "arb-foundry-agent.js"),
+    "utf8"
+  );
+
+  assert.match(source, /if \(responseFormat\) \{\s*body\.response_format = responseFormat;/s);
+  assert.match(source, /chatCompletionsRequest\(messages,\s*\{\s*maxTokens:\s*3000,\s*responseFormat:\s*null\s*\}\)/s);
+});
+
+test("visual evidence keeps renderer context when multimodal response is empty", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "arb-review-store.js"),
+    "utf8"
+  );
+
+  assert.match(source, /const analyzedSummary = await describeImageForReview/);
+  assert.match(source, /summary = String\(analyzedSummary \|\| ""\)\.trim\(\) \|\| summary;/);
 });
