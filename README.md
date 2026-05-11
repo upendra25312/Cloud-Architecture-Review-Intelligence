@@ -186,65 +186,88 @@ The following diagram reflects the **current deployed Azure platform** and the *
 
 ```mermaid
 flowchart TB
-    User[Architecture Reviewer / Architect / ARB User]
-    Browser[Browser]
-    SWA[Azure Static Web App<br/>swa-arb-review-prod<br/>Next.js frontend]
-    FUNC[Azure Function App<br/>func-arb-review-api]
-    RENDER[Azure Container App<br/>ca-cari-office-renderer-prod<br/>Office native-shape renderer]
-    ACR[Azure Container Registry<br/>acrcariofficerenderprod]
-    PLAN[App Service Plan<br/>asp-arb-review-prod]
-    STORAGE[Azure Storage<br/>starbrevprod01<br/>files / state / review artifacts]
-    KV[Azure Key Vault<br/>kv-arb-review-prod]
-    AI[Azure AI Foundry<br/>ai-arb-review-prod]
-    HUB[Azure AI Hub<br/>hub-arb-review-prod]
-    PROJ[Azure AI Project<br/>proj-arb-review-prod]
-    FPROJ[Foundry Project<br/>arb-review-proj]
-    SEARCH[Azure AI Search<br/>srch-arb-review-prod]
-    DOCINT[Azure Document Intelligence<br/>di-arb-review-prod]
-    VISION[Azure Computer Vision<br/>vision-arb-review-prod]
-    APPI[Application Insights<br/>appi-arb-review-prod]
-    LAW[Log Analytics<br/>law-arb-review-prod]
-    ALERTS[Metric Alerts / Smart Detector Alerts]
-    AG[Action Group<br/>ag-arb-review-prod]
-    USERSUB[Architecture documents / review evidence]
-    KNOWLEDGE[Architecture guidance / rubrics / review knowledge]
-    TARGET[Target-state<br/>Azure AI Foundry Agents API orchestration]
+    subgraph Experience["Experience Layer"]
+        User[Architecture Reviewer / Architect / ARB User]
+        Browser[Browser]
+        SWA[Azure Static Web App<br/>swa-arb-review-prod<br/>Next.js frontend]
+    end
+
+    subgraph Intake["Upload and Review Orchestration"]
+        USERSUB[PDF / DOCX / PPTX / XLSX / images<br/>architecture evidence]
+        FUNC[Azure Function App<br/>func-arb-review-api]
+        PLAN[App Service Plan<br/>asp-arb-review-prod]
+    end
+
+    subgraph Extraction["Evidence Extraction and Visual Pre-Processing"]
+        DOCINT[Azure Document Intelligence<br/>di-arb-review-prod<br/>layout / text / tables / PDF figures]
+        VISION[Azure Computer Vision<br/>vision-arb-review-prod<br/>OCR / image signals]
+        RENDER[Azure Container App<br/>ca-cari-office-renderer-prod<br/>Office native-shape renderer]
+        ACR[Azure Container Registry<br/>acrcariofficerenderprod<br/>renderer image]
+        DESCRIBE[Multimodal visual review<br/>describeImageForReview]
+    end
+
+    subgraph Evidence["Evidence Persistence"]
+        STORAGE[Azure Storage<br/>starbrevprod01<br/>raw files / images / review state]
+        TEXTFACTS[evidenceFacts array<br/>text and table facts]
+        VISUALFACTS[visualEvidence array<br/>diagram / figure / screenshot facts]
+    end
+
+    subgraph AIReview["AI Review and Grounding"]
+        SEARCH[Azure AI Search<br/>srch-arb-review-prod]
+        KNOWLEDGE[Architecture guidance / rubrics / review knowledge]
+        AI[Azure AI Foundry<br/>ai-arb-review-prod]
+        HUB[Azure AI Hub<br/>hub-arb-review-prod]
+        PROJ[Azure AI Project<br/>proj-arb-review-prod]
+        FPROJ[Foundry Project<br/>arb-review-proj]
+        AGENT[cari-arb-review-agent<br/>requires evidenceId / visualEvidenceId citations]
+    end
+
+    subgraph SecurityOps["Security and Operations"]
+        KV[Azure Key Vault<br/>kv-arb-review-prod]
+        APPI[Application Insights<br/>appi-arb-review-prod]
+        LAW[Log Analytics<br/>law-arb-review-prod]
+        ALERTS[Metric Alerts / Smart Detector Alerts]
+        AG[Action Group<br/>ag-arb-review-prod]
+    end
 
     User --> Browser --> SWA
-    SWA --> FUNC
-    PLAN -. hosts .-> FUNC
-    ACR -. image .-> RENDER
-
     USERSUB --> SWA
     SWA -->|upload / submit review| FUNC
+    PLAN -. hosts .-> FUNC
 
-    FUNC --> STORAGE
-    FUNC -->|Office render fallback| RENDER
-    FUNC --> KV
-    FUNC --> AI
-    FUNC --> PROJ
-    FUNC --> SEARCH
-    FUNC --> DOCINT
-    FUNC --> VISION
-
-    HUB --> PROJ
-    AI --> FPROJ
-    PROJ --> TARGET
-    FPROJ --> TARGET
-
-    KNOWLEDGE --> SEARCH
-    KNOWLEDGE --> TARGET
+    FUNC -->|analyze PDF / Office / images| DOCINT
+    FUNC -->|image OCR / visual hints| VISION
+    FUNC -->|Office native-shape fallback| RENDER
+    ACR -. deploys image .-> RENDER
 
     DOCINT -->|text / tables / PDF figures| FUNC
-    VISION -->|visual analysis signals| FUNC
-    RENDER -->|rendered Office page / slide / sheet PNGs| FUNC
-    SEARCH -->|retrieval / grounding| FUNC
-    STORAGE -->|review data / artifacts| FUNC
-    KV -->|secrets / config| FUNC
+    RENDER -->|rendered DOCX / PPTX / XLSX PNGs| FUNC
+    VISION -->|OCR / image labels| FUNC
+    FUNC -->|extracted image artifacts| DESCRIBE
+    DESCRIBE -->|visual architecture summaries| FUNC
 
-    FUNC -->|findings / scorecards / status| SWA
+    FUNC -->|raw uploads and image artifacts| STORAGE
+    FUNC -->|persist| TEXTFACTS
+    FUNC -->|persist| VISUALFACTS
+    TEXTFACTS --> STORAGE
+    VISUALFACTS --> STORAGE
+
+    KNOWLEDGE --> SEARCH
+    FUNC -->|retrieve guidance| SEARCH
+    AI --> HUB --> PROJ
+    AI --> FPROJ
+    PROJ --> AGENT
+    FPROJ --> AGENT
+    SEARCH -->|grounding context| AGENT
+    TEXTFACTS -->|Extracted Evidence Facts| AGENT
+    VISUALFACTS -->|Visual Evidence Facts| AGENT
+
+    AGENT -->|findings cite evidenceId or visualEvidenceId| FUNC
+    FUNC -->|status / visual evidence / findings / scorecards| SWA
     SWA --> Browser --> User
 
+    FUNC --> KV
+    RENDER --> APPI
     FUNC --> APPI
     APPI --> LAW
     APPI --> ALERTS
