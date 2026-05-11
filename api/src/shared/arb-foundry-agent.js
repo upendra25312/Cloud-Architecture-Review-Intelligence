@@ -791,9 +791,9 @@ async function describeImageForReview(imageBuffer, fileName, fileExtension) {
   ];
 
   return await chatCompletionsRequest(messages, {
-    maxTokens: 1000,
+    maxTokens: 1400,
     responseFormat: null,
-    timeoutMs: 20000
+    timeoutMs: 45000
   });
 }
 
