@@ -1081,7 +1081,7 @@ export function ArbLiveReviewStep(props: {
             <p className="section-copy">
               Run the automated assessment to produce structured findings, a weighted scorecard, and a
               derived recommendation. Every evidence item is validated against WAF, CAF, ALZ, HA/DR, Security,
-              Networking, and Monitoring. Typically takes 1–3 minutes.
+              Networking, and Monitoring. Typically takes 2–5 minutes.
             </p>
             <button
               type="button"
@@ -1090,7 +1090,7 @@ export function ArbLiveReviewStep(props: {
               onClick={() => void handleRunAgentReview()}
             >
               {agentRunning ? (
-                <><span className="arb-spinner" aria-hidden="true" /> Running assessment… 1–3 minutes</>
+                <><span className="arb-spinner" aria-hidden="true" /> Running assessment… typically 2–5 minutes</>
               ) : (
                 "Run assessment →"
               )}
