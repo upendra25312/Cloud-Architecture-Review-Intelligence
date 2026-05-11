@@ -93,13 +93,17 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --secrets "renderer-shared-secret=$RENDERER_TOKEN"
 
+          az containerapp registry set \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --server "$LOGIN_SERVER" \
+            --username "$ACR_USER" \
+            --password "$ACR_PASS"
+
           az containerapp update \
             --name "$CONTAINER_APP_NAME" \
             --resource-group "$RESOURCE_GROUP" \
             --image "$IMAGE" \
-            --registry-server "$LOGIN_SERVER" \
-            --registry-username "$ACR_USER" \
-            --registry-password "$ACR_PASS" \
             --set-env-vars \
               NODE_ENV=production \
               PORT=8080 \
