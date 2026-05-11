@@ -637,7 +637,7 @@ test("single comprehensive design pack can start review with gaps when SOW is mi
   }
 });
 
-test("human approval is blocked until SOW or scope evidence is present", async () => {
+test("human reviewer can record approval with rationale when SOW is missing", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const principal = {
     userId: "arb-user-sow-gate",
@@ -660,20 +660,16 @@ test("human approval is blocked until SOW or scope evidence is present", async (
       }
     ]);
 
-    await assert.rejects(
-      () => store.recordArbDecision(principal, created.reviewId, {
-        finalDecision: "Approved",
-        rationale: "Attempt approval without SOW."
-      }),
-      /SOW or scope document/i
-    );
-
     const decision = await store.recordArbDecision(principal, created.reviewId, {
-      finalDecision: "Needs Revision",
-      rationale: "SOW is required before approval."
+      finalDecision: "Approved",
+      rationale: "Approved with reviewer waiver; SOW is required before implementation sign-off."
     });
 
-    assert.equal(decision.reviewerDecision, "Needs Revision");
+    assert.equal(decision.reviewerDecision, "Approved");
+    assert.equal(
+      decision.rationale,
+      "Approved with reviewer waiver; SOW is required before implementation sign-off."
+    );
   } finally {
     cleanup();
   }
@@ -856,6 +852,12 @@ test("creating an ARB export writes export metadata", async () => {
       }
     ]);
     await store.startArbExtraction(principal, created.reviewId);
+    await store.recordArbDecision(principal, created.reviewId, {
+      finalDecision: "Approved",
+      reviewerName: "Export Reviewer",
+      reviewerRole: "Principal Architect",
+      rationale: "Approved for board review after confirming the uploaded SOW and design evidence."
+    });
 
     const exportRecord = await store.createArbExport(principal, created.reviewId, {
       format: "html",
@@ -873,6 +875,8 @@ test("creating an ARB export writes export metadata", async () => {
     assert.equal(exportRecord.format, "html");
     assert.match(exportRecord.blobPath, /output|exports/i);
     assert.match(downloaded.body, /<html/i);
+    assert.match(downloaded.body, /Reviewer Decision/i);
+    assert.match(downloaded.body, /Approved for board review after confirming the uploaded SOW and design evidence/i);
   } finally {
     cleanup();
   }

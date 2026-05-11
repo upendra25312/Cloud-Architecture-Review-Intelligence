@@ -1365,6 +1365,7 @@ async function buildAiSummary(review, files, requirements, evidence, findings, s
 
 function renderMarkdownExportBody(review, files, requirements, evidence, findings, scorecard, actions, summaryText) {
   const domainScores = scorecard?.domainScores || [];
+  const reviewerOverride = scorecard?.reviewerOverride || null;
   const actionLines = actions.length
     ? actions.map((action) => `- ${action.actionSummary} (${action.status})`)
     : ["_No actions recorded._"];
@@ -1381,7 +1382,17 @@ function renderMarkdownExportBody(review, files, requirements, evidence, finding
     `- Evidence facts extracted: ${evidence.length}`,
     scorecard ? `- Overall score: ${scorecard.overallScore ?? "TBD"}` : null,
     scorecard ? `- Recommendation: ${scorecard.recommendation}` : null,
+    reviewerOverride ? `- Reviewer decision: ${reviewerOverride.overrideDecision}` : null,
+    reviewerOverride ? `- Reviewer: ${reviewerOverride.reviewerName || "Not recorded"}` : null,
+    reviewerOverride ? `- Decision recorded at: ${reviewerOverride.overriddenAt || "Not recorded"}` : null,
     "",
+    reviewerOverride ? "## Reviewer Decision" : null,
+    reviewerOverride ? "" : null,
+    reviewerOverride ? `- Final decision: ${reviewerOverride.overrideDecision}` : null,
+    reviewerOverride ? `- Reviewer: ${reviewerOverride.reviewerName || "Not recorded"}` : null,
+    reviewerOverride ? `- Recorded at: ${reviewerOverride.overriddenAt || "Not recorded"}` : null,
+    reviewerOverride ? `- Rationale: ${reviewerOverride.overrideRationale || "No rationale recorded."}` : null,
+    reviewerOverride ? "" : null,
     summaryText ? `## Assessment Summary\n\n${summaryText}` : null,
     summaryText ? "" : null,
     "## Uploaded Inputs",
@@ -1433,6 +1444,7 @@ function renderMarkdownExportBody(review, files, requirements, evidence, finding
 }
 
 function renderCsvExportBody(review, files, requirements, evidence, findings, scorecard, actions) {
+  const reviewerOverride = scorecard?.reviewerOverride || null;
   const rows = [
     [
       "recordType",
@@ -1462,6 +1474,24 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       review.targetReviewDate || "",
       ""
     ],
+    ...(reviewerOverride
+      ? [
+          [
+            "reviewerDecision",
+            review.reviewId,
+            review.projectName,
+            "finalDecision",
+            reviewerOverride.overrideDecision,
+            reviewerOverride.overrideRationale || "",
+            "",
+            "Recorded",
+            scorecard?.recommendation || "",
+            reviewerOverride.reviewerName || review.assignedReviewer || "",
+            reviewerOverride.overriddenAt || "",
+            "Human reviewer decision"
+          ]
+        ]
+      : []),
     ...files.map((file) => [
       "file",
       review.reviewId,
@@ -1573,6 +1603,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
   const overallScore = scorecard?.overallScore ?? null;
   const recommendation = scorecard?.recommendation ?? "Pending";
   const domainScores = scorecard?.domainScores || [];
+  const reviewerOverride = scorecard?.reviewerOverride || null;
 
   /* ── score bar helper ── */
   const scoreBar = (score, maxVal = 100) => {
@@ -1623,9 +1654,25 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Evidence Readiness</td><td style="padding:4px 0;font-weight:500;">${esc(review.evidenceReadinessState)}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Overall Score</td><td style="padding:4px 0;font-weight:600;">${overallScore !== null ? esc(overallScore) + " / 100" : "TBD"}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Recommendation</td><td style="padding:4px 0;">${recommendationBadge(recommendation)}</td></tr>`,
+    reviewerOverride ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer Decision</td><td style="padding:4px 0;font-weight:600;">${esc(reviewerOverride.overrideDecision)}</td></tr>` : "",
+    reviewerOverride ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer</td><td style="padding:4px 0;font-weight:500;">${esc(reviewerOverride.reviewerName || "Not recorded")}</td></tr>` : "",
+    reviewerOverride ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Decision Recorded</td><td style="padding:4px 0;font-weight:500;">${esc(reviewerOverride.overriddenAt || "Not recorded")}</td></tr>` : "",
     `</table>`,
     `</div>`
   );
+
+  /* ── REVIEWER DECISION ── */
+  if (reviewerOverride) {
+    parts.push(
+      `<div style="margin-bottom:32px;padding:18px 22px;background:#FFF7ED;border:1px solid #FED7AA;border-left:4px solid #D92B2B;border-radius:8px;">`,
+      `<h2 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#0F172A;">Reviewer Decision</h2>`,
+      `<p style="margin:0 0 6px;font-size:14px;color:#1F2937;"><strong>Final decision:</strong> ${esc(reviewerOverride.overrideDecision)}</p>`,
+      `<p style="margin:0 0 6px;font-size:14px;color:#1F2937;"><strong>Reviewer:</strong> ${esc(reviewerOverride.reviewerName || "Not recorded")}</p>`,
+      `<p style="margin:0 0 10px;font-size:14px;color:#1F2937;"><strong>Recorded at:</strong> ${esc(reviewerOverride.overriddenAt || "Not recorded")}</p>`,
+      `<p style="margin:0;font-size:14px;line-height:1.7;color:#475569;"><strong>Rationale:</strong> ${esc(reviewerOverride.overrideRationale || "No rationale recorded.")}</p>`,
+      `</div>`
+    );
+  }
 
   /* ── OVERALL SCORE BAR ── */
   if (overallScore !== null) {
@@ -2659,7 +2706,8 @@ function buildDerivedScorecard(review, findings, decision) {
     domainScores,
     reviewerOverride: decision
       ? {
-          reviewerName: review.assignedReviewer || review.createdBy || review.createdByUserId,
+          reviewerName: decision.reviewerName || review.assignedReviewer || review.createdBy || review.createdByUserId,
+          reviewerRole: decision.reviewerRole || null,
           overrideDecision: decision.reviewerDecision,
           overrideRationale: decision.rationale,
           overriddenAt: decision.recordedAt
@@ -4215,6 +4263,8 @@ async function getArbScorecard(principal, reviewId) {
         aiRecommendation: decisionEntity.aiRecommendation,
         reviewerDecision: decisionEntity.reviewerDecision,
         rationale: decisionEntity.rationale,
+        reviewerName: decisionEntity.reviewerName ?? null,
+        reviewerRole: decisionEntity.reviewerRole ?? null,
         recordedAt: decisionEntity.recordedAt
       }
     : null;
@@ -4276,20 +4326,6 @@ async function recordArbDecision(principal, reviewId, input = {}) {
 
   const review = fromSummaryEntity(summaryEntity);
   const requestedDecision = String(input.finalDecision ?? "").trim() || "Needs Revision";
-  const sowMissingForSignoff =
-    requestedDecision === "Approved" &&
-    (
-      review.requiredEvidencePresent === false ||
-      (Array.isArray(review.missingRequiredItems) && review.missingRequiredItems.includes("sow"))
-    );
-
-  if (sowMissingForSignoff) {
-    throw createHttpError(
-      400,
-      "Approved decisions require the SOW or scope document to be uploaded first, or a formal reviewer waiver to be recorded."
-    );
-  }
-
   const recordedAt = new Date().toISOString();
   const decision = {
     aiRecommendation: review.recommendation,

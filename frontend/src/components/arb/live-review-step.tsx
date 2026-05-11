@@ -311,16 +311,16 @@ export function ArbLiveReviewStep(props: {
 
   if (actionSummary.blockedCount > 0) {
     decisionGateMessage =
-      "Blocked actions remain. Resolve or reclassify blocked remediation items before recording a final decision.";
+      "Blocked actions remain. Record the decision only when the rationale clearly states whether approval is conditional and who owns the remaining actions.";
   } else if (actionSummary.reviewerVerificationCount > 0) {
     decisionGateMessage =
-      "Reviewer verification is still required for at least one open action before a final decision can be recorded.";
+      "Reviewer verification is still required for at least one open action. Capture the verification condition in the decision rationale.";
   } else if (decisionChoice === "Approved" && actionSummary.openCount > 0) {
     decisionGateMessage =
-      "Approved decisions require all remediation actions to be closed first. Use Needs Revision while open actions remain.";
+      "Open remediation actions remain. If you approve, record whether the approval is conditional and what must close before implementation.";
   } else if (decisionChoice === "Approved" && sowMissingForSignoff) {
     decisionGateMessage =
-      "Approved decisions require the SOW or scope document to be uploaded first, or a formal reviewer waiver to be recorded outside this decision.";
+      "The SOW or scope document is missing. If you approve, include the reviewer waiver or condition in the decision rationale.";
   }
 
   function updateLocalFinding(findingId: string, updater: (current: ArbFinding) => ArbFinding) {
@@ -678,11 +678,6 @@ export function ArbLiveReviewStep(props: {
     } satisfies ArbReviewSummary);
 
   async function submitDecision() {
-    if (decisionGateMessage) {
-      setDecisionError(decisionGateMessage);
-      return;
-    }
-
     try {
       setDecisionSaving(true);
       setDecisionError(null);
@@ -1259,7 +1254,7 @@ export function ArbLiveReviewStep(props: {
       <div className="arb-page-stack">
         {decisionGateMessage ? (
           <section className="trace-card arb-decision-gate-banner">
-            <p className="board-card-subtitle">Action required before sign-off</p>
+            <p className="board-card-subtitle">Decision warning</p>
             <p className="section-copy">{decisionGateMessage}</p>
           </section>
         ) : null}
@@ -1431,7 +1426,7 @@ export function ArbLiveReviewStep(props: {
                 type="button"
                 className="primary-button"
                 onClick={() => void submitDecision()}
-                disabled={decisionSaving || Boolean(decisionGateMessage)}
+                disabled={decisionSaving}
               >
                 {decisionSaving ? "Recording decision…" : "Record decision"}
               </button>
