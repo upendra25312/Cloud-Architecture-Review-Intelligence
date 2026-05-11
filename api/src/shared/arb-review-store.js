@@ -1150,6 +1150,78 @@ function buildDefaultExtractionStatus(review) {
   };
 }
 
+function buildNotStartedExtractionStatus(review, files = []) {
+  return {
+    ...buildDefaultExtractionStatus(review),
+    fileStatuses: Array.isArray(files)
+      ? files.map((file) => ({
+          fileId: file.fileId,
+          fileName: file.fileName,
+          extractionStatus: file.extractionStatus || "Pending",
+          extractionError: file.extractionError || null,
+          visualEvidenceCount: file.visualEvidenceCount || 0
+        }))
+      : []
+  };
+}
+
+function isStaleTransientExtraction(extraction) {
+  if (!["Queued", "Running"].includes(extraction?.state)) {
+    return false;
+  }
+
+  const startedAt = extraction.lastStartedAt ? Date.parse(extraction.lastStartedAt) : NaN;
+  const staleAfterMs = Number(process.env.ARB_EXTRACTION_STALE_AFTER_MS || 30 * 60 * 1000);
+  const stale = !Number.isFinite(startedAt) || Date.now() - startedAt > staleAfterMs;
+
+  if (!stale) {
+    return false;
+  }
+
+  const statuses = [
+    extraction.textExtractionStatus,
+    extraction.tableExtractionStatus,
+    extraction.figureExtractionStatus,
+    extraction.visualAnalysisStatus
+  ].filter(Boolean);
+  const hasStepProgress = statuses.some((status) => status !== "NotStarted");
+  const hasFileProgress = Array.isArray(extraction.fileStatuses) &&
+    extraction.fileStatuses.some((file) =>
+      ["Completed", "CompletedWithIssues", "Failed"].includes(file?.extractionStatus)
+    );
+
+  return (
+    !hasStepProgress &&
+    !hasFileProgress &&
+    Number(extraction.extractionConfidencePercent || 0) === 0 &&
+    Number(extraction.visualEvidenceCount || 0) === 0
+  );
+}
+
+function normalizeExtractionStatus(extraction, review) {
+  if (!isStaleTransientExtraction(extraction)) {
+    return extraction;
+  }
+
+  return {
+    ...extraction,
+    state: "Not Started",
+    completedSteps: [],
+    failedSteps: [],
+    readinessNotes:
+      "No extraction is currently running. Click Start analysis to read text, tables, diagrams, and visual evidence.",
+    textExtractionStatus: "NotStarted",
+    tableExtractionStatus: "NotStarted",
+    figureExtractionStatus: "NotStarted",
+    visualAnalysisStatus: "NotStarted",
+    visualEvidenceCount: 0,
+    visualExtractionErrors: [],
+    extractionErrors: [],
+    lastStartedAt: null,
+    lastCompletedAt: null
+  };
+}
+
 function clampPercent(value) {
   if (!Number.isFinite(value)) {
     return 0;
@@ -2435,7 +2507,7 @@ function fromExtractionEntity(entity, review) {
     });
   }
 
-  return extraction;
+  return normalizeExtractionStatus(extraction, review);
 }
 
 function fromRequirementsEntity(entity) {
@@ -2919,6 +2991,23 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
     },
     "Merge"
   );
+  await client.upsertEntity(
+    toExtractionEntity(
+      reviewId,
+      principal.userId,
+      buildNotStartedExtractionStatus(
+        {
+          ...fromSummaryEntity(summaryEntity),
+          evidenceReadinessState: nextEvidenceState,
+          missingRequiredItems: readiness.missingRequiredItems,
+          missingRecommendedItems: readiness.missingRecommendedItems,
+          readinessNotes: readiness.readinessNotes
+        },
+        nextFiles
+      )
+    ),
+    "Replace"
+  );
 
   return {
     files: nextFiles,
@@ -2970,6 +3059,23 @@ async function deleteArbFile(principal, reviewId, fileId) {
       evidenceReadinessState: nextEvidenceState,
     },
     "Merge"
+  );
+  await client.upsertEntity(
+    toExtractionEntity(
+      reviewId,
+      principal.userId,
+      buildNotStartedExtractionStatus(
+        {
+          ...fromSummaryEntity(summaryEntity),
+          evidenceReadinessState: nextEvidenceState,
+          missingRequiredItems: readiness.missingRequiredItems,
+          missingRecommendedItems: readiness.missingRecommendedItems,
+          readinessNotes: readiness.readinessNotes
+        },
+        nextFiles
+      )
+    ),
+    "Replace"
   );
 
   return { deletedFileId: fileId, remainingCount: nextFiles.length };

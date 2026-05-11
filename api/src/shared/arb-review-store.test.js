@@ -478,7 +478,52 @@ test("uploading files persists ARB file inventory and recalculates readiness", a
     assert.equal(review.requiredEvidencePresent, true);
     assert.equal(review.evidenceReadinessState, "Ready with Gaps");
     assert.deepEqual(review.missingRequiredItems, []);
+    const extraction = await store.getArbExtractionStatus(principal, created.reviewId);
+    assert.equal(extraction.state, "Not Started");
+    assert.equal(extraction.fileStatuses.length, 2);
   } finally {
+    cleanup();
+  }
+});
+
+test("stale running extraction status is normalized back to not started", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const previousStaleAfterMs = process.env.ARB_EXTRACTION_STALE_AFTER_MS;
+  const principal = {
+    userId: "arb-user-stale-extract",
+    userDetails: "stale-extract@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "stale-extract",
+      projectName: "Stale Extract"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "architecture-design.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Architecture design document is uploaded but not yet analyzed.")
+      }
+    ]);
+
+    await store.markArbExtractionRunning(principal, created.reviewId);
+    process.env.ARB_EXTRACTION_STALE_AFTER_MS = "-1";
+    const extraction = await store.getArbExtractionStatus(principal, created.reviewId);
+
+    assert.equal(extraction.state, "Not Started");
+    assert.equal(extraction.textExtractionStatus, "NotStarted");
+    assert.equal(extraction.extractionConfidencePercent, 0);
+    assert.match(extraction.readinessNotes, /Click Start analysis/i);
+  } finally {
+    if (previousStaleAfterMs == null) {
+      delete process.env.ARB_EXTRACTION_STALE_AFTER_MS;
+    } else {
+      process.env.ARB_EXTRACTION_STALE_AFTER_MS = previousStaleAfterMs;
+    }
     cleanup();
   }
 });
