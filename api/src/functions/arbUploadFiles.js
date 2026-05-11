@@ -15,6 +15,8 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/msword",
   "application/vnd.ms-excel",
   "application/vnd.ms-powerpoint",
+  "application/vnd.visio",
+  "application/vnd.ms-visio.drawing",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

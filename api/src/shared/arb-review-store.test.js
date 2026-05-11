@@ -112,6 +112,16 @@ function createMockStorageModule() {
     return JSON.stringify(payload);
   }
 
+  async function readBinaryBlob(containerClient, blobName) {
+    const payload = ensureContainer(containerClient.name).get(blobName);
+
+    if (payload == null) {
+      return null;
+    }
+
+    return Buffer.isBuffer(payload) ? payload : Buffer.from(String(payload));
+  }
+
   async function uploadJsonBlob(containerClient, blobName, payload) {
     ensureContainer(containerClient.name).set(blobName, structuredClone(payload));
     return { name: blobName };
@@ -153,6 +163,7 @@ function createMockStorageModule() {
     },
     deleteBlobIfExists,
     getContainerClient,
+    readBinaryBlob,
     readJsonBlob,
     readTextBlob,
     sanitizePathSegment,
@@ -513,6 +524,48 @@ test("starting extraction produces requirements and evidence from text files", a
     assert.equal(review.evidenceReadinessState, "Ready with Gaps");
     assert.equal(extraction.extractionConfidencePercent, 100);
     assert.equal(extraction.fileStatuses.every((file) => file.extractionStatus === "Completed"), true);
+  } finally {
+    cleanup();
+  }
+});
+
+test("starting extraction produces visual evidence from Draw.io diagrams", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-diagram",
+    userDetails: "diagrammer@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "diagram-now",
+      projectName: "Diagram Now"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "landing-zone.drawio",
+        logicalCategory: "diagram",
+        contentType: "application/xml",
+        contentBuffer: Buffer.from(
+          [
+            "<mxfile><diagram><mxGraphModel><root>",
+            "<mxCell id=\"1\" value=\"Azure Hub VNet with Firewall and ExpressRoute\" />",
+            "<mxCell id=\"2\" value=\"Spoke VNet hosts App Service with Private Endpoint\" />",
+            "</root></mxGraphModel></diagram></mxfile>"
+          ].join("")
+        )
+      }
+    ]);
+
+    const extraction = await store.startArbExtraction(principal, created.reviewId);
+    const evidence = await store.getArbEvidence(principal, created.reviewId);
+
+    assert.equal(extraction.fileStatuses[0].extractionStatus, "Completed", JSON.stringify(extraction));
+    assert.equal(extraction.state, "Completed", JSON.stringify(extraction));
+    assert.ok(evidence.some((item) => item.factType === "VisualArchitecture"));
+    assert.ok(evidence.some((item) => /Azure Hub VNet/.test(item.summary)));
   } finally {
     cleanup();
   }

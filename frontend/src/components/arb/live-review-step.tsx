@@ -705,7 +705,7 @@ export function ArbLiveReviewStep(props: {
             <p className="board-card-subtitle">Visual / binary files</p>
             <strong>{unsupportedUploads.length}</strong>
             <p className="section-copy">
-              Images, diagrams, and spreadsheets are stored and tracked but not text-extracted.
+              Images, Draw.io, Visio, and spreadsheets are extracted for review evidence when supported.
             </p>
           </article>
           <article className="future-card">

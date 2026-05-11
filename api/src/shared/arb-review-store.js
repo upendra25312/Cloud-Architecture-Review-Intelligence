@@ -1,5 +1,6 @@
 const crypto = require("node:crypto");
 const path = require("node:path");
+const zlib = require("node:zlib");
 const ExcelJS = require("exceljs");
 const {
   ARB_INPUT_CONTAINER_NAME,
@@ -78,6 +79,9 @@ const SPREADSHEET_EXTRACTABLE_EXTENSIONS = new Set([
 ]);
 const IMAGE_EXTRACTABLE_EXTENSIONS = new Set([
   ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".svg", ".svgz"
+]);
+const DIAGRAM_EXTRACTABLE_EXTENSIONS = new Set([
+  ".drawio", ".draw.io", ".vsdx"
 ]);
 const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
   // Documents
@@ -250,7 +254,9 @@ function sanitizeFilename(value) {
 }
 
 function getFileExtension(value) {
-  return path.extname(String(value ?? "")).toLowerCase();
+  const fileName = String(value ?? "").toLowerCase();
+  if (fileName.endsWith(".draw.io")) return ".draw.io";
+  return path.extname(fileName);
 }
 
 function normalizeLogicalCategory(value, fallback = "supporting_artifact") {
@@ -332,9 +338,158 @@ function supportsImageExtraction(fileName) {
   return IMAGE_EXTRACTABLE_EXTENSIONS.has(getFileExtension(fileName));
 }
 
+function supportsDiagramExtraction(fileName) {
+  return DIAGRAM_EXTRACTABLE_EXTENSIONS.has(getFileExtension(fileName));
+}
+
 const SPREADSHEET_MAX_BYTES = 10 * 1024 * 1024; // 10 MB hard cap before parse
 const SPREADSHEET_MAX_SHEETS = 20;
 const SPREADSHEET_MAX_CSV_CHARS = 500_000;
+const DIAGRAM_MAX_BYTES = 20 * 1024 * 1024;
+
+function decodeXmlEntities(value) {
+  return String(value ?? "")
+    .replace(/&quot;/g, "\"")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+function cleanDiagramText(value) {
+  return decodeXmlEntities(value)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractXmlAttributeValues(xml, attributeName) {
+  const values = [];
+  const pattern = new RegExp(`${attributeName}\\s*=\\s*["']([^"']+)["']`, "gi");
+  for (const match of xml.matchAll(pattern)) {
+    const text = cleanDiagramText(match[1]);
+    if (text && text.length > 1) values.push(text);
+  }
+  return values;
+}
+
+function tryInflateDrawioDiagram(encoded) {
+  try {
+    const compressed = Buffer.from(encoded, "base64");
+    const inflated = zlib.inflateRawSync(compressed).toString("utf8");
+    return decodeURIComponent(inflated);
+  } catch {
+    return null;
+  }
+}
+
+function extractDrawioText(buffer, fileName) {
+  const xml = buffer.toString("utf8");
+  const parts = [`[Diagram file: ${fileName}] (Draw.io XML)`];
+  const values = new Set();
+
+  for (const value of extractXmlAttributeValues(xml, "value")) values.add(value);
+  for (const value of extractXmlAttributeValues(xml, "label")) values.add(value);
+
+  for (const match of xml.matchAll(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/gi)) {
+    const body = match[1].trim();
+    if (!body) continue;
+
+    const nestedXml = body.startsWith("<") ? body : tryInflateDrawioDiagram(body);
+    if (!nestedXml) continue;
+
+    for (const value of extractXmlAttributeValues(nestedXml, "value")) values.add(value);
+    for (const value of extractXmlAttributeValues(nestedXml, "label")) values.add(value);
+  }
+
+  if (values.size === 0) {
+    const stripped = cleanDiagramText(xml);
+    if (stripped) values.add(stripped.slice(0, 8000));
+  }
+
+  parts.push(...[...values].slice(0, 200).map((value) => `- ${value}`));
+  return parts.join("\n");
+}
+
+function readZipEntries(buffer) {
+  const entries = [];
+  let eocd = -1;
+  for (let i = buffer.length - 22; i >= Math.max(0, buffer.length - 65558); i--) {
+    if (buffer.readUInt32LE(i) === 0x06054b50) {
+      eocd = i;
+      break;
+    }
+  }
+  if (eocd < 0) throw new Error("VSDX archive central directory was not found.");
+
+  const entryCount = buffer.readUInt16LE(eocd + 10);
+  const centralOffset = buffer.readUInt32LE(eocd + 16);
+  let offset = centralOffset;
+
+  for (let i = 0; i < entryCount; i++) {
+    if (buffer.readUInt32LE(offset) !== 0x02014b50) break;
+
+    const method = buffer.readUInt16LE(offset + 10);
+    const compressedSize = buffer.readUInt32LE(offset + 20);
+    const fileNameLength = buffer.readUInt16LE(offset + 28);
+    const extraLength = buffer.readUInt16LE(offset + 30);
+    const commentLength = buffer.readUInt16LE(offset + 32);
+    const localHeaderOffset = buffer.readUInt32LE(offset + 42);
+    const name = buffer.toString("utf8", offset + 46, offset + 46 + fileNameLength);
+
+    if (buffer.readUInt32LE(localHeaderOffset) === 0x04034b50) {
+      const localNameLength = buffer.readUInt16LE(localHeaderOffset + 26);
+      const localExtraLength = buffer.readUInt16LE(localHeaderOffset + 28);
+      const dataStart = localHeaderOffset + 30 + localNameLength + localExtraLength;
+      const data = buffer.subarray(dataStart, dataStart + compressedSize);
+      let content = null;
+
+      if (method === 0) content = data;
+      if (method === 8) content = zlib.inflateRawSync(data);
+
+      if (content) entries.push({ name, content });
+    }
+
+    offset += 46 + fileNameLength + extraLength + commentLength;
+  }
+
+  return entries;
+}
+
+function extractVsdxText(buffer, fileName) {
+  const parts = [`[Diagram file: ${fileName}] (Visio VSDX)`];
+  const values = new Set();
+
+  for (const entry of readZipEntries(buffer)) {
+    if (!/^visio\/(pages|masters|document|_rels)\//i.test(entry.name) && !/^docProps\//i.test(entry.name)) {
+      continue;
+    }
+    if (!entry.name.toLowerCase().endsWith(".xml")) continue;
+
+    const xml = entry.content.toString("utf8");
+    for (const match of xml.matchAll(/<Text\b[^>]*>([\s\S]*?)<\/Text>/gi)) {
+      const text = cleanDiagramText(match[1]);
+      if (text && text.length > 1) values.add(text);
+    }
+    for (const value of extractXmlAttributeValues(xml, "Name")) values.add(value);
+    for (const value of extractXmlAttributeValues(xml, "Label")) values.add(value);
+  }
+
+  parts.push(...[...values].slice(0, 250).map((value) => `- ${value}`));
+  return parts.join("\n");
+}
+
+async function extractDiagramText(buffer, fileName) {
+  if (buffer.length > DIAGRAM_MAX_BYTES) {
+    throw new Error(`Diagram exceeds the ${DIAGRAM_MAX_BYTES / (1024 * 1024)} MB extraction limit.`);
+  }
+
+  const ext = getFileExtension(fileName);
+  if (ext === ".drawio" || ext === ".draw.io") return extractDrawioText(buffer, fileName);
+  if (ext === ".vsdx") return extractVsdxText(buffer, fileName);
+  return "";
+}
 
 async function extractSpreadsheetText(buffer) {
   if (buffer.length > SPREADSHEET_MAX_BYTES) {
@@ -1252,6 +1407,10 @@ function deriveRequirementsAndEvidence(review, files, fileTexts) {
   for (const file of files) {
     const text = fileTexts.get(file.fileId) || "";
     const lines = extractMeaningfulLines(text);
+    const isVisualArtifact =
+      supportsImageExtraction(file.fileName) ||
+      supportsDiagramExtraction(file.fileName) ||
+      /^\[(Architecture diagram|Diagram file):/i.test(text.trim());
 
     if (["sow", "design_doc", "cost_assumptions", "dr_ha_note", "ops_monitoring_note"].includes(file.logicalCategory)) {
       for (const line of lines.slice(0, 10)) {
@@ -1270,7 +1429,7 @@ function deriveRequirementsAndEvidence(review, files, fileTexts) {
     }
 
     for (const line of lines.slice(0, 12)) {
-      if (!/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service/i.test(line)) {
+      if (!isVisualArtifact && !/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service/i.test(line)) {
         continue;
       }
 
@@ -1279,10 +1438,10 @@ function deriveRequirementsAndEvidence(review, files, fileTexts) {
         reviewId: review.reviewId,
         sourceFileId: file.fileId,
         sourceFileName: file.fileName,
-        factType: buildRequirementCategory(line, "Architecture"),
+        factType: isVisualArtifact ? "VisualArchitecture" : buildRequirementCategory(line, "Architecture"),
         summary: line,
         sourceExcerpt: line,
-        confidence: supportsTextExtraction(file.fileName) ? "Medium" : "Low"
+        confidence: isVisualArtifact ? "Medium" : supportsTextExtraction(file.fileName) ? "Medium" : "Low"
       });
     }
   }
@@ -2117,12 +2276,12 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
       uploadedBy: principal.userDetails || principal.userId,
       uploadedAt: now,
       contentHash,
-      extractionStatus: (supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)) ? "Pending" : "Limited Evidence",
+      extractionStatus: (supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsDiagramExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)) ? "Pending" : "Limited Evidence",
       extractionError: null,
       sourceRole: normalizeNullableString(file.sourceRole) || inferSourceRole(logicalCategory),
       sizeBytes: contentBuffer.byteLength,
       contentType,
-      supportedTextExtraction: supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)
+      supportedTextExtraction: supportsTextExtraction(fileName) || supportsSpreadsheetExtraction(fileName) || supportsDiagramExtraction(fileName) || supportsImageExtraction(fileName) || supportsDocumentIntelligenceExtraction(fileName)
     });
   }
 
@@ -2248,6 +2407,7 @@ async function startArbExtraction(principal, reviewId) {
 
   for (const file of files) {
     const isSpreadsheet = supportsSpreadsheetExtraction(file.fileName);
+    const isDiagram = supportsDiagramExtraction(file.fileName);
     const isImage = supportsImageExtraction(file.fileName);
 
     // ── Spreadsheet extraction via SheetJS ──────────────────────────────────
@@ -2285,6 +2445,47 @@ async function startArbExtraction(principal, reviewId) {
         }
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
+        nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
+        extractionErrors.push(`${file.fileName}: ${message}`);
+      }
+      continue;
+    }
+
+    // ── Native diagram extraction (Draw.io / Visio VSDX) ───────────────────
+    if (isDiagram) {
+      try {
+        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+
+        if (!buffer || buffer.length === 0) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "Diagram file could not be read from storage."
+          });
+          extractionErrors.push(`${file.fileName}: empty blob.`);
+          continue;
+        }
+
+        const text = await extractDiagramText(buffer, file.fileName);
+
+        if (!text || !text.trim()) {
+          nextFiles.push({
+            ...file,
+            extractionStatus: "Failed",
+            extractionError: "No readable labels or diagram metadata could be extracted."
+          });
+          extractionErrors.push(`${file.fileName}: no readable diagram labels found.`);
+          continue;
+        }
+
+        fileTexts.set(file.fileId, text);
+        nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
+
+        if (searchIndexed) {
+          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown diagram extraction error.";
         nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
         extractionErrors.push(`${file.fileName}: ${message}`);
       }
