@@ -16,6 +16,8 @@ flowchart TB
     Browser[Browser]
     SWA[Azure Static Web App\nswa-arb-review-prod\nNext.js frontend]
     FUNC[Azure Function App\nfunc-arb-review-api]
+    RENDER[Azure Container App\nca-cari-office-renderer-prod\nOffice native-shape renderer]
+    ACR[Azure Container Registry\nacrcariofficerenderprod]
     PLAN[App Service Plan\nasp-arb-review-prod]
     STORAGE[Azure Storage\nstarbrevprod01\nfiles / state / review artifacts]
     KV[Azure Key Vault\nkv-arb-review-prod]
@@ -37,11 +39,13 @@ flowchart TB
     User --> Browser --> SWA
     SWA --> FUNC
     PLAN -. hosts .-> FUNC
+    ACR -. container image .-> RENDER
 
     USERSUB --> SWA
     SWA -->|upload / submit review| FUNC
 
     FUNC --> STORAGE
+    FUNC -->|Office render fallback| RENDER
     FUNC --> KV
     FUNC --> AI
     FUNC --> PROJ
@@ -57,8 +61,9 @@ flowchart TB
     KNOWLEDGE --> SEARCH
     KNOWLEDGE --> TARGET
 
-    DOCINT -->|extracted text / structure| FUNC
+    DOCINT -->|text / tables / PDF figures| FUNC
     VISION -->|visual analysis signals| FUNC
+    RENDER -->|rendered Office page / slide / sheet PNGs| FUNC
     SEARCH -->|retrieval / grounding| FUNC
     STORAGE -->|review data / artifacts| FUNC
     KV -->|secrets / config| FUNC
@@ -81,13 +86,23 @@ flowchart TB
 ### Application and orchestration layer
 - **Azure Function App (`func-arb-review-api`)** handles API orchestration, review processing, integrations, and business logic.
 - **App Service Plan (`asp-arb-review-prod`)** provides the hosting plan context for the function app.
+- **Azure Container App (`ca-cari-office-renderer-prod`)** renders DOCX, PPTX, and XLSX native Office visual content to PNG when embedded-media extraction is not enough.
+- **Azure Container Registry (`acrcariofficerenderprod`)** stores the CARI Office Renderer container image deployed by GitHub Actions.
 
 ### AI, search, and document intelligence layer
 - **Azure AI Foundry (`ai-arb-review-prod`)**, **Azure AI Hub (`hub-arb-review-prod`)**, and **Azure AI Projects (`proj-arb-review-prod`, `arb-review-proj`)** represent the AI platform foundation.
 - **Azure AI Search (`srch-arb-review-prod`)** supports retrieval and evidence grounding.
 - **Azure Document Intelligence (`di-arb-review-prod`)** supports structured extraction from uploaded review documents.
 - **Azure Computer Vision (`vision-arb-review-prod`)** supports visual analysis scenarios where needed.
+- The CARI API persists both text/table `evidenceFacts[]` and diagram-derived `visualEvidence[]` before invoking `cari-arb-review-agent`.
 - The architecture is evolving toward a deeper **Azure AI Foundry Agents API** pattern for richer review orchestration.
+
+### Visual evidence pre-processing
+- PDF documents are processed with Document Intelligence layout extraction, including figure detection where available.
+- Diagram-heavy PDF pages use page-render fallback when figure crops are not returned.
+- DOCX, PPTX, and XLSX files are inspected for embedded media and then rendered through the Office renderer for native shapes, SmartArt, charts, slide objects, and sheet visuals.
+- Standalone image uploads are persisted as visual evidence and analyzed directly.
+- The ARB agent must cite `visualEvidenceId` for any finding based on visual evidence.
 
 ### Data, security, and operations layer
 - **Azure Storage (`starbrevprod01`)** stores documents, state, and review-related artifacts.

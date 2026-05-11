@@ -18,6 +18,7 @@ This repository is documented in a **Microsoft-style enterprise architecture for
 - [Current deployed platform](#current-deployed-platform)
 - [What the platform does](#what-the-platform-does)
 - [Core capabilities](#core-capabilities)
+- [Visual evidence pre-processor](#visual-evidence-pre-processor)
 - [Reference architecture](#reference-architecture)
 - [Architecture diagram](#architecture-diagram)
 - [Deployed Azure resource footprint](#deployed-azure-resource-footprint)
@@ -99,6 +100,7 @@ The repository includes a **Next.js frontend**, an **Azure Functions API layer**
 - Uses document-processing patterns to analyze review artifacts
 - Incorporates retrieval-oriented patterns to ground outputs in relevant evidence and guidance
 - Supports more traceable architecture findings and review recommendations
+- Extracts and persists diagram-derived `visualEvidence[]` before the ARB review agent runs
 
 ### Structured findings and scorecards
 - Produces output formats suitable for architecture review boards and enterprise stakeholders
@@ -109,6 +111,45 @@ The repository includes a **Next.js frontend**, an **Azure Functions API layer**
 - Backend execution through Azure Functions
 - Frontend delivery aligned with Azure Static Web Apps patterns
 - Security, monitoring, and operations aligned to enterprise Azure deployment expectations
+
+## Visual evidence pre-processor
+
+CARI now includes a visual evidence pre-processor that runs before `cari-arb-review-agent`. The purpose is to make architecture diagrams, embedded figures, screenshots, Office-native drawings, and standalone image uploads traceable review evidence instead of relying on text/OCR extraction alone.
+
+The processing model is:
+
+1. Upload PDF, DOCX, PPTX, XLSX, or standalone image files.
+2. Extract text and table evidence using the existing document extraction path.
+3. Extract visual artifacts:
+   - PDF figures through Azure Document Intelligence layout figure extraction.
+   - PDF page-render fallback for diagram-heavy pages where figures are not returned.
+   - Office embedded media from `word/media/*`, `ppt/media/*`, and `xl/media/*`.
+   - Office native-shape fallback through the CARI Office Renderer service.
+   - Standalone PNG, JPG, JPEG, WEBP, GIF, BMP, TIFF, and SVG image uploads.
+4. Analyze each image artifact through the existing multimodal review path, `describeImageForReview()`.
+5. Persist structured `visualEvidence[]` records alongside text/table `evidenceFacts[]`.
+6. Pass visual evidence facts to the ARB agent with mandatory `visualEvidenceId` citation rules.
+
+Visual evidence records include `visualEvidenceId`, source file, page/slide/sheet metadata, image URI, summary, detected Azure services, detected architecture patterns, confidence, extraction source, prompt-injection risk, and creation time. Text found inside diagrams or screenshots is treated only as untrusted evidence and must never override system, developer, tool, security, or review instructions.
+
+### Office native-shape renderer
+
+Office diagrams are often built from PowerPoint shapes, SmartArt, charts, Word drawing objects, or Excel sheet visuals rather than embedded image files. CARI handles that case with a deployed renderer:
+
+| Item | Value |
+|---|---|
+| Service | CARI Office Renderer |
+| Runtime | Azure Container Apps Consumption |
+| Container App | `ca-cari-office-renderer-prod` |
+| Container Apps Environment | `cae-cari-arb-review-prod` |
+| Container Registry | `acrcariofficerenderprod` |
+| Image source | `services/office-renderer` |
+| Deployment workflow | `.github/workflows/deploy-office-renderer.yml` |
+| Scale | `minReplicas=0`, `maxReplicas=1` |
+| Size | `0.5 vCPU`, `1Gi memory` |
+| Render limits | 50 MB file size, 20 pages/slides/sheets, 120 seconds |
+
+The API sends Office file bytes to the renderer over HTTPS with an internal shared header token. The renderer converts DOCX, PPTX, and XLSX files to PDF with LibreOffice, renders pages to PNG with Poppler, and returns PNG artifacts for persistence and multimodal visual analysis.
 
 ## Reference architecture
 
@@ -149,6 +190,8 @@ flowchart TB
     Browser[Browser]
     SWA[Azure Static Web App<br/>swa-arb-review-prod<br/>Next.js frontend]
     FUNC[Azure Function App<br/>func-arb-review-api]
+    RENDER[Azure Container App<br/>ca-cari-office-renderer-prod<br/>Office native-shape renderer]
+    ACR[Azure Container Registry<br/>acrcariofficerenderprod]
     PLAN[App Service Plan<br/>asp-arb-review-prod]
     STORAGE[Azure Storage<br/>starbrevprod01<br/>files / state / review artifacts]
     KV[Azure Key Vault<br/>kv-arb-review-prod]
@@ -170,11 +213,13 @@ flowchart TB
     User --> Browser --> SWA
     SWA --> FUNC
     PLAN -. hosts .-> FUNC
+    ACR -. image .-> RENDER
 
     USERSUB --> SWA
     SWA -->|upload / submit review| FUNC
 
     FUNC --> STORAGE
+    FUNC -->|Office render fallback| RENDER
     FUNC --> KV
     FUNC --> AI
     FUNC --> PROJ
@@ -190,8 +235,9 @@ flowchart TB
     KNOWLEDGE --> SEARCH
     KNOWLEDGE --> TARGET
 
-    DOCINT -->|extracted text / structure| FUNC
+    DOCINT -->|text / tables / PDF figures| FUNC
     VISION -->|visual analysis signals| FUNC
+    RENDER -->|rendered Office page / slide / sheet PNGs| FUNC
     SEARCH -->|retrieval / grounding| FUNC
     STORAGE -->|review data / artifacts| FUNC
     KV -->|secrets / config| FUNC
@@ -216,7 +262,7 @@ The solution currently uses the following Azure resources in the deployed enviro
 | Category | Deployed resources |
 |---|---|
 | Frontend | `swa-arb-review-prod` |
-| API / Compute | `func-arb-review-api`, `asp-arb-review-prod` |
+| API / Compute | `func-arb-review-api`, `asp-arb-review-prod`, `ca-cari-office-renderer-prod`, `cae-cari-arb-review-prod`, `acrcariofficerenderprod` |
 | Storage | `starbrevprod01` |
 | AI platform | `ai-arb-review-prod`, `hub-arb-review-prod`, `proj-arb-review-prod`, `arb-review-proj` |
 | Search | `srch-arb-review-prod` |
@@ -236,6 +282,9 @@ The solution currently uses the following Azure resources in the deployed enviro
 | `alert-error-rate-prod` | Metric Alert Rule | Global |
 | `appi-arb-review-prod` | Application Insights | East US 2 |
 | `asp-arb-review-prod` | App Service Plan | East US 2 |
+| `acrcariofficerenderprod` | Azure Container Registry | East US 2 |
+| `ca-cari-office-renderer-prod` | Container App | East US 2 |
+| `cae-cari-arb-review-prod` | Container Apps Environment | East US 2 |
 | `di-arb-review-prod` | Document Intelligence | East US 2 |
 | `Failure Anomalies - appi-arb-review-prod` | Smart Detector Alert Rule | Global |
 | `func-arb-review-api` | Function App | East US 2 |
@@ -259,6 +308,7 @@ Cloud-Architecture-Review-Intelligence/
 ├── docs/                # Solution plans, architecture guidance, and validation guides
 ├── frontend/            # Next.js frontend, tooling, and test assets
 ├── infrastructure/      # Infrastructure-as-code assets for Azure deployment
+├── services/            # Supporting containerized services, including Office renderer
 ├── ARCHITECTURE.md      # Solution architecture overview
 ├── CONTRIBUTING.md      # Contribution guidance
 ├── SECURITY.md          # Security policy
@@ -276,6 +326,7 @@ Cloud-Architecture-Review-Intelligence/
 - **Azure Functions v4**
 - **Node.js 20+**
 - Azure SDKs for identity, storage, tables, and document processing
+- Containerized Office rendering through LibreOffice and Poppler
 
 ### AI and Azure services
 - **Azure AI Foundry / agents-oriented design**
@@ -284,6 +335,8 @@ Cloud-Architecture-Review-Intelligence/
 - **Azure Document Intelligence / Form Recognizer**
 - **Azure Computer Vision**
 - **Azure Storage**
+- **Azure Container Apps**
+- **Azure Container Registry**
 - **Azure Key Vault**
 - **Application Insights**
 - **Log Analytics**
@@ -292,6 +345,7 @@ Cloud-Architecture-Review-Intelligence/
 - **Vitest** for unit testing
 - **Playwright** for end-to-end, accessibility, and visual validation
 - Native Node test execution for API workflows
+- Native Node test execution for the Office renderer service
 
 ## Deployment model
 
@@ -299,6 +353,8 @@ The current documentation and Azure resource inventory indicate an enterprise Az
 
 - **Frontend** hosted using Azure Static Web Apps
 - **Backend APIs** hosted as Azure Functions
+- **Office-native visual rendering** hosted using Azure Container Apps Consumption
+- **Renderer container images** stored in Azure Container Registry Basic
 - **AI orchestration and knowledge services** delivered through Azure AI services and project resources
 - **Search and document analysis** delivered through Azure AI Search, Document Intelligence, and Vision services
 - **Storage and secret management** handled through Azure Storage and Azure Key Vault
@@ -342,6 +398,13 @@ cd ../api
 npm install
 ```
 
+Office renderer:
+
+```bash
+cd ../services/office-renderer
+npm install
+```
+
 ### Run the frontend locally
 
 ```bash
@@ -356,10 +419,29 @@ cd api
 npm test
 ```
 
+### Run Office renderer tests
+
+```bash
+cd services/office-renderer
+npm test
+```
+
 ## Configuration and security
 
 The API project includes a sample local settings file:
 - [`api/local.settings.sample.json`](./api/local.settings.sample.json)
+
+Important production settings include:
+
+| Setting | Purpose |
+|---|---|
+| `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT` | Preferred Azure Document Intelligence endpoint setting |
+| `AZURE_DOCINT_ENDPOINT` | Backward-compatible Document Intelligence endpoint fallback |
+| `OFFICE_RENDERER_ENDPOINT` | HTTPS endpoint for the CARI Office Renderer |
+| `OFFICE_RENDERER_SHARED_SECRET` | Shared header token used between API and renderer |
+| `OFFICE_RENDERER_MAX_FILE_BYTES` | API-side Office render size limit |
+| `OFFICE_RENDERER_MAX_PAGES` | API-side maximum rendered pages/slides/sheets |
+| `OFFICE_RENDERER_TIMEOUT_MS` | API-side renderer call timeout |
 
 Recommended practices for professional deployment:
 - never store secrets in source control
@@ -391,6 +473,27 @@ From the `api` directory:
 npm test
 ```
 
+### Office renderer testing
+From the `services/office-renderer` directory:
+
+```bash
+npm test
+```
+
+### Deployment validation
+
+Recent deployment validation included:
+
+| Check | Result |
+|---|---|
+| Terraform infrastructure apply | Pass |
+| Azure Functions API deployment | Pass |
+| Office renderer workflow deployment | Pass |
+| Renderer `/health` endpoint | HTTP 200 |
+| Live `/` route | HTTP 200 |
+| Live `/arb` route | HTTP 200 |
+| Live `/api/health` route | HTTP 200 |
+
 The available scripts indicate support for:
 - unit testing
 - accessibility validation
@@ -412,7 +515,8 @@ Recommended reading order:
 3. Read [`docs/architecture/solution-architecture-diagram.md`](./docs/architecture/solution-architecture-diagram.md)
 4. Read [`docs/arb-foundry-agents-solution-plan.md`](./docs/arb-foundry-agents-solution-plan.md)
 5. Read [`docs/arb-implementation-test-validation-guide.md`](./docs/arb-implementation-test-validation-guide.md)
-6. Explore the `frontend/`, `api/`, and `infrastructure/` directories for implementation detail
+6. Read [`services/office-renderer/README.md`](./services/office-renderer/README.md)
+7. Explore the `frontend/`, `api/`, `services/`, and `infrastructure/` directories for implementation detail
 
 ## Target users and scenarios
 
@@ -437,6 +541,7 @@ Based on the current repository documentation and deployed platform footprint, t
 
 - deeper Azure AI Foundry agent integration
 - more mature evidence-grounded review workflows
+- richer visual-evidence extraction quality gates and visual regression evaluations
 - stronger governance scoring and findings presentation
 - broader automation across review execution and validation
 - enterprise-ready deployment, observability, and operational patterns

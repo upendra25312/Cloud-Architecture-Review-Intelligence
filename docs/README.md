@@ -30,6 +30,9 @@ If you are new to the repository, use the following reading order:
 4. [`arb-implementation-test-validation-guide.md`](./arb-implementation-test-validation-guide.md)  
    Use this for implementation and validation guidance tied to testing and operational readiness.
 
+5. [`../services/office-renderer/README.md`](../services/office-renderer/README.md)  
+   Review this for the deployed Office native-shape rendering service used by the visual evidence pre-processor.
+
 ## Current key documents
 
 ### Solution and architecture
@@ -38,6 +41,15 @@ If you are new to the repository, use the following reading order:
 
 ### Implementation and validation
 - [`arb-implementation-test-validation-guide.md`](./arb-implementation-test-validation-guide.md)
+- [`../services/office-renderer/README.md`](../services/office-renderer/README.md)
+
+### Visual evidence and rendering
+- Visual evidence pre-processor: implemented in the Azure Functions API extraction pipeline.
+- Office native-shape renderer: implemented in [`../services/office-renderer`](../services/office-renderer).
+- Renderer infrastructure: implemented in [`../infrastructure/terraform/office_renderer.tf`](../infrastructure/terraform/office_renderer.tf).
+- Renderer deployment: implemented in [`../.github/workflows/deploy-office-renderer.yml`](../.github/workflows/deploy-office-renderer.yml).
+
+The visual evidence pre-processor extracts and analyzes diagram-derived facts before `cari-arb-review-agent` runs. It supports PDF figure extraction, PDF page-render fallback, Office embedded media extraction, Office native-shape rendering fallback, and standalone image uploads. The ARB agent receives `visualEvidence[]` records and must cite `visualEvidenceId` when using diagram-derived facts.
 
 ### Repository entry points
 - [`../README.md`](../README.md)
