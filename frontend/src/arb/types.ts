@@ -171,6 +171,22 @@ export interface ArbExtractionStatus {
   fileStatuses: ArbExtractionFileStatus[];
 }
 
+export interface ArbAgentStatus {
+  reviewId: string;
+  traceId?: string;
+  status: "idle" | "running" | "completed" | "failed" | string;
+  startedAt?: string;
+  completedAt?: string;
+  elapsedMs?: number;
+  message?: string;
+  error?: string;
+  agentReviewCompleted?: boolean;
+  findingsCount?: number;
+  recommendation?: string;
+  overallScore?: number | null;
+  confidenceLevel?: string | null;
+}
+
 export interface ArbRequirement {
   requirementId: string;
   reviewId: string;

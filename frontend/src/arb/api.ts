@@ -18,6 +18,7 @@ import type {
   ArbAction,
   ArbDecision,
   ArbEvidenceFact,
+  ArbAgentStatus,
   ArbExportArtifact,
   ArbExportFormat,
   ArbFinding,
@@ -584,6 +585,19 @@ export async function runArbAgentReview(reviewId: string): Promise<{
   }
 
   throw new Error("Assessment timed out after 15 minutes. Check the review findings page — results may still appear.");
+}
+
+export async function fetchArbAgentStatus(reviewId: string): Promise<ArbAgentStatus> {
+  const response = await fetch(`/api/arb/reviews/${reviewId}/agent-status`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store"
+  });
+
+  return readJsonResponse<ArbAgentStatus>(
+    response,
+    `Unable to load ARB assessment status (${response.status}).`
+  );
 }
 
 export async function downloadArbExport(reviewId: string, exportArtifact: ArbExportArtifact) {

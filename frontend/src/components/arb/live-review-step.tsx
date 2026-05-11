@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   createArbExport,
   createArbAction,
   deleteArbFile,
   downloadArbExport,
+  fetchArbAgentStatus,
   fetchArbEvidence,
   fetchArbActions,
   fetchArbDecision,
@@ -268,7 +268,6 @@ export function ArbLiveReviewStep(props: {
   description: string;
 }) {
   const { reviewId, activeStep, title, description } = props;
-  const router = useRouter();
   const [review, setReview] = useState<ArbReviewSummary | null>(null);
   const [findings, setFindings] = useState<ArbFinding[]>([]);
   const [actions, setActions] = useState<ArbAction[]>([]);
@@ -299,6 +298,7 @@ export function ArbLiveReviewStep(props: {
   const [agentRunning, setAgentRunning] = useState(false);
   const [agentError, setAgentError] = useState<string | null>(null);
   const [agentCompleted, setAgentCompleted] = useState(false);
+  const [agentStatusMessage, setAgentStatusMessage] = useState<string | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [deleteFileError, setDeleteFileError] = useState<string | null>(null);
   const actionSummary = summarizeActions(actions);
@@ -564,6 +564,8 @@ export function ArbLiveReviewStep(props: {
           activeStep === "upload" || activeStep === "requirements" || activeStep === "evidence"
             ? await fetchArbExports(reviewId)
             : [];
+        const agentStatusResponse =
+          activeStep === "upload" ? await fetchArbAgentStatus(reviewId).catch(() => null) : null;
         const scorecardResponse =
           activeStep === "scorecard" || activeStep === "findings" || activeStep === "decision"
             ? await fetchArbScorecard(reviewId)
@@ -581,6 +583,21 @@ export function ArbLiveReviewStep(props: {
           setExportArtifacts(exportsResponse);
           setActions(actionsResponse);
           setScorecard(scorecardResponse);
+          if (agentStatusResponse?.status === "running") {
+            setAgentRunning(true);
+            setAgentCompleted(false);
+            setAgentStatusMessage(agentStatusResponse.message || "Assessment is in progress.");
+          } else if (agentStatusResponse?.status === "completed") {
+            setAgentRunning(false);
+            setAgentCompleted(true);
+            setAgentStatusMessage(
+              `Assessment complete${agentStatusResponse.findingsCount != null ? ` — ${agentStatusResponse.findingsCount} findings generated` : ""}.`
+            );
+          } else if (agentStatusResponse?.status === "failed") {
+            setAgentRunning(false);
+            setAgentCompleted(false);
+            setAgentError(agentStatusResponse.error || "Assessment failed.");
+          }
           setDecisionResult(decisionResponse);
           setDecisionChoice(decisionResponse?.reviewerDecision || "Needs Revision");
           setDecisionRationale(decisionResponse?.rationale || "");
@@ -614,6 +631,38 @@ export function ArbLiveReviewStep(props: {
 
     return () => window.clearInterval(intervalId);
   }, [activeStep, extractionStatus?.jobId, extractionStatus?.state, extractionStatus?.visualExtractionErrors?.length, reviewId]);
+
+  useEffect(() => {
+    if (activeStep !== "upload" || !agentRunning) return;
+
+    let cancelled = false;
+    const intervalId = window.setInterval(() => {
+      void (async () => {
+        const status = await fetchArbAgentStatus(reviewId).catch(() => null);
+        if (cancelled || !status) return;
+
+        if (status.status === "completed") {
+          setAgentRunning(false);
+          setAgentCompleted(true);
+          setAgentStatusMessage(
+            `Assessment complete${status.findingsCount != null ? ` — ${status.findingsCount} findings generated` : ""}.`
+          );
+          window.clearInterval(intervalId);
+        } else if (status.status === "failed") {
+          setAgentRunning(false);
+          setAgentError(status.error || "Assessment failed.");
+          window.clearInterval(intervalId);
+        } else if (status.status === "running") {
+          setAgentStatusMessage(status.message || "Assessment is in progress.");
+        }
+      })();
+    }, 5000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [activeStep, agentRunning, reviewId]);
 
   const shellReview =
     review ??
@@ -678,12 +727,15 @@ export function ArbLiveReviewStep(props: {
     try {
       setAgentRunning(true);
       setAgentError(null);
+      setAgentCompleted(false);
+      setAgentStatusMessage("Assessment is in progress.");
       await runArbAgentReview(reviewId);
       setAgentCompleted(true);
+      setAgentStatusMessage("Assessment complete. Opening findings.");
       // Refresh findings and scorecard after agent run
       const [nextFindings, nextScorecard] = await Promise.all([
-        fetchArbFindings(reviewId),
-        fetchArbScorecard(reviewId)
+        fetchArbFindings(reviewId).catch(() => []),
+        fetchArbScorecard(reviewId).catch(() => null)
       ]);
       setFindings(nextFindings);
       setScorecard(nextScorecard);
@@ -696,7 +748,7 @@ export function ArbLiveReviewStep(props: {
         },
       });
       // Auto-navigate to findings once agent review completes
-      router.push(getArbStepHref(reviewId, "findings"));
+      window.location.assign(getArbStepHref(reviewId, "findings"));
     } catch (agentRunError) {
       setAgentError(
         agentRunError instanceof Error ? agentRunError.message : "Unable to run agent review."
@@ -1093,17 +1145,25 @@ export function ArbLiveReviewStep(props: {
               type="button"
               className="arb-cta-btn"
               disabled={agentRunning}
-              onClick={() => void handleRunAgentReview()}
+              onClick={() => {
+                if (agentCompleted) {
+                  window.location.assign(getArbStepHref(reviewId, "findings"));
+                  return;
+                }
+                void handleRunAgentReview();
+              }}
             >
               {agentRunning ? (
                 <><span className="arb-spinner" aria-hidden="true" /> Running assessment… typically 10–15 minutes</>
+              ) : agentCompleted ? (
+                "View findings →"
               ) : (
                 "Run assessment →"
               )}
             </button>
             {agentRunning ? (
               <p className="arb-upload-status arb-upload-status-progress">
-                Validating your documents against Security, Reliability, Cost, Operations, Architecture, Governance, and Delivery domains. Do not close this page.
+                {agentStatusMessage || "Validating your documents against Security, Reliability, Cost, Operations, Architecture, Governance, and Delivery domains. Do not close this page."}
               </p>
             ) : null}
             {agentCompleted ? (
