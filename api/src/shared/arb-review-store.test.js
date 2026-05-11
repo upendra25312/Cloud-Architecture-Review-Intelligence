@@ -778,7 +778,8 @@ test("PDF visual fallback renders architecture pages through the document render
   assert.match(source, /startPage:\s*ext === "\.pdf" \? 4 : undefined/);
   assert.match(source, /endPage:\s*ext === "\.pdf" \? 9 : undefined/);
   assert.match(source, /PDF page render fallback \+ multimodal analysis/);
-  assert.match(source, /processPdfVisualEvidence\(file, layout, buffer\)/);
+  assert.match(source, /Promise\.allSettled\(\[\s*extractDocumentLayout/);
+  assert.match(source, /processPdfVisualEvidence\(file, layout, buffer, prerendered\)/);
 });
 
 test("creating an ARB export writes export metadata", async () => {
@@ -876,7 +877,7 @@ test("visual image analysis does not force JSON chat response format", () => {
   );
 
   assert.match(source, /if \(responseFormat\) \{\s*body\.response_format = responseFormat;/s);
-  assert.match(source, /chatCompletionsRequest\(messages,\s*\{\s*maxTokens:\s*1800,\s*responseFormat:\s*null,\s*timeoutMs:\s*45000\s*\}\)/s);
+  assert.match(source, /chatCompletionsRequest\(messages,\s*\{\s*maxTokens:\s*1000,\s*responseFormat:\s*null,\s*timeoutMs:\s*20000\s*\}\)/s);
 });
 
 test("visual evidence keeps renderer context when multimodal response is empty", () => {

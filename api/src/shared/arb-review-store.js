@@ -3016,12 +3016,12 @@ async function startArbExtraction(principal, reviewId) {
 
   const visionAvailable = getFoundryConfiguration().configured;
 
-  async function addVisualEvidenceRecord(file, artifact) {
+  async function addVisualEvidenceRecord(file, artifact, visualIndexOverride = null) {
     try {
       const record = await persistAndAnalyzeVisualArtifact({
         principal,
         reviewId,
-        visualIndex: visualEvidence.length,
+        visualIndex: visualIndexOverride ?? visualEvidence.length,
         sourceFile: file,
         artifact,
         outputContainer,
@@ -3043,6 +3043,28 @@ async function startArbExtraction(principal, reviewId) {
     }
   }
 
+  async function addVisualEvidenceRecords(file, artifacts, concurrency = 3) {
+    if (!Array.isArray(artifacts) || artifacts.length === 0) {
+      return [];
+    }
+
+    const indexedArtifacts = artifacts.map((artifact, index) => ({
+      artifact,
+      visualIndex: visualEvidence.length + index
+    }));
+    const records = [];
+
+    for (let i = 0; i < indexedArtifacts.length; i += concurrency) {
+      const chunk = indexedArtifacts.slice(i, i + concurrency);
+      const chunkRecords = await Promise.all(
+        chunk.map(({ artifact, visualIndex }) => addVisualEvidenceRecord(file, artifact, visualIndex))
+      );
+      records.push(...chunkRecords.filter(Boolean));
+    }
+
+    return records;
+  }
+
   async function processOfficeVisualEvidence(file, buffer) {
     const extension = getFileExtension(file.fileName);
     if (![".docx", ".pptx", ".xlsx"].includes(extension)) {
@@ -3053,9 +3075,7 @@ async function startArbExtraction(principal, reviewId) {
     for (const warning of warnings) {
       visualExtractionErrors.push(warning);
     }
-    for (const artifact of artifacts) {
-      await addVisualEvidenceRecord(file, artifact);
-    }
+    await addVisualEvidenceRecords(file, artifacts);
 
     const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
     if (shouldRunFallback) {
@@ -3063,9 +3083,7 @@ async function startArbExtraction(principal, reviewId) {
       for (const warning of rendered.warnings) {
         visualExtractionErrors.push(warning);
       }
-      for (const artifact of rendered.artifacts) {
-        await addVisualEvidenceRecord(file, artifact);
-      }
+      await addVisualEvidenceRecords(file, rendered.artifacts);
 
       if (rendered.artifacts.length > 0) {
         return;
@@ -3075,21 +3093,19 @@ async function startArbExtraction(principal, reviewId) {
       for (const warning of fallback.warnings) {
         visualExtractionErrors.push(warning);
       }
-      for (const artifact of fallback.artifacts) {
-        await addVisualEvidenceRecord(file, artifact);
-      }
+      await addVisualEvidenceRecords(file, fallback.artifacts);
     }
   }
 
-  async function processPdfVisualEvidence(file, layout, buffer) {
+  async function processPdfVisualEvidence(file, layout, buffer, prerendered = null) {
     const figures = Array.isArray(layout?.figures) ? layout.figures : [];
-    let persistedFigures = 0;
+    const figureArtifacts = [];
     for (const figure of figures) {
       if (!figure.buffer) {
         visualExtractionErrors.push(`${file.fileName}: Document Intelligence could not retrieve figure ${figure.figureId || "unknown"}.`);
         continue;
       }
-      const record = await addVisualEvidenceRecord(file, {
+      figureArtifacts.push({
         sourceName: `${file.fileName}-${figure.figureId || "figure"}.png`,
         buffer: figure.buffer,
         extension: ".png",
@@ -3099,21 +3115,21 @@ async function startArbExtraction(principal, reviewId) {
         sourceExcerpt: `Visual analysis of embedded architecture figure ${figure.figureId || ""} in ${file.fileName}.`.trim(),
         extractionSource: "Document Intelligence figures + multimodal analysis"
       });
-      if (record) persistedFigures++;
     }
+
+    const persistedFigureRecords = await addVisualEvidenceRecords(file, figureArtifacts);
+    const persistedFigures = persistedFigureRecords.length;
 
     if (persistedFigures > 0) {
       return;
     }
 
-    const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
+    const rendered = prerendered || await renderOfficeVisualArtifacts(buffer, file.fileName);
     for (const warning of rendered.warnings) {
       visualExtractionErrors.push(warning);
     }
     if (rendered.artifacts.length > 0) {
-      for (const artifact of rendered.artifacts) {
-        await addVisualEvidenceRecord(file, artifact);
-      }
+      await addVisualEvidenceRecords(file, rendered.artifacts);
       return;
     }
 
@@ -3121,11 +3137,11 @@ async function startArbExtraction(principal, reviewId) {
     const fallbackPages = pages
       .filter((page) => Number(page.pageNumber) >= 4 && Number(page.pageNumber) <= 9)
       .slice(0, 6);
-    for (const page of fallbackPages) {
+    await addVisualEvidenceRecords(file, fallbackPages.map((page) => {
       const pageText = Array.isArray(page.lines)
         ? page.lines.map((line) => line.content).filter(Boolean).join("\n")
         : "";
-      await addVisualEvidenceRecord(file, {
+      return {
         sourceName: `${file.fileName}-page-${page.pageNumber}.txt`,
         sourcePage: page.pageNumber ?? null,
         summaryText: pageText
@@ -3133,8 +3149,8 @@ async function startArbExtraction(principal, reviewId) {
           : `PDF page ${page.pageNumber} was treated as visual evidence fallback because no cropped figures were returned by Document Intelligence.`,
         sourceExcerpt: `Visual analysis fallback for full-page architecture content on page ${page.pageNumber}.`,
         extractionSource: "PDF page render fallback + extracted page evidence"
-      });
-    }
+      };
+    }));
   }
 
   for (const file of files) {
@@ -3325,13 +3341,26 @@ async function startArbExtraction(principal, reviewId) {
 
         if (diConfig.configured) {
           if (getFileExtension(file.fileName) === ".pdf") {
-            try {
-              const layout = await extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true });
+            const [layoutResult, renderResult] = await Promise.allSettled([
+              extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true }),
+              renderOfficeVisualArtifacts(buffer, file.fileName)
+            ]);
+
+            const prerendered = renderResult.status === "fulfilled"
+              ? renderResult.value
+              : {
+                artifacts: [],
+                warnings: [`${file.fileName}: PDF page render fallback failed: ${renderResult.reason instanceof Error ? renderResult.reason.message : String(renderResult.reason)}`]
+              };
+
+            if (layoutResult.status === "fulfilled") {
+              const layout = layoutResult.value;
               text = layout.text;
-              await processPdfVisualEvidence(file, layout, buffer);
-            } catch (figureError) {
-              const message = figureError instanceof Error ? figureError.message : String(figureError);
+              await processPdfVisualEvidence(file, layout, buffer, prerendered);
+            } else {
+              const message = layoutResult.reason instanceof Error ? layoutResult.reason.message : String(layoutResult.reason);
               visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
+              await processPdfVisualEvidence(file, null, buffer, prerendered);
               text = await extractDocumentText(buffer, file.contentType, file.fileName);
             }
           } else {
