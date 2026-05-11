@@ -876,7 +876,7 @@ test("visual image analysis does not force JSON chat response format", () => {
   );
 
   assert.match(source, /if \(responseFormat\) \{\s*body\.response_format = responseFormat;/s);
-  assert.match(source, /chatCompletionsRequest\(messages,\s*\{\s*maxTokens:\s*3000,\s*responseFormat:\s*null\s*\}\)/s);
+  assert.match(source, /chatCompletionsRequest\(messages,\s*\{\s*maxTokens:\s*1800,\s*responseFormat:\s*null,\s*timeoutMs:\s*45000\s*\}\)/s);
 });
 
 test("visual evidence keeps renderer context when multimodal response is empty", () => {

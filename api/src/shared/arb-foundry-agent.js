@@ -82,7 +82,8 @@ async function chatCompletionsRequest(messages, options = {}) {
   const {
     maxTokens = 8192,
     temperature = 0.2,
-    responseFormat = { type: "json_object" }
+    responseFormat = { type: "json_object" },
+    timeoutMs = 120000
   } = options;
   const base = getAiServicesBaseEndpoint();
   const url = `${base}/openai/deployments/${FOUNDRY_AGENT_MODEL}/chat/completions?api-version=${OPENAI_API_VERSION}`;
@@ -104,7 +105,7 @@ async function chatCompletionsRequest(messages, options = {}) {
       "Authorization": `Bearer ${token}`
     },
     body: JSON.stringify(body)
-  }, 120000);
+  }, timeoutMs);
 
   if (!res.ok) {
     const text = await res.text().catch(() => `HTTP ${res.status}`);
@@ -790,8 +791,9 @@ async function describeImageForReview(imageBuffer, fileName, fileExtension) {
   ];
 
   return await chatCompletionsRequest(messages, {
-    maxTokens: 3000,
-    responseFormat: null
+    maxTokens: 1800,
+    responseFormat: null,
+    timeoutMs: 45000
   });
 }
 
