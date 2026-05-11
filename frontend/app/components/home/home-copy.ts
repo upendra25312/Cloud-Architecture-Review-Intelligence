@@ -13,12 +13,12 @@ export const HOME_COPY = {
     eyebrow: "Architecture Review Intelligence",
     title: "Turn uploaded architecture evidence into board-ready review decisions.",
     kicker:
-      "What used to take 4–12 hours now takes under 5 minutes. Starting with Azure, expanding to AWS and Google Cloud.",
+      "What used to take 4–12 hours now runs in minutes, with full packages typically completing in 10–20 minutes.",
     sub: "Upload your architecture documents, get evidence-linked findings and framework-aligned decisions, then export a board-ready review pack — reviewed and signed off by your architects.",
     primaryCta: "Start a Review",
     secondaryCta: "View Sample Output",
     trustBar: [
-      "< 5 min from upload to findings",
+      "10–20 min full package",
       "Evidence-linked findings",
       "Framework-aligned decisions",
       "Human-reviewed sign-off",

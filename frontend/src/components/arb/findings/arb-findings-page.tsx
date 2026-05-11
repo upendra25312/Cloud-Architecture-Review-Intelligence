@@ -226,7 +226,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
           bullets={[
             "Go back to the Upload step and click 'Run assessment →' to generate findings",
             "Documents are validated against WAF, CAF, ALZ, HA/DR, Security, Networking, and Monitoring",
-            "Findings appear here automatically — typically 1–3 minutes",
+            "Findings appear here automatically — typically 10–15 minutes for a full evidence package",
           ]}
           footer={
             <a href={getArbStepHref(reviewId, "upload", "upload-documents")} className="primary-button">

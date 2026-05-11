@@ -1018,14 +1018,14 @@ export function ArbLiveReviewStep(props: {
             }}
           >
             {extractionStarting ? (
-              <><span className="arb-spinner" aria-hidden="true" /> Analyzing documents… typically 2–6 minutes for diagram-heavy PDFs</>
+              <><span className="arb-spinner" aria-hidden="true" /> Analyzing documents… typically 8–20 minutes for a full evidence package</>
             ) : extractionStatus?.state === "Failed" ? (
               "Retry analysis →"
             ) : (
               "Start analysis →"
             )}
           </button>
-          <p className="microcopy">Most text files complete in 30–90 seconds. PDFs with embedded diagrams or visual evidence can take 2–6 minutes.</p>
+          <p className="microcopy">Typical package: 25–35 page design doc, 10–12 page SOW, and a ZIP with 10–15 supporting files. Small uploads may finish sooner; full packages usually take 8–20 minutes.</p>
           {extractionStarting ? (
             <p className="arb-upload-status arb-upload-status-progress">
               Analysis running — do not close this page. Results will appear automatically.
@@ -1084,7 +1084,7 @@ export function ArbLiveReviewStep(props: {
             <p className="section-copy">
               Run the automated assessment to produce structured findings, a weighted scorecard, and a
               derived recommendation. Every evidence item is validated against WAF, CAF, ALZ, HA/DR, Security,
-              Networking, and Monitoring. Typically takes 2–5 minutes.
+              Networking, and Monitoring. Typically takes 10–15 minutes for a full evidence package.
             </p>
             <button
               type="button"
@@ -1093,7 +1093,7 @@ export function ArbLiveReviewStep(props: {
               onClick={() => void handleRunAgentReview()}
             >
               {agentRunning ? (
-                <><span className="arb-spinner" aria-hidden="true" /> Running assessment… typically 2–5 minutes</>
+                <><span className="arb-spinner" aria-hidden="true" /> Running assessment… typically 10–15 minutes</>
               ) : (
                 "Run assessment →"
               )}

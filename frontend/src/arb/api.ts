@@ -538,8 +538,8 @@ export async function runArbAgentReview(reviewId: string): Promise<{
     throw new Error(payload.error || `Unable to start ARB agent review (${startResponse.status}).`);
   }
 
-  // Step 2: Poll for completion — up to 5 minutes
-  const MAX_POLL_MS = 300_000;
+  // Step 2: Poll for completion — up to 15 minutes for full evidence packages.
+  const MAX_POLL_MS = 900_000;
   const POLL_INTERVAL_MS = 4_000;
   const startTime = Date.now();
 
@@ -583,7 +583,7 @@ export async function runArbAgentReview(reviewId: string): Promise<{
     // status === "running" or "idle" — keep polling
   }
 
-  throw new Error("Assessment timed out after 5 minutes. Check the review findings page — results may still appear.");
+  throw new Error("Assessment timed out after 15 minutes. Check the review findings page — results may still appear.");
 }
 
 export async function downloadArbExport(reviewId: string, exportArtifact: ArbExportArtifact) {
