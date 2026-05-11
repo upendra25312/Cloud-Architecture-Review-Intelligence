@@ -68,8 +68,13 @@ jobs:
         shell: bash
         run: |
           LOGIN_SERVER=$(az acr show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --query loginServer -o tsv)
+          ACR_USER=$(az acr credential show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --query username -o tsv)
+          ACR_PASS=$(az acr credential show --name "$ACR_NAME" --resource-group "$RESOURCE_GROUP" --query 'passwords[0].value' -o tsv)
           echo "LOGIN_SERVER=$LOGIN_SERVER" >> "$GITHUB_ENV"
-          az acr login --name "$ACR_NAME"
+          echo "ACR_USER=$ACR_USER" >> "$GITHUB_ENV"
+          echo "::add-mask::$ACR_PASS"
+          echo "ACR_PASS=$ACR_PASS" >> "$GITHUB_ENV"
+          echo "$ACR_PASS" | docker login "$LOGIN_SERVER" --username "$ACR_USER" --password-stdin
           docker build \
             -t "$LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}" \
             -t "$LOGIN_SERVER/$IMAGE_NAME:latest" \
@@ -92,6 +97,9 @@ jobs:
             --name "$CONTAINER_APP_NAME" \
             --resource-group "$RESOURCE_GROUP" \
             --image "$IMAGE" \
+            --registry-server "$LOGIN_SERVER" \
+            --registry-username "$ACR_USER" \
+            --registry-password "$ACR_PASS" \
             --set-env-vars \
               NODE_ENV=production \
               PORT=8080 \

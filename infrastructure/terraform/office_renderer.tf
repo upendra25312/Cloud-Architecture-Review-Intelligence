@@ -3,25 +3,11 @@ resource "azurerm_container_registry" "cari_office_renderer" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   sku                 = "Basic"
-  admin_enabled       = false
+  admin_enabled       = true
 
   tags = merge(azurerm_resource_group.main.tags, {
     workload = "cari-office-renderer"
   })
-}
-
-resource "azurerm_user_assigned_identity" "cari_office_renderer" {
-  name                = "id-cari-office-renderer-${var.env}"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-
-  tags = azurerm_resource_group.main.tags
-}
-
-resource "azurerm_role_assignment" "office_renderer_acr_pull" {
-  scope                = azurerm_container_registry.cari_office_renderer.id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_user_assigned_identity.cari_office_renderer.principal_id
 }
 
 resource "azurerm_container_app_environment" "cari_office_renderer" {
@@ -44,19 +30,9 @@ resource "azurerm_container_app" "cari_office_renderer" {
   resource_group_name          = azurerm_resource_group.main.name
   revision_mode                = "Single"
 
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.cari_office_renderer.id]
-  }
-
   secret {
     name  = "renderer-shared-secret"
     value = random_password.office_renderer_shared_secret.result
-  }
-
-  registry {
-    server   = azurerm_container_registry.cari_office_renderer.login_server
-    identity = azurerm_user_assigned_identity.cari_office_renderer.id
   }
 
   ingress {
@@ -124,6 +100,4 @@ resource "azurerm_container_app" "cari_office_renderer" {
       secret,
     ]
   }
-
-  depends_on = [azurerm_role_assignment.office_renderer_acr_pull]
 }

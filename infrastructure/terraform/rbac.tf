@@ -117,19 +117,3 @@ resource "azurerm_role_assignment" "gh_tf_state" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = var.github_actions_principal_id
 }
-
-# ACR Push — build and push the CARI Office Renderer container image.
-resource "azurerm_role_assignment" "gh_office_renderer_acr_push" {
-  count                = var.github_actions_principal_id != "" ? 1 : 0
-  scope                = azurerm_container_registry.cari_office_renderer.id
-  role_definition_name = "AcrPush"
-  principal_id         = var.github_actions_principal_id
-}
-
-# Container Apps Contributor — update the renderer app image after a successful build.
-resource "azurerm_role_assignment" "gh_office_renderer_containerapps_contributor" {
-  count                = var.github_actions_principal_id != "" ? 1 : 0
-  scope                = azurerm_container_app.cari_office_renderer.id
-  role_definition_name = "Contributor"
-  principal_id         = var.github_actions_principal_id
-}
