@@ -332,6 +332,7 @@ export async function fetchArbUploads(reviewId: string): Promise<{
 export async function uploadArbFiles(input: {
   reviewId: string;
   files: File[];
+  logicalCategory?: string;
 }): Promise<{
   files: ArbUploadedFile[];
   addedCount: number;
@@ -341,6 +342,9 @@ export async function uploadArbFiles(input: {
 
   for (const file of input.files) {
     formData.append("files", file, file.name);
+    if (input.logicalCategory) {
+      formData.append(`logicalCategory:${file.name}`, input.logicalCategory);
+    }
   }
 
   const response = await fetch(`/api/arb/reviews/${input.reviewId}/uploads`, {
@@ -562,7 +566,7 @@ export async function runArbAgentReview(reviewId: string): Promise<{
       return {
         agentReviewCompleted: status.agentReviewCompleted ?? true,
         findingsCount: status.findingsCount ?? 0,
-        recommendation: status.recommendation ?? "Needs Revision",
+        recommendation: status.recommendation ?? "Needs Remediation",
         overallScore: status.overallScore ?? null,
         confidenceLevel: status.confidenceLevel ?? null
       };

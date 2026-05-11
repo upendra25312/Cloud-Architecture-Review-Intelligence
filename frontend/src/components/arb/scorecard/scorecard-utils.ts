@@ -6,7 +6,7 @@ export { getScoreTone } from "@/components/arb/findings/findings-utils";
 /** Score band label for display in the Summary Hero */
 export function getScoreBandLabel(score: number | null): string {
   if (score === null) return "Pending";
-  if (score >= 85) return "Strong";
+  if (score >= 80) return "Meets threshold";
   if (score >= 70) return "Moderate";
   return "At Risk";
 }
@@ -28,7 +28,7 @@ export function sortDomainScores(domains: ArbDomainScore[]): ArbDomainScore[] {
 /** Classify recommendation text for badge color. */
 export function getRecommendationTone(recommendation: string): "approved" | "attention" | "neutral" {
   const normalized = recommendation.trim().toLowerCase();
-  if (normalized.includes("approved")) return "approved";
-  if (normalized.includes("rejected") || normalized.includes("revision") || normalized.includes("improvement")) return "attention";
+  if (normalized.includes("recommended for approval")) return "approved";
+  if (normalized.includes("rejected") || normalized.includes("revision") || normalized.includes("remediation") || normalized.includes("improvement")) return "attention";
   return "neutral";
 }

@@ -258,6 +258,20 @@ test("ARB review lifecycle persists summary, findings, scorecard, and decision s
     const findings = await store.getArbFindings(principal, created.reviewId);
     const scorecard = await store.getArbScorecard(principal, created.reviewId);
     const beforeDecision = await store.getArbDecision(principal, created.reviewId);
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "solution-sow.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("SOW scope is approved for architecture review sign-off.")
+      },
+      {
+        fileName: "architecture-design.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Architecture design evidence is attached for review.")
+      }
+    ]);
     const decision = await store.recordArbDecision(principal, created.reviewId, {
       finalDecision: "Approved",
       rationale: "Ready for pilot rollout after evidence review."
@@ -269,7 +283,7 @@ test("ARB review lifecycle persists summary, findings, scorecard, and decision s
     assert.equal(findings.length, 2);
     assert.equal(findings[0].reviewId, created.reviewId);
     assert.equal(scorecard.overallScore, 78);
-    assert.equal(scorecard.recommendation, "Needs Revision");
+    assert.equal(scorecard.recommendation, "Needs Remediation");
     assert.equal(scorecard.evidenceReadinessState, "Ready with Gaps");
     assert.equal(scorecard.reviewerOverride, null);
     assert.equal(scorecard.domainScores[1].linkedFindings[0], `${created.reviewId}-find-001`);
@@ -572,6 +586,48 @@ test("single comprehensive design pack can start review with gaps when SOW is mi
     assert.equal(review.requiredEvidencePresent, false);
     assert.deepEqual(review.missingRequiredItems, ["sow"]);
     assert.match(review.readinessNotes, /standalone SOW is not uploaded/i);
+  } finally {
+    cleanup();
+  }
+});
+
+test("human approval is blocked until SOW or scope evidence is present", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-sow-gate",
+    userDetails: "reviewer@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "sow-gate",
+      projectName: "SOW Gate"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "architecture-design.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Architecture design evidence is attached for analysis.")
+      }
+    ]);
+
+    await assert.rejects(
+      () => store.recordArbDecision(principal, created.reviewId, {
+        finalDecision: "Approved",
+        rationale: "Attempt approval without SOW."
+      }),
+      /SOW or scope document/i
+    );
+
+    const decision = await store.recordArbDecision(principal, created.reviewId, {
+      finalDecision: "Needs Revision",
+      rationale: "SOW is required before approval."
+    });
+
+    assert.equal(decision.reviewerDecision, "Needs Revision");
   } finally {
     cleanup();
   }

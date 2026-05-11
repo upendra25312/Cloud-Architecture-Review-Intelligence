@@ -224,12 +224,13 @@ Return scores from 0 to 100. Compute overallScore as a weighted score:
 - Documentation Completeness: 5%
 
 Decision bands:
-- 90-100: Approved
-- 75-89: Approved with Conditions
-- 50-74: Needs Revision
-- Below 50: Rejected
+- 80-100: Recommended for Approval only when SOW/scope evidence is present, visual evidence has been processed, evidence readiness is Ready for Review, and there are no unresolved High or Critical findings.
+- 70-79: Ready with Gaps.
+- 80-100 with missing SOW/scope, missing visual evidence, Ready with Gaps readiness, or non-blocking evidence gaps: Ready with Gaps.
+- Below 70, or any unresolved High or Critical finding: Needs Remediation.
+- Rejected only when the proposed architecture should not move forward in its current form or the evidence is too thin for a fair assessment.
 
-If any unresolved critical blocker exists, recommendation must be Needs Revision or Rejected even if the weighted score is higher.
+Never use Approved as an automated recommendation. Approved is a human reviewer decision only. If any unresolved High or Critical finding exists, recommendation must be Needs Remediation or Rejected even if the weighted score is higher.
 
 Microsoft Learn reference rules:
 - Every finding must have a non-empty learnMoreUrl on learn.microsoft.com.
@@ -292,7 +293,7 @@ Return only a valid JSON object in this exact shape:
     "missingEvidenceCount": 0,
     "confidenceLevel": "High|Medium|Low"
   },
-  "recommendation": "Approved|Approved with Conditions|Needs Revision|Rejected",
+  "recommendation": "Recommended for Approval|Ready with Gaps|Needs Remediation|Rejected",
   "nextActions": ["string - specific action with framework reference and owner type"]
 }
 
@@ -530,8 +531,14 @@ function parseSeverity(value) {
 
 function parseRecommendation(value) {
   const v = String(value ?? "").trim();
-  const valid = ["Approved", "Approved with Conditions", "Needs Revision", "Rejected"];
-  return valid.includes(v) ? v : "Needs Revision";
+  const legacyMap = {
+    "Approved": "Recommended for Approval",
+    "Approved with Conditions": "Ready with Gaps",
+    "Needs Revision": "Needs Remediation"
+  };
+  if (legacyMap[v]) return legacyMap[v];
+  const valid = ["Recommended for Approval", "Ready with Gaps", "Needs Remediation", "Rejected"];
+  return valid.includes(v) ? v : "Needs Remediation";
 }
 
 function parseAgentResponse(responseText) {
@@ -706,7 +713,7 @@ function buildFallbackAgentReview({ review, requirements, evidence, reason }) {
     ],
     scorecard: {
       overallScore: baseScore,
-      recommendation: "Needs Revision",
+      recommendation: "Needs Remediation",
       criticalBlockerCount: 0,
       missingEvidenceCount: missingEvidence.length,
       confidenceLevel: "Low",
@@ -723,7 +730,7 @@ function buildFallbackAgentReview({ review, requirements, evidence, reason }) {
       source: "agent",
       generatedAt: now
     },
-    recommendation: "Needs Revision"
+    recommendation: "Needs Remediation"
   };
 }
 

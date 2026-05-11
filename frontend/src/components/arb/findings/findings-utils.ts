@@ -86,7 +86,7 @@ export function generateSummary(
   }
 
   if (parts.length === 0) {
-    if (scorecard?.recommendation?.includes("Approved")) {
+    if (scorecard?.recommendation === "Recommended for Approval") {
       return "All findings addressed. Review is ready for sign-off.";
     }
     return "Review findings below and assign owners to open items.";
@@ -100,7 +100,7 @@ export function getScoreTone(
   score: number | null,
 ): "green" | "amber" | "red" {
   if (score === null) return "red";
-  if (score >= 85) return "green";
+  if (score >= 80) return "green";
   if (score >= 70) return "amber";
   return "red";
 }

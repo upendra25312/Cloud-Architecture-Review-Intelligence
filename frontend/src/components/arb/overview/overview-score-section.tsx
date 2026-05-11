@@ -12,16 +12,16 @@ export interface OverviewScoreSectionProps {
 
 function getGaugeClass(score: number | null): string {
   if (score === null) return styles.scoreGaugeNeutral;
-  if (score >= 85) return styles.scoreGaugeGreen;
+  if (score >= 80) return styles.scoreGaugeGreen;
   if (score >= 70) return styles.scoreGaugeAmber;
   return styles.scoreGaugeRed;
 }
 
 function getRecommendationBadgeClass(recommendation: string): string {
   const normalized = recommendation.trim().toLowerCase();
-  if (normalized.includes("approved")) return styles.recommendationBadgeGreen;
+  if (normalized.includes("recommended for approval")) return styles.recommendationBadgeGreen;
   if (normalized.includes("rejected")) return styles.recommendationBadgeRed;
-  if (normalized.includes("revision") || normalized.includes("improvement"))
+  if (normalized.includes("revision") || normalized.includes("remediation") || normalized.includes("improvement"))
     return styles.recommendationBadgeAmber;
   return styles.recommendationBadgeNeutral;
 }

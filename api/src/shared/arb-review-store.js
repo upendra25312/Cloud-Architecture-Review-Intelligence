@@ -1330,7 +1330,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
   const recommendationBadge = (rec) => {
     const r = String(rec || "").toLowerCase();
     let bg = "#FEF3C7"; let fg = "#B45309";
-    if (r === "approved") { bg = "#D1FAE5"; fg = "#065F46"; }
+    if (r === "recommended for approval") { bg = "#D1FAE5"; fg = "#065F46"; }
     else if (r === "rejected" || r.includes("reject")) { bg = "#FEE2E2"; fg = "#D92B2B"; }
     return `<span style="display:inline-block;padding:3px 14px;border-radius:12px;font-size:13px;font-weight:600;background:${bg};color:${fg};">${esc(rec)}</span>`;
   };
@@ -1345,7 +1345,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
 
   const scoreColor = (score) => {
     const n = Number(score);
-    if (n >= 85) return "#059669";
+    if (n >= 80) return "#059669";
     if (n >= 70) return "#B45309";
     return "#D92B2B";
   };
@@ -1894,7 +1894,7 @@ function buildDefaultReview(reviewId, principal, input = {}) {
     targetReviewDate: normalizeNullableString(input.targetReviewDate),
     notes: normalizeNullableString(input.notes),
     overallScore: Number.isFinite(Number(input.overallScore)) ? Number(input.overallScore) : null,
-    recommendation: String(input.recommendation ?? "").trim() || "Needs Revision",
+    recommendation: String(input.recommendation ?? "").trim() || "Needs Remediation",
     finalDecision: input.finalDecision ? String(input.finalDecision).trim() : null,
     requiredEvidencePresent: readiness.requiredEvidencePresent,
     recommendedEvidenceCoverage: readiness.recommendedEvidenceCoverage,
@@ -2378,21 +2378,28 @@ function buildDerivedScorecard(review, findings, decision) {
     (finding) => finding.criticalBlocker && isActiveFinding(finding)
   ).length;
 
-  let recommendation = "Needs Revision";
+  let recommendation = "Needs Remediation";
   let confidence = "Medium";
 
   const readiness = review.evidenceReadinessState;
-  if (readiness === "Insufficient Evidence" || overallScore < 55) {
-    recommendation = "Rejected";
+  const hasUnresolvedHigh = findings.some(
+    (finding) => finding.severity === "High" && isActiveFinding(finding)
+  );
+  const hasSowArtifact = Array.isArray(review.missingRequiredItems)
+    ? !review.missingRequiredItems.includes("sow")
+    : Boolean(review.requiredEvidencePresent);
+
+  if (readiness === "Insufficient Evidence") {
+    recommendation = "Ready with Gaps";
     confidence = "Low";
-  } else if (criticalBlockers > 0 || overallScore < 70) {
-    recommendation = "Needs Revision";
+  } else if (criticalBlockers > 0 || hasUnresolvedHigh || overallScore < 70) {
+    recommendation = "Needs Remediation";
     confidence = "Medium";
-  } else if (overallScore >= 85 && (readiness === "Ready for Review" || readiness === "Ready with Gaps")) {
-    recommendation = "Approved";
-    confidence = readiness === "Ready for Review" ? "High" : "Medium";
-  } else if (overallScore >= 70 && (readiness === "Ready for Review" || readiness === "Ready with Gaps")) {
-    recommendation = "Needs Revision";
+  } else if (overallScore >= 80 && readiness === "Ready for Review" && hasSowArtifact) {
+    recommendation = "Recommended for Approval";
+    confidence = "High";
+  } else if (overallScore >= 70) {
+    recommendation = "Ready with Gaps";
     confidence = "Medium";
   }
 
@@ -3809,10 +3816,25 @@ async function recordArbDecision(principal, reviewId, input = {}) {
   }
 
   const review = fromSummaryEntity(summaryEntity);
+  const requestedDecision = String(input.finalDecision ?? "").trim() || "Needs Revision";
+  const sowMissingForSignoff =
+    requestedDecision === "Approved" &&
+    (
+      review.requiredEvidencePresent === false ||
+      (Array.isArray(review.missingRequiredItems) && review.missingRequiredItems.includes("sow"))
+    );
+
+  if (sowMissingForSignoff) {
+    throw createHttpError(
+      400,
+      "Approved decisions require the SOW or scope document to be uploaded first, or a formal reviewer waiver to be recorded."
+    );
+  }
+
   const recordedAt = new Date().toISOString();
   const decision = {
     aiRecommendation: review.recommendation,
-    reviewerDecision: String(input.finalDecision ?? "").trim() || "Needs Revision",
+    reviewerDecision: requestedDecision,
     rationale:
       String(input.rationale ?? "").trim() ||
       "Decision recorded against the persisted ARB review.",

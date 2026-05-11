@@ -73,6 +73,10 @@ function getPostureActionHint(review: ArbReviewSummary) {
     return "Prioritize unresolved evidence gaps before final sign-off.";
   }
 
+  if (review.recommendation === "Needs Remediation") {
+    return "Resolve remediation findings before final sign-off.";
+  }
+
   if (review.workflowState === "Evidence Ready") {
     return "Evidence is staged. Run findings and verify domain score impact.";
   }
@@ -85,7 +89,7 @@ function getScoreClass(score: number | null | undefined) {
     return "arb-shell-score-pending";
   }
 
-  if (score >= 85) {
+  if (score >= 80) {
     return "arb-shell-score-good";
   }
 

@@ -213,7 +213,7 @@ function getDomainScorePercent(domainScore: ArbDomainScore) {
 }
 
 function getPercentTone(percent: number) {
-  if (percent >= 85) {
+  if (percent >= 80) {
     return "strong";
   }
 
@@ -227,11 +227,11 @@ function getPercentTone(percent: number) {
 function getRecommendationTone(recommendation: string) {
   const normalized = recommendation.trim().toLowerCase();
 
-  if (normalized.includes("approved")) {
+  if (normalized.includes("recommended for approval")) {
     return "approved";
   }
 
-  if (normalized.includes("rejected") || normalized.includes("improvement") || normalized.includes("revision")) {
+  if (normalized.includes("rejected") || normalized.includes("improvement") || normalized.includes("revision") || normalized.includes("remediation")) {
     return "attention";
   }
 
@@ -247,8 +247,8 @@ function getScoreBandLabel(score: number | null) {
     return "Awaiting score";
   }
 
-  if (score >= 85) {
-    return "Board-ready";
+  if (score >= 80) {
+    return "Meets approval threshold";
   }
 
   if (score >= 70) {
@@ -300,6 +300,9 @@ export function ArbLiveReviewStep(props: {
   const [deleteFileError, setDeleteFileError] = useState<string | null>(null);
   const actionSummary = summarizeActions(actions);
   const authRequired = error?.includes("Sign in is required") ?? false;
+  const sowMissingForSignoff = Boolean(
+    review?.missingRequiredItems?.includes("sow") || review?.requiredEvidencePresent === false
+  );
 
   let decisionGateMessage: string | null = null;
 
@@ -312,6 +315,9 @@ export function ArbLiveReviewStep(props: {
   } else if (decisionChoice === "Approved" && actionSummary.openCount > 0) {
     decisionGateMessage =
       "Approved decisions require all remediation actions to be closed first. Use Needs Revision while open actions remain.";
+  } else if (decisionChoice === "Approved" && sowMissingForSignoff) {
+    decisionGateMessage =
+      "Approved decisions require the SOW or scope document to be uploaded first, or a formal reviewer waiver to be recorded outside this decision.";
   }
 
   function updateLocalFinding(findingId: string, updater: (current: ArbFinding) => ArbFinding) {
@@ -328,7 +334,7 @@ export function ArbLiveReviewStep(props: {
     );
   }
 
-  async function handleFileUpload(fileList: FileList | null) {
+  async function handleFileUpload(fileList: FileList | null, logicalCategory?: string) {
     if (!fileList || fileList.length === 0) {
       return;
     }
@@ -361,7 +367,8 @@ export function ArbLiveReviewStep(props: {
 
       const payload = await uploadArbFiles({
         reviewId,
-        files
+        files,
+        logicalCategory
       });
 
       setUploadedFiles(payload.files);
@@ -796,13 +803,12 @@ export function ArbLiveReviewStep(props: {
           <div className="board-card-head">
             <div className="board-card-head-copy">
               <p className="board-card-subtitle">Upload documents</p>
-              <h2 className="section-title">Add your design documents, SOW, and supporting material</h2>
+              <h2 className="section-title">Add SOW and design evidence</h2>
             </div>
           </div>
 
           <p className="section-copy">
-            Drag files here or click to select. These documents will be assessed against
-            WAF, CAF, ALZ, HA/DR, Security, Networking, and Monitoring frameworks.
+            Upload design evidence to run analysis. Upload the SOW or scope document before human approval or record a reviewer waiver.
           </p>
 
           <div className="pill-row">
@@ -813,29 +819,48 @@ export function ArbLiveReviewStep(props: {
             ))}
           </div>
 
-          <label htmlFor={`arb-upload-${reviewId}`} className="arb-upload-label">
+          <div className="button-row" style={{ gap: 12, flexWrap: "wrap" }}>
+          <label htmlFor={`arb-upload-sow-${reviewId}`} className="arb-upload-label">
             <span className="arb-upload-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4a2 2 0 0 1 2-2h4.586a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4Z" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M10 2v5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M8 13l2-2 2 2M10 11v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
-            <span>Upload Architecture Docs</span>
+            <span>Upload SOW / Scope</span>
             <input
-              id={`arb-upload-${reviewId}`}
+              id={`arb-upload-sow-${reviewId}`}
               className="field-input"
-              aria-label="Upload architecture review documents"
+              aria-label="Upload statement of work or scope documents"
+              type="file"
+              multiple
+              accept=".pdf,.doc,.docx,.rtf,.odt,.txt,.md,.markdown"
+              style={{ display: 'none' }}
+              onChange={(event) => {
+                void handleFileUpload(event.target.files, "sow");
+                event.currentTarget.value = "";
+              }}
+            />
+          </label>
+          <label htmlFor={`arb-upload-design-${reviewId}`} className="arb-upload-label">
+            <span className="arb-upload-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4a2 2 0 0 1 2-2h4.586a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4Z" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M10 2v5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M8 13l2-2 2 2M10 11v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+            <span>Upload Design Documents</span>
+            <input
+              id={`arb-upload-design-${reviewId}`}
+              className="field-input"
+              aria-label="Upload architecture design documents and diagrams"
               type="file"
               multiple
               accept={SUPPORTED_ARB_UPLOAD_EXTENSIONS.join(",")}
               style={{ display: 'none' }}
               onChange={(event) => {
-                void handleFileUpload(event.target.files);
+                void handleFileUpload(event.target.files, "design_doc");
                 event.currentTarget.value = "";
               }}
             />
           </label>
+          </div>
           <div className="arb-upload-helper-text" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
-            Accepted: PDF, DOCX, PPTX, XLSX, images, diagrams, Markdown, and more.
+            Accepted for analysis: PDF, DOCX, PPTX, XLSX, images, diagrams, Markdown, and text.
             Max per file: {formatFileSize(MAX_ARB_UPLOAD_FILE_SIZE)} · Max total upload: {formatFileSize(
               MAX_ARB_UPLOAD_TOTAL_SIZE
             )}.
-            Convert legacy .ppt to .pptx before starting review extraction.
+            ZIP files can be stored, but archive contents are not analyzed yet. Upload the actual files directly.
           </div>
           {uploadSaving ? (
             <p className="arb-upload-status arb-upload-status-progress">Uploading files…</p>

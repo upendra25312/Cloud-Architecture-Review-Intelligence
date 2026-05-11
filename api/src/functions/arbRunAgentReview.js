@@ -16,6 +16,7 @@ const { runDeterministicRules } = require("../shared/arb-rules-engine");
 const { getTableClient, ARB_REVIEW_TABLE_NAME, encodeTableKey } = require("../shared/table-storage");
 
 const ARBJOBS_TABLE_NAME = "arbjobs";
+const RECOMMENDED_APPROVAL_SCORE = 80;
 
 async function getJobsClient() {
   return getTableClient(ARBJOBS_TABLE_NAME);
@@ -64,6 +65,53 @@ function getRowKey(baseKey, userId) {
 
 function getPartitionKey(reviewId) {
   return encodeTableKey(reviewId);
+}
+
+function isActiveFinding(finding) {
+  return finding?.status !== "Closed" && finding?.status !== "Not Applicable";
+}
+
+function hasSowArtifact(files, review) {
+  const uploadedSow = files.some((file) => String(file.logicalCategory ?? "").toLowerCase() === "sow");
+  if (uploadedSow) return true;
+
+  const missingRequired = Array.isArray(review.missingRequiredItems) ? review.missingRequiredItems : [];
+  return Boolean(review.requiredEvidencePresent) && !missingRequired.includes("sow");
+}
+
+function deriveGovernedRecommendation({ review, files, findings, scorecard, visualEvidence }) {
+  const overallScore = Number(scorecard?.overallScore);
+  const activeFindings = Array.isArray(findings) ? findings.filter(isActiveFinding) : [];
+  const unresolvedCritical = activeFindings.filter(
+    (finding) => finding.criticalBlocker || finding.severity === "Critical"
+  ).length;
+  const unresolvedHigh = activeFindings.filter((finding) => finding.severity === "High").length;
+  const sowPresent = hasSowArtifact(files, review);
+  const visualEvidenceProcessed = Array.isArray(visualEvidence) && visualEvidence.length > 0;
+  const readiness = review.evidenceReadinessState;
+
+  if (!Number.isFinite(overallScore)) {
+    return "Needs Remediation";
+  }
+
+  if (readiness === "Insufficient Evidence") {
+    return "Ready with Gaps";
+  }
+
+  if (unresolvedCritical > 0 || unresolvedHigh > 0 || overallScore < 70) {
+    return "Needs Remediation";
+  }
+
+  if (
+    overallScore >= RECOMMENDED_APPROVAL_SCORE &&
+    readiness === "Ready for Review" &&
+    sowPresent &&
+    visualEvidenceProcessed
+  ) {
+    return "Recommended for Approval";
+  }
+
+  return "Ready with Gaps";
 }
 
 async function runReviewPipeline({ principal, reviewId, traceId, log }) {
@@ -141,6 +189,18 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
         ...ruleBlockers
       ].filter((v, i, a) => a.indexOf(v) === i);
     }
+  }
+
+  if (agentResult.scorecard) {
+    const governedRecommendation = deriveGovernedRecommendation({
+      review,
+      files,
+      findings: agentResult.findings ?? [],
+      scorecard: agentResult.scorecard,
+      visualEvidence: visualEvidenceList
+    });
+    agentResult.scorecard.recommendation = governedRecommendation;
+    agentResult.recommendation = governedRecommendation;
   }
 
   log("Agent succeeded", {
@@ -364,4 +424,4 @@ app.http("arbAgentStatus", {
   handler: handleArbAgentStatus
 });
 
-module.exports = { handleArbRunAgentReview, handleArbAgentStatus };
+module.exports = { handleArbRunAgentReview, handleArbAgentStatus, deriveGovernedRecommendation };
