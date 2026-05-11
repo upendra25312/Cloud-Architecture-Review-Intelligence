@@ -1,8 +1,8 @@
 export const SUPPORTED_ARB_UPLOAD_EXTENSIONS = [
-  ".pdf", ".doc", ".docx", ".rtf", ".odt",
-  ".ppt", ".pptx", ".odp",
-  ".xls", ".xlsx", ".csv", ".ods",
-  ".drawio", ".draw.io", ".vsdx", ".svg", ".svgz",
+  ".pdf", ".docx",
+  ".pptx",
+  ".xlsx", ".csv",
+  ".drawio", ".draw.io", ".vsdx",
   ".excalidraw", ".mmd", ".mermaid", ".puml", ".plantuml",
   ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff",
   ".txt", ".md", ".markdown", ".html", ".htm",
@@ -11,6 +11,16 @@ export const SUPPORTED_ARB_UPLOAD_EXTENSIONS = [
   ".proto", ".graphql", ".gql", ".wsdl", ".xsd",
   ".ipynb",
   ".zip"
+] as const;
+
+export const SUPPORTED_ARB_SOW_EXTENSIONS = [
+  ".pdf",
+  ".docx",
+  ".txt",
+  ".md",
+  ".markdown",
+  ".html",
+  ".htm"
 ] as const;
 
 export const SUPPORTED_ARB_ANALYZE_EXTENSIONS = [

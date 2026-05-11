@@ -46,7 +46,10 @@ import type {
 import { ArbPlaceholderPage } from "@/components/arb/placeholder-page";
 import { ArbReviewShell } from "@/components/arb/review-shell";
 import { EvidenceGuidancePanel } from "@/components/arb/evidence-guidance";
-import { SUPPORTED_ARB_UPLOAD_EXTENSIONS } from "@/components/arb/upload-extensions";
+import {
+  SUPPORTED_ARB_SOW_EXTENSIONS,
+  SUPPORTED_ARB_UPLOAD_EXTENSIONS
+} from "@/components/arb/upload-extensions";
 import { SeverityBadge } from "@/components/severity-badge";
 
 function buildBullets(
@@ -829,7 +832,7 @@ export function ArbLiveReviewStep(props: {
               aria-label="Upload statement of work or scope documents"
               type="file"
               multiple
-              accept=".pdf,.doc,.docx,.rtf,.odt,.txt,.md,.markdown"
+              accept={SUPPORTED_ARB_SOW_EXTENSIONS.join(",")}
               style={{ display: 'none' }}
               onChange={(event) => {
                 void handleFileUpload(event.target.files, "sow");
@@ -873,7 +876,7 @@ export function ArbLiveReviewStep(props: {
           </label>
           </div>
           <div className="arb-upload-helper-text" style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
-            Accepted for analysis: PDF, DOCX, PPTX, XLSX, images, diagrams, Markdown, and text.
+            Accepted for processing and analysis: PDF, DOCX, PPTX, XLSX, CSV, PNG/JPG/JPEG/GIF/WEBP/BMP/TIFF images, Draw.io, VSDX, Mermaid/PlantUML, Markdown, text, JSON, XML, YAML, IaC/config, scripts, API schemas, notebooks, and ZIP evidence packages.
             Max per file: {formatFileSize(MAX_ARB_UPLOAD_FILE_SIZE)} · Max total upload: {formatFileSize(
               MAX_ARB_UPLOAD_TOTAL_SIZE
             )}.
