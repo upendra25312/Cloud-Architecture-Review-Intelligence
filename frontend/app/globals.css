@@ -4264,8 +4264,113 @@ button.chip:disabled:hover {
   border-radius: 0 6px 6px 0;
 }
 
+.arb-decision-workspace {
+  grid-template-columns: minmax(0, 1.65fr) minmax(340px, 0.85fr);
+  align-items: start;
+}
+
+.arb-decision-readiness-grid,
+.arb-decision-checkpoint-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.arb-decision-readiness-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.arb-decision-checkpoint-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.arb-decision-metric,
+.arb-decision-checkpoint,
+.arb-decision-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.78);
+}
+
+.arb-decision-metric,
+.arb-decision-checkpoint {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+}
+
+.arb-decision-metric strong,
+.arb-decision-checkpoint strong {
+  font-size: 1.02rem;
+  line-height: 1.35;
+}
+
+.arb-decision-metric p,
+.arb-decision-checkpoint p {
+  margin: 0;
+}
+
+.arb-decision-metric-risk strong {
+  color: #B91C1C;
+}
+
+.arb-decision-metric-warning strong {
+  color: #B45309;
+}
+
+.arb-decision-section {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.arb-decision-section-title {
+  margin: 2px 0 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.arb-decision-condition-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.arb-decision-condition-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.arb-decision-condition-list li:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.arb-decision-condition-list strong {
+  display: block;
+  line-height: 1.35;
+}
+
+.arb-decision-condition-list p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
 [data-theme="dark"] .arb-decision-gate-banner {
   background: rgba(245, 158, 11, 0.1);
+}
+
+[data-theme="dark"] .arb-decision-metric,
+[data-theme="dark"] .arb-decision-checkpoint,
+[data-theme="dark"] .arb-decision-section {
+  background: rgba(18, 28, 40, 0.78);
 }
 
 .arb-shell-posture-note {

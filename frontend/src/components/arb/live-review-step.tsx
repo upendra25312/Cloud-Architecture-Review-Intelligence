@@ -1224,6 +1224,36 @@ export function ArbLiveReviewStep(props: {
     const checkpointOwnerLabel =
       decisionResult?.reviewerName || shellReview.assignedReviewer || decisionReviewerName || "Unassigned";
     const checkpointRoleLabel = decisionResult?.reviewerRole || decisionReviewerRole || "Role not captured";
+    const actionableFindings = findings.filter((finding) => !finding.findingId.startsWith("fallback-"));
+    const unresolvedFindings = actionableFindings.filter((finding) => !["Accepted", "Resolved"].includes(finding.status));
+    const highRiskFindings = unresolvedFindings.filter((finding) =>
+      ["Critical", "High"].includes(finding.severity)
+    );
+    const topDecisionFindings = [...highRiskFindings, ...unresolvedFindings]
+      .filter((finding, index, list) => list.findIndex((candidate) => candidate.findingId === finding.findingId) === index)
+      .slice(0, 5);
+    const decisionReadinessItems = [
+      {
+        label: "Derived recommendation",
+        value: scorecard?.recommendation || shellReview.recommendation || "Pending",
+        tone: shellReview.recommendation === "Needs Remediation" ? "risk" : "neutral"
+      },
+      {
+        label: "Evidence readiness",
+        value: shellReview.evidenceReadinessState,
+        tone: shellReview.evidenceReadinessState === "Insufficient Evidence" ? "risk" : "neutral"
+      },
+      {
+        label: "Score",
+        value: scorecard?.overallScore != null ? `${scorecard.overallScore}/100` : shellReview.overallScore != null ? `${shellReview.overallScore}/100` : "Pending",
+        tone: (scorecard?.overallScore ?? shellReview.overallScore ?? 0) >= 70 ? "warning" : "risk"
+      },
+      {
+        label: "Open findings",
+        value: String(unresolvedFindings.length),
+        tone: unresolvedFindings.length > 0 ? "risk" : "neutral"
+      }
+    ];
 
     return (
       <div className="arb-page-stack">
@@ -1233,7 +1263,7 @@ export function ArbLiveReviewStep(props: {
             <p className="section-copy">{decisionGateMessage}</p>
           </section>
         ) : null}
-        <div className="arb-decision-grid">
+        <div className="arb-decision-grid arb-decision-workspace">
           <section className="surface-panel arb-summary-card">
             <div className="board-card-head">
               <div className="board-card-head-copy">
@@ -1241,49 +1271,77 @@ export function ArbLiveReviewStep(props: {
                 <h2 className="section-title">Review status before sign-off</h2>
               </div>
             </div>
-            <div className="arb-summary-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 16 }}>
-              <article className="future-card">
+            <div className="arb-decision-readiness-grid">
+              {decisionReadinessItems.map((item) => (
+                <article key={item.label} className={`arb-decision-metric arb-decision-metric-${item.tone}`}>
+                  <p className="board-card-subtitle">{item.label}</p>
+                  <strong>{item.value}</strong>
+                </article>
+              ))}
+            </div>
+            <div className="arb-decision-checkpoint-grid">
+              <article className="arb-decision-checkpoint">
                 <p className="board-card-subtitle">Decision state</p>
                 <strong>{decisionStatusLabel}</strong>
               </article>
-              <article className="future-card">
+              <article className="arb-decision-checkpoint">
                 <p className="board-card-subtitle">Checkpoint owner</p>
                 <strong>{checkpointOwnerLabel}</strong>
                 <p>{checkpointRoleLabel}</p>
               </article>
-              <article className="future-card">
+              <article className="arb-decision-checkpoint">
                 <p className="board-card-subtitle">Target review date</p>
                 <strong>{shellReview.targetReviewDate ?? "Not scheduled"}</strong>
               </article>
-              <article className="future-card">
-                <p className="board-card-subtitle">Open actions</p>
-                <strong style={{ color: actionSummary.openCount > 0 ? "var(--warning)" : undefined }}>{actionSummary.openCount}</strong>
-              </article>
-              <article className="future-card">
-                <p className="board-card-subtitle">Blocked actions</p>
-                <strong style={{ color: actionSummary.blockedCount > 0 ? "var(--error)" : undefined }}>{actionSummary.blockedCount}</strong>
-              </article>
-              <article className="future-card">
-                <p className="board-card-subtitle">Needs verification</p>
-                <strong style={{ color: actionSummary.reviewerVerificationCount > 0 ? "var(--warning)" : undefined }}>{actionSummary.reviewerVerificationCount}</strong>
-              </article>
-              <article className="future-card">
+              <article className="arb-decision-checkpoint">
                 <p className="board-card-subtitle">Recorded checkpoint</p>
                 <strong>{recordedAtLabel}</strong>
               </article>
             </div>
-            <p className="section-copy" style={{ marginBottom: 8 }}>The derived recommendation is advisory. Your recorded decision below is the binding outcome for this review.</p>
-            {actionSummary.openActions.length > 0 ? (
-              <ul className="arb-checklist">
-                {actionSummary.openActions.map((action) => (
-                  <li key={action.actionId}>
-                    {action.actionSummary} ({action.status})
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No open actions remain for this review.</p>
-            )}
+
+            <section className="arb-decision-section">
+              <div>
+                <p className="board-card-subtitle">Required reviewer attention</p>
+                <h3 className="arb-decision-section-title">Conditions before final approval</h3>
+              </div>
+              {topDecisionFindings.length > 0 ? (
+                <ul className="arb-decision-condition-list">
+                  {topDecisionFindings.map((finding) => (
+                    <li key={finding.findingId}>
+                      <div>
+                        <strong>{finding.title}</strong>
+                        <p>{finding.domain} · {finding.severity} · {finding.status}</p>
+                      </div>
+                      <a href={getArbStepHref(reviewId, "findings")} className="arb-inline-link">
+                        Review finding
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="section-copy">No unresolved findings are currently blocking reviewer sign-off.</p>
+              )}
+            </section>
+
+            <section className="arb-decision-section">
+              <div>
+                <p className="board-card-subtitle">Remediation actions</p>
+                <h3 className="arb-decision-section-title">Open action checkpoint</h3>
+              </div>
+              {actionSummary.openActions.length > 0 ? (
+                <ul className="arb-checklist">
+                  {actionSummary.openActions.map((action) => (
+                    <li key={action.actionId}>
+                      {action.actionSummary} ({action.status})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="section-copy">No action records are open. Findings may still need remediation before approval.</p>
+              )}
+            </section>
+
+            <p className="section-copy">The derived recommendation is advisory. The recorded decision is the binding outcome for this review.</p>
             {decisionResult ? (
               <div className="trace-card arb-summary-card arb-decision-recorded">
                 <p className="board-card-subtitle">Decision recorded</p>
