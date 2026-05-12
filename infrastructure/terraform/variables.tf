@@ -84,3 +84,14 @@ variable "github_actions_principal_id" {
   type        = string
   default     = ""
 }
+
+variable "use_durable_orchestration" {
+  description = "Feature flag for Durable Functions orchestration routing (ON, OFF, or DRAIN)"
+  type        = string
+  default     = "OFF"
+
+  validation {
+    condition     = contains(["ON", "OFF", "DRAIN"], var.use_durable_orchestration)
+    error_message = "use_durable_orchestration must be one of: ON, OFF, DRAIN"
+  }
+}

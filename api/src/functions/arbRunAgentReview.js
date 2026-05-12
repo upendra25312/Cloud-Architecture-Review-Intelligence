@@ -1,5 +1,6 @@
 const crypto = require("node:crypto");
 const { app } = require("@azure/functions");
+const df = require("durable-functions");
 const { jsonResponse, requireAuthenticated } = require("../shared/auth");
 const {
   getArbReview,
@@ -14,6 +15,8 @@ const { searchArbDocuments, ensureArbSearchIndex } = require("../shared/arb-sear
 const { runArbAgentReview, getFoundryConfiguration, buildFallbackAgentReview } = require("../shared/arb-foundry-agent");
 const { runDeterministicRules } = require("../shared/arb-rules-engine");
 const { getTableClient, ARB_REVIEW_TABLE_NAME, encodeTableKey } = require("../shared/table-storage");
+const { shouldUseDurable } = require("../durable/shared/featureFlag");
+const { computeInstanceId } = require("../durable/shared/instanceId");
 
 const ARBJOBS_TABLE_NAME = "arbjobs";
 const RECOMMENDED_APPROVAL_SCORE = 80;
@@ -331,6 +334,74 @@ async function handleArbRunAgentReview(request, context) {
     context.log(JSON.stringify({ traceId, reviewId, msg, ...extra }));
   }
 
+  // ─── Feature flag branch: route to Durable Functions orchestration ───
+  // When USE_DURABLE_ORCHESTRATION=ON, start a durable orchestration instead
+  // of running the fire-and-forget pipeline inline. The orchestration writes
+  // status to `arbjobs` (via the writeArbJobStatus activity) so the existing
+  // GET /agent-status polling endpoint continues to work unchanged.
+  if (shouldUseDurable()) {
+    try {
+      const client = df.getClient(context);
+      const instanceId = computeInstanceId("review", reviewId, userId);
+
+      // If an orchestration is already running/pending for this (review, user),
+      // return its current status rather than starting a duplicate.
+      const existingStatus = await client.getStatus(instanceId);
+      if (
+        existingStatus &&
+        (existingStatus.runtimeStatus === "Running" ||
+          existingStatus.runtimeStatus === "Pending")
+      ) {
+        const existingInput = existingStatus.input && typeof existingStatus.input === "object"
+          ? existingStatus.input
+          : {};
+        return jsonResponse(200, {
+          reviewId,
+          traceId: existingInput.traceId ?? traceId,
+          status: "running",
+          startedAt: existingStatus.createdTime
+            ? new Date(existingStatus.createdTime).toISOString()
+            : new Date().toISOString(),
+          message: "Assessment is already in progress. Poll the status endpoint."
+        });
+      }
+
+      const startedAt = new Date().toISOString();
+
+      // Seed the arbjobs row with the running state so polling works immediately,
+      // even before the orchestrator's first checkpoint.
+      await writeJob(reviewId, userId, {
+        status: "running",
+        traceId,
+        startedAt,
+        completedAt: null,
+        resultJson: null,
+        error: null
+      });
+
+      await client.startNew("orchestratorAgentReview", {
+        instanceId,
+        input: { reviewId, principal: auth.principal, traceId }
+      });
+
+      log("Durable orchestration started", { instanceId });
+
+      return jsonResponse(202, {
+        reviewId,
+        traceId,
+        status: "running",
+        startedAt,
+        message: "Assessment started. Poll /api/arb/reviews/{reviewId}/agent-status for progress."
+      });
+    } catch (err) {
+      log("Durable orchestration start failed", {
+        error: err instanceof Error ? err.message : String(err)
+      });
+      return jsonResponse(503, { error: "Unable to start assessment." });
+    }
+  }
+
+  // ─── Legacy path (USE_DURABLE_ORCHESTRATION=OFF or DRAIN) ───
   // If a job is already running for this review, return its status (survives restarts + multi-instance)
   const existing = await readJob(reviewId, userId);
   if (existing && existing.status === "running") {
@@ -370,7 +441,10 @@ async function handleArbRunAgentReview(request, context) {
 }
 
 // ─── GET handler: returns current job status ───
+// NOTE: Both legacy (fire-and-forget) and durable (via writeArbJobStatus activity)
+// paths write to arbjobs, so this status endpoint works unchanged for both.
 async function handleArbAgentStatus(request, context) {
+  // Works for both legacy and durable paths — both write to arbjobs table
   const auth = requireAuthenticated(request);
   if (auth.response) return auth.response;
 
@@ -414,6 +488,7 @@ app.http("arbRunAgentReview", {
   route: "arb/reviews/{reviewId}/run-agent-review",
   methods: ["POST"],
   authLevel: "anonymous",
+  extraInputs: [df.input.durableClient()],
   handler: handleArbRunAgentReview
 });
 
