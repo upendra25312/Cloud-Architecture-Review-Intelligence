@@ -16,6 +16,7 @@
     "@azure/functions": "^4.14.0",
     "@azure/identity": "^4.13.0",
     "@azure/storage-blob": "^12.28.0",
+    "durable-functions": "^3.0.0",
     "exceljs": "^4.4.0",
     "jszip": "^3.10.1",
     "parse-multipart-data": "^1.5.0"

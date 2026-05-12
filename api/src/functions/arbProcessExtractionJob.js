@@ -4,6 +4,7 @@ const {
   markArbExtractionFailed,
   startArbExtraction
 } = require("../shared/arb-review-store");
+const { shouldUseDurable } = require("../durable/shared/featureFlag");
 
 function parseQueueMessage(message) {
   if (!message) {
@@ -22,6 +23,19 @@ function parseQueueMessage(message) {
 }
 
 async function handleArbProcessExtractionJob(message, context) {
+  // ─── Feature flag short-circuit ───
+  // When USE_DURABLE_ORCHESTRATION=ON, the HTTP handler (arbStartExtraction)
+  // starts the durable orchestration directly and does NOT enqueue a queue
+  // message. Any queue messages arriving here while the flag is ON are
+  // residual drops from the legacy pre-flag-flip period. Skip them to avoid
+  // double-processing the same extraction.
+  if (shouldUseDurable()) {
+    context.log(
+      "USE_DURABLE_ORCHESTRATION=ON — skipping legacy queue-driven extraction."
+    );
+    return;
+  }
+
   try {
     const payload = parseQueueMessage(message);
     const reviewId = payload?.reviewId;

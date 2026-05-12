@@ -72,6 +72,9 @@ resource "azurerm_linux_function_app" "main" {
 
     # Foundry Agent ID — only secret; stored in Key Vault
     "FOUNDRY_AGENT_ID" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.main.vault_uri}secrets/foundry-agent-id/)"
+
+    # Durable Functions feature flag (ON, OFF, DRAIN)
+    "USE_DURABLE_ORCHESTRATION" = var.use_durable_orchestration
   }
 
   tags = azurerm_resource_group.main.tags
