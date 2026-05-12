@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ArbFindingsPage } from "@/components/arb/findings/arb-findings-page";
 
 type PageProps = {
@@ -13,5 +14,9 @@ export function generateStaticParams() {
 export default async function Page({ params }: PageProps) {
   const { reviewId } = await params;
 
-  return <ArbFindingsPage reviewId={reviewId} />;
+  return (
+    <Suspense fallback={<div className="arb-loading-skeleton"><p>Loading findings…</p></div>}>
+      <ArbFindingsPage reviewId={reviewId} />
+    </Suspense>
+  );
 }
