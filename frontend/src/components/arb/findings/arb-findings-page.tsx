@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   createArbExport,
   createArbAction,
@@ -30,6 +31,14 @@ import { FindingDetailPanel } from "./finding-detail-panel";
 import styles from "./arb-findings-page.module.css";
 
 export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
+  const searchParams = useSearchParams();
+  
+  // Read domain filter from URL query parameter (e.g., ?domain=Security)
+  const initialDomainFilter = useMemo(() => {
+    const domain = searchParams.get("domain");
+    return domain ? new Set([domain]) : new Set<string>();
+  }, [searchParams]);
+
   const [review, setReview] = useState<ArbReviewSummary | null>(null);
   const [findings, setFindings] = useState<ArbFinding[]>([]);
   const [actions, setActions] = useState<ArbAction[]>([]);
@@ -37,7 +46,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
   const [selectedFindingId, setSelectedFindingId] = useState<string | null>(null);
   const [filters, setFilters] = useState<FindingsFilterState>({
     severities: new Set(),
-    domains: new Set(),
+    domains: initialDomainFilter,
     statuses: new Set(),
   });
   const [loading, setLoading] = useState(true);
@@ -98,6 +107,17 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
       return nonFallback[0]?.findingId ?? null;
     });
   }, [findings]);
+
+  // ── Sync domain filter from URL query parameter ────────────────────
+  useEffect(() => {
+    const domain = searchParams.get("domain");
+    if (domain) {
+      setFilters((prev) => ({
+        ...prev,
+        domains: new Set([domain]),
+      }));
+    }
+  }, [searchParams]);
 
   // ── Handlers ───────────────────────────────────────────────────────
   async function handleSaveFinding(finding: ArbFinding) {
