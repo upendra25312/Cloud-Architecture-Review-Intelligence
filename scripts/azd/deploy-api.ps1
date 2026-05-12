@@ -1,5 +1,5 @@
 param(
-  [int]$MinimumFunctionCount = 40
+  [int]$MinimumFunctionCount = 0
 )
 
 Set-StrictMode -Version Latest
@@ -31,6 +31,16 @@ function Get-TerraformOutput([string]$Name) {
 $resourceGroup = Get-TerraformOutput -Name "resource_group_name"
 $functionAppName = Get-TerraformOutput -Name "function_app_name"
 $functionAppUrl = Get-TerraformOutput -Name "function_app_url"
+
+if ($MinimumFunctionCount -le 0) {
+  $configuredThreshold = $env:CARI_MIN_FUNCTION_COUNT
+  if (-not [string]::IsNullOrWhiteSpace($configuredThreshold) -and $configuredThreshold -as [int]) {
+    $MinimumFunctionCount = [int]$configuredThreshold
+  }
+  else {
+    $MinimumFunctionCount = 40
+  }
+}
 
 Write-Info "Installing API dependencies and running tests..."
 Push-Location $ApiDir
