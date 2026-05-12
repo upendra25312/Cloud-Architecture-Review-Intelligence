@@ -30,7 +30,10 @@ If you are new to the repository, use the following reading order:
 4. [`arb-implementation-test-validation-guide.md`](./arb-implementation-test-validation-guide.md)  
    Use this for implementation and validation guidance tied to testing and operational readiness.
 
-5. [`../services/office-renderer/README.md`](../services/office-renderer/README.md)  
+5. [`azd-up-down-deployment-plan.md`](./azd-up-down-deployment-plan.md)  
+   Use this for the Azure Developer CLI deployment plan and engineer runbook for `azd up` / `azd down`.
+
+6. [`../services/office-renderer/README.md`](../services/office-renderer/README.md)  
    Review this for the deployed Office native-shape rendering service used by the visual evidence pre-processor.
 
 ## Current key documents
@@ -41,7 +44,11 @@ If you are new to the repository, use the following reading order:
 
 ### Implementation and validation
 - [`arb-implementation-test-validation-guide.md`](./arb-implementation-test-validation-guide.md)
+- [`azd-up-down-deployment-plan.md`](./azd-up-down-deployment-plan.md)
 - [`../services/office-renderer/README.md`](../services/office-renderer/README.md)
+
+### Deployment
+- [`azd-up-down-deployment-plan.md`](./azd-up-down-deployment-plan.md) documents the target Azure Developer CLI path for deploying CARI with `azd up` and destroying non-production environments with `azd down --purge`.
 
 ### Visual evidence and rendering
 - Visual evidence pre-processor: implemented in the Azure Functions API extraction pipeline.

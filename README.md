@@ -24,6 +24,7 @@ Cloud Architecture Review Intelligence (CARI) is a professional solution acceler
 - [Architecture Overview](#architecture-overview)
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
+- [Single-Command Azure Deployment](#single-command-azure-deployment)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [License](#license)
@@ -243,12 +244,35 @@ Key configuration settings:
 
 ---
 
+## Single-Command Azure Deployment
+
+CARI is being prepared for a full Azure Developer CLI deployment path where a cloud engineer can provision and deploy the complete solution with:
+
+```bash
+azd up
+```
+
+and tear down a non-production environment with:
+
+```bash
+azd down --purge
+```
+
+The target `azd up` flow provisions Azure infrastructure with Terraform, deploys the Azure Functions API, deploys the Next.js frontend to Azure Static Web Apps, builds and deploys the Office renderer to Azure Container Apps, configures Function App settings, and runs smoke tests.
+
+Use GitHub Actions for the current production/live deployment path. Use the AZD plan for dev, demo, onboarding, and clean rebuild environments until the AZD path is fully validated.
+
+See [CARI Single-Command Azure Deployment Plan](./docs/azd-up-down-deployment-plan.md) for the engineer runbook, prerequisites, architecture mapping, required repository changes, validation gates, and teardown guidance.
+
+---
+
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
 | [Wiki Home](https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/wiki) | Implementation guide and operational documentation |
 | [Architecture Overview](./ARCHITECTURE.md) | Detailed architecture documentation |
+| [AZD Deployment Plan](./docs/azd-up-down-deployment-plan.md) | Plan and runbook for `azd up` / `azd down` deployment |
 | [Solution Plan](./docs/arb-foundry-agents-solution-plan.md) | Architecture decisions and cost model |
 | [Implementation Guide](./docs/arb-implementation-test-validation-guide.md) | Deployment and validation procedures |
 | [Durable Functions Runbook](./docs/durable-functions-rollback-runbook.md) | Operational procedures for workflow orchestration |
