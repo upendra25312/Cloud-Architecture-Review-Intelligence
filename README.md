@@ -7,582 +7,318 @@
 [![Infrastructure: Azure](https://img.shields.io/badge/infrastructure-Azure%20IaC-0078D4?logo=microsoftazure)](./infrastructure)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-339933?logo=nodedotjs)](https://nodejs.org/)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/actions)
 
-Cloud Architecture Review Intelligence is a professional solution accelerator for organizations that need to assess cloud architectures with greater **speed**, **consistency**, and **governance rigor**. It combines **Azure-native application architecture**, **AI-assisted review workflows**, **document intelligence**, **search**, **observability**, and **deterministic validation patterns** to support architecture review boards, cloud centers of excellence, platform engineering teams, and enterprise solution architects.
+Cloud Architecture Review Intelligence (CARI) is a professional solution accelerator for organizations that need to assess cloud architectures with greater **speed**, **consistency**, and **governance rigor**. It combines **Azure-native application architecture**, **AI-assisted review workflows**, **document intelligence**, **search**, **observability**, and **deterministic validation patterns** to support architecture review boards, cloud centers of excellence, platform engineering teams, and enterprise solution architects.
 
-This repository is documented in a **Microsoft-style enterprise architecture format** because that is the most appropriate positioning for the solution: it communicates strategic value, technical credibility, implementation clarity, and operational maturity for engineering teams, enterprise stakeholders, and pre-sales conversations.
+**Live Platform:** [https://red-coast-0b2d8700f.7.azurestaticapps.net/arb](https://red-coast-0b2d8700f.7.azurestaticapps.net/arb)
+
+---
 
 ## Table of Contents
-- [Executive summary](#executive-summary)
-- [Business value](#business-value)
-- [Current deployed platform](#current-deployed-platform)
-- [What the platform does](#what-the-platform-does)
-- [Core capabilities](#core-capabilities)
-- [Visual evidence pre-processor](#visual-evidence-pre-processor)
-- [Reference architecture](#reference-architecture)
-- [Architecture diagram](#architecture-diagram)
-- [Deployed Azure resource footprint](#deployed-azure-resource-footprint)
-- [Repository structure](#repository-structure)
-- [Technology stack](#technology-stack)
-- [Deployment model](#deployment-model)
-- [Getting started](#getting-started)
-- [Configuration and security](#configuration-and-security)
-- [Testing and validation](#testing-and-validation)
+
+- [Executive Summary](#executive-summary)
+- [What's New](#whats-new)
+- [Business Value](#business-value)
+- [Platform Capabilities](#platform-capabilities)
+- [Architecture Overview](#architecture-overview)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
 - [Documentation](#documentation)
-- [Target users and scenarios](#target-users-and-scenarios)
-- [Roadmap direction](#roadmap-direction)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Executive summary
+---
 
-Enterprise architecture reviews are often constrained by manual assessment processes, fragmented evidence, and inconsistent interpretation across reviewers. Cloud Architecture Review Intelligence addresses those challenges by providing a structured review platform that helps teams evaluate architecture submissions using a combination of:
+## Executive Summary
+
+Enterprise architecture reviews are often constrained by manual assessment processes, fragmented evidence, and inconsistent interpretation across reviewers. Cloud Architecture Review Intelligence addresses those challenges by providing a structured review platform that helps teams evaluate architecture submissions using:
 
 - **AI-assisted reasoning** for contextual review and guided assessment
 - **Evidence-grounded workflows** for better traceability and defensibility
 - **Deterministic rules and scoring patterns** for review consistency
+- **Azure Durable Functions** for reliable, scalable workflow orchestration
 - **Azure-native deployment architecture** for security, scalability, and operational readiness
 
-The result is a platform that can help reduce review cycle time, improve quality of decision-making, and strengthen governance outcomes across Azure and hybrid cloud environments.
+The result is a platform that reduces review cycle time, improves quality of decision-making, and strengthens governance outcomes across Azure and hybrid cloud environments.
 
-## Business value
+---
 
-From an enterprise architecture, governance, and pre-sales perspective, this solution is valuable because it helps organizations:
+## What's New
 
-- accelerate architecture review board processes
-- improve consistency of technical and governance decisions
-- reduce dependency on purely manual document review
-- create reusable review standards and architecture rubrics
-- support advisory, modernization, migration, and readiness assessment engagements
-- operationalize architecture review as a scalable digital capability rather than an ad hoc meeting process
+### May 2026 Release
 
-## Current deployed platform
+#### Azure Durable Functions Migration
+The platform now leverages **Azure Durable Functions** for enterprise-grade workflow orchestration:
 
-This solution is backed by an actual Azure deployment in resource group **`rg-arb-review-prod`**. The current deployed platform demonstrates that the repository is not only a conceptual architecture or planning artifact, but a real Azure-native implementation composed of frontend, API, AI, document processing, search, security, monitoring, and alerting services.
+| Capability | Description |
+|------------|-------------|
+| **Agent Review Orchestration** | Reliable, resumable AI-powered architecture reviews with automatic retry and state persistence |
+| **Extraction Fan-Out Pattern** | Parallel document processing with configurable concurrency for high-throughput evidence extraction |
+| **Feature Flag Control** | Gradual rollout capability with instant rollback via `DURABLE_FUNCTIONS_ENABLED` flag |
+| **Enhanced Observability** | Structured logging, custom metrics, and Azure Monitor alerts for workflow health |
 
-Primary characteristics of the current environment include:
+#### Finding-Action Synchronization
+Automatic synchronization between findings and remediation actions:
 
-- **Primary resource group:** `rg-arb-review-prod`
-- **Primary region:** `East US 2`
-- **Search service region:** `East US`
-- **Global monitoring and alerting resources** for operational visibility
-- **Dedicated Azure AI, security, observability, and application runtime components** already provisioned
+| Feature | Behavior |
+|---------|----------|
+| **Status Sync** | Finding status changes automatically update linked action status |
+| **Owner Sync** | Owner assignments propagate to linked actions when appropriate |
+| **Due Date Sync** | Due date changes sync to linked actions |
+| **Closure Notes** | Reviewer notes append to action closure notes when findings are closed |
+| **Critical Blocker** | Critical blocker flags sync to reviewer verification requirements |
 
-This allows the repository to be described as a **current-state deployed platform with an evolving target-state architecture**, rather than a future-state-only design.
+#### Enhanced Error Handling
+- Graceful 401 authentication error handling with user-friendly login prompts
+- Improved error messages throughout the review workflow
+- Better handling of edge cases in the review library
 
-## What the platform does
+---
 
-Based on the current repository structure, documentation, and deployed Azure estate, the platform supports an end-to-end architecture review workflow that includes:
+## Business Value
 
-- intake of architecture inputs and supporting artifacts
-- review orchestration through backend services
-- document extraction and evidence analysis
-- AI-supported architecture assessment
-- structured findings, severity indicators, and scorecards
-- web-based presentation of results and review experiences
-- Azure-native deployment, monitoring, and operational visibility
+From an enterprise architecture, governance, and pre-sales perspective, this solution helps organizations:
 
-The repository includes a **Next.js frontend**, an **Azure Functions API layer**, and **infrastructure assets** for Azure deployment. The technical design documentation also defines an evolving architecture centered on **Azure AI Foundry Agents API**, **Azure AI Search**, **Document Intelligence**, **Computer Vision**, **Key Vault**, **Storage**, **Application Insights**, and **Log Analytics**.
+| Value Area | Impact |
+|------------|--------|
+| **Review Cycle Time** | Reduce architecture review board processes from weeks to days |
+| **Decision Consistency** | Improve consistency of technical and governance decisions across reviewers |
+| **Manual Effort** | Reduce dependency on purely manual document review |
+| **Reusable Standards** | Create reusable review standards and architecture rubrics |
+| **Scalable Governance** | Operationalize architecture review as a scalable digital capability |
 
-## Core capabilities
+---
 
-### AI-assisted architecture assessment
-- Supports architecture review workflows enhanced by Azure AI capabilities
-- Designed to evolve toward agent-driven orchestration using Azure AI Foundry Agents API
-- Intended to support contextual interpretation of review evidence, not just static checklist execution
+## Platform Capabilities
 
-### Deterministic governance validation
-- Uses structured rule-based validation alongside AI-assisted analysis
-- Supports more consistent and defensible review outputs
-- Documentation references rule coverage across WAF, CAF, and internal review guidance
+### Core Review Workflow
 
-### Evidence extraction and grounding
-- Uses document-processing patterns to analyze review artifacts
-- Incorporates retrieval-oriented patterns to ground outputs in relevant evidence and guidance
-- Supports more traceable architecture findings and review recommendations
-- Extracts and persists diagram-derived `visualEvidence[]` before the ARB review agent runs
+```mermaid
+flowchart LR
+    A[Upload Evidence] --> B[Extract & Analyze]
+    B --> C[AI-Assisted Review]
+    C --> D[Generate Findings]
+    D --> E[Scorecard & Decision]
+    E --> F[Export & Track]
+```
 
-### Structured findings and scorecards
-- Produces output formats suitable for architecture review boards and enterprise stakeholders
-- Supports communication of findings, scoring, risk indicators, and review outcomes
-- Helps standardize how architecture quality and readiness are presented
+### AI-Assisted Architecture Assessment
+- Azure AI Foundry Agents API for contextual interpretation
+- Evidence-grounded review outputs with citation requirements
+- Support for WAF, CAF, and custom governance rubrics
 
-### Azure-native operational model
-- Backend execution through Azure Functions
-- Frontend delivery aligned with Azure Static Web Apps patterns
-- Security, monitoring, and operations aligned to enterprise Azure deployment expectations
+### Document Intelligence & Visual Evidence
+- PDF, DOCX, PPTX, XLSX extraction via Azure Document Intelligence
+- Diagram analysis from Draw.io, Visio, and embedded images
+- Office native-shape rendering for complex diagrams
+- Visual evidence tracking with `visualEvidenceId` citations
 
-## Visual evidence pre-processor
+### Durable Workflow Orchestration
+- **Agent Review Orchestrator**: Reliable AI review execution with automatic retry
+- **Extraction Fan-Out Orchestrator**: Parallel document processing at scale
+- State persistence and workflow resumability
+- Feature flag-controlled rollout
 
-CARI now includes a visual evidence pre-processor that runs before `cari-arb-review-agent`. The purpose is to make architecture diagrams, embedded figures, screenshots, Office-native drawings, and standalone image uploads traceable review evidence instead of relying on text/OCR extraction alone.
+### Governance & Compliance
+- Deterministic rule validation alongside AI analysis
+- Structured findings with severity, domain, and ownership
+- Scorecard generation with domain-level breakdowns
+- Decision recording with rationale capture
 
-The processing model is:
+---
 
-1. Upload PDF, DOCX, PPTX, XLSX, or standalone image files.
-2. Extract text and table evidence using the existing document extraction path.
-3. Extract visual artifacts:
-   - PDF figures through Azure Document Intelligence layout figure extraction.
-   - PDF page-render fallback for diagram-heavy pages where figures are not returned.
-   - Office embedded media from `word/media/*`, `ppt/media/*`, and `xl/media/*`.
-   - Office native-shape fallback through the CARI Office Renderer service.
-   - Standalone PNG, JPG, JPEG, WEBP, GIF, BMP, TIFF, and SVG image uploads.
-4. Analyze each image artifact through the existing multimodal review path, `describeImageForReview()`.
-5. Persist structured `visualEvidence[]` records alongside text/table `evidenceFacts[]`.
-6. Pass visual evidence facts to the ARB agent with mandatory `visualEvidenceId` citation rules.
+## Architecture Overview
 
-Visual evidence records include `visualEvidenceId`, source file, page/slide/sheet metadata, image URI, summary, detected Azure services, detected architecture patterns, confidence, extraction source, prompt-injection risk, and creation time. Text found inside diagrams or screenshots is treated only as untrusted evidence and must never override system, developer, tool, security, or review instructions.
+### Deployed Azure Services
 
-### Office native-shape renderer
+| Category | Services |
+|----------|----------|
+| **Frontend** | Azure Static Web Apps |
+| **API & Compute** | Azure Functions, Azure Durable Functions, Azure Container Apps |
+| **AI Platform** | Azure AI Foundry, Azure AI Hub, Azure AI Projects |
+| **Document Processing** | Azure Document Intelligence, Azure Computer Vision |
+| **Search & Knowledge** | Azure AI Search |
+| **Storage** | Azure Blob Storage, Azure Table Storage |
+| **Security** | Azure Key Vault, Managed Identity |
+| **Observability** | Application Insights, Log Analytics, Azure Monitor Alerts |
 
-Office diagrams are often built from PowerPoint shapes, SmartArt, charts, Word drawing objects, or Excel sheet visuals rather than embedded image files. CARI handles that case with a deployed renderer:
-
-| Item | Value |
-|---|---|
-| Service | CARI Office Renderer |
-| Runtime | Azure Container Apps Consumption |
-| Container App | `ca-cari-office-renderer-prod` |
-| Container Apps Environment | `cae-cari-arb-review-prod` |
-| Container Registry | `acrcariofficerenderprod` |
-| Image source | `services/office-renderer` |
-| Deployment workflow | `.github/workflows/deploy-office-renderer.yml` |
-| Scale | `minReplicas=0`, `maxReplicas=1` |
-| Size | `0.5 vCPU`, `1Gi memory` |
-| Render limits | 50 MB file size, 20 pages/slides/sheets, 120 seconds |
-
-The API sends Office file bytes to the renderer over HTTPS with an internal shared header token. The renderer converts DOCX, PPTX, and XLSX files to PDF with LibreOffice, renders pages to PNG with Poppler, and returns PNG artifacts for persistence and multimodal visual analysis.
-
-## Reference architecture
-
-At a high level, the solution is organized into four layers:
-
-### 1. Experience layer
-A modern web experience implemented with Next.js and React for architecture review workflows, operational views, and stakeholder-facing scorecards.
-
-### 2. Application layer
-Azure Functions-based services that handle orchestration, review processing, data handling, integration, and supporting business logic.
-
-### 3. AI and knowledge layer
-Azure AI capabilities for document extraction, knowledge retrieval, embeddings, and AI-assisted reasoning. Repository documentation describes a target-state pattern using **Azure AI Foundry Agents API** for review execution.
-
-### 4. Platform and operations layer
-Infrastructure-as-code, security configuration, storage services, observability, and environment setup for enterprise deployment.
-
-The detailed architecture planning document in [`docs/arb-foundry-agents-solution-plan.md`](./docs/arb-foundry-agents-solution-plan.md) outlines a broader target architecture that includes:
-
-- Azure Static Web Apps
-- Azure Functions
-- Azure AI Foundry Hub and Project
-- Azure AI Foundry Agents API
-- Azure AI Search
-- Azure Storage
-- Azure Key Vault
-- Document Intelligence
-- Computer Vision
-- Application Insights and Log Analytics
-
-## Architecture diagram
-
-The following diagram reflects the **current deployed Azure platform** and the **target-state evolution** toward deeper Foundry agent orchestration.
+### Architecture Diagram
 
 ```mermaid
 flowchart TB
     subgraph Experience["Experience Layer"]
-        User[Architecture Reviewer / Architect / ARB User]
-        Browser[Browser]
-        SWA[Azure Static Web App<br/>swa-arb-review-prod<br/>Next.js frontend]
+        User[Reviewer / Architect]
+        SWA[Azure Static Web App<br/>Next.js Frontend]
     end
 
-    subgraph Intake["Upload and Review Orchestration"]
-        USERSUB[PDF / DOCX / PPTX / XLSX / images<br/>architecture evidence]
-        FUNC[Azure Function App<br/>func-arb-review-api]
-        PLAN[App Service Plan<br/>asp-arb-review-prod]
+    subgraph Orchestration["Workflow Orchestration"]
+        FUNC[Azure Functions API]
+        DURABLE[Durable Functions<br/>Agent Review & Extraction]
     end
 
-    subgraph Extraction["Evidence Extraction and Visual Pre-Processing"]
-        DOCINT[Azure Document Intelligence<br/>di-arb-review-prod<br/>layout / text / tables / PDF figures]
-        VISION[Azure Computer Vision<br/>vision-arb-review-prod<br/>OCR / image signals]
-        RENDER[Azure Container App<br/>ca-cari-office-renderer-prod<br/>Office native-shape renderer]
-        ACR[Azure Container Registry<br/>acrcariofficerenderprod<br/>renderer image]
-        DESCRIBE[Multimodal visual review<br/>describeImageForReview]
+    subgraph AI["AI & Knowledge Layer"]
+        FOUNDRY[Azure AI Foundry<br/>Agents API]
+        SEARCH[Azure AI Search]
+        DOCINT[Document Intelligence]
+        VISION[Computer Vision]
     end
 
-    subgraph Evidence["Evidence Persistence"]
-        STORAGE[Azure Storage<br/>starbrevprod01<br/>raw files / images / review state]
-        TEXTFACTS[evidenceFacts array<br/>text and table facts]
-        VISUALFACTS[visualEvidence array<br/>diagram / figure / screenshot facts]
+    subgraph Platform["Platform Layer"]
+        STORAGE[Azure Storage]
+        KV[Key Vault]
+        APPI[Application Insights]
     end
 
-    subgraph AIReview["AI Review and Grounding"]
-        SEARCH[Azure AI Search<br/>srch-arb-review-prod]
-        KNOWLEDGE[Architecture guidance / rubrics / review knowledge]
-        AI[Azure AI Foundry<br/>ai-arb-review-prod]
-        HUB[Azure AI Hub<br/>hub-arb-review-prod]
-        PROJ[Azure AI Project<br/>proj-arb-review-prod]
-        FPROJ[Foundry Project<br/>arb-review-proj]
-        AGENT[cari-arb-review-agent<br/>requires evidenceId / visualEvidenceId citations]
-    end
-
-    subgraph SecurityOps["Security and Operations"]
-        KV[Azure Key Vault<br/>kv-arb-review-prod]
-        APPI[Application Insights<br/>appi-arb-review-prod]
-        LAW[Log Analytics<br/>law-arb-review-prod]
-        ALERTS[Metric Alerts / Smart Detector Alerts]
-        AG[Action Group<br/>ag-arb-review-prod]
-    end
-
-    User --> Browser --> SWA
-    USERSUB --> SWA
-    SWA -->|upload / submit review| FUNC
-    PLAN -. hosts .-> FUNC
-
-    FUNC -->|analyze PDF / Office / images| DOCINT
-    FUNC -->|image OCR / visual hints| VISION
-    FUNC -->|Office native-shape fallback| RENDER
-    ACR -. deploys image .-> RENDER
-
-    DOCINT -->|text / tables / PDF figures| FUNC
-    RENDER -->|rendered DOCX / PPTX / XLSX PNGs| FUNC
-    VISION -->|OCR / image labels| FUNC
-    FUNC -->|extracted image artifacts| DESCRIBE
-    DESCRIBE -->|visual architecture summaries| FUNC
-
-    FUNC -->|raw uploads and image artifacts| STORAGE
-    FUNC -->|persist| TEXTFACTS
-    FUNC -->|persist| VISUALFACTS
-    TEXTFACTS --> STORAGE
-    VISUALFACTS --> STORAGE
-
-    KNOWLEDGE --> SEARCH
-    FUNC -->|retrieve guidance| SEARCH
-    AI --> HUB --> PROJ
-    AI --> FPROJ
-    PROJ --> AGENT
-    FPROJ --> AGENT
-    SEARCH -->|grounding context| AGENT
-    TEXTFACTS -->|Extracted Evidence Facts| AGENT
-    VISUALFACTS -->|Visual Evidence Facts| AGENT
-
-    AGENT -->|findings cite evidenceId or visualEvidenceId| FUNC
-    FUNC -->|status / visual evidence / findings / scorecards| SWA
-    SWA --> Browser --> User
-
+    User --> SWA --> FUNC
+    FUNC --> DURABLE
+    DURABLE --> FOUNDRY
+    DURABLE --> SEARCH
+    FUNC --> DOCINT
+    FUNC --> VISION
+    FUNC --> STORAGE
     FUNC --> KV
-    RENDER --> APPI
     FUNC --> APPI
-    APPI --> LAW
-    APPI --> ALERTS
-    ALERTS --> AG
 ```
 
-For a dedicated diagram page and explanation, see [`docs/architecture/solution-architecture-diagram.md`](./docs/architecture/solution-architecture-diagram.md).
+---
 
-## Deployed Azure resource footprint
+## Technology Stack
 
-The solution currently uses the following Azure resources in the deployed environment.
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 16, React 19, TypeScript |
+| **Backend** | Azure Functions v4, Node.js 20+, Azure Durable Functions |
+| **AI Services** | Azure AI Foundry, Azure AI Search, Document Intelligence, Computer Vision |
+| **Infrastructure** | Terraform, Azure Container Apps, Azure Container Registry |
+| **Testing** | Vitest, Playwright, Node.js native test runner |
+| **CI/CD** | GitHub Actions with OIDC authentication |
 
-### Environment summary
+---
 
-| Category | Deployed resources |
-|---|---|
-| Frontend | `swa-arb-review-prod` |
-| API / Compute | `func-arb-review-api`, `asp-arb-review-prod`, `ca-cari-office-renderer-prod`, `cae-cari-arb-review-prod`, `acrcariofficerenderprod` |
-| Storage | `starbrevprod01` |
-| AI platform | `ai-arb-review-prod`, `hub-arb-review-prod`, `proj-arb-review-prod`, `arb-review-proj` |
-| Search | `srch-arb-review-prod` |
-| Document and vision | `di-arb-review-prod`, `vision-arb-review-prod` |
-| Security | `kv-arb-review-prod` |
-| Monitoring | `appi-arb-review-prod`, `law-arb-review-prod` |
-| Alerts and actions | `ag-arb-review-prod`, `alert-agent-latency-prod`, `alert-error-rate-prod`, `Failure Anomalies - appi-arb-review-prod` |
-
-### Detailed Azure inventory
-
-| Resource Name | Type | Location |
-|---|---|---|
-| `ag-arb-review-prod` | Action Group | Global |
-| `ai-arb-review-prod` | Foundry | East US 2 |
-| `arb-review-proj (ai-arb-review-prod/arb-review-proj)` | Foundry Project | East US 2 |
-| `alert-agent-latency-prod` | Metric Alert Rule | Global |
-| `alert-error-rate-prod` | Metric Alert Rule | Global |
-| `appi-arb-review-prod` | Application Insights | East US 2 |
-| `asp-arb-review-prod` | App Service Plan | East US 2 |
-| `acrcariofficerenderprod` | Azure Container Registry | East US 2 |
-| `ca-cari-office-renderer-prod` | Container App | East US 2 |
-| `cae-cari-arb-review-prod` | Container Apps Environment | East US 2 |
-| `di-arb-review-prod` | Document Intelligence | East US 2 |
-| `Failure Anomalies - appi-arb-review-prod` | Smart Detector Alert Rule | Global |
-| `func-arb-review-api` | Function App | East US 2 |
-| `hub-arb-review-prod` | Azure AI Hub | East US 2 |
-| `kv-arb-review-prod` | Key Vault | East US 2 |
-| `law-arb-review-prod` | Log Analytics Workspace | East US 2 |
-| `proj-arb-review-prod` | Azure AI Project | East US 2 |
-| `srch-arb-review-prod` | Search Service | East US |
-| `starbrevprod01` | Storage Account | East US 2 |
-| `swa-arb-review-prod` | Static Web App | East US 2 |
-| `vision-arb-review-prod` | Computer Vision | East US 2 |
-
-This deployed footprint confirms that the solution should be understood as a **multi-service Azure AI platform architecture**, not just a single-model web application.
-
-## Repository structure
-
-```text
-Cloud-Architecture-Review-Intelligence/
-├── .github/             # GitHub workflows, templates, and repository configuration
-├── api/                 # Azure Functions backend and shared review services
-├── docs/                # Solution plans, architecture guidance, and validation guides
-├── frontend/            # Next.js frontend, tooling, and test assets
-├── infrastructure/      # Infrastructure-as-code assets for Azure deployment
-├── services/            # Supporting containerized services, including Office renderer
-├── ARCHITECTURE.md      # Solution architecture overview
-├── CONTRIBUTING.md      # Contribution guidance
-├── SECURITY.md          # Security policy
-└── README.md            # Repository overview
-```
-
-## Technology stack
-
-### Frontend
-- **Next.js 16**
-- **React 19**
-- TypeScript-based configuration
-
-### Backend
-- **Azure Functions v4**
-- **Node.js 20+**
-- Azure SDKs for identity, storage, tables, and document processing
-- Containerized Office rendering through LibreOffice and Poppler
-
-### AI and Azure services
-- **Azure AI Foundry / agents-oriented design**
-- **Azure AI Hub / Azure AI Projects**
-- **Azure AI Search**
-- **Azure Document Intelligence / Form Recognizer**
-- **Azure Computer Vision**
-- **Azure Storage**
-- **Azure Container Apps**
-- **Azure Container Registry**
-- **Azure Key Vault**
-- **Application Insights**
-- **Log Analytics**
-
-### Quality and engineering
-- **Vitest** for unit testing
-- **Playwright** for end-to-end, accessibility, and visual validation
-- Native Node test execution for API workflows
-- Native Node test execution for the Office renderer service
-
-## Deployment model
-
-The current documentation and Azure resource inventory indicate an enterprise Azure deployment model with the following logical topology:
-
-- **Frontend** hosted using Azure Static Web Apps
-- **Backend APIs** hosted as Azure Functions
-- **Office-native visual rendering** hosted using Azure Container Apps Consumption
-- **Renderer container images** stored in Azure Container Registry Basic
-- **AI orchestration and knowledge services** delivered through Azure AI services and project resources
-- **Search and document analysis** delivered through Azure AI Search, Document Intelligence, and Vision services
-- **Storage and secret management** handled through Azure Storage and Azure Key Vault
-- **Observability** implemented with Application Insights, Log Analytics, and alerting resources
-
-The architecture plan in [`docs/arb-foundry-agents-solution-plan.md`](./docs/arb-foundry-agents-solution-plan.md) also emphasizes:
-- managed identity-based access patterns
-- Key Vault-backed secret handling
-- low-cost, scalable Azure-native deployment choices
-- clear separation between frontend, API, AI, and operational services
-- current-state deployment with future-state agent evolution
-
-## Getting started
+## Getting Started
 
 ### Prerequisites
-- **Node.js 20 or later**
-- **npm**
-- An **Azure subscription** for cloud deployment and service integration
-- Access to required Azure resources for full end-to-end execution
 
-### Clone the repository
+- Node.js 20 or later
+- npm
+- Azure subscription with appropriate permissions
+- Azure CLI 2.60+
+
+### Quick Start
 
 ```bash
+# Clone the repository
 git clone https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence.git
 cd Cloud-Architecture-Review-Intelligence
-```
 
-### Install dependencies
+# Install frontend dependencies
+cd frontend && npm install
 
-Frontend:
+# Install API dependencies
+cd ../api && npm install
 
-```bash
-cd frontend
-npm install
-```
-
-API:
-
-```bash
-cd ../api
-npm install
-```
-
-Office renderer:
-
-```bash
-cd ../services/office-renderer
-npm install
-```
-
-### Run the frontend locally
-
-```bash
-cd frontend
-npm run dev
-```
-
-### Run backend tests
-
-```bash
-cd api
+# Run tests
 npm test
+
+# Start local development
+cd ../frontend && npm run dev
 ```
 
-### Run Office renderer tests
+### Configuration
+
+Copy the sample configuration and update with your Azure service endpoints:
 
 ```bash
-cd services/office-renderer
-npm test
+cp api/local.settings.sample.json api/local.settings.json
 ```
 
-## Configuration and security
-
-The API project includes a sample local settings file:
-- [`api/local.settings.sample.json`](./api/local.settings.sample.json)
-
-Important production settings include:
+Key configuration settings:
 
 | Setting | Purpose |
-|---|---|
-| `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT` | Preferred Azure Document Intelligence endpoint setting |
-| `AZURE_DOCINT_ENDPOINT` | Backward-compatible Document Intelligence endpoint fallback |
-| `OFFICE_RENDERER_ENDPOINT` | HTTPS endpoint for the CARI Office Renderer |
-| `OFFICE_RENDERER_SHARED_SECRET` | Shared header token used between API and renderer |
-| `OFFICE_RENDERER_MAX_FILE_BYTES` | API-side Office render size limit |
-| `OFFICE_RENDERER_MAX_PAGES` | API-side maximum rendered pages/slides/sheets |
-| `OFFICE_RENDERER_TIMEOUT_MS` | API-side renderer call timeout |
+|---------|---------|
+| `DURABLE_FUNCTIONS_ENABLED` | Enable/disable Durable Functions orchestration |
+| `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT` | Document extraction service |
+| `OFFICE_RENDERER_ENDPOINT` | Office native-shape rendering service |
 
-Recommended practices for professional deployment:
-- never store secrets in source control
-- use environment variables and Azure Key Vault for secret management
-- use managed identities wherever possible
-- separate local, integration, test, and production environments
-- document environment variables and service dependencies clearly
-
-The solution planning documentation and deployed resource model strongly indicate an enterprise security posture based on **Key Vault**, **managed identity**, **Azure-native access controls**, **centralized monitoring**, and **alerting**.
-
-## Testing and validation
-
-The repository includes strong signals of a professional validation approach.
-
-### Frontend testing
-From the `frontend` directory:
-
-```bash
-npm run test:unit
-npm run test:e2e
-npm run test:e2e:a11y
-npm run test:e2e:visual
-```
-
-### API testing
-From the `api` directory:
-
-```bash
-npm test
-```
-
-### Office renderer testing
-From the `services/office-renderer` directory:
-
-```bash
-npm test
-```
-
-### Deployment validation
-
-Recent deployment validation included:
-
-| Check | Result |
-|---|---|
-| Terraform infrastructure apply | Pass |
-| Azure Functions API deployment | Pass |
-| Office renderer workflow deployment | Pass |
-| Renderer `/health` endpoint | HTTP 200 |
-| Live `/` route | HTTP 200 |
-| Live `/arb` route | HTTP 200 |
-| Live `/api/health` route | HTTP 200 |
-
-The available scripts indicate support for:
-- unit testing
-- accessibility validation
-- visual regression validation
-- end-to-end workflow validation
-- evaluation-oriented test execution for review scenarios
+---
 
 ## Documentation
 
-Primary documentation is available in:
-- [`docs/`](./docs)
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md)
-- Wiki: https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/wiki
-- Public site reference: https://red-coast-0b2d8700f.7.azurestaticapps.net/arb
+| Document | Description |
+|----------|-------------|
+| [Wiki Home](https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/wiki) | Implementation guide and operational documentation |
+| [Architecture Overview](./ARCHITECTURE.md) | Detailed architecture documentation |
+| [Solution Plan](./docs/arb-foundry-agents-solution-plan.md) | Architecture decisions and cost model |
+| [Implementation Guide](./docs/arb-implementation-test-validation-guide.md) | Deployment and validation procedures |
+| [Durable Functions Runbook](./docs/durable-functions-rollback-runbook.md) | Operational procedures for workflow orchestration |
+| [Finding-Action Sync Design](./docs/FINDING-ACTION-SYNC-DESIGN.md) | Design documentation for sync feature |
 
-Recommended reading order:
-1. Review this README for the solution overview and current deployed platform summary
-2. Read [`ARCHITECTURE.md`](./ARCHITECTURE.md)
-3. Read [`docs/architecture/solution-architecture-diagram.md`](./docs/architecture/solution-architecture-diagram.md)
-4. Read [`docs/arb-foundry-agents-solution-plan.md`](./docs/arb-foundry-agents-solution-plan.md)
-5. Read [`docs/arb-implementation-test-validation-guide.md`](./docs/arb-implementation-test-validation-guide.md)
-6. Read [`services/office-renderer/README.md`](./services/office-renderer/README.md)
-7. Explore the `frontend/`, `api/`, `services/`, and `infrastructure/` directories for implementation detail
+---
 
-## Target users and scenarios
+## Repository Structure
 
-### Primary users
-- cloud architecture review boards
-- cloud centers of excellence
-- enterprise and solution architects
-- platform engineering teams
-- governance and risk stakeholders
-- pre-sales and advisory architecture teams
+```
+Cloud-Architecture-Review-Intelligence/
+├── .github/                    # GitHub workflows and CI/CD
+├── api/                        # Azure Functions backend
+│   └── src/
+│       ├── durable/           # Durable Functions orchestrators & activities
+│       ├── functions/         # HTTP-triggered functions
+│       └── shared/            # Shared services and utilities
+├── docs/                       # Architecture and implementation docs
+├── frontend/                   # Next.js frontend application
+├── infrastructure/             # Terraform IaC
+│   └── terraform/
+│       ├── functions.tf       # Durable Functions configuration
+│       └── monitoring.tf      # Alerts and observability
+├── services/                   # Supporting services
+│   └── office-renderer/       # Office document rendering service
+├── ARCHITECTURE.md
+└── README.md
+```
 
-### Representative scenarios
-- architecture review board modernization
-- workload readiness and governance assessments
-- migration and modernization design reviews
-- AI-assisted pre-sales architecture evaluation
-- scalable architecture quality assurance for enterprise delivery teams
+---
 
-## Roadmap direction
+## Testing
 
-Based on the current repository documentation and deployed platform footprint, the likely roadmap direction includes:
+```bash
+# Run all API tests (47 tests)
+cd api && npm test
 
-- deeper Azure AI Foundry agent integration
-- more mature evidence-grounded review workflows
-- richer visual-evidence extraction quality gates and visual regression evaluations
-- stronger governance scoring and findings presentation
-- broader automation across review execution and validation
-- enterprise-ready deployment, observability, and operational patterns
-- continued evolution from current deployed platform to richer AI-agent operating model
+# Run frontend unit tests
+cd frontend && npm run test:unit
+
+# Run end-to-end tests
+cd frontend && npm run test:e2e
+
+# Run accessibility tests
+cd frontend && npm run test:e2e:a11y
+```
+
+---
 
 ## Contributing
 
-Contributions are welcome where they improve:
-- architecture quality
-- governance rules and review rubrics
-- frontend usability and experience
-- backend reliability and observability
-- infrastructure automation
-- documentation clarity and onboarding experience
-- test coverage and validation depth
+Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
-See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for contribution guidance.
+Areas of interest:
+- Architecture governance rules and rubrics
+- Frontend usability improvements
+- Backend reliability and observability
+- Documentation and onboarding experience
+- Test coverage expansion
+
+---
 
 ## License
 
-This repository is licensed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
+This repository is licensed under the **MIT License**. See [LICENSE](./LICENSE) for details.
+
+---
+
+## Contact
+
+- **Wiki:** [Implementation Guide](https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/wiki)
+- **Issues:** [GitHub Issues](https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence/discussions)
