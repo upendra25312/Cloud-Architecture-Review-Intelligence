@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   createArbExport,
@@ -32,22 +32,20 @@ import styles from "./arb-findings-page.module.css";
 
 export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
   const searchParams = useSearchParams();
-  
-  // Read domain filter from URL query parameter (e.g., ?domain=Security)
-  const initialDomainFilter = useMemo(() => {
-    const domain = searchParams.get("domain");
-    return domain ? new Set([domain]) : new Set<string>();
-  }, [searchParams]);
 
   const [review, setReview] = useState<ArbReviewSummary | null>(null);
   const [findings, setFindings] = useState<ArbFinding[]>([]);
   const [actions, setActions] = useState<ArbAction[]>([]);
   const [scorecard, setScorecard] = useState<ArbScorecard | null>(null);
   const [selectedFindingId, setSelectedFindingId] = useState<string | null>(null);
-  const [filters, setFilters] = useState<FindingsFilterState>({
-    severities: new Set(),
-    domains: initialDomainFilter,
-    statuses: new Set(),
+  const [filters, setFilters] = useState<FindingsFilterState>(() => {
+    // Initialize with domain from URL if present (runs only on first render)
+    const domain = searchParams?.get("domain");
+    return {
+      severities: new Set<string>(),
+      domains: domain ? new Set([domain]) : new Set<string>(),
+      statuses: new Set<string>(),
+    };
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
