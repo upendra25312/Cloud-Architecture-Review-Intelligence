@@ -77,7 +77,11 @@ resource "azurerm_storage_table" "arb_projects" {
 }
 
 # Queue Storage for asynchronous ARB document extraction jobs
-resource "azurerm_storage_queue" "arb_extraction_jobs" {
+# NOTE: This queue was created outside Terraform and already exists.
+# To manage it via Terraform, import it first:
+#   terraform import azurerm_storage_queue.arb_extraction_jobs "https://starbrevprod01.queue.core.windows.net/arb-extraction-jobs"
+# For now, we reference it as a data source to avoid conflicts.
+data "azurerm_storage_queue" "arb_extraction_jobs" {
   name                 = "arb-extraction-jobs"
   storage_account_name = azurerm_storage_account.main.name
 }

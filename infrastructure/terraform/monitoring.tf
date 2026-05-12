@@ -115,26 +115,44 @@ resource "azurerm_monitor_metric_alert" "storage_transactions" {
   }
 }
 
-# Alert rule: Durable Functions orchestration failures
-resource "azurerm_monitor_metric_alert" "orchestration_failures" {
+# Alert rule: Durable Functions orchestration failures (log-based query)
+# Uses a scheduled query rule instead of metric alert because custom metrics
+# only exist after the first orchestration runs. This queries Application Insights
+# logs for orchestration failures.
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "orchestration_failures" {
   name                = "alert-orchestration-failures-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
   scopes              = [azurerm_application_insights.main.id]
   severity            = 1
-  frequency           = "PT5M"
-  window_size         = "PT1H"
+  window_duration     = "PT1H"
+  evaluation_frequency = "PT5M"
 
   criteria {
-    metric_namespace = "microsoft.insights/components"
-    metric_name      = "customMetrics/orchestration_failures"
-    aggregation      = "Total"
-    operator         = "GreaterThan"
-    threshold        = 3 # More than 3 failures in 1 hour
+    query = <<-QUERY
+      traces
+      | where message contains "completionStatus"
+      | extend parsed = parse_json(message)
+      | where parsed.completionStatus in ("error", "timeout")
+      | summarize FailureCount = count() by bin(timestamp, 1h)
+    QUERY
+
+    time_aggregation_method = "Count"
+    operator                = "GreaterThan"
+    threshold               = 3
+
+    failing_periods {
+      minimum_failing_periods_to_trigger_alert = 1
+      number_of_evaluation_periods             = 1
+    }
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.main.id
+    action_groups = [azurerm_monitor_action_group.main.id]
   }
+
+  auto_mitigation_enabled = true
+  description             = "Fires when more than 3 Durable Functions orchestrations fail within 1 hour"
 }
 
 # Budget alert — early warning at 50% (new threshold for durable functions)
