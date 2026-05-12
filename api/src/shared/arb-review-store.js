@@ -4098,6 +4098,32 @@ async function updateArbFinding(principal, reviewId, findingId, input = {}) {
   const lastUpdated = new Date().toISOString();
 
   await client.upsertEntity(toFindingsEntity(reviewId, principal.userId, findings), "Replace");
+
+  // ── Sync linked action if it exists ──────────────────────────────────
+  // When a finding is updated, automatically sync relevant fields to the
+  // linked remediation action to keep them consistent.
+  let linkedAction = null;
+  let actionSynced = false;
+
+  const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
+  const actions = fromActionsEntity(actionsEntity);
+  const actionIndex = actions.findIndex((action) => action.sourceFindingId === findingId);
+
+  if (actionIndex !== -1) {
+    const currentAction = actions[actionIndex];
+    const syncedAction = syncActionFromFinding(currentAction, currentFinding, nextFinding, input);
+    
+    if (syncedAction !== currentAction) {
+      actions[actionIndex] = syncedAction;
+      await client.upsertEntity(toActionsEntity(reviewId, principal.userId, actions), "Replace");
+      linkedAction = syncedAction;
+      actionSynced = true;
+    } else {
+      linkedAction = currentAction;
+      actionSynced = false;
+    }
+  }
+
   await client.upsertEntity(
     {
       partitionKey: getPartitionKey(reviewId),
@@ -4107,7 +4133,74 @@ async function updateArbFinding(principal, reviewId, findingId, input = {}) {
     "Merge"
   );
 
-  return nextFinding;
+  return {
+    ...nextFinding,
+    linkedAction,
+    actionSynced
+  };
+}
+
+/**
+ * Sync action fields from finding update.
+ * 
+ * Sync rules:
+ * - status: Always sync (finding status drives action status)
+ * - owner: Sync if action owner is null, was same as old finding owner, or was inherited from suggestedOwner
+ * - dueDate: Sync if action dueDate is null, was same as old finding dueDate, or was inherited from suggestedDueDate
+ * - criticalBlocker → reviewerVerificationRequired: true→true, false→no change
+ * - reviewerNote → closureNotes: Append if status is being set to Closed
+ */
+function syncActionFromFinding(action, oldFinding, newFinding, input) {
+  let changed = false;
+  const updates = { ...action };
+
+  // Sync status always
+  if (Object.prototype.hasOwnProperty.call(input, "status") && input.status !== action.status) {
+    updates.status = newFinding.status;
+    changed = true;
+  }
+
+  // Sync owner if action owner is null, matches old finding owner, or was inherited from suggestedOwner
+  if (Object.prototype.hasOwnProperty.call(input, "owner")) {
+    const shouldSyncOwner = !action.owner || 
+      action.owner === oldFinding.owner || 
+      action.owner === oldFinding.suggestedOwner;
+    if (shouldSyncOwner && newFinding.owner !== action.owner) {
+      updates.owner = newFinding.owner;
+      changed = true;
+    }
+  }
+
+  // Sync dueDate if action dueDate is null, matches old finding dueDate, or was inherited from suggestedDueDate
+  if (Object.prototype.hasOwnProperty.call(input, "dueDate")) {
+    const shouldSyncDueDate = !action.dueDate || 
+      action.dueDate === oldFinding.dueDate || 
+      action.dueDate === oldFinding.suggestedDueDate;
+    if (shouldSyncDueDate && newFinding.dueDate !== action.dueDate) {
+      updates.dueDate = newFinding.dueDate;
+      changed = true;
+    }
+  }
+
+  // Sync criticalBlocker → reviewerVerificationRequired (only escalate, never de-escalate)
+  if (input.criticalBlocker === true && !action.reviewerVerificationRequired) {
+    updates.reviewerVerificationRequired = true;
+    changed = true;
+  }
+
+  // Append reviewerNote to closureNotes when closing
+  if (input.status === "Closed" && newFinding.reviewerNote) {
+    const existingNotes = action.closureNotes || "";
+    const noteToAppend = `[Finding note] ${newFinding.reviewerNote}`;
+    if (!existingNotes.includes(noteToAppend)) {
+      updates.closureNotes = existingNotes
+        ? `${existingNotes}\n\n${noteToAppend}`
+        : noteToAppend;
+      changed = true;
+    }
+  }
+
+  return changed ? updates : action;
 }
 
 async function getArbActions(principal, reviewId) {

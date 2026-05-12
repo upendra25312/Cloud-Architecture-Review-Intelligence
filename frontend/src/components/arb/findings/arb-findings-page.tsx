@@ -105,7 +105,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
       setSavingFindingId(finding.findingId);
       setFindingError(null);
 
-      const saved = await updateArbFinding({
+      const response = await updateArbFinding({
         reviewId,
         findingId: finding.findingId,
         status: finding.status,
@@ -115,9 +115,19 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
         criticalBlocker: finding.criticalBlocker,
       });
 
+      // The response now includes the updated finding and optionally the synced action
+      const saved = response as ArbFinding & { linkedAction?: ArbAction | null; actionSynced?: boolean };
+      
       setFindings((prev) =>
         prev.map((f) => (f.findingId === saved.findingId ? saved : f)),
       );
+
+      // If the linked action was synced, update it in the actions state
+      if (saved.linkedAction && saved.actionSynced) {
+        setActions((prev) =>
+          prev.map((a) => (a.actionId === saved.linkedAction!.actionId ? saved.linkedAction! : a)),
+        );
+      }
     } catch (err) {
       setFindingError(err instanceof Error ? err.message : "Unable to update the finding.");
     } finally {

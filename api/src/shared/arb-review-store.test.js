@@ -421,6 +421,66 @@ test("updating an action persists owner, due date, status, and closure notes", a
   }
 });
 
+test("updating a finding syncs status, owner, and dueDate to linked action", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-sync",
+    userDetails: "sync-test@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "finding-action-sync",
+      projectName: "Finding Action Sync Test"
+    });
+
+    // Create an action linked to the first finding
+    const findingId = `${created.reviewId}-find-001`;
+    await store.createArbAction(principal, created.reviewId, {
+      sourceFindingId: findingId
+    });
+
+    // Update the finding - should sync to the action
+    const updatedFinding = await store.updateArbFinding(
+      principal,
+      created.reviewId,
+      findingId,
+      {
+        status: "Closed",
+        owner: "Security Lead",
+        dueDate: "2026-05-15",
+        reviewerNote: "Verified and closed.",
+        criticalBlocker: true
+      }
+    );
+
+    // Verify the finding was updated
+    assert.equal(updatedFinding.status, "Closed");
+    assert.equal(updatedFinding.owner, "Security Lead");
+    assert.equal(updatedFinding.dueDate, "2026-05-15");
+    assert.equal(updatedFinding.reviewerNote, "Verified and closed.");
+    assert.equal(updatedFinding.criticalBlocker, true);
+
+    // Verify the linked action was synced
+    assert.ok(updatedFinding.linkedAction, "linkedAction should be present");
+    assert.equal(updatedFinding.actionSynced, true, "actionSynced should be true");
+    assert.equal(updatedFinding.linkedAction.status, "Closed", "action status should sync");
+    assert.equal(updatedFinding.linkedAction.owner, "Security Lead", "action owner should sync");
+    assert.equal(updatedFinding.linkedAction.dueDate, "2026-05-15", "action dueDate should sync");
+    assert.equal(updatedFinding.linkedAction.reviewerVerificationRequired, true, "criticalBlocker should sync to reviewerVerificationRequired");
+    assert.ok(updatedFinding.linkedAction.closureNotes?.includes("Verified and closed."), "reviewerNote should append to closureNotes when closing");
+
+    // Verify persisted action state
+    const actions = await store.getArbActions(principal, created.reviewId);
+    assert.equal(actions[0].status, "Closed");
+    assert.equal(actions[0].owner, "Security Lead");
+    assert.equal(actions[0].dueDate, "2026-05-15");
+  } finally {
+    cleanup();
+  }
+});
+
 test("demo-review is auto-seeded for the signed-in user", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const principal = {
