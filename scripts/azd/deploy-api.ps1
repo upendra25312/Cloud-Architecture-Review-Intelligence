@@ -63,16 +63,29 @@ if ($LASTEXITCODE -ne 0) {
   Fail "Function App zip deployment failed."
 }
 
-Start-Sleep -Seconds 20
-
 Write-Info "Running API health check..."
 $healthStatus = $null
-try {
-  $response = Invoke-WebRequest -Uri "$functionAppUrl/api/health" -Method GET -TimeoutSec 30 -SkipHttpErrorCheck
-  $healthStatus = [int]$response.StatusCode
-}
-catch {
-  Fail "Health check request failed: $($_.Exception.Message)"
+$maxAttempts = 12
+$delaySeconds = 10
+
+for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+  try {
+    $response = Invoke-WebRequest -Uri "$functionAppUrl/api/health" -Method GET -TimeoutSec 30 -SkipHttpErrorCheck
+    $healthStatus = [int]$response.StatusCode
+    if ($healthStatus -in @(200, 401, 503)) {
+      break
+    }
+  }
+  catch {
+    if ($attempt -eq $maxAttempts) {
+      Fail "Health check request failed after $maxAttempts attempts: $($_.Exception.Message)"
+    }
+  }
+
+  if ($attempt -lt $maxAttempts) {
+    Write-Info "Health endpoint not ready yet (attempt $attempt/$maxAttempts). Retrying in $delaySeconds seconds..."
+    Start-Sleep -Seconds $delaySeconds
+  }
 }
 
 if ($healthStatus -notin @(200, 401, 503)) {
