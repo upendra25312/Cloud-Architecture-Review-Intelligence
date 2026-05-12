@@ -1,11 +1,11 @@
 # ARB Review — Foundry Agents API: Full Solution Plan
 
 **Subscription:** `<your-azure-subscription-id>`
-**Expert Team:** Senior Director · Azure Cloud Architect · Azure AI Architect · Senior PM · Full Stack Developer
+
 
 ---
 
-## 1. Executive Summary *(Senior Director, Cloud Solutions Architecture)*
+## 1. Executive Summary 
 
 The ARB Review solution will be re-deployed from scratch in a new Azure subscription using **Azure AI Foundry Agents API** as the AI backbone. The primary chat deployment is **model-router**, so the runtime can route each ARB prompt to the most suitable eligible model without deploying every underlying GPT model separately. This eliminates the Chat Completions boilerplate, delegates system prompt management to the Foundry portal, and enables built-in File Search (vector retrieval) without requiring Azure AI Search to leave the Free tier.
 
@@ -23,7 +23,7 @@ The ARB Review solution will be re-deployed from scratch in a new Azure subscrip
 
 ---
 
-## 2. Architecture Design *(Azure Cloud Architect + Azure AI Architect)*
+## 2. Architecture Design 
 
 ### 2.1 High-Level Architecture
 
@@ -110,7 +110,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 ---
 
-## 3. Cost Model *(Azure Cloud Architect)*
+## 3. Cost Model 
 
 ### Fixed monthly costs
 
@@ -153,7 +153,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 ---
 
-## 4. Phased Delivery Plan *(Senior Project Manager)*
+## 4. Phased Delivery Plan
 
 ### Phase 0 — Prerequisites (Day 0, ~2 hours)
 - [ ] Confirm Contributor access to target Azure subscription
@@ -417,7 +417,7 @@ az keyvault secret set \
 
 ---
 
-## 8. RBAC Matrix *(Azure Cloud Architect)*
+## 8. RBAC Matrix 
 
 | Identity | Resource | Role | Reason |
 |---|---|---|---|
@@ -435,7 +435,7 @@ All roles use **Managed Identity — no secrets in code or config files** except
 
 ---
 
-## 9. Risks and Mitigation *(Senior Project Manager)*
+## 9. Risks and Mitigation 
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
