@@ -33,6 +33,11 @@ output "doc_intel_endpoint" {
   value       = azurerm_cognitive_account.doc_intel.endpoint
 }
 
+output "vision_endpoint" {
+  description = "Vision endpoint (set as AZURE_VISION_ENDPOINT)"
+  value       = azurerm_cognitive_account.vision.endpoint
+}
+
 output "search_endpoint" {
   description = "AI Search endpoint (set as AZURE_SEARCH_ENDPOINT)"
   value       = "https://${azurerm_search_service.main.name}.search.windows.net"
