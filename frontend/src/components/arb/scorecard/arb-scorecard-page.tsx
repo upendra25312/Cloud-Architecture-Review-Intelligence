@@ -104,6 +104,8 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
         includeActions: true,
       });
       setExports((prev) => [...prev, artifact]);
+      // Automatically download the exported file
+      await downloadArbExport(reviewId, artifact);
     } catch (err) {
       setExportError(err instanceof Error ? err.message : "Unable to export.");
     } finally {

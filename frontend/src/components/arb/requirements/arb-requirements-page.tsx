@@ -101,13 +101,15 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
   async function handleExport() {
     try {
       setExportLoading(true);
-      await createArbExport({
+      const artifact = await createArbExport({
         reviewId,
         format: "markdown",
         includeFindings: true,
         includeScorecard: true,
         includeActions: true,
       });
+      // Automatically download the exported file
+      await downloadArbExport(reviewId, artifact);
     } catch {
       // Export error is non-blocking
     } finally {

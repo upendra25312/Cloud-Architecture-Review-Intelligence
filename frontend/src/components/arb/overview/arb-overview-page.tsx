@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   createArbExport,
+  downloadArbExport,
   fetchArbActions,
   fetchArbEvidence,
   fetchArbExports,
@@ -113,6 +114,8 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
         includeActions: true,
       });
       setExports((prev) => [...prev, artifact]);
+      // Automatically download the exported file
+      await downloadArbExport(reviewId, artifact);
     } catch {
       // Export error is non-blocking
     } finally {
