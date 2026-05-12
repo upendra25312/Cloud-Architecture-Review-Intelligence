@@ -206,7 +206,7 @@ The agent stores the system prompt + knowledge vector store — your code only s
 
 ---
 
-## 5. Infrastructure as Code *(Azure Cloud Architect)*
+## 5. Infrastructure as Code 
 
 The entire infrastructure is expressed as a single Bicep file at `infrastructure/main.bicep`. One command provisions all 13 resources with correct RBAC wiring.
 
@@ -251,7 +251,7 @@ az deployment group create \
 
 ---
 
-## 6. Code Migration Plan *(Full Stack Developer + Azure AI Architect)*
+## 6. Code Migration Plan 
 
 ### 6.1 Files to change
 
