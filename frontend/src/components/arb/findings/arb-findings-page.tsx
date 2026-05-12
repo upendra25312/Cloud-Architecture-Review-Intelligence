@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   createArbExport,
@@ -22,7 +22,7 @@ import type {
   ArbReviewSummary,
   ArbScorecard,
 } from "@/arb/types";
-import type { FindingsFilterState } from "./findings-utils";
+import { filterFindings, type FindingsFilterState } from "./findings-utils";
 import { ArbPlaceholderPage } from "@/components/arb/placeholder-page";
 import { ArbReviewShell } from "@/components/arb/review-shell";
 import { FindingsStatusBar } from "./findings-status-bar";
@@ -95,26 +95,35 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
     return () => { cancelled = true; };
   }, [reviewId]);
 
-  // ── Auto-select first non-fallback finding ─────────────────────────
+  // ── Derived data ───────────────────────────────────────────────────
+  const nonFallbackFindings = useMemo(
+    () => findings.filter((f) => !f.findingId.startsWith("fallback-")),
+    [findings],
+  );
+  const filteredNonFallbackFindings = useMemo(
+    () => filterFindings(nonFallbackFindings, filters),
+    [nonFallbackFindings, filters],
+  );
+  const allFallback = findings.length > 0 && nonFallbackFindings.length === 0;
+  const someFallback = findings.length > 0 && nonFallbackFindings.length > 0 && nonFallbackFindings.length < findings.length;
+
+  // ── Auto-select first visible non-fallback finding ─────────────────
   useEffect(() => {
     setSelectedFindingId((current) => {
-      const nonFallback = findings.filter((f) => !f.findingId.startsWith("fallback-"));
-      if (current && nonFallback.some((f) => f.findingId === current)) {
+      if (current && filteredNonFallbackFindings.some((f) => f.findingId === current)) {
         return current;
       }
-      return nonFallback[0]?.findingId ?? null;
+      return filteredNonFallbackFindings[0]?.findingId ?? null;
     });
-  }, [findings]);
+  }, [filteredNonFallbackFindings]);
 
   // ── Sync domain filter from URL query parameter ────────────────────
   useEffect(() => {
     const domain = searchParams.get("domain");
-    if (domain) {
-      setFilters((prev) => ({
-        ...prev,
-        domains: new Set([domain]),
-      }));
-    }
+    setFilters((prev) => ({
+      ...prev,
+      domains: domain ? new Set([domain]) : new Set<string>(),
+    }));
   }, [searchParams]);
 
   // ── Handlers ───────────────────────────────────────────────────────
@@ -227,12 +236,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
     );
   }
 
-  // ── Derived data ───────────────────────────────────────────────────
-  const nonFallbackFindings = findings.filter((f) => !f.findingId.startsWith("fallback-"));
-  const allFallback = findings.length > 0 && nonFallbackFindings.length === 0;
-  const someFallback = findings.length > 0 && nonFallbackFindings.length > 0 && nonFallbackFindings.length < findings.length;
-
-  const selectedFinding = nonFallbackFindings.find((f) => f.findingId === selectedFindingId) ?? null;
+  const selectedFinding = filteredNonFallbackFindings.find((f) => f.findingId === selectedFindingId) ?? null;
   const selectedAction = selectedFinding
     ? actions.find((a) => a.sourceFindingId === selectedFinding.findingId) ?? null
     : null;

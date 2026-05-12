@@ -10,3 +10,9 @@ export function getArbStepHref(
   const suffix = hash ? `#${hash}` : "";
   return `/arb?reviewId=${encodedReviewId}&step=${step}${suffix}` as Route;
 }
+
+export function getArbFindingsHref(reviewId: string, domain?: string): Route {
+  const encodedReviewId = encodeURIComponent(reviewId);
+  const domainQuery = domain ? `&domain=${encodeURIComponent(domain)}` : "";
+  return `/arb?reviewId=${encodedReviewId}&step=findings${domainQuery}` as Route;
+}

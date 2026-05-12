@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { Route } from "next";
 import type { ArbDomainScore, ArbFinding } from "@/arb/types";
+import { getArbFindingsHref } from "@/arb/routes";
 import { getDomainScorePercent, getScoreTone } from "./scorecard-utils";
 import styles from "./arb-scorecard-page.module.css";
 
@@ -53,7 +53,7 @@ export function DomainSection({ domainScore, findings, reviewId, defaultExpanded
 
   const displayedFindings = linkedFindingObjects.slice(0, 3);
   const totalLinked = linkedFindingObjects.length;
-  const findingsHref = `/arb/${reviewId}/findings?domain=${encodeURIComponent(domainScore.domain)}` as Route;
+  const findingsHref = getArbFindingsHref(reviewId, domainScore.domain);
 
   return (
     <div className={styles.domainSection}>
