@@ -213,9 +213,19 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
         const payload = await listArbReviews();
         if (!active) return;
         setReviews(payload.reviews.filter(hasValidReviewId));
+        setError(null);
       } catch (loadError) {
         if (!active) return;
-        setError(loadError instanceof Error ? loadError.message : "Unable to load reviews.");
+        const errorMessage = loadError instanceof Error ? loadError.message : "Unable to load reviews.";
+        
+        // If it's a 401/auth error, don't show error - the auth provider will handle it
+        // by showing the sign-in UI when principal becomes null
+        if (errorMessage.toLowerCase().includes("sign in") || errorMessage.includes("401")) {
+          setError(null);
+          setReviews([]);
+        } else {
+          setError(errorMessage);
+        }
       } finally {
         if (active) setLoading(false);
       }

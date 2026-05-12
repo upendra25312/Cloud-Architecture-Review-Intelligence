@@ -33,6 +33,13 @@ import { getMockArbUploads } from "@/arb/mock-review";
 
 async function readJsonResponse<T>(response: Response, fallbackMessage: string) {
   if (!response.ok) {
+    // Handle 401 specifically - user needs to sign in
+    if (response.status === 401) {
+      throw new Error(
+        "Sign in required. Your session may have expired. Please sign in again to access your reviews."
+      );
+    }
+
     let message = fallbackMessage;
 
     try {
