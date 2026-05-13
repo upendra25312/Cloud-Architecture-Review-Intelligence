@@ -1,5 +1,5 @@
 /**
- * TimeSavingsVisual — "Before vs After" time savings infographic.
+ * TimeSavingsVisual - "Before vs After" time savings infographic.
  * Rackspace brand-aligned: red accent stats, Azure blue for "with CARI" side.
  * Pure presentational, inline SVG, no raster images.
  */
@@ -27,8 +27,8 @@ export default function TimeSavingsVisual() {
     >
       <div className="review-section-head">
         <p className="review-eyebrow">Time to value</p>
-        <h2 id="time-savings-title">Architecture reviews used to take days. Now they take minutes.</h2>
-        <p>Every architect who runs CARI for the first time saves hours they never get back any other way.</p>
+        <h2 id="time-savings-title">Architecture review packs used to take half a day. CARI gets them to minutes.</h2>
+        <p>Teams move from scattered evidence and manual write-ups to a framework-aligned review package in a single working session.</p>
       </div>
 
       <div className="review-time-savings-grid">
@@ -57,10 +57,10 @@ export default function TimeSavingsVisual() {
         {/* ── After card ── */}
         <div className="review-ts-card review-ts-card--after">
           <div className="review-ts-card-badge review-ts-card-badge--after">With CARI</div>
-          <div className="review-ts-stat review-ts-stat--after">&lt;&nbsp;5 min</div>
+          <div className="review-ts-stat review-ts-stat--after">10-20 min</div>
           <ul className="review-ts-steps review-ts-steps--after">
             <li>{CHECK} Drag-and-drop upload — PDF, Word, PPT, IaC, diagrams</li>
-            <li>{CHECK} AI reviews against WAF · CAF · ALZ · 16 deterministic rules</li>
+            <li>{CHECK} AI reviews against WAF, CAF, ALZ, and 16 deterministic rules</li>
             <li>{CHECK} Scored findings with Microsoft Learn reference links</li>
             <li>{CHECK} One-click reviewer sign-off with immutable audit trail</li>
             <li>{CHECK} Board-ready PDF — decision, findings, and assumption log</li>
@@ -71,19 +71,19 @@ export default function TimeSavingsVisual() {
       {/* ── Stat strip ── */}
       <div className="review-ts-stat-strip">
         <div className="review-ts-stat-chip">
-          <span className="review-ts-stat-chip-value">5</span>
-          <span className="review-ts-stat-chip-label">Personas served</span>
+          <span className="review-ts-stat-chip-value">3</span>
+          <span className="review-ts-stat-chip-label">Access roles</span>
         </div>
         <div className="review-ts-stat-chip">
           <span className="review-ts-stat-chip-value">16</span>
           <span className="review-ts-stat-chip-label">Deterministic rules</span>
         </div>
         <div className="review-ts-stat-chip">
-          <span className="review-ts-stat-chip-value">6</span>
-          <span className="review-ts-stat-chip-label">WAF domains scored</span>
+          <span className="review-ts-stat-chip-value">5</span>
+          <span className="review-ts-stat-chip-label">WAF pillars scored</span>
         </div>
         <div className="review-ts-stat-chip">
-          <span className="review-ts-stat-chip-value">&lt;&nbsp;$0.05</span>
+          <span className="review-ts-stat-chip-value">~$0.013</span>
           <span className="review-ts-stat-chip-label">Cost per review</span>
         </div>
       </div>
