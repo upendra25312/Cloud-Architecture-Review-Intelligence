@@ -77,7 +77,7 @@ az functionapp config appsettings set \
 # Then update ai_vision.tf and re-apply
 ```
 
-**Status:** ⏳ NOT DONE — attempt Option A first (soft-delete restore window is 48h from 2026-05-14 ~16:42 UTC)
+**Status:** ✅ DONE (2026-05-14 ~17:27 UTC) — Option A restore succeeded. `provisioningState: Succeeded`. Endpoint `https://vision-arb-review-prod-684f1.cognitiveservices.azure.com/` matches existing `AZURE_VISION_ENDPOINT` Function App setting — no update needed.
 
 ---
 
@@ -228,7 +228,7 @@ gh run list --workflow=deploy-frontend.yml --limit=3
 | App Insights | `appi-arb-review-prod` | ✅ Running |
 | Container Registry | `crarbrevrendererprod` | ✅ Running |
 | Container App | `ca-cari-office-renderer-prod` | ✅ Running |
-| **Vision Account** | `vision-arb-review-prod` | ❌ SOFT-DELETED |
+| **Vision Account** | `vision-arb-review-prod` | ✅ RESTORED (2026-05-14 17:27 UTC) |
 
 ---
 
