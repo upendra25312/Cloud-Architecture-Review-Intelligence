@@ -1,0 +1,53 @@
+{
+  "name": "CARI Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/azure-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "latest",
+      "tflint": true
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  "onCreateCommand": "npm install --prefix frontend && npm install --prefix api && npm install --prefix services/office-renderer",
+
+  "postCreateCommand": "echo 'CARI dev environment ready. Run: make dev'",
+
+  "forwardPorts": [3000, 7071, 3100],
+
+  "portsAttributes": {
+    "3000": { "label": "Next.js Frontend", "onAutoForward": "openBrowser" },
+    "7071": { "label": "Azure Functions API" },
+    "3100": { "label": "Office Renderer" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.azure-dev",
+        "ms-vscode.azure-account",
+        "hashicorp.terraform",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ms-playwright.playwright",
+        "vitest.explorer",
+        "GitHub.copilot"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "typescript.preferences.importModuleSpecifier": "relative"
+      }
+    }
+  },
+
+  "remoteEnv": {
+    "NODE_ENV": "development"
+  }
+}

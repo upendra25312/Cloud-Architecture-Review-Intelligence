@@ -1,10 +1,26 @@
 # Dependencies
 node_modules/
 api/node_modules/
+services/office-renderer/node_modules/
 
 # Local config (contains connection strings and secrets)
 api/local.settings.json
 local.settings.json
+
+# Next.js build output
+frontend/.next/
+frontend/out/
+
+# Generated documentation (auto-produced at build time)
+docs/generated/
+
+# Binary presentation / asset files — store in docs/assets/ if needed in VCS
+*.pptx
+*.xlsx
+
+# Test / coverage output
+coverage/
+frontend/coverage/
 
 # Terraform
 infrastructure/terraform/.terraform/
@@ -18,3 +34,10 @@ infrastructure/terraform/tf-outputs.json
 # OS
 .DS_Store
 Thumbs.db
+
+# IDE — commit .vscode/ for team settings; ignore user-specific overrides
+.vscode/*.code-workspace
+.idea/
+
+# Claude Code local session data
+.claude/settings.local.json
