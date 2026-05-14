@@ -5,7 +5,7 @@
 **Live Site:** https://red-coast-0b2d8700f.7.azurestaticapps.net/  
 **Repository:** https://github.com/upendra25312/Cloud-Architecture-Review-Intelligence  
 **Started:** May 2026  
-**Status:** In progress — Phase 5 (code quality) remaining
+**Status:** All phases complete — PR #11 open, awaiting smoke test + merge
 
 ---
 
@@ -108,10 +108,10 @@ cari-repo/
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 5.1 | Assess `frontend/app/components/` vs `frontend/src/components/` | ⬜ pending | Both exist — `app/components/` has home page components, `src/components/` has ARB workflow components. This is VALID Next.js App Router pattern. Likely leave as-is. |
-| 5.2 | Assess `frontend/src/arb/` vs `frontend/src/components/arb/` | ⬜ pending | `src/arb/` has types/API/routes; `src/components/arb/` has UI. Pattern is correct — leave as-is. |
-| 5.3 | Frontend vitest coverage | ⬜ pending | Vitest configured but no `.test.` files in `frontend/src/` — add at least 3 utility tests |
-| 5.4 | Smoke test suite on preview before merging to main | ⬜ pending | Run `npm run test:e2e:core` against preview URL |
+| 5.1 | Assess `frontend/app/components/` vs `frontend/src/components/` | ✅ done | VALID App Router pattern — home components co-located in `app/`, ARB workflow UI in `src/components/arb/`. Leave as-is. |
+| 5.2 | Assess `frontend/src/arb/` vs `frontend/src/components/arb/` | ✅ done | Correct separation — `src/arb/` = domain types/API/routes; `src/components/arb/` = UI. Leave as-is. |
+| 5.3 | Frontend vitest coverage | ✅ done | 23 tests in `frontend/tests/unit/lib/` — `filters.test.ts` (14) + `backend-error.test.ts` (9). All passing. |
+| 5.4 | Smoke test suite on preview before merging to main | ⬜ pending | PR #11 — run `npm run test:e2e:core` against the GitHub preview URL, then approve + merge |
 
 ---
 
