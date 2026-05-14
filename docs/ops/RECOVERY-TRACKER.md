@@ -28,7 +28,22 @@ The old URL `https://red-coast-0b2d8700f.7.azurestaticapps.net` is **permanently
 | Update `STAGING_URL` GitHub secret | ✅ Done | Set to `https://thankful-pond-04383960f.7.azurestaticapps.net` |
 | Fix `SITE_URL` in `frontend/app/layout.tsx` | ✅ Done | Updated from old URL to new URL |
 | Fix hardcoded verify URL in `deploy-frontend.yml` | ✅ Done | Changed line 143 to new hostname |
-| CI deploy green end-to-end | ⏳ Pending | Next push will confirm — was failing only due to hardcoded URL |
+| CI deploy green end-to-end | ✅ Done | CI run 25874212527 — Build ✓ Deploy ✓ Verify ✓ |
+
+---
+
+### ✅ DONE — Azure AD sign-in restored
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Add new SWA hostname to AAD app redirect URIs | ✅ Done | Added `https://thankful-pond-04383960f.7.azurestaticapps.net/.auth/login/aad/callback` to app `f9f6dd08-81f4-4a80-a631-6c3de8ae1343` ("ARB Agent") |
+| Set `AZURE_CLIENT_ID` on new SWA | ✅ Done | `f9f6dd08-81f4-4a80-a631-6c3de8ae1343` set via `az staticwebapp appsettings set` |
+| Create new client secret for new SWA | ✅ Done | Secret name: `stapp-arb-review-prod-auth`, expires 2028-05-14 |
+| Set `AZURE_CLIENT_SECRET` on new SWA | ✅ Done | New secret value set via `az staticwebapp appsettings set` |
+| Store client secret in Key Vault | ✅ Done | Stored as `stapp-arb-review-prod-client-secret` in `kv-arb-review-prod` |
+| Verify sign-in redirect works | ✅ Done | Playwright confirmed redirect to `login.microsoftonline.com` with correct `redirect_uri` |
+
+**Root causes:** (1) New SWA had no `AZURE_CLIENT_ID`/`AZURE_CLIENT_SECRET` app settings (not inherited on recreate). (2) AAD app registration only had the old `red-coast` hostname — new `thankful-pond` hostname was never registered.
 
 ---
 
