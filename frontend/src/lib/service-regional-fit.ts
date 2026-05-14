@@ -5,6 +5,7 @@ import type {
   ServiceSummary
 } from "@/types";
 import { readBackendErrorMessage } from "@/lib/backend-error";
+import { apiFetch } from "@/lib/api-fetch";
 
 const SERVICE_REGIONAL_FIT_CACHE_PREFIX = "azure-review-dashboard.service-regional-fit.v2";
 const SERVICE_REGIONAL_FIT_CACHE_TTL_MS = 2 * 60 * 60 * 1000;
@@ -207,7 +208,7 @@ export async function loadServiceRegionalFitBatch(requests: ServiceRegionalFitRe
   });
 
   if (uncachedRequests.length > 0) {
-    const response = await fetch("/api/availability", {
+    const response = await apiFetch("/api/availability", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

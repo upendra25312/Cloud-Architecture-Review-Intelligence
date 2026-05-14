@@ -3,6 +3,7 @@ import type {
   AdminCopilotRequest,
   AdminCopilotResponse
 } from "@/types";
+import { apiFetch } from "@/lib/api-fetch";
 
 async function parseJsonResponse<T>(response: Response) {
   const payload = (await response.json()) as T & {
@@ -17,7 +18,7 @@ async function parseJsonResponse<T>(response: Response) {
 }
 
 export async function loadAdminCopilotHealth() {
-  const response = await fetch("/api/admin/copilot/health", {
+  const response = await apiFetch("/api/admin/copilot/health", {
     credentials: "same-origin",
     cache: "no-store"
   });
@@ -26,7 +27,7 @@ export async function loadAdminCopilotHealth() {
 }
 
 export async function runAdminCopilot(request: AdminCopilotRequest) {
-  const response = await fetch("/api/admin/copilot", {
+  const response = await apiFetch("/api/admin/copilot", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

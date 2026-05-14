@@ -1,19 +1,3 @@
-/**
- * Delete an ARB review by reviewId.
- * Sends DELETE to /api/arb/reviews/{reviewId}.
- */
-export async function deleteArbReview(reviewId: string): Promise<{ deleted: boolean }> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json"
-    }
-  });
-  if (!response.ok) {
-    throw new Error(`Unable to delete ARB review (${response.status})`);
-  }
-  return { deleted: true };
-}
 import type {
   ArbAction,
   ArbDecision,
@@ -30,6 +14,7 @@ import type {
   ArbUploadedFile
 } from "@/arb/types";
 import { getMockArbUploads } from "@/arb/mock-review";
+import { apiFetch } from "@/lib/api-fetch";
 
 async function readJsonResponse<T>(response: Response, fallbackMessage: string) {
   if (!response.ok) {
@@ -76,8 +61,21 @@ async function readJsonResponse<T>(response: Response, fallbackMessage: string) 
   return (await response.json()) as T;
 }
 
+export async function deleteArbReview(reviewId: string): Promise<{ deleted: boolean }> {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json"
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`Unable to delete ARB review (${response.status})`);
+  }
+  return { deleted: true };
+}
+
 export async function fetchArbReview(reviewId: string): Promise<ArbReviewSummary> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -98,7 +96,7 @@ export async function fetchArbReview(reviewId: string): Promise<ArbReviewSummary
 }
 
 export async function listArbReviews(): Promise<ArbReviewLibraryResponse> {
-  const response = await fetch("/api/arb/reviews", {
+  const response = await apiFetch("/api/arb/reviews", {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -117,7 +115,7 @@ export async function createArbReview(input: {
   customerName: string;
   projectCode?: string;
 }): Promise<ArbReviewSummary> {
-  const response = await fetch("/api/arb/reviews", {
+  const response = await apiFetch("/api/arb/reviews", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -135,7 +133,7 @@ export async function createArbReview(input: {
 }
 
 export async function fetchArbFindings(reviewId: string): Promise<ArbFinding[]> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/findings`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/findings`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -159,7 +157,7 @@ export async function updateArbFinding(input: {
   reviewerNote: string | null;
   criticalBlocker: boolean;
 }): Promise<ArbFinding> {
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/arb/reviews/${input.reviewId}/findings/${input.findingId}`,
     {
       method: "PATCH",
@@ -185,7 +183,7 @@ export async function updateArbFinding(input: {
 }
 
 export async function fetchArbActions(reviewId: string): Promise<ArbAction[]> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/actions`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/actions`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -204,7 +202,7 @@ export async function createArbAction(input: {
   reviewId: string;
   sourceFindingId: string;
 }): Promise<ArbAction> {
-  const response = await fetch(`/api/arb/reviews/${input.reviewId}/actions`, {
+  const response = await apiFetch(`/api/arb/reviews/${input.reviewId}/actions`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -231,7 +229,7 @@ export async function updateArbAction(input: {
   closureNotes: string | null;
   reviewerVerificationRequired: boolean;
 }): Promise<ArbAction> {
-  const response = await fetch(`/api/arb/reviews/${input.reviewId}/actions/${input.actionId}`, {
+  const response = await apiFetch(`/api/arb/reviews/${input.reviewId}/actions/${input.actionId}`, {
     method: "PATCH",
     headers: {
       Accept: "application/json",
@@ -254,7 +252,7 @@ export async function updateArbAction(input: {
 }
 
 export async function fetchArbScorecard(reviewId: string): Promise<ArbScorecard> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/scorecard`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/scorecard`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -270,7 +268,7 @@ export async function fetchArbScorecard(reviewId: string): Promise<ArbScorecard>
 }
 
 export async function fetchArbDecision(reviewId: string): Promise<ArbDecision | null> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/decision`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/decision`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -293,7 +291,7 @@ export async function recordArbDecision(input: {
   reviewerName?: string;
   reviewerRole?: string;
 }): Promise<ArbDecision> {
-  const response = await fetch(`/api/arb/reviews/${input.reviewId}/decision`, {
+  const response = await apiFetch(`/api/arb/reviews/${input.reviewId}/decision`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -318,7 +316,7 @@ export async function fetchArbUploads(reviewId: string): Promise<{
   files: ArbUploadedFile[];
   extraction: ArbExtractionStatus;
 }> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/uploads`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/uploads`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -355,7 +353,7 @@ export async function uploadArbFiles(input: {
     }
   }
 
-  const response = await fetch(`/api/arb/reviews/${input.reviewId}/uploads`, {
+  const response = await apiFetch(`/api/arb/reviews/${input.reviewId}/uploads`, {
     method: "POST",
     body: formData
   });
@@ -368,7 +366,7 @@ export async function uploadArbFiles(input: {
 }
 
 export async function deleteArbFile(reviewId: string, fileId: string): Promise<{ deletedFileId: string; remainingCount: number }> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/uploads/${encodeURIComponent(fileId)}`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/uploads/${encodeURIComponent(fileId)}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json"
@@ -382,7 +380,7 @@ export async function deleteArbFile(reviewId: string, fileId: string): Promise<{
 }
 
 export async function startArbExtraction(reviewId: string): Promise<ArbExtractionStatus> {
-  const startResponse = await fetch(`/api/arb/reviews/${reviewId}/extract`, {
+  const startResponse = await apiFetch(`/api/arb/reviews/${reviewId}/extract`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -427,7 +425,7 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
 }
 
 export async function fetchArbExtractionStatus(reviewId: string): Promise<ArbExtractionStatus> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/extract/status`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/extract/status`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -443,7 +441,7 @@ export async function fetchArbExtractionStatus(reviewId: string): Promise<ArbExt
 }
 
 export async function fetchArbRequirements(reviewId: string): Promise<ArbRequirement[]> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/requirements`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/requirements`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -459,7 +457,7 @@ export async function fetchArbRequirements(reviewId: string): Promise<ArbRequire
 }
 
 export async function fetchArbEvidence(reviewId: string): Promise<ArbEvidenceFact[]> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/evidence`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/evidence`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -495,7 +493,7 @@ export async function createArbExport(input: {
   includeScorecard?: boolean;
   includeActions?: boolean;
 }): Promise<ArbExportArtifact> {
-  const response = await fetch(`/api/arb/reviews/${input.reviewId}/exports`, {
+  const response = await apiFetch(`/api/arb/reviews/${input.reviewId}/exports`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -512,7 +510,7 @@ export async function createArbExport(input: {
 }
 
 export async function fetchArbExports(reviewId: string): Promise<ArbExportArtifact[]> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/exports`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/exports`, {
     method: "GET",
     headers: {
       Accept: "application/json"
@@ -535,7 +533,7 @@ export async function runArbAgentReview(reviewId: string): Promise<{
   confidenceLevel: string | null;
 }> {
   // Step 1: Start the assessment (returns 202 immediately)
-  const startResponse = await fetch(`/api/arb/reviews/${reviewId}/run-agent-review`, {
+  const startResponse = await apiFetch(`/api/arb/reviews/${reviewId}/run-agent-review`, {
     method: "POST",
     headers: { Accept: "application/json" }
   });
@@ -554,7 +552,7 @@ export async function runArbAgentReview(reviewId: string): Promise<{
   while (Date.now() - startTime < MAX_POLL_MS) {
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
 
-    const statusResponse = await fetch(`/api/arb/reviews/${reviewId}/agent-status`, {
+    const statusResponse = await apiFetch(`/api/arb/reviews/${reviewId}/agent-status`, {
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store"
@@ -595,7 +593,7 @@ export async function runArbAgentReview(reviewId: string): Promise<{
 }
 
 export async function fetchArbAgentStatus(reviewId: string): Promise<ArbAgentStatus> {
-  const response = await fetch(`/api/arb/reviews/${reviewId}/agent-status`, {
+  const response = await apiFetch(`/api/arb/reviews/${reviewId}/agent-status`, {
     method: "GET",
     headers: { Accept: "application/json" },
     cache: "no-store"
@@ -610,7 +608,7 @@ export async function fetchArbAgentStatus(reviewId: string): Promise<ArbAgentSta
 export async function downloadArbExport(reviewId: string, exportArtifact: ArbExportArtifact) {
   const downloadUrl = `/api/arb/reviews/${encodeURIComponent(reviewId)}/exports/${encodeURIComponent(exportArtifact.exportId)}/download`;
 
-  const response = await fetch(downloadUrl, {
+  const response = await apiFetch(downloadUrl, {
     method: "GET",
     cache: "no-store",
     credentials: "same-origin"

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { apiFetch } from "@/lib/api-fetch";
 
 type CachedSourceHealth = {
   ok: boolean;
@@ -52,7 +53,7 @@ export function DataHealthView() {
   useEffect(() => {
     let active = true;
 
-    fetch("/api/health", {
+    apiFetch("/api/health", {
       cache: "no-store"
     })
       .then(async (response) => {

@@ -1,7 +1,8 @@
 import type { CopilotRequest, CopilotResponse } from "@/types";
+import { apiFetch } from "@/lib/api-fetch";
 
 export async function runProjectReviewCopilot(request: CopilotRequest) {
-  const response = await fetch("/api/copilot", {
+  const response = await apiFetch("/api/copilot", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

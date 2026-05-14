@@ -4,6 +4,7 @@ import type {
   ReviewTelemetrySummaryResponse
 } from "@/types";
 import { readBackendErrorMessage } from "@/lib/backend-error";
+import { apiFetch } from "@/lib/api-fetch";
 
 const SESSION_STORAGE_KEY = "azure-review-board-telemetry-session-id";
 
@@ -90,7 +91,7 @@ export function trackReviewTelemetry(
     properties: normalizeProperties(event.properties)
   };
 
-  return fetch("/api/telemetry", {
+  return apiFetch("/api/telemetry", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

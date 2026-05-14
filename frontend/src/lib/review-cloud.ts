@@ -11,6 +11,7 @@ import type {
   StructuredReviewRecord
 } from "@/types";
 import { readBackendErrorMessage } from "@/lib/backend-error";
+import { apiFetch } from "@/lib/api-fetch";
 
 export type AuthProvider = "aad";
 
@@ -196,7 +197,7 @@ async function parseJsonResponse<T>(response: Response) {
 }
 
 export async function loadCloudReviewRecords() {
-  const response = await fetch("/api/review-records", {
+  const response = await apiFetch("/api/review-records", {
     credentials: "same-origin",
     cache: "no-store"
   });
@@ -208,7 +209,7 @@ export async function saveCloudReviewRecords(
   records: StructuredReviewRecord[],
   reviewId?: string | null
 ) {
-  const response = await fetch("/api/review-records", {
+  const response = await apiFetch("/api/review-records", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -221,7 +222,7 @@ export async function saveCloudReviewRecords(
 }
 
 export async function loadCloudProjectReviewState() {
-  const response = await fetch("/api/project-review-state", {
+  const response = await apiFetch("/api/project-review-state", {
     credentials: "same-origin",
     cache: "no-store"
   });
@@ -233,7 +234,7 @@ export async function saveCloudProjectReviewState(
   activePackage: ReviewPackage | null,
   copilotContext: ProjectReviewCopilotContext | null
 ) {
-  const response = await fetch("/api/project-review-state", {
+  const response = await apiFetch("/api/project-review-state", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -275,7 +276,7 @@ export async function downloadCloudReviewCsv(
     reviewName?: string | null;
   }
 ) {
-  const response = await fetch("/api/review-records/export", {
+  const response = await apiFetch("/api/review-records/export", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -311,7 +312,7 @@ export async function downloadCloudReviewCsv(
 }
 
 export async function listCloudProjectReviews() {
-  const response = await fetch("/api/project-reviews", {
+  const response = await apiFetch("/api/project-reviews", {
     credentials: "same-origin",
     cache: "no-store"
   });
@@ -320,7 +321,7 @@ export async function listCloudProjectReviews() {
 }
 
 export async function activateCloudProjectReview(reviewId: string) {
-  const response = await fetch("/api/project-reviews/activate", {
+  const response = await apiFetch("/api/project-reviews/activate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -335,7 +336,7 @@ export async function activateCloudProjectReview(reviewId: string) {
 }
 
 export async function archiveCloudProjectReview(reviewId: string, archived = true) {
-  const response = await fetch("/api/project-reviews/archive", {
+  const response = await apiFetch("/api/project-reviews/archive", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -350,7 +351,7 @@ export async function archiveCloudProjectReview(reviewId: string, archived = tru
 }
 
 export async function deleteCloudProjectReview(reviewId: string) {
-  const response = await fetch("/api/project-reviews/delete", {
+  const response = await apiFetch("/api/project-reviews/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -365,7 +366,7 @@ export async function deleteCloudProjectReview(reviewId: string) {
 }
 
 export async function restoreDeletedCloudProjectReview(reviewId: string) {
-  const response = await fetch("/api/project-reviews/delete", {
+  const response = await apiFetch("/api/project-reviews/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -380,7 +381,7 @@ export async function restoreDeletedCloudProjectReview(reviewId: string) {
 }
 
 export async function purgeCloudProjectReview(reviewId: string) {
-  const response = await fetch("/api/project-reviews/purge", {
+  const response = await apiFetch("/api/project-reviews/purge", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

@@ -6,6 +6,7 @@ import type {
   ServiceSummary
 } from "@/types";
 import { normalizeBackendThrownMessage, readBackendErrorMessage } from "@/lib/backend-error";
+import { apiFetch } from "@/lib/api-fetch";
 
 const SERVICE_PRICING_CACHE_PREFIX = "azure-review-dashboard.service-pricing.v3";
 const SERVICE_PRICING_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
@@ -282,7 +283,7 @@ export async function loadServicePricingBatch(requests: ServicePricingRequest[])
 
     for (const requestChunk of requestChunks) {
       try {
-        const response = await fetch("/api/pricing", {
+        const response = await apiFetch("/api/pricing", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
