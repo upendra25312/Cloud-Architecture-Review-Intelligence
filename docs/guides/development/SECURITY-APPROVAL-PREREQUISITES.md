@@ -86,19 +86,19 @@ For initial deployment and ongoing administration:
 | Storage Account | `starbrevprod01` | Standard LRS | ~$0.50 |
 | Azure Functions | `func-arb-review-api` | Consumption Y1 | ~$0-5 |
 | App Service Plan | `asp-arb-review-prod` | Dynamic (Y1) | $0 |
-| Static Web App | `swa-arb-review-prod` | Free | $0 |
+| Static Web App | `stapp-arb-review-prod` | Free | $0 |
 | Key Vault | `kv-arb-review-prod` | Standard | ~$0.03 |
-| AI Services | `ai-arb-review-prod` | S0 | ~$4-15 |
+| AI Services | `ais-arb-review-prod` | S0 | ~$4-15 |
 | AI Foundry Hub | `hub-arb-review-prod` | Standard | $0 |
 | AI Foundry Project | `proj-arb-review-prod` | — | $0 |
 | AI Search | `srch-arb-review-prod` | Free | $0 |
 | Document Intelligence | `di-arb-review-prod` | F0 (Free) | $0 |
-| Computer Vision | `vision-arb-review-prod` | S1 | ~$0-2 |
+| Computer Vision | `cog-vision-arb-review-prod` | S1 | ~$0-2 |
 | Container Apps Environment | `cae-cari-arb-review-prod` | Consumption | ~$0-2 |
 | Container App | `ca-cari-office-renderer-prod` | Scale-to-zero | ~$0-1 |
-| Container Registry | `acrcariofficerenderprod` | Basic | ~$5 |
+| Container Registry | `crarbrevrenderprod` | Basic | ~$5 |
 | Application Insights | `appi-arb-review-prod` | Pay-as-you-go | $0 (5GB free) |
-| Log Analytics | `law-arb-review-prod` | Pay-as-you-go | $0 (5GB free) |
+| Log Analytics | `log-arb-review-prod` | Pay-as-you-go | $0 (5GB free) |
 | Action Group | `ag-arb-review-prod` | — | $0 |
 | Metric Alerts | Various | — | $0 |
 

@@ -1,5 +1,5 @@
 resource "azurerm_log_analytics_workspace" "main" {
-  name                = "law-${var.prefix}-${var.env}"
+  name                = "log-${var.prefix}-${var.env}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   sku                 = "PerGB2018"
@@ -20,7 +20,7 @@ resource "azurerm_application_insights" "main" {
 
 # Budget alert — enforces the $60/month hard ceiling
 resource "azurerm_consumption_budget_resource_group" "main" {
-  name              = "budget-${var.prefix}-${var.env}"
+  name              = "bgt-${var.prefix}-${var.env}"
   resource_group_id = azurerm_resource_group.main.id
 
   amount     = var.budget_amount # $60
@@ -157,7 +157,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "orchestration_failure
 
 # Budget alert — early warning at 50% (new threshold for durable functions)
 resource "azurerm_consumption_budget_resource_group" "early_warning" {
-  name              = "budget-early-warning-${var.prefix}-${var.env}"
+  name              = "bgt-early-warning-${var.prefix}-${var.env}"
   resource_group_id = azurerm_resource_group.main.id
 
   amount     = var.budget_amount * 0.5 # $30 (50% of $60)

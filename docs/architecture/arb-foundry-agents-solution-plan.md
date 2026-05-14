@@ -90,15 +90,15 @@ The agent stores the system prompt + knowledge vector store — your code only s
 | Resource Group | `rg-arb-review-prod` | — | Container |
 | AI Foundry Hub | `hub-arb-review-prod` | Standard | AI governance layer |
 | AI Foundry Project | `proj-arb-review-prod` | — | Agent host |
-| AI Services | `ai-arb-review-prod` | S0 | OpenAI + Agents endpoint |
+| AI Services | `ais-arb-review-prod` | S0 | OpenAI + Agents endpoint |
 | Storage Account | `starbrevprod01` | LRS Standard | Blobs + Tables + Queues |
 | Azure Functions | `func-arb-review-api` | Consumption Y1 | API backend (22 functions) |
 | App Service Plan | `asp-arb-review` | Y1 (Dynamic) | Functions host |
-| Static Web App | `swa-arb-review-prod` | Free | Next.js frontend |
+| Static Web App | `stapp-arb-review-prod` | Free | Next.js frontend |
 | AI Search | `srch-arb-review-prod` | Free | ARB document chunk index |
 | Document Intelligence | `di-arb-review-prod` | Free (S0 if >500pg/mo) | PDF extraction |
 | Application Insights | `appi-arb-review-prod` | Pay-as-you-go | Observability |
-| Log Analytics | `law-arb-review-prod` | Pay-as-you-go | Log sink |
+| Log Analytics | `log-arb-review-prod` | Pay-as-you-go | Log sink |
 | Key Vault | `kv-arb-review-prod` | Standard | All secrets |
 
 **Model deployments (inside AI Services):**

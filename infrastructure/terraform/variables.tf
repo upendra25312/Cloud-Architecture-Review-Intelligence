@@ -62,9 +62,9 @@ variable "model_router_capacity" {
 }
 
 variable "foundry_project_endpoint" {
-  description = "Runtime Foundry project endpoint used by the Function App"
+  description = "Runtime Foundry project endpoint used by the Function App. After provisioning, set to https://ais-<prefix>-<env>.services.ai.azure.com/api/projects/proj-<prefix>-<env>"
   type        = string
-  default     = "https://ai-arb-review-prod.services.ai.azure.com/api/projects/arb-review-proj"
+  default     = "https://ais-arb-review-prod.services.ai.azure.com/api/projects/proj-arb-review-prod"
 }
 
 variable "embedding_model_version" {

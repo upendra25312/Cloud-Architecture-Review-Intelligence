@@ -7,7 +7,7 @@
 # ============================================================================
 
 resource "azurerm_cognitive_account" "vision" {
-  name                = "vision-${var.prefix}-${var.env}"
+  name                = "cog-vision-${var.prefix}-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   kind                = "ComputerVision"

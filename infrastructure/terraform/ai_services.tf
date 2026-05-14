@@ -1,11 +1,11 @@
 # AI Services account — hosts OpenAI model deployments and Foundry Agents API endpoint
 resource "azurerm_cognitive_account" "ai_services" {
-  name                       = "ai-${var.prefix}-${var.env}"
+  name                       = "ais-${var.prefix}-${var.env}"
   location                   = azurerm_resource_group.main.location
   resource_group_name        = azurerm_resource_group.main.name
   kind                       = "AIServices"
   sku_name                   = "S0"
-  custom_subdomain_name      = "ai-${var.prefix}-${var.env}"
+  custom_subdomain_name      = "ais-${var.prefix}-${var.env}"
   project_management_enabled = true
 
   identity {
