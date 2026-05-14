@@ -25,7 +25,7 @@
     "Cross-Origin-Opener-Policy": "same-origin",
     "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.monitor.azure.com https://*.applicationinsights.azure.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.azure.com https://*.microsoftonline.com https://*.applicationinsights.azure.com https://dc.services.visualstudio.com https://learn.microsoft.com; form-action 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;"
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.monitor.azure.com https://*.applicationinsights.azure.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.azure.com https://*.azurewebsites.net https://*.microsoftonline.com https://*.applicationinsights.azure.com https://dc.services.visualstudio.com https://learn.microsoft.com; form-action 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;"
   },
   "navigationFallback": {
     "rewrite": "/index.html",
