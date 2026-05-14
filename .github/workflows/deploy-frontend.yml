@@ -8,8 +8,6 @@ on:
       - '.github/workflows/deploy-frontend.yml'
   pull_request:
     branches: [main]
-    paths:
-      - 'frontend/**'
   workflow_dispatch:
 
 permissions:
