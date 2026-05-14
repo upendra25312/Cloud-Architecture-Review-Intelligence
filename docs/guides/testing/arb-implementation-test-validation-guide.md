@@ -146,7 +146,7 @@ cat .deployment-outputs.json
 Expected outputs:
 - `functionAppName` — `func-arb-review-api`
 - `storageAccountName` — `starbrevprod01`
-- `aiServicesEndpoint` — `https://ai-arb-review-prod.cognitiveservices.azure.com/`
+- `aiServicesEndpoint` — `https://ais-arb-review-prod.cognitiveservices.azure.com/`
 - `searchEndpoint` — `https://srch-arb-review-prod.search.windows.net`
 - `staticWebAppUrl` — `<generated>.azurestaticapps.net`
 - `projectEndpoint` — `https://proj-arb-review-prod.eastus2.api.azureml.ms`
@@ -195,7 +195,7 @@ Expected roles for Function App MI (7 total — all Managed Identity, zero keys)
 #### 2.1 Deploy Model Deployments
 
 ```bash
-AI_NAME="ai-arb-review-prod"
+AI_NAME="ais-arb-review-prod"
 RG="rg-arb-review-prod"
 
 # Deploy model-router (GlobalStandard, 100K TPM)
@@ -530,7 +530,7 @@ curl -s -X POST "${BASE}/arb/reviews" \
 #### 4.1 Configure Static Web App
 
 ```bash
-SWA_NAME="swa-arb-review-prod"
+SWA_NAME="stapp-arb-review-prod"
 API_URL="https://func-arb-review-api.azurewebsites.net"
 
 # Set environment variable for the frontend
@@ -556,7 +556,7 @@ npm run build
 npm install -g @azure/static-web-apps-cli
 swa deploy ./out \
   --deployment-token $(az staticwebapp secrets list \
-    --name swa-arb-review-prod \
+    --name stapp-arb-review-prod \
     --resource-group rg-arb-review-prod \
     --query properties.apiKey -o tsv) \
   --env production
@@ -1258,7 +1258,7 @@ func azure functionapp publish func-arb-review-api --node
 |---|---|---|
 | `functionAppName` | `func-arb-review-api` | CI/CD deploy command |
 | `storageAccountName` | `starbrevprod01` | `AZURE_STORAGE_ACCOUNT_NAME` env var |
-| `aiServicesEndpoint` | `https://ai-arb-review-prod.cognitiveservices.azure.com/` | Agent API base |
+| `aiServicesEndpoint` | `https://ais-arb-review-prod.cognitiveservices.azure.com/` | Agent API base |
 | `searchEndpoint` | `https://srch-arb-review-prod.search.windows.net` | `AZURE_SEARCH_ENDPOINT` env var |
 | `staticWebAppUrl` | `<random>.azurestaticapps.net` | NEXTAUTH_URL, CORS |
 | `projectEndpoint` | `https://proj-arb-review-prod.eastus2.api.azureml.ms` | `FOUNDRY_PROJECT_ENDPOINT` env var |

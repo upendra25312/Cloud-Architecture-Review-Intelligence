@@ -188,7 +188,7 @@ Current GitHub Actions use hardcoded values such as:
 
 - `func-arb-review-api`
 - `rg-arb-review-prod`
-- `acrcariofficerenderprod`
+- `crarbrevrenderprod`
 - `ca-cari-office-renderer-prod`
 - `https://red-coast-0b2d8700f.7.azurestaticapps.net`
 

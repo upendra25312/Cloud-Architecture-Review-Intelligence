@@ -14,22 +14,22 @@ The diagram is based on:
 flowchart TB
     User[Architecture Reviewer / Architect / ARB User]
     Browser[Browser]
-    SWA[Azure Static Web App\nswa-arb-review-prod\nNext.js frontend]
+    SWA[Azure Static Web App\nstapp-arb-review-prod\nNext.js frontend]
     FUNC[Azure Function App\nfunc-arb-review-api]
     RENDER[Azure Container App\nca-cari-office-renderer-prod\nOffice native-shape renderer]
-    ACR[Azure Container Registry\nacrcariofficerenderprod]
+    ACR[Azure Container Registry\ncrarbrevrenderprod]
     PLAN[App Service Plan\nasp-arb-review-prod]
     STORAGE[Azure Storage\nstarbrevprod01\nfiles / state / review artifacts]
     KV[Azure Key Vault\nkv-arb-review-prod]
-    AI[Azure AI Foundry\nai-arb-review-prod]
+    AI[Azure AI Foundry\nais-arb-review-prod]
     HUB[Azure AI Hub\nhub-arb-review-prod]
     PROJ[Azure AI Project\nproj-arb-review-prod]
     FPROJ[Foundry Project\narb-review-proj]
     SEARCH[Azure AI Search\nsrch-arb-review-prod]
     DOCINT[Azure Document Intelligence\ndi-arb-review-prod]
-    VISION[Azure Computer Vision\nvision-arb-review-prod]
+    VISION[Azure Computer Vision\ncog-vision-arb-review-prod]
     APPI[Application Insights\nappi-arb-review-prod]
-    LAW[Log Analytics\nlaw-arb-review-prod]
+    LAW[Log Analytics\nlog-arb-review-prod]
     ALERTS[Metric Alerts / Smart Detector Alerts]
     AG[Action Group\nag-arb-review-prod]
     USERSUB[Architecture documents / review evidence]
@@ -80,20 +80,20 @@ flowchart TB
 ## Diagram interpretation
 
 ### Experience layer
-- **Azure Static Web App (`swa-arb-review-prod`)** hosts the Next.js frontend.
+- **Azure Static Web App (`stapp-arb-review-prod`)** hosts the Next.js frontend.
 - Users interact with the system through browser-based architecture review workflows.
 
 ### Application and orchestration layer
 - **Azure Function App (`func-arb-review-api`)** handles API orchestration, review processing, integrations, and business logic.
 - **App Service Plan (`asp-arb-review-prod`)** provides the hosting plan context for the function app.
 - **Azure Container App (`ca-cari-office-renderer-prod`)** renders DOCX, PPTX, and XLSX native Office visual content to PNG when embedded-media extraction is not enough.
-- **Azure Container Registry (`acrcariofficerenderprod`)** stores the CARI Office Renderer container image deployed by GitHub Actions.
+- **Azure Container Registry (`crarbrevrenderprod`)** stores the CARI Office Renderer container image deployed by GitHub Actions.
 
 ### AI, search, and document intelligence layer
-- **Azure AI Foundry (`ai-arb-review-prod`)**, **Azure AI Hub (`hub-arb-review-prod`)**, and **Azure AI Projects (`proj-arb-review-prod`, `arb-review-proj`)** represent the AI platform foundation.
+- **Azure AI Foundry (`ais-arb-review-prod`)**, **Azure AI Hub (`hub-arb-review-prod`)**, and **Azure AI Projects (`proj-arb-review-prod`, `arb-review-proj`)** represent the AI platform foundation.
 - **Azure AI Search (`srch-arb-review-prod`)** supports retrieval and evidence grounding.
 - **Azure Document Intelligence (`di-arb-review-prod`)** supports structured extraction from uploaded review documents.
-- **Azure Computer Vision (`vision-arb-review-prod`)** supports visual analysis scenarios where needed.
+- **Azure Computer Vision (`cog-vision-arb-review-prod`)** supports visual analysis scenarios where needed.
 - The CARI API persists both text/table `evidenceFacts[]` and diagram-derived `visualEvidence[]` before invoking `cari-arb-review-agent`.
 - The architecture is evolving toward a deeper **Azure AI Foundry Agents API** pattern for richer review orchestration.
 
@@ -107,7 +107,7 @@ flowchart TB
 ### Data, security, and operations layer
 - **Azure Storage (`starbrevprod01`)** stores documents, state, and review-related artifacts.
 - **Azure Key Vault (`kv-arb-review-prod`)** secures secrets and configuration.
-- **Application Insights (`appi-arb-review-prod`)** and **Log Analytics (`law-arb-review-prod`)** provide observability.
+- **Application Insights (`appi-arb-review-prod`)** and **Log Analytics (`log-arb-review-prod`)** provide observability.
 - **Metric Alerts**, **Smart Detector Alerts**, and **Action Groups (`ag-arb-review-prod`)** provide operational monitoring and response capability.
 
 ## Current-state vs target-state note
