@@ -140,7 +140,7 @@ jobs:
       - name: Verify Deployment
         run: |
           sleep 20
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://red-coast-0b2d8700f.7.azurestaticapps.net/arb")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://thankful-pond-04383960f.7.azurestaticapps.net/arb")
           echo "Frontend status: $STATUS"
           [ "$STATUS" = "200" ] || (echo "FAIL: Frontend returned $STATUS" && exit 1)
           echo "PASS: Frontend is live"
