@@ -1,0 +1,24 @@
+{
+  "recommendations": [
+    // Azure
+    "ms-azuretools.vscode-azurefunctions",
+    "ms-azuretools.vscode-azurestaticwebapps",
+    "ms-azuretools.vscode-azurestorage",
+    "hashicorp.terraform",
+    // Frontend
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    // TypeScript / Node
+    "ms-vscode.vscode-typescript-next",
+    "vitest.explorer",
+    // Testing
+    "ms-playwright.playwright",
+    // Git / GitHub
+    "github.vscode-pull-request-github",
+    "eamodio.gitlens",
+    // Docs / Markdown
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint"
+  ]
+}

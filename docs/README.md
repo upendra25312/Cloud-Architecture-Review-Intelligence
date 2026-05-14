@@ -1,102 +1,86 @@
-# Documentation Guide
+# Documentation
 
-This directory contains the primary architecture, implementation, and validation documentation for Cloud Architecture Review Intelligence.
+This directory is the primary documentation hub for Cloud Architecture Review Intelligence (CARI).
 
-It serves as the documentation landing page for contributors, architects, engineers, reviewers, and stakeholders who want to understand how the solution is designed and how it is expected to evolve.
+> **New here?** Start with [`../README.md`](../README.md) for the solution overview, then [`../ARCHITECTURE.md`](../ARCHITECTURE.md) for the technical deep-dive.
 
-## Documentation objectives
+---
 
-The documentation in this repository is intended to help readers:
+## Structure
 
-- understand the purpose and architecture of the platform
-- review the intended Azure deployment model
-- follow implementation and validation guidance
-- navigate major solution artifacts quickly
-- align engineering work with architecture and governance goals
+```
+docs/
+├── adr/                   Architecture Decision Records
+├── architecture/          Solution design, agent plans, sync design
+│   └── foundry-agent-tools/  AI Foundry agent schemas, rubrics, tooling guidance
+├── assets/                Diagrams and presentation assets
+│   ├── diagrams/          Architecture diagrams (PNG/SVG — tracked in VCS)
+│   └── presentations/     Executive decks (gitignored — store in SharePoint)
+├── current-state/         Deployed environment snapshots and baselines
+├── guides/                How-to guides for common tasks
+│   ├── deployment/        Azure deployment and AZD runbooks
+│   ├── development/       Security approval, contribution process
+│   └── testing/           Manual test guides, validation checklists
+├── runbooks/              Operational runbooks and rollback procedures
+│   └── rca/               Root Cause Analysis documents
+└── target-state/          Future architecture goals and roadmap
+```
 
-## Recommended reading order
+---
 
-If you are new to the repository, use the following reading order:
+## Quick links
 
-1. [`../README.md`](../README.md)  
-   Start here for the overall solution overview, business context, architecture summary, and repository navigation.
+### Architecture
+| Document | Description |
+|----------|-------------|
+| [../ARCHITECTURE.md](../ARCHITECTURE.md) | High-level platform architecture overview |
+| [architecture/solution-architecture-diagram.md](architecture/solution-architecture-diagram.md) | Detailed solution architecture narrative |
+| [architecture/arb-foundry-agents-solution-plan.md](architecture/arb-foundry-agents-solution-plan.md) | Azure AI Foundry agents design and implementation plan |
+| [architecture/FINDING-ACTION-SYNC-DESIGN.md](architecture/FINDING-ACTION-SYNC-DESIGN.md) | Finding ↔ Action synchronisation design |
 
-2. [`../ARCHITECTURE.md`](../ARCHITECTURE.md)  
-   Read this for a concise explanation of the solution’s logical architecture and component responsibilities.
+### Architecture Decision Records
+| ADR | Decision |
+|-----|----------|
+| [adr/adr-001](adr/adr-001-azure-static-web-apps-hosting.md) | Azure Static Web Apps hosting |
+| [adr/adr-002](adr/adr-002-durable-functions-orchestration.md) | Durable Functions orchestration |
+| [adr/adr-003](adr/adr-003-managed-identity-no-keys.md) | Managed Identity — no client secrets |
+| [adr/adr-004](adr/adr-004-github-actions-oidc-deployment.md) | GitHub Actions OIDC deployment |
+| [adr/adr-005](adr/adr-005-terraform-infrastructure-as-code.md) | Terraform IaC |
 
-3. [`arb-foundry-agents-solution-plan.md`](./arb-foundry-agents-solution-plan.md)  
-   Review this for the detailed target architecture, Azure service design, cost model, phased plan, and implementation direction.
+### Deployment guides
+| Document | Description |
+|----------|-------------|
+| [guides/deployment/azd-up-down-deployment-plan.md](guides/deployment/azd-up-down-deployment-plan.md) | Azure Developer CLI (`azd up` / `azd down`) runbook |
+| [guides/deployment/DEPLOYMENT-GUIDE-DURABLE-FUNCTIONS.md](guides/deployment/DEPLOYMENT-GUIDE-DURABLE-FUNCTIONS.md) | Durable Functions deployment guide |
 
-4. [`arb-implementation-test-validation-guide.md`](./arb-implementation-test-validation-guide.md)  
-   Use this for implementation and validation guidance tied to testing and operational readiness.
+### Runbooks and incident response
+| Document | Description |
+|----------|-------------|
+| [runbooks/rollback-frontend.md](runbooks/rollback-frontend.md) | Frontend rollback procedure |
+| [runbooks/rollback-api.md](runbooks/rollback-api.md) | API rollback procedure |
+| [runbooks/durable-functions-rollback-runbook.md](runbooks/durable-functions-rollback-runbook.md) | Durable Functions rollback |
+| [runbooks/rca/RCA-401-ERROR-ARB-REVIEW.md](runbooks/rca/RCA-401-ERROR-ARB-REVIEW.md) | RCA: 401 error in ARB review |
+| [runbooks/rca/RCA-EXPORT-BOARD-PACK.md](runbooks/rca/RCA-EXPORT-BOARD-PACK.md) | RCA: Export Board Pack fix |
 
-5. [`azd-up-down-deployment-plan.md`](./azd-up-down-deployment-plan.md)  
-   Use this for the Azure Developer CLI deployment plan and engineer runbook for `azd up` / `azd down`.
+### Guides
+| Document | Description |
+|----------|-------------|
+| [guides/testing/MANUAL-TEST-DOMAIN-FILTER.md](guides/testing/MANUAL-TEST-DOMAIN-FILTER.md) | Manual testing: domain filter |
+| [guides/testing/arb-implementation-test-validation-guide.md](guides/testing/arb-implementation-test-validation-guide.md) | ARB implementation test and validation guide |
+| [guides/development/SECURITY-APPROVAL-PREREQUISITES.md](guides/development/SECURITY-APPROVAL-PREREQUISITES.md) | Security approval prerequisites |
 
-6. [`../services/office-renderer/README.md`](../services/office-renderer/README.md)  
-   Review this for the deployed Office native-shape rendering service used by the visual evidence pre-processor.
+### Current and target state
+| Document | Description |
+|----------|-------------|
+| [current-state/README.md](current-state/README.md) | Deployed environment current state |
+| [current-state/performance-baseline.md](current-state/performance-baseline.md) | Performance baseline |
+| [target-state/README.md](target-state/README.md) | Target architecture and roadmap |
 
-## Current key documents
-
-### Solution and architecture
-- [`arb-foundry-agents-solution-plan.md`](./arb-foundry-agents-solution-plan.md)
-- [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
-
-### Implementation and validation
-- [`arb-implementation-test-validation-guide.md`](./arb-implementation-test-validation-guide.md)
-- [`azd-up-down-deployment-plan.md`](./azd-up-down-deployment-plan.md)
-- [`../services/office-renderer/README.md`](../services/office-renderer/README.md)
-
-### Deployment
-- [`azd-up-down-deployment-plan.md`](./azd-up-down-deployment-plan.md) documents the target Azure Developer CLI path for deploying CARI with `azd up` and destroying non-production environments with `azd down --purge`.
-
-### Visual evidence and rendering
-- Visual evidence pre-processor: implemented in the Azure Functions API extraction pipeline.
-- Office native-shape renderer: implemented in [`../services/office-renderer`](../services/office-renderer).
-- Renderer infrastructure: implemented in [`../infrastructure/terraform/office_renderer.tf`](../infrastructure/terraform/office_renderer.tf).
-- Renderer deployment: implemented in [`../.github/workflows/deploy-office-renderer.yml`](../.github/workflows/deploy-office-renderer.yml).
-
-The visual evidence pre-processor extracts and analyzes diagram-derived facts before `cari-arb-review-agent` runs. It supports PDF figure extraction, PDF page-render fallback, Office embedded media extraction, Office native-shape rendering fallback, and standalone image uploads. The ARB agent receives `visualEvidence[]` records and must cite `visualEvidenceId` when using diagram-derived facts.
-
-### Repository entry points
-- [`../README.md`](../README.md)
-- [`../CONTRIBUTING.md`](../CONTRIBUTING.md)
-- [`../SECURITY.md`](../SECURITY.md)
+---
 
 ## Documentation principles
 
-Documentation in this repository should aim to be:
-
-- clear and professional
-- accurate to the current state of the repository
-- useful for both technical and stakeholder audiences
-- aligned with enterprise Azure architecture practices
-- specific enough to guide implementation without overstating maturity
-
-## Suggested future additions
-
-As the repository evolves, useful future documentation may include:
-
-- deployment runbooks
-- environment setup guides
-- architecture decision records
-- API reference documentation
-- governance rubric documentation
-- operations and monitoring runbooks
-- troubleshooting guides
-- release notes and change summaries
-
-## Wiki and external references
-
-Additional context may also be available from:
-- the repository wiki
-- the public site or demo experience
-- implementation assets in `frontend/`, `api/`, and `infrastructure/`
-
-## Maintaining documentation quality
-
-When updating docs:
-- keep business and technical claims aligned to the codebase
-- update related files together where appropriate
-- prefer concise, navigable structure over excessive prose
-- preserve clear distinctions between current state and target-state architecture
+- Clearly distinguish **current state** (what is live) from **target state** (what we are building toward)
+- Keep links accurate — update them when files move
+- Architecture docs live in `architecture/`, operational docs in `runbooks/`, how-to in `guides/`
+- ADRs record decisions that were made — never delete, only supersede
