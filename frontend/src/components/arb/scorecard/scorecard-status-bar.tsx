@@ -34,12 +34,6 @@ export function ScorecardStatusBar({
         Evidence: <strong>{scorecard.evidenceReadinessState}</strong>
       </span>
 
-      {scorecard.confidence === "Low" && (
-        <span className={styles.metricBadge} style={{ color: "#B45309", fontWeight: 600 }}>
-          ⚠ Provisional scorecard
-        </span>
-      )}
-
       <button
         className="primary-button"
         onClick={onExport}

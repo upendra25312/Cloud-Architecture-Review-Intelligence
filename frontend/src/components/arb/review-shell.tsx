@@ -183,16 +183,9 @@ export function ArbReviewShell(props: {
               </div>
               <div className="arb-shell-metric">
                 <p className="arb-shell-metric-label">Score</p>
-                {review.evidenceReadinessState === "Insufficient Evidence" ? (
-                  <p className="arb-shell-metric-value arb-shell-score arb-shell-score-pending" title="Score is provisional — insufficient evidence to validate">
-                    {review.overallScore ?? "—"}
-                    <span className="arb-shell-score-caveat"> (provisional)</span>
-                  </p>
-                ) : (
-                  <p className={`arb-shell-metric-value arb-shell-score ${getScoreClass(review.overallScore)}`}>
-                    {review.overallScore ?? "Pending"}
-                  </p>
-                )}
+                <p className={`arb-shell-metric-value arb-shell-score ${getScoreClass(review.overallScore)}`}>
+                  {review.overallScore ?? "Pending"}
+                </p>
               </div>
             </div>
             <p className="arb-shell-posture-note">{postureActionHint}</p>

@@ -197,10 +197,10 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
         {isFallback && (
           <div className="arb-partial-run-notice">
             <span className="arb-partial-run-notice-text">
-              Scores are provisional — AI analysis was unavailable during the last run.
+              Upload your architecture evidence and run the automated assessment to get framework-grounded scores.
             </span>
             <a href={`/arb?reviewId=${encodeURIComponent(reviewId)}&step=upload#run-automated-analysis`} className="arb-partial-run-notice-link">
-              Re-run for framework-grounded scores →
+              Complete your analysis →
             </a>
           </div>
         )}
