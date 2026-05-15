@@ -565,14 +565,24 @@ function shapeReviewDataForPptx(review, files, requirements, evidence, findings,
     reason: d.reason ?? "",
   }));
 
-  // Build SOW traceability from evidence tagged as sow
-  const sowEvidence = (evidence || []).filter((e) => e.category === "sow" || e.logicalCategory === "sow");
-  const sowTraceability = sowEvidence.slice(0, 10).map((e) => ({
-    area: e.domain || e.factType || "Architecture",
-    sowRef: e.sourceFile ? `${e.sourceFile} §${e.sourceChunk ?? ""}` : "—",
-    evidenceSource: e.sourceFile || "—",
-    status: "In scope",
-  }));
+  // Build SOW traceability from files tagged as SOW + their extracted requirements.
+  // Evidence objects in storage do not carry logicalCategory, so filter from files instead.
+  const sowFiles = (files || []).filter((f) => (f.logicalCategory || "").toLowerCase() === "sow");
+  const sowFileIds = new Set(sowFiles.map((f) => f.fileId));
+  const sowReqs = (requirements || []).filter((r) => sowFileIds.has(r.sourceFileId)).slice(0, 10);
+  const sowTraceability = sowReqs.length > 0
+    ? sowReqs.map((r) => ({
+        area: r.category || "Architecture",
+        sowRef: r.sourceFileName || "SOW",
+        evidenceSource: r.sourceFileName || "SOW",
+        status: "In scope",
+      }))
+    : sowFiles.slice(0, 10).map((f) => ({
+        area: "Scope",
+        sowRef: f.fileName,
+        evidenceSource: f.fileName,
+        status: "In scope",
+      }));
 
   return {
     reviewId: review?.reviewId ?? "unknown",
