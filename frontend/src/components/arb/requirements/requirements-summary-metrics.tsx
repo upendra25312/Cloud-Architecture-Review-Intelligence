@@ -8,9 +8,10 @@ export interface RequirementsSummaryMetricsProps {
 }
 
 export function RequirementsSummaryMetrics({ metrics }: RequirementsSummaryMetricsProps) {
+  const allPending = metrics.total > 0 && metrics.pendingCount === metrics.total;
   const acceptanceTone =
-    metrics.acceptanceRate >= 80 ? "green" : metrics.acceptanceRate >= 50 ? "amber" : "red";
-  const acceptanceClass = styles[`metricValue--${acceptanceTone}`];
+    allPending ? "pending" : metrics.acceptanceRate >= 80 ? "green" : metrics.acceptanceRate >= 50 ? "amber" : "red";
+  const acceptanceClass = acceptanceTone === "pending" ? styles.metricValue : styles[`metricValue--${acceptanceTone}`];
 
   return (
     <div className={styles.summaryMetrics}>
@@ -22,9 +23,11 @@ export function RequirementsSummaryMetrics({ metrics }: RequirementsSummaryMetri
       </div>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <span className={`${styles.criticalityBadge} ${styles["criticalityBadge--high"]}`}>
-          {metrics.highCount} High
-        </span>
+        {metrics.highCount > 0 && (
+          <span className={`${styles.criticalityBadge} ${styles["criticalityBadge--high"]}`}>
+            {metrics.highCount} High
+          </span>
+        )}
         <span className={`${styles.criticalityBadge} ${styles["criticalityBadge--medium"]}`}>
           {metrics.mediumCount} Medium
         </span>
@@ -34,8 +37,8 @@ export function RequirementsSummaryMetrics({ metrics }: RequirementsSummaryMetri
         <p style={{ margin: 0, fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--brand, #0078D4)" }}>
           Acceptance rate
         </p>
-        <p className={`${styles.metricValue} ${acceptanceClass}`}>
-          {metrics.acceptanceRate}%
+        <p className={acceptanceClass}>
+          {allPending ? "Not yet reviewed" : `${metrics.acceptanceRate}%`}
         </p>
       </div>
 

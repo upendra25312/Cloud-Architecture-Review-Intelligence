@@ -114,7 +114,14 @@ export function ArbReviewShell(props: {
   const guidance = getStepGuidance(activeStep);
   const activeStepLabel = steps.find((step) => step.key === activeStep)?.label ?? "Overview";
   const postureActionHint = getPostureActionHint(review);
-  const recommendationValue = review.finalDecision ?? review.recommendation ?? "Pending";
+  const aiRecommendation = review.recommendation ?? "Pending";
+  // Conflict: reviewer approved but AI recommends remediation/revision
+  const hasDecisionConflict =
+    !!review.finalDecision &&
+    !!review.recommendation &&
+    review.finalDecision !== review.recommendation &&
+    review.finalDecision === "Approved" &&
+    (review.recommendation === "Needs Remediation" || review.recommendation === "Needs Revision");
 
   // Generate a derived summary when model-backed review output does not provide one.
   const derivedSummary = reviewSummary || (
@@ -178,9 +185,15 @@ export function ArbReviewShell(props: {
                 <p className="arb-shell-metric-value">{review.evidenceReadinessState}</p>
               </div>
               <div className="arb-shell-metric">
-                <p className="arb-shell-metric-label">Recommendation</p>
-                <p className="arb-shell-metric-value">{recommendationValue}</p>
+                <p className="arb-shell-metric-label">AI Recommendation</p>
+                <p className="arb-shell-metric-value">{aiRecommendation}</p>
               </div>
+              {review.finalDecision && (
+                <div className="arb-shell-metric">
+                  <p className="arb-shell-metric-label">Reviewer Decision</p>
+                  <p className="arb-shell-metric-value">{review.finalDecision}</p>
+                </div>
+              )}
               <div className="arb-shell-metric">
                 <p className="arb-shell-metric-label">Score</p>
                 <p className={`arb-shell-metric-value arb-shell-score ${getScoreClass(review.overallScore)}`}>
@@ -188,6 +201,11 @@ export function ArbReviewShell(props: {
                 </p>
               </div>
             </div>
+            {hasDecisionConflict && (
+              <p style={{ margin: "8px 0 4px", fontSize: "0.78rem", color: "#B45309", fontWeight: 600, lineHeight: 1.4 }}>
+                ⚠ Reviewer decision overrides AI recommendation — ensure rationale is documented before export.
+              </p>
+            )}
             <p className="arb-shell-posture-note">{postureActionHint}</p>
           </aside>
         </div>
