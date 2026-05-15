@@ -53,9 +53,9 @@ Demo-day freeze: **NO production deploy without explicit approval.**
 
 ## Phase 7 — Commit
 
-- [ ] Stage and commit all changes to `feat/cari-comprehensive-v2` (NOT main — demo-day freeze)
-  - Files: `api/package.json`, `api/package-lock.json`, `api/src/shared/arb-pptx-export.js`, `api/src/functions/arbCreatePptxExport.js`, `api/src/shared/arb-review-store.js`, `api/src/shared/arb-rules-engine.js`, `api/data/arb-rules/migration-rules.json`, `frontend/src/arb/api.ts`, `frontend/src/components/arb/evidence/evidence-export-section.tsx`, `frontend/src/components/arb/evidence/arb-evidence-page.tsx`, `frontend/app/components/home/home-copy.ts`
-  - **DO NOT stage:** `infrastructure/terraform/static_web.tf` (stale uncommitted Terraform — leave as-is)
+- [x] Stage and commit all changes to `feat/cari-comprehensive-v2` — commit `3c3d7c0`
+  - 12 files, 1128 insertions: API (pptx, migration rules, store, engine), frontend (export UI, homepage copy), docs (task tracker)
+  - `infrastructure/terraform/static_web.tf` intentionally excluded (stale, leave as-is)
 
 ---
 
