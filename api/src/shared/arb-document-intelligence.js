@@ -104,7 +104,17 @@ async function extractDocumentText(buffer, contentType, fileName) {
       contentType: contentType || "application/octet-stream"
     });
 
-    const result = await poller.pollUntilDone();
+    // Guard against indefinite hangs — DI SDK pollUntilDone has no built-in timeout.
+    // 90 s is enough for all supported doc sizes; beyond that the file is marked Failed
+    // so the rest of the extraction pipeline can continue rather than stalling forever.
+    const abortController = new AbortController();
+    const abortTimer = setTimeout(() => abortController.abort(), 90000);
+    let result;
+    try {
+      result = await poller.pollUntilDone({ abortSignal: abortController.signal });
+    } finally {
+      clearTimeout(abortTimer);
+    }
 
     if (!result || !result.content) {
       return null;
@@ -112,7 +122,10 @@ async function extractDocumentText(buffer, contentType, fileName) {
 
     return buildTextFromAnalysisResult(result, fileName);
   } catch (err) {
-    throw new Error(`Azure Document Intelligence extraction failed for ${fileName}: ${err?.message ?? err}`);
+    const msg = err?.name === "AbortError"
+      ? `Azure Document Intelligence timed out after 90 s for ${fileName}`
+      : `Azure Document Intelligence extraction failed for ${fileName}: ${err?.message ?? err}`;
+    throw new Error(msg);
   }
 }
 

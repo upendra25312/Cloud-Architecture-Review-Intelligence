@@ -3389,6 +3389,21 @@ async function startArbExtraction(principal, reviewId) {
     }));
   }
 
+  // Per-file extraction timeout — prevents a single hung file (e.g. DI stall, network hang)
+  // from blocking the entire pipeline. 120 s is well above the DI abort guard (90 s) so
+  // this only fires when an unexpected code path fails to self-cancel.
+  async function withFileTimeout(fn, file, timeoutMs = 120000) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`File extraction timed out after ${timeoutMs / 1000}s`)), timeoutMs);
+    });
+    try {
+      return await Promise.race([fn(), timeout]);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   for (const file of files) {
     const isSpreadsheet = supportsSpreadsheetExtraction(file.fileName);
     const isDiagram = supportsDiagramExtraction(file.fileName);
@@ -3558,77 +3573,79 @@ async function startArbExtraction(principal, reviewId) {
       }
 
       try {
-        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+        await withFileTimeout(async () => {
+          const buffer = await readBinaryBlob(inputContainer, file.blobPath);
 
-        if (!buffer || buffer.length === 0) {
-          nextFiles.push({
-            ...file,
-            extractionStatus: "Failed",
-            extractionError: "Document file could not be read from storage."
-          });
-          extractionErrors.push(`${file.fileName}: empty blob.`);
-          continue;
-        }
+          if (!buffer || buffer.length === 0) {
+            nextFiles.push({
+              ...file,
+              extractionStatus: "Failed",
+              extractionError: "Document file could not be read from storage."
+            });
+            extractionErrors.push(`${file.fileName}: empty blob.`);
+            return;
+          }
 
-        let text = null;
-        let extractionSource = "Document Intelligence";
+          let text = null;
+          let extractionSource = "Document Intelligence";
 
-        await processOfficeVisualEvidence(file, buffer);
+          await processOfficeVisualEvidence(file, buffer);
 
-        if (diConfig.configured) {
-          if (getFileExtension(file.fileName) === ".pdf") {
-            const [layoutResult, renderResult] = await Promise.allSettled([
-              extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true }),
-              renderOfficeVisualArtifacts(buffer, file.fileName)
-            ]);
+          if (diConfig.configured) {
+            if (getFileExtension(file.fileName) === ".pdf") {
+              const [layoutResult, renderResult] = await Promise.allSettled([
+                extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true }),
+                renderOfficeVisualArtifacts(buffer, file.fileName)
+              ]);
 
-            const prerendered = renderResult.status === "fulfilled"
-              ? renderResult.value
-              : {
-                artifacts: [],
-                warnings: [`${file.fileName}: PDF page render fallback failed: ${renderResult.reason instanceof Error ? renderResult.reason.message : String(renderResult.reason)}`]
-              };
+              const prerendered = renderResult.status === "fulfilled"
+                ? renderResult.value
+                : {
+                  artifacts: [],
+                  warnings: [`${file.fileName}: PDF page render fallback failed: ${renderResult.reason instanceof Error ? renderResult.reason.message : String(renderResult.reason)}`]
+                };
 
-            if (layoutResult.status === "fulfilled") {
-              const layout = layoutResult.value;
-              text = layout.text;
-              await processPdfVisualEvidence(file, layout, buffer, prerendered);
+              if (layoutResult.status === "fulfilled") {
+                const layout = layoutResult.value;
+                text = layout.text;
+                await processPdfVisualEvidence(file, layout, buffer, prerendered);
+              } else {
+                const message = layoutResult.reason instanceof Error ? layoutResult.reason.message : String(layoutResult.reason);
+                visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
+                await processPdfVisualEvidence(file, null, buffer, prerendered);
+                text = await extractDocumentText(buffer, file.contentType, file.fileName);
+              }
             } else {
-              const message = layoutResult.reason instanceof Error ? layoutResult.reason.message : String(layoutResult.reason);
-              visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
-              await processPdfVisualEvidence(file, null, buffer, prerendered);
               text = await extractDocumentText(buffer, file.contentType, file.fileName);
             }
-          } else {
-            text = await extractDocumentText(buffer, file.contentType, file.fileName);
           }
-        }
 
-        // Vision Service OCR fallback — used when DI is not configured or returned no text.
-        // Only applies to formats Vision Read API accepts (PDF, JPEG, PNG, TIFF, BMP, GIF).
-        if ((!text || !text.trim()) && canUseVisionFallback) {
-          text = await extractTextWithVision(buffer, file.contentType, file.fileName);
-          extractionSource = "Azure Vision Service (OCR fallback)";
-        }
+          // Vision Service OCR fallback — used when DI is not configured or returned no text.
+          // Only applies to formats Vision Read API accepts (PDF, JPEG, PNG, TIFF, BMP, GIF).
+          if ((!text || !text.trim()) && canUseVisionFallback) {
+            text = await extractTextWithVision(buffer, file.contentType, file.fileName);
+            extractionSource = "Azure Vision Service (OCR fallback)";
+          }
 
-        if (!text || !text.trim()) {
-          nextFiles.push({
-            ...file,
-            extractionStatus: "Failed",
-            extractionError: diConfig.configured
-              ? "Azure AI Document Intelligence returned no text for this document."
-              : "Document Intelligence is not configured and Azure Vision Service OCR returned no text."
-          });
-          extractionErrors.push(`${file.fileName}: ${extractionSource} returned no text.`);
-          continue;
-        }
+          if (!text || !text.trim()) {
+            nextFiles.push({
+              ...file,
+              extractionStatus: "Failed",
+              extractionError: diConfig.configured
+                ? "Azure AI Document Intelligence returned no text for this document."
+                : "Document Intelligence is not configured and Azure Vision Service OCR returned no text."
+            });
+            extractionErrors.push(`${file.fileName}: ${extractionSource} returned no text.`);
+            return;
+          }
 
-        fileTexts.set(file.fileId, text);
-        nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
+          fileTexts.set(file.fileId, text);
+          nextFiles.push({ ...file, extractionStatus: "Completed", extractionError: null });
 
-        if (searchIndexed) {
-          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
-        }
+          if (searchIndexed) {
+            indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}" (review ${reviewId}):`, err?.message ?? err); });
+          }
+        }, file);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown Document Intelligence error.";
         nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });

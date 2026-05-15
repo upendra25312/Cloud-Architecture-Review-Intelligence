@@ -304,6 +304,9 @@ export function ArbLiveReviewStep(props: {
   const [timerNow, setTimerNow] = useState(() => Date.now());
   // Tracks highest progress seen — prevents bar from going backwards when polls return stale stage data
   const epPctHighWater = useRef(0);
+  // Tracks the previous jobId so we only reset the high-water mark when switching between two real jobs,
+  // not when the jobId first appears (which caused the bar to bounce: 75% → 0% → 34%)
+  const epPctPrevJobId = useRef<string | undefined>(undefined);
   const actionSummary = summarizeActions(actions);
   const authRequired = error?.includes("Sign in is required") ?? false;
   const sowMissingForSignoff = Boolean(
@@ -675,9 +678,16 @@ export function ArbLiveReviewStep(props: {
     return () => window.clearInterval(id);
   }, [extractionStatus?.state, extractionStarting, agentRunning]);
 
-  // Reset high-water mark when a new extraction job starts so the bar resets cleanly
+  // Reset high-water mark only when switching from one real job to a DIFFERENT real job.
+  // Do NOT reset when jobId first appears (null → "xyz") — that caused the bar to bounce
+  // from an intermediate value (e.g. 75%) back down to the file-only floor (34%).
   useEffect(() => {
-    if (extractionStatus?.jobId) epPctHighWater.current = 0;
+    const prev = epPctPrevJobId.current;
+    const curr = extractionStatus?.jobId;
+    if (prev && curr && prev !== curr) {
+      epPctHighWater.current = 0;
+    }
+    epPctPrevJobId.current = curr;
   }, [extractionStatus?.jobId]);
 
   const shellReview =
