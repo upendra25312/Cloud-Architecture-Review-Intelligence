@@ -58,7 +58,7 @@ export function FindingsStatusBar({
             Score: <strong>{score}</strong>
           </>
         ) : (
-          "Pending"
+          "Score: —"
         )}
       </span>
 

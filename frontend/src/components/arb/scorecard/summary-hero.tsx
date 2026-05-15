@@ -58,13 +58,9 @@ export function SummaryHero({ scorecard, openActionCount }: SummaryHeroProps) {
           <span className={styles.metricBadge}>
             Confidence: <strong>{scorecard.confidence}</strong>
           </span>
-          {scorecard.criticalBlockers > 0 ? (
+          {scorecard.criticalBlockers > 0 && (
             <span className={styles.blockerBadge}>
-              Blockers: <strong>{scorecard.criticalBlockers}</strong>
-            </span>
-          ) : (
-            <span className={styles.metricBadge}>
-              Blockers: <strong>0</strong>
+              <strong>{scorecard.criticalBlockers}</strong> unresolved blocker{scorecard.criticalBlockers !== 1 ? "s" : ""}
             </span>
           )}
           <span className={styles.metricBadge}>

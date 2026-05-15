@@ -34,12 +34,6 @@ export function ScorecardStatusBar({
         Evidence: <strong>{scorecard.evidenceReadinessState}</strong>
       </span>
 
-      {scorecard.criticalBlockers > 0 && (
-        <span className={styles.blockerBadge}>
-          🚫 <strong>{scorecard.criticalBlockers}</strong> blocker{scorecard.criticalBlockers !== 1 ? "s" : ""}
-        </span>
-      )}
-
       {scorecard.confidence === "Low" && (
         <span className={styles.metricBadge} style={{ color: "#B45309", fontWeight: 600 }}>
           ⚠ Provisional scorecard
