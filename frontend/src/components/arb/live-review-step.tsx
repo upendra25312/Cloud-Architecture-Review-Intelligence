@@ -890,9 +890,15 @@ export function ArbLiveReviewStep(props: {
           </article>
           <article className="future-card">
             <p className="board-card-subtitle">Visual / binary files</p>
-            <strong>{unsupportedUploads.length}</strong>
+            <strong>
+              {(extractionStatus?.visualEvidenceCount ?? 0) > 0
+                ? extractionStatus!.visualEvidenceCount
+                : unsupportedUploads.length}
+            </strong>
             <p className="section-copy">
-              Images, Draw.io, Visio, and spreadsheets are extracted for review evidence when supported.
+              {(extractionStatus?.visualEvidenceCount ?? 0) > 0
+                ? `${extractionStatus!.visualEvidenceCount} visual evidence items extracted — includes diagrams and images found inside uploaded documents.`
+                : "Images, Draw.io, Visio, spreadsheets, and architecture diagrams embedded in PDFs are extracted for review evidence."}
             </p>
           </article>
           <article className="future-card">

@@ -17,3 +17,11 @@ resource "azurerm_static_web_app" "main" {
     ]
   }
 }
+
+# Links the Function App as the API backend for the SWA.
+# Without this, /api/* requests from the browser return 404.
+# The SWA proxies /api/* to the Function App and injects x-ms-client-principal auth headers.
+resource "azurerm_static_web_app_function_app_registration" "api" {
+  static_web_app_id = azurerm_static_web_app.main.id
+  function_app_id   = azurerm_linux_function_app.main.id
+}

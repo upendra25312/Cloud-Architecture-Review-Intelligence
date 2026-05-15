@@ -19,6 +19,7 @@
     "durable-functions": "^3.0.0",
     "exceljs": "^4.4.0",
     "jszip": "^3.10.1",
+    "pdf-parse": "^1.1.1",
     "parse-multipart-data": "^1.5.0",
     "pptxgenjs": "^4.0.1"
   },
