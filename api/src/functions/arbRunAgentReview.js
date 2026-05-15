@@ -9,7 +9,9 @@ const {
   getArbEvidence,
   getArbVisualEvidence,
   getArbActions,
-  syncArbReviewedOutputs
+  syncArbReviewedOutputs,
+  capFindingsForTableStorage,
+  capScorecardForTableStorage
 } = require("../shared/arb-review-store");
 const { searchArbDocuments, ensureArbSearchIndex } = require("../shared/arb-search");
 const { runArbAgentReview, getFoundryConfiguration, buildFallbackAgentReview } = require("../shared/arb-foundry-agent");
@@ -266,18 +268,20 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
   const userId = principal.userId;
 
   if (agentResult.findings && agentResult.findings.length > 0) {
-    await client.upsertEntity({ partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("FINDINGS", userId), findingsJson: JSON.stringify(agentResult.findings) }, "Replace");
+    const safeFindings = capFindingsForTableStorage(agentResult.findings);
+    await client.upsertEntity({ partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("FINDINGS", userId), findingsJson: JSON.stringify(safeFindings) }, "Replace");
   }
 
   if (agentResult.scorecard) {
+    const sc = capScorecardForTableStorage(agentResult.scorecard);
     await client.upsertEntity({
       partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("SCORECARD", userId),
-      overallScore: agentResult.scorecard.overallScore, recommendation: agentResult.scorecard.recommendation,
-      criticalBlockerCount: agentResult.scorecard.criticalBlockerCount, missingEvidenceCount: agentResult.scorecard.missingEvidenceCount,
-      confidenceLevel: agentResult.scorecard.confidenceLevel, dimensionScoresJson: JSON.stringify(agentResult.scorecard.dimensionScores),
-      reviewSummary: agentResult.scorecard.reviewSummary, strengthsJson: JSON.stringify(agentResult.scorecard.strengths),
-      missingEvidenceJson: JSON.stringify(agentResult.scorecard.missingEvidence), criticalBlockersJson: JSON.stringify(agentResult.scorecard.criticalBlockers),
-      nextActionsJson: JSON.stringify(agentResult.scorecard.nextActions), evidenceReadinessState: review.evidenceReadinessState,
+      overallScore: sc.overallScore, recommendation: sc.recommendation,
+      criticalBlockerCount: sc.criticalBlockerCount, missingEvidenceCount: sc.missingEvidenceCount,
+      confidenceLevel: sc.confidenceLevel, dimensionScoresJson: JSON.stringify(sc.dimensionScores),
+      reviewSummary: sc.reviewSummary, strengthsJson: JSON.stringify(sc.strengths),
+      missingEvidenceJson: JSON.stringify(sc.missingEvidence), criticalBlockersJson: JSON.stringify(sc.criticalBlockers),
+      nextActionsJson: JSON.stringify(sc.nextActions), evidenceReadinessState: review.evidenceReadinessState,
       source: "agent", generatedAt: now
     }, "Replace");
   }

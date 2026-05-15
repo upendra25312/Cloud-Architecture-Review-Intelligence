@@ -2367,6 +2367,53 @@ function capVisualEvidenceForTableStorage(visualEvidence) {
   return subset;
 }
 
+function capFindingsForTableStorage(findings) {
+  if (!Array.isArray(findings) || findings.length === 0) return [];
+  const trim = (s, n) => typeof s === "string" ? s.slice(0, n) : s;
+  const capped = findings.map((f) => ({
+    ...f,
+    findingStatement: trim(f.findingStatement, 600),
+    whyItMatters: trim(f.whyItMatters, 400),
+    recommendation: trim(f.recommendation, 500),
+    evidenceBasis: trim(f.evidenceBasis, 500),
+    evidenceFound: Array.isArray(f.evidenceFound)
+      ? f.evidenceFound.slice(0, 3).map((e) => ({ ...e, summary: trim(e.summary, 200) }))
+      : f.evidenceFound,
+    missingEvidence: Array.isArray(f.missingEvidence)
+      ? f.missingEvidence.slice(0, 3).map((m) => (typeof m === "string" ? m.slice(0, 200) : m))
+      : f.missingEvidence,
+  }));
+  let subset = capped;
+  while (subset.length > 0 && JSON.stringify(subset).length > TABLE_STORAGE_PROPERTY_CHAR_LIMIT) {
+    subset = subset.slice(0, Math.max(1, Math.floor(subset.length * 0.8)));
+  }
+  return subset;
+}
+
+function capScorecardForTableStorage(scorecard) {
+  if (!scorecard) return scorecard;
+  const trim = (s, n) => typeof s === "string" ? s.slice(0, n) : s;
+  const trimArr = (arr, maxItems, maxChars) =>
+    Array.isArray(arr)
+      ? arr.slice(0, maxItems).map((item) => (typeof item === "string" ? item.slice(0, maxChars) : item))
+      : arr;
+  return {
+    ...scorecard,
+    reviewSummary: trim(scorecard.reviewSummary, 2000),
+    dimensionScores: Array.isArray(scorecard.dimensionScores)
+      ? scorecard.dimensionScores.map((d) => ({
+          ...d,
+          rationale: trim(d.rationale, 400),
+          blockers: trimArr(d.blockers, 3, 200),
+        }))
+      : scorecard.dimensionScores,
+    strengths: trimArr(scorecard.strengths, 8, 400),
+    missingEvidence: trimArr(scorecard.missingEvidence, 12, 300),
+    criticalBlockers: trimArr(scorecard.criticalBlockers, 6, 400),
+    nextActions: trimArr(scorecard.nextActions, 10, 400),
+  };
+}
+
 function toEvidenceEntity(reviewId, userId, evidence, visualEvidence = []) {
   const safeVisualEvidence = capVisualEvidenceForTableStorage(visualEvidence);
   return {
@@ -4472,6 +4519,8 @@ async function recordArbDecision(principal, reviewId, input = {}) {
 module.exports = {
   buildDefaultActions,
   buildDefaultEvidence,
+  capFindingsForTableStorage,
+  capScorecardForTableStorage,
   buildDefaultExports,
   buildDefaultFindings,
   buildDefaultExtractionStatus,

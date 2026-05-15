@@ -4514,6 +4514,85 @@ button.chip:disabled:hover {
   border: 1px solid #BFDBFE;
 }
 
+/* ── Extraction progress panel ── */
+.arb-ep-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.arb-ep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.arb-ep-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.arb-ep-pct {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0078D4;
+  min-width: 3.5ch;
+  text-align: right;
+}
+
+.arb-ep-bar-track {
+  height: 8px;
+  background: #BFDBFE;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.arb-ep-bar-fill {
+  height: 100%;
+  background: #0078D4;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  min-width: 8px;
+}
+
+.arb-ep-steps {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.arb-ep-step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #6B7280;
+}
+
+.arb-ep-step-done {
+  color: #166534;
+}
+
+.arb-ep-step-active {
+  color: #0078D4;
+}
+
+.arb-ep-step-icon {
+  font-size: 0.75rem;
+}
+
+.arb-ep-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
 .arb-upload-error {
   margin-top: 10px;
   font-size: 0.875rem;

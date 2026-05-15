@@ -797,6 +797,38 @@ export function ArbLiveReviewStep(props: {
           );
     const canStartExtraction = readinessChecks.every((check) => check.complete) && !uploadSaving;
 
+    const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running";
+    const epSteps = [
+      { label: "Text", value: extractionStatus?.textExtractionStatus },
+      { label: "Tables", value: extractionStatus?.tableExtractionStatus },
+      { label: "Figures", value: extractionStatus?.figureExtractionStatus },
+      { label: "Visual analysis", value: extractionStatus?.visualAnalysisStatus },
+    ];
+    const epIsDone = (v?: string) => v === "Completed" || v === "CompletedWithIssues";
+    const epIsActive = (v?: string) => v === "Running";
+    const epDoneCount = epSteps.filter((st) => epIsDone(st.value)).length;
+    const epActiveCount = epSteps.filter((st) => epIsActive(st.value)).length;
+    const epPct = extractionStatus ? Math.min(99, epDoneCount * 25 + epActiveCount * 12) : 0;
+    const epFileStatuses = extractionStatus?.fileStatuses ?? [];
+    const epTotalFiles = epFileStatuses.length;
+    const epDoneFiles = epFileStatuses.filter(
+      (f) => f.extractionStatus === "Completed" || f.extractionStatus === "CompletedWithIssues" || f.extractionStatus === "Failed"
+    ).length;
+    let epElapsedLabel = "";
+    let epEtaLabel = "";
+    if (extractionStatus?.lastStartedAt) {
+      const elapsed = Math.floor((Date.now() - new Date(extractionStatus.lastStartedAt).getTime()) / 1000);
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+      epElapsedLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+      if (epPct > 5) {
+        const totalEst = (elapsed / epPct) * 100;
+        const rem = Math.max(0, totalEst - elapsed);
+        const remMins = Math.round(rem / 60);
+        epEtaLabel = remMins <= 1 ? "< 1 min remaining" : `~${remMins} min remaining`;
+      }
+    }
+
     return (
       <div className="arb-page-stack">
         <div className="arb-summary-grid">
@@ -1021,7 +1053,7 @@ export function ArbLiveReviewStep(props: {
           <button
             type="button"
             className="arb-cta-btn"
-            disabled={!canStartExtraction || extractionStarting}
+            disabled={!canStartExtraction || extractionStarting || extractionStatus?.state === "Running"}
             onClick={async () => {
               try {
                 setExtractionStarting(true);
@@ -1065,7 +1097,9 @@ export function ArbLiveReviewStep(props: {
             }}
           >
             {extractionStarting ? (
-              <><span className="arb-spinner" aria-hidden="true" /> Analyzing documents… typically 8–20 minutes for a full evidence package</>
+              <><span className="arb-spinner" aria-hidden="true" /> Starting analysis…</>
+            ) : extractionStatus?.state === "Running" ? (
+              <><span className="arb-spinner" aria-hidden="true" /> Analysis in progress…</>
             ) : extractionStatus?.state === "Failed" ? (
               "Retry analysis →"
             ) : (
@@ -1073,10 +1107,38 @@ export function ArbLiveReviewStep(props: {
             )}
           </button>
           <p className="microcopy">Typical package: 25–35 page design doc, 10–12 page SOW, and a ZIP with 10–15 supporting files. Small uploads may finish sooner; full packages usually take 8–20 minutes.</p>
-          {extractionStarting ? (
-            <p className="arb-upload-status arb-upload-status-progress">
-              Analysis running — do not close this page. Results will appear automatically.
-            </p>
+          {extractionIsRunning ? (
+            <div className="arb-upload-status arb-upload-status-progress arb-ep-panel">
+              <div className="arb-ep-header">
+                <span className="arb-ep-title">Analyzing documents…</span>
+                <span className="arb-ep-pct">{epPct}%</span>
+              </div>
+              <div className="arb-ep-bar-track" role="progressbar" aria-valuenow={epPct} aria-valuemin={0} aria-valuemax={100}>
+                <div className="arb-ep-bar-fill" style={{ width: `${epPct > 0 ? epPct : 2}%` }} />
+              </div>
+              <div className="arb-ep-steps">
+                {epSteps.map((st) => {
+                  const done = epIsDone(st.value);
+                  const active = epIsActive(st.value);
+                  return (
+                    <span key={st.label} className={`arb-ep-step${done ? " arb-ep-step-done" : active ? " arb-ep-step-active" : ""}`}>
+                      <span className="arb-ep-step-icon" aria-hidden="true">{done ? "✓" : active ? "⟳" : "○"}</span>
+                      {st.label}
+                    </span>
+                  );
+                })}
+              </div>
+              <div className="arb-ep-footer">
+                {epTotalFiles > 0 ? (
+                  <span>{epDoneFiles} of {epTotalFiles} {epTotalFiles === 1 ? "file" : "files"} processed</span>
+                ) : null}
+                {epElapsedLabel ? (
+                  <span>Running for {epElapsedLabel}{epEtaLabel ? ` · ${epEtaLabel}` : ""}</span>
+                ) : (
+                  <span>Do not close this page — results will appear automatically.</span>
+                )}
+              </div>
+            </div>
           ) : extractionStatus?.state === "Failed" ? (
             <p className="arb-upload-error">
               Analysis failed. Check that your files are not password-protected and try again.
@@ -1096,9 +1158,6 @@ export function ArbLiveReviewStep(props: {
                 >
                   {extractionStatusRefreshing ? "Refreshing…" : "Refresh status"}
                 </button>
-              </span>
-              <span>
-                Text: {extractionStatus.textExtractionStatus ?? "Completed"} · Tables: {extractionStatus.tableExtractionStatus ?? "CompletedOrNotApplicable"} · Figures: {extractionStatus.figureExtractionStatus ?? "NotStarted"} · Visual analysis: {extractionStatus.visualAnalysisStatus ?? "NotStarted"} · Visual evidence: {extractionStatus.visualEvidenceCount ?? 0}
               </span>
               {extractionStatus.readinessNotes ? (
                 <span>{extractionStatus.readinessNotes}</span>
