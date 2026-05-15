@@ -1006,8 +1006,15 @@ function buildFileId(reviewId, fileName, hash) {
   return `${reviewId}-file-${hash.slice(0, 10)}-${sanitizePathSegment(fileName).slice(0, 24)}`;
 }
 
-function buildBlobPath(userId, reviewId, fileName) {
-  return `${sanitizePathSegment(userId)}/reviews/${sanitizePathSegment(reviewId)}/${Date.now()}-${sanitizeFilename(fileName)}`;
+// SOW and customer evidence files are stored under a dedicated sub-folder for
+// data-protection purposes, keeping them clearly separated from generic inputs.
+const CUSTOMER_EVIDENCE_CATEGORIES = new Set(["sow", "security_note", "cost_assumptions", "dr_ha_note", "ops_monitoring_note"]);
+
+function buildBlobPath(userId, reviewId, fileName, logicalCategory) {
+  const folder = CUSTOMER_EVIDENCE_CATEGORIES.has(logicalCategory)
+    ? "customer-evidence"
+    : "files";
+  return `${sanitizePathSegment(userId)}/reviews/${sanitizePathSegment(reviewId)}/${folder}/${Date.now()}-${sanitizeFilename(fileName)}`;
 }
 
 function normalizeLine(line) {
@@ -2181,6 +2188,9 @@ function buildDefaultReview(reviewId, principal, input = {}) {
     missingRecommendedItems: readiness.missingRecommendedItems,
     readinessOutcome: readiness.readinessOutcome,
     readinessNotes: readiness.readinessNotes,
+    projectCategory: normalizeNullableString(input.projectCategory),
+    inScope: Array.isArray(input.inScope) ? input.inScope : [],
+    outOfScope: Array.isArray(input.outOfScope) ? input.outOfScope : [],
     documentCount: 0,
     lastUpdated: now
   };
@@ -3054,7 +3064,7 @@ async function uploadArbFiles(principal, reviewId, filesInput = []) {
     }
 
     const fileId = buildFileId(reviewId, fileName, contentHash.replace(/^sha256:/, ""));
-    const blobPath = buildBlobPath(principal.userId, reviewId, fileName);
+    const blobPath = buildBlobPath(principal.userId, reviewId, fileName, logicalCategory);
     const contentType = file.contentType || getUploadContentType(fileName, "application/octet-stream");
     const extractable =
       !isZipUpload(fileName) &&

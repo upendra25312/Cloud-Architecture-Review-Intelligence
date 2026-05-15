@@ -650,3 +650,48 @@ export async function downloadArbExport(reviewId: string, exportArtifact: ArbExp
     window.URL.revokeObjectURL(objectUrl);
   }
 }
+
+/**
+ * Downloads an executive PowerPoint report for the review using the Rackspace
+ * presentation template style. Returns the PPTX binary as a browser download.
+ */
+export async function downloadArbPptxExport(reviewId: string): Promise<void> {
+  const url = `/api/arb/reviews/${encodeURIComponent(reviewId)}/exports/pptx`;
+
+  const response = await apiFetch(url, {
+    method: "GET",
+    cache: "no-store",
+    credentials: "same-origin",
+  });
+
+  if (!response.ok) {
+    let message = `Unable to generate PowerPoint export (${response.status}).`;
+    try {
+      const payload = (await response.json()) as { error?: string };
+      message = payload.error || message;
+    } catch {
+      // ignore parse errors
+    }
+    throw new Error(message);
+  }
+
+  const blob = await response.blob();
+  const objectUrl = window.URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  const cd = response.headers.get("Content-Disposition") ?? "";
+  const match = cd.match(/filename="([^"]+)"/);
+  const fileName = match?.[1] ?? `CARI-Review-${reviewId.slice(0, 8)}.pptx`;
+
+  try {
+    anchor.href = objectUrl;
+    anchor.download = fileName;
+    anchor.rel = "noopener";
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+  } finally {
+    document.body.removeChild(anchor);
+    window.URL.revokeObjectURL(objectUrl);
+  }
+}

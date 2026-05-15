@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   createArbExport,
   downloadArbExport,
+  downloadArbPptxExport,
   fetchArbEvidence,
   fetchArbExports,
   fetchArbFindings,
@@ -53,6 +54,7 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
   const [exportRegenerating, setExportRegenerating] = useState(false);
   const [exportDownloadingId, setExportDownloadingId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [downloadingPptx, setDownloadingPptx] = useState(false);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -157,6 +159,18 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
     }
   }
 
+  async function handleDownloadPptx() {
+    try {
+      setDownloadingPptx(true);
+      setExportError(null);
+      await downloadArbPptxExport(reviewId);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the PowerPoint export.");
+    } finally {
+      setDownloadingPptx(false);
+    }
+  }
+
   // ── Shell fallback ─────────────────────────────────────────────────
   const shellReview: ArbReviewSummary = review ?? {
     reviewId,
@@ -254,8 +268,10 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
           exportArtifacts={exportArtifacts}
           onRegenerate={handleRegenerate}
           onDownload={handleDownload}
+          onDownloadPptx={handleDownloadPptx}
           regenerating={exportRegenerating}
           downloadingId={exportDownloadingId}
+          downloadingPptx={downloadingPptx}
           error={exportError}
         />
       </>

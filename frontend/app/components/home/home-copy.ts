@@ -31,57 +31,66 @@ export const HOME_COPY = {
    */
   platformValues: [
     {
-      title: "Evidence-backed Review",
-      body: "Upload architecture documents and generate traceable findings.",
+      title: "Project Category Workflow",
+      body: "Select Landing Zone, Cloud Readiness, WAR, Migration, or Pre-Sales POC to tailor the assessment.",
+    },
+    {
+      title: "SOW-Aligned Assessment",
+      body: "Upload SOWs to set scope, deliverables, and acceptance criteria for the review.",
     },
     {
       title: "Framework-Aligned Checks",
-      body: "Map findings to WAF, CAF, Landing Zone, and security controls.",
+      body: "Map findings to WAF, CAF, ALZ, and Azure Migrate guidance automatically.",
     },
     {
       title: "Human-Led Governance",
-      body: "Architects review, approve, reject, or override recommendations.",
+      body: "Architects review, approve, reject, or override every AI-assisted recommendation.",
     },
     {
-      title: "Board-Ready Outputs",
-      body: "Export executive summaries, findings registers, and decision packs.",
+      title: "Executive-Ready Outputs",
+      body: "Export PowerPoint decks, findings registers, and decision logs for leadership readouts.",
     },
   ] as const,
 
   /**
-   * "How it works" — six sequential workflow steps (Req 3.1–3.2).
+   * "How it works" — seven sequential workflow steps.
    * Each explanation is a single line.
    */
   workflow: [
     {
       number: "01",
-      label: "Upload Evidence",
-      explanation: "Submit HLDs, SOWs, diagrams, and artifacts.",
+      label: "Select Project Category",
+      explanation: "Choose Landing Zone, Cloud Readiness, WAR, Migration, or Pre-Sales POC.",
     },
     {
       number: "02",
-      label: "Analyze Against Frameworks",
-      explanation: "Compare evidence with CAF, WAF, and Landing Zone.",
+      label: "Upload SOW and Evidence",
+      explanation: "Submit SOWs, HLDs, diagrams, and supporting artifacts.",
     },
     {
       number: "03",
-      label: "Generate Findings",
-      explanation: "Surface evidence-linked risks and gaps.",
+      label: "Analyze Against Frameworks",
+      explanation: "Compare evidence with CAF, WAF, ALZ, and Azure Migrate guidance.",
     },
     {
       number: "04",
+      label: "Generate Findings",
+      explanation: "Surface evidence-linked risks and gaps, mapped to SOW scope.",
+    },
+    {
+      number: "05",
       label: "Architect Review",
       explanation: "Accept, reject, override, or annotate findings.",
     },
     {
-      number: "05",
+      number: "06",
       label: "Approve Decisions",
       explanation: "Capture sign-off with reviewer rationale.",
     },
     {
-      number: "06",
-      label: "Export Board Pack",
-      explanation: "Produce summaries, risks, and decision logs.",
+      number: "07",
+      label: "Export Report",
+      explanation: "Download Markdown, CSV, HTML, or executive PowerPoint.",
     },
   ] as const,
 
@@ -195,7 +204,7 @@ export const HOME_COPY = {
       "Framework Alignment Summary",
       "Evidence Traceability",
     ] as const,
-    formats: ["PDF", "Word", "Excel", "Markdown", "HTML"] as const,
+    formats: ["PowerPoint (PPTX)", "Markdown", "CSV", "HTML"] as const,
   },
 
   /**
@@ -304,6 +313,63 @@ export interface CloudTrack {
   readonly logoAlt: string;
   readonly href?: "/arb";
 }
+
+/**
+ * Supported project categories that drive intake, scoring, findings, and report structure.
+ * Each category has a different assessment focus aligned to the engagement type.
+ */
+export interface ProjectCategory {
+  readonly id: string;
+  readonly label: string;
+  readonly description: string;
+  readonly focus: string;
+  readonly status: "Available" | "Planned";
+}
+
+export const PROJECT_CATEGORIES: ReadonlyArray<ProjectCategory> = [
+  {
+    id: "landing-zone",
+    label: "Landing Zone",
+    description: "Azure foundation, governance, identity, networking, security, and operating model review.",
+    focus: "CAF Ready, ALZ, Policy, Hub-Spoke, Identity, Management",
+    status: "Available",
+  },
+  {
+    id: "cloud-readiness",
+    label: "Cloud Readiness Assessment",
+    description: "Current estate discovery, readiness gaps, landing zone prerequisites, and next-step roadmap.",
+    focus: "Azure Migrate Discovery, Readiness Scoring, Operating Model, Cost Estimate",
+    status: "Available",
+  },
+  {
+    id: "well-architected-review",
+    label: "Well-Architected Review",
+    description: "WAF pillar assessment: Reliability, Security, Cost Optimisation, Operational Excellence, Performance.",
+    focus: "WAF 5 Pillars, Service Guides, Architecture Best Practices",
+    status: "Available",
+  },
+  {
+    id: "migration-readiness",
+    label: "Migration Readiness Assessment",
+    description: "Migration feasibility, Azure Migrate discovery, dependency mapping, wave planning, and blockers.",
+    focus: "Azure Migrate, MEG, Wave Planning, Landing Zone Readiness, RAID",
+    status: "Available",
+  },
+  {
+    id: "migration",
+    label: "Migration",
+    description: "Execution readiness, migration waves, cutover planning, rollback, validation, and hypercare.",
+    focus: "Migration Execution Guide, Cutover, Rollback, Hypercare, Operational Handover",
+    status: "Available",
+  },
+  {
+    id: "presales-poc",
+    label: "Pre-Sales POC",
+    description: "Business problem, success criteria, demo scope, feasibility, assumptions, and next-step recommendation.",
+    focus: "Value Hypothesis, Technical Feasibility, Scope, Effort, Risk",
+    status: "Available",
+  },
+];
 
 export const TRACKS: ReadonlyArray<CloudTrack> = [
   {
