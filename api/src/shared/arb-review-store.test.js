@@ -876,11 +876,31 @@ test("diagram prompt injection is persisted as untrusted visual evidence", async
 
 test("PDF visual fallback renders architecture pages through the document renderer", () => {
   const source = require("node:fs").readFileSync(require.resolve("./arb-review-store"), "utf8");
-  assert.match(source, /startPage:\s*ext === "\.pdf" \? 4 : undefined/);
-  assert.match(source, /endPage:\s*ext === "\.pdf" \? 9 : undefined/);
+  // Hardcoded page ranges are removed — all pages rendered up to OFFICE_RENDERER_MAX_PAGES
+  assert.doesNotMatch(source, /startPage:\s*ext === "\.pdf" \? 4/);
+  assert.doesNotMatch(source, /endPage:\s*ext === "\.pdf" \? 9/);
+  assert.match(source, /maxPages:\s*OFFICE_RENDERER_MAX_PAGES/);
   assert.match(source, /PDF page render fallback \+ multimodal analysis/);
-  assert.match(source, /Promise\.allSettled\(\[\s*extractDocumentLayout/);
+  // Office Renderer is called for all PDFs, independent of DI
+  assert.match(source, /const isPdf = getFileExtension/);
+  assert.match(source, /if \(isPdf\)/);
+  assert.match(source, /renderOfficeVisualArtifacts\(buffer, file\.fileName\)/);
   assert.match(source, /processPdfVisualEvidence\(file, layout, buffer, prerendered\)/);
+  // Zero-config pdf-parse fallback for when neither DI nor renderer is available
+  assert.match(source, /extractPdfDiagramPageEvidence/);
+  // Draw.io and Visio topology extraction
+  assert.match(source, /extractDrawioCellTopology/);
+  assert.match(source, /Diagram Connections \/ Topology/);
+  assert.match(source, /extractVsdxConnections/);
+  // Text-based diagram formats get visual evidence records
+  assert.match(source, /DIAGRAM_TEXT_EXTENSIONS/);
+  assert.match(source, /Mermaid.*PlantUML.*Excalidraw|diagramType/);
+  // All pages rendered regardless of content — diagrams appear anywhere
+  assert.match(source, /identifyPdfDiagramCandidatePages/);
+  assert.match(source, /renderDocumentRemainingPages/);
+  assert.match(source, /DOCUMENT_MAX_TOTAL_RENDER_PAGES/);
+  assert.doesNotMatch(source, /renderPdfTargetPages/);
+  assert.doesNotMatch(source, /PDF_MAX_EXTRA_DIAGRAM_RENDERS/);
 });
 
 test("creating an ARB export writes export metadata", async () => {

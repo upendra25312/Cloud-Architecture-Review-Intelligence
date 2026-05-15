@@ -7,7 +7,7 @@ const { execFile } = require("node:child_process");
 
 const PORT = Number(process.env.PORT || 8080);
 const MAX_FILE_BYTES = Number(process.env.RENDERER_MAX_FILE_BYTES || 50 * 1024 * 1024);
-const MAX_PAGES = Number(process.env.RENDERER_MAX_PAGES || 20);
+const MAX_PAGES = Number(process.env.RENDERER_MAX_PAGES || 70);
 const COMMAND_TIMEOUT_MS = Number(process.env.RENDERER_COMMAND_TIMEOUT_MS || 120000);
 const RENDER_DPI = Number(process.env.RENDERER_DPI || 160);
 const SHARED_SECRET = process.env.RENDERER_SHARED_SECRET || "";

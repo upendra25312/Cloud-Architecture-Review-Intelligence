@@ -85,6 +85,9 @@ const IMAGE_EXTRACTABLE_EXTENSIONS = new Set([
 const DIAGRAM_EXTRACTABLE_EXTENSIONS = new Set([
   ".drawio", ".draw.io", ".vsdx"
 ]);
+const DIAGRAM_TEXT_EXTENSIONS = new Set([
+  ".mmd", ".mermaid", ".puml", ".plantuml", ".excalidraw"
+]);
 const OFFICE_VISUAL_EXTENSIONS = new Set([
   ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".svg",
   ".emf", ".wmf"
@@ -95,7 +98,8 @@ const MULTIMODAL_IMAGE_EXTENSIONS = new Set([
 const OFFICE_RENDERER_ENDPOINT = (process.env.OFFICE_RENDERER_ENDPOINT || "").replace(/\/+$/, "");
 const OFFICE_RENDERER_SHARED_SECRET = process.env.OFFICE_RENDERER_SHARED_SECRET || "";
 const OFFICE_RENDERER_MAX_FILE_BYTES = Number(process.env.OFFICE_RENDERER_MAX_FILE_BYTES || 50 * 1024 * 1024);
-const OFFICE_RENDERER_MAX_PAGES = Number(process.env.OFFICE_RENDERER_MAX_PAGES || 20);
+const OFFICE_RENDERER_MAX_PAGES = Number(process.env.OFFICE_RENDERER_MAX_PAGES || 70);
+const DOCUMENT_MAX_TOTAL_RENDER_PAGES = Number(process.env.DOCUMENT_MAX_TOTAL_RENDER_PAGES || 200);
 const OFFICE_RENDERER_TIMEOUT_MS = Number(process.env.OFFICE_RENDERER_TIMEOUT_MS || 120000);
 const ZIP_MAX_FILES = Number(process.env.ARB_ZIP_MAX_FILES || 30);
 const ZIP_MAX_EXTRACTED_BYTES = Number(process.env.ARB_ZIP_MAX_EXTRACTED_BYTES || 100 * 1024 * 1024);
@@ -400,13 +404,47 @@ function tryInflateDrawioDiagram(encoded) {
   }
 }
 
+function extractDrawioCellTopology(xml) {
+  const cellLabels = new Map();
+  const edgeEntries = [];
+
+  for (const match of xml.matchAll(/<mxCell\b([^>]*)\/?\s*>/gi)) {
+    const attrs = match[1];
+    const getAttr = (name) => {
+      const m = attrs.match(new RegExp(`\\b${name}\\s*=\\s*"([^"]*)"`, "i"));
+      return m ? decodeXmlEntities(m[1]).trim() : null;
+    };
+    const id = getAttr("id");
+    if (!id) continue;
+    const value = getAttr("value") || "";
+    const isEdge = /\bedge\s*=\s*"1"/i.test(attrs);
+    const source = getAttr("source");
+    const target = getAttr("target");
+    if (value) cellLabels.set(id, value);
+    if (isEdge && (source || target)) edgeEntries.push({ source, target, label: value });
+  }
+
+  const topology = edgeEntries
+    .map(({ source, target, label }) => {
+      const from = (source && cellLabels.get(source)) || source || "?";
+      const to = (target && cellLabels.get(target)) || target || "?";
+      const connector = label ? ` --[${label}]--> ` : " --> ";
+      return `${from}${connector}${to}`;
+    })
+    .filter((line) => !line.startsWith("?") && !line.endsWith("?"));
+
+  return topology;
+}
+
 function extractDrawioText(buffer, fileName) {
   const xml = buffer.toString("utf8");
   const parts = [`[Diagram file: ${fileName}] (Draw.io XML)`];
   const values = new Set();
+  const allTopology = [];
 
   for (const value of extractXmlAttributeValues(xml, "value")) values.add(value);
   for (const value of extractXmlAttributeValues(xml, "label")) values.add(value);
+  for (const line of extractDrawioCellTopology(xml)) allTopology.push(line);
 
   for (const match of xml.matchAll(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/gi)) {
     const body = match[1].trim();
@@ -417,6 +455,7 @@ function extractDrawioText(buffer, fileName) {
 
     for (const value of extractXmlAttributeValues(nestedXml, "value")) values.add(value);
     for (const value of extractXmlAttributeValues(nestedXml, "label")) values.add(value);
+    for (const line of extractDrawioCellTopology(nestedXml)) allTopology.push(line);
   }
 
   if (values.size === 0) {
@@ -425,6 +464,13 @@ function extractDrawioText(buffer, fileName) {
   }
 
   parts.push(...[...values].slice(0, 200).map((value) => `- ${value}`));
+
+  const uniqueTopology = [...new Set(allTopology)].slice(0, 100);
+  if (uniqueTopology.length > 0) {
+    parts.push("\n[Diagram Connections / Topology]");
+    parts.push(...uniqueTopology);
+  }
+
   return parts.join("\n");
 }
 
@@ -473,11 +519,42 @@ function readZipEntries(buffer) {
   return entries;
 }
 
+function extractVsdxConnections(entries) {
+  const shapeTexts = new Map();
+  const connections = [];
+
+  for (const entry of entries) {
+    if (!/^visio\/pages\//i.test(entry.name)) continue;
+    if (!entry.name.toLowerCase().endsWith(".xml")) continue;
+
+    const xml = entry.content.toString("utf8");
+
+    for (const match of xml.matchAll(/<Shape\b[^>]*\bID="([^"]*)"[^>]*>([\s\S]*?)<\/Shape>/gi)) {
+      const id = match[1];
+      const shapeBody = match[2];
+      const textMatch = shapeBody.match(/<Text\b[^>]*>([\s\S]*?)<\/Text>/i);
+      if (textMatch) {
+        const text = cleanDiagramText(textMatch[1]);
+        if (text && text.length > 0) shapeTexts.set(id, text);
+      }
+    }
+
+    for (const match of xml.matchAll(/<Connect\b[^>]*/gi)) {
+      const fromM = match[0].match(/\bFromSheet\s*=\s*"([^"]*)"/i);
+      const toM = match[0].match(/\bToSheet\s*=\s*"([^"]*)"/i);
+      if (fromM && toM) connections.push({ from: fromM[1], to: toM[1] });
+    }
+  }
+
+  return { shapeTexts, connections };
+}
+
 function extractVsdxText(buffer, fileName) {
   const parts = [`[Diagram file: ${fileName}] (Visio VSDX)`];
   const values = new Set();
+  const entries = readZipEntries(buffer);
 
-  for (const entry of readZipEntries(buffer)) {
+  for (const entry of entries) {
     if (!/^visio\/(pages|masters|document|_rels)\//i.test(entry.name) && !/^docProps\//i.test(entry.name)) {
       continue;
     }
@@ -493,6 +570,20 @@ function extractVsdxText(buffer, fileName) {
   }
 
   parts.push(...[...values].slice(0, 250).map((value) => `- ${value}`));
+
+  const { shapeTexts, connections } = extractVsdxConnections(entries);
+  if (connections.length > 0) {
+    parts.push("\n[Diagram Connections / Topology]");
+    const resolved = [...new Set(
+      connections.slice(0, 100).map(({ from, to }) => {
+        const fromLabel = shapeTexts.get(from) || from;
+        const toLabel = shapeTexts.get(to) || to;
+        return `${fromLabel} --> ${toLabel}`;
+      })
+    )];
+    parts.push(...resolved);
+  }
+
   return parts.join("\n");
 }
 
@@ -598,9 +689,7 @@ async function renderOfficeVisualArtifacts(buffer, fileName) {
       body: JSON.stringify({
         fileName,
         fileBase64: buffer.toString("base64"),
-        maxPages: ext === ".pdf" ? 6 : OFFICE_RENDERER_MAX_PAGES,
-        startPage: ext === ".pdf" ? 4 : undefined,
-        endPage: ext === ".pdf" ? 9 : undefined
+        maxPages: OFFICE_RENDERER_MAX_PAGES
       })
     });
 
@@ -707,6 +796,213 @@ function extractOfficeRenderFallbackEvidence(buffer, fileName) {
 
   if (artifacts.length === 0) {
     warnings.push(`${fileName}: Office render fallback could not create image previews in the current Functions runtime.`);
+  }
+
+  return { artifacts, warnings };
+}
+
+// Keyword pattern for identifying architecture diagram pages in PDFs.
+const PDF_DIAGRAM_KEYWORDS = /\b(architecture|diagram|figure|network|topology|landing\s*zone|hub|spoke|vnet|vwan|governance|management\s*group|subscription|failover|disaster\s*recovery|automation|operations|security|control\s*flow|platform|azure|infrastructure|identity|connectivity|monitoring|nsg|firewall|routing)\b/i;
+const PDF_DIAGRAM_WORD_THRESHOLD = 150;
+const PDF_FALLBACK_KEYWORDS = /\b(architecture|diagram|figure|network|topology|landing\s*zone|hub|spoke|vnet|governance|management\s*group|subscription|failover|disaster\s*recovery|automation|operations|security|control\s*flow|platform|azure)\b/i;
+
+/**
+ * Scans all pages of a PDF using pdf-parse and returns page numbers that are likely
+ * architecture diagram pages (low word count + keyword match, or nearly image-only).
+ * Fast, CPU-only — no external services required.
+ */
+async function identifyPdfDiagramCandidatePages(buffer) {
+  try {
+    const pdfParse = require("pdf-parse");
+    const pageTexts = [];
+
+    await pdfParse(buffer, {
+      pagerender: async (pageData) => {
+        try {
+          const content = await pageData.getTextContent();
+          const text = content.items.map((item) => item.str || "").join(" ").replace(/\s+/g, " ").trim();
+          pageTexts[pageData.pageIndex] = { pageNumber: pageData.pageIndex + 1, text };
+          return text;
+        } catch {
+          pageTexts[pageData.pageIndex] = { pageNumber: pageData.pageIndex + 1, text: "" };
+          return "";
+        }
+      }
+    });
+
+    const candidatePages = [];
+    const allPageData = [];
+    for (const page of pageTexts) {
+      if (!page) continue;
+      const wordCount = page.text.split(/\s+/).filter(Boolean).length;
+      const hasKeywords = PDF_DIAGRAM_KEYWORDS.test(page.text);
+      const isLikelyDiagram = (wordCount < PDF_DIAGRAM_WORD_THRESHOLD && hasKeywords) || wordCount < 15;
+      allPageData.push({ pageNumber: page.pageNumber, text: page.text, wordCount, isLikelyDiagram });
+      if (isLikelyDiagram) candidatePages.push(page.pageNumber);
+    }
+
+    return { candidatePages, totalPages: pageTexts.length, allPageData };
+  } catch {
+    return { candidatePages: [], totalPages: 0, allPageData: [] };
+  }
+}
+
+/**
+ * Renders all pages/slides beyond OFFICE_RENDERER_MAX_PAGES in batches.
+ * No heuristic filtering — diagrams can appear on any page of any document,
+ * so every page beyond the standard render range must be covered.
+ * Stops when the renderer returns no images (end of document) or DOCUMENT_MAX_TOTAL_RENDER_PAGES is reached.
+ * Applies to PDF, DOCX, PPTX, and XLSX.
+ */
+async function renderDocumentRemainingPages(buffer, fileName) {
+  const artifacts = [];
+  const warnings = [];
+
+  if (!OFFICE_RENDERER_ENDPOINT) return { artifacts, warnings };
+
+  const ext = getFileExtension(fileName);
+
+  // For PDFs we know the exact page count — stop precisely at the last page.
+  // For Office formats (DOCX/PPTX/XLSX) LibreOffice converts to PDF first so
+  // there is no page count available; we stop when the renderer returns empty.
+  let totalPages = Infinity;
+  if (ext === ".pdf") {
+    const { totalPages: pdfTotal } = await identifyPdfDiagramCandidatePages(buffer);
+    if (pdfTotal > 0) totalPages = pdfTotal;
+  }
+
+  // Nothing beyond the standard range to render
+  if (totalPages <= OFFICE_RENDERER_MAX_PAGES) return { artifacts, warnings };
+
+  let startPage = OFFICE_RENDERER_MAX_PAGES + 1;
+  let totalRendered = 0;
+
+  console.log(`[extra-render] "${fileName}": document has ${totalPages === Infinity ? "unknown" : totalPages} pages; rendering pages ${startPage}+ in batches.`);
+
+  while (startPage <= totalPages && totalRendered < DOCUMENT_MAX_TOTAL_RENDER_PAGES) {
+    const remaining = Math.min(DOCUMENT_MAX_TOTAL_RENDER_PAGES - totalRendered, OFFICE_RENDERER_MAX_PAGES);
+    const endPage = Math.min(startPage + remaining - 1, totalPages === Infinity ? startPage + remaining - 1 : totalPages);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), OFFICE_RENDERER_TIMEOUT_MS);
+    try {
+      const headers = { "Content-Type": "application/json" };
+      if (OFFICE_RENDERER_SHARED_SECRET) headers["x-cari-renderer-token"] = OFFICE_RENDERER_SHARED_SECRET;
+
+      const res = await fetch(`${OFFICE_RENDERER_ENDPOINT}/render`, {
+        method: "POST",
+        headers,
+        signal: controller.signal,
+        body: JSON.stringify({
+          fileName,
+          fileBase64: buffer.toString("base64"),
+          maxPages: remaining,
+          startPage,
+          endPage
+        })
+      });
+
+      clearTimeout(timeout);
+
+      const payloadText = await res.text();
+      let payload = null;
+      try { payload = payloadText ? JSON.parse(payloadText) : null; } catch { /* ignore */ }
+
+      if (!res.ok) {
+        // Renderer throws when startPage is beyond the document end — treat as clean stop.
+        const errMsg = payload?.error || "";
+        if (/no PNG pages|no pages|beyond/i.test(errMsg)) break;
+        warnings.push(`${fileName}: batch render pages ${startPage}-${endPage} failed: ${errMsg || `HTTP ${res.status}`}`);
+        break;
+      }
+
+      const images = Array.isArray(payload?.images) ? payload.images : [];
+      if (images.length === 0) break;
+
+      for (const image of images) {
+        if (!image.base64) continue;
+        const pageNum = image.sourcePage ?? image.sourceSlide ?? (startPage + artifacts.length);
+        artifacts.push({
+          buffer: Buffer.from(image.base64, "base64"),
+          contentType: image.contentType || "image/png",
+          sourceName: image.fileName || `${fileName}-page-${pageNum}.png`,
+          extension: ".png",
+          summaryText: ext === ".pdf"
+            ? `Rendered PDF page ${pageNum} from ${fileName}.`
+            : ext === ".pptx"
+              ? `Rendered slide ${pageNum} from ${fileName}.`
+              : `Rendered page ${pageNum} from ${fileName}.`,
+          sourcePage: image.sourcePage ?? null,
+          sourceSlide: image.sourceSlide ?? null,
+          sourceSheet: image.sourceSheet ?? null,
+          sourceExcerpt: `Rendered full-page visual artifact from ${fileName} page ${pageNum}.`,
+          extractionSource: ext === ".pdf"
+            ? "PDF page render fallback + multimodal analysis"
+            : ext === ".pptx"
+              ? "Office slide render fallback + multimodal analysis"
+              : "Office page render fallback + multimodal analysis"
+        });
+      }
+
+      totalRendered += images.length;
+      startPage += images.length;
+
+      // Renderer returned fewer images than requested — reached end of document
+      if (images.length < remaining) break;
+    } catch (err) {
+      clearTimeout(timeout);
+      warnings.push(`${fileName}: batch render pages ${startPage}-${endPage} failed: ${err instanceof Error ? err.message : String(err)}`);
+      break;
+    }
+  }
+
+  if (artifacts.length > 0) {
+    console.log(`[extra-render] "${fileName}": rendered ${artifacts.length} additional pages beyond standard range.`);
+  }
+
+  return { artifacts, warnings };
+}
+
+/**
+ * Extracts visual evidence records from a PDF using pdf-parse for per-page text analysis.
+ * Identifies diagram-heavy pages using keyword matching and text-density heuristics.
+ * This is a zero-external-service fallback — runs when neither Document Intelligence
+ * nor the Office Renderer is available.
+ *
+ * A page is treated as a diagram candidate when:
+ *   - It contains architecture keywords AND has fewer than 150 words (low text density)
+ *   - OR it has fewer than 15 words (nearly image-only page)
+ */
+async function extractPdfDiagramPageEvidence(buffer, fileName) {
+  const artifacts = [];
+  const warnings = [];
+
+  try {
+    const { allPageData, totalPages } = await identifyPdfDiagramCandidatePages(buffer);
+    console.log(`[pdf-visual] "${fileName}": pdf-parse scanned ${totalPages} pages.`);
+
+    let diagramCount = 0;
+    for (const page of allPageData) {
+      if (!page.isLikelyDiagram) continue;
+      diagramCount++;
+      artifacts.push({
+        sourceName: `${fileName}-page-${page.pageNumber}.txt`,
+        sourcePage: page.pageNumber,
+        summaryText: page.text.trim()
+          ? `Architecture diagram evidence — "${fileName}" page ${page.pageNumber}.\n\nExtracted labels and callouts:\n${page.text.slice(0, 4000)}`
+          : `Architecture diagram detected on page ${page.pageNumber} of "${fileName}". Page contains primarily visual content with minimal selectable text.`,
+        sourceExcerpt: `PDF diagram page ${page.pageNumber} identified via text-density analysis in "${fileName}".`,
+        extractionSource: "pdf-parse diagram page analysis"
+      });
+    }
+
+    console.log(`[pdf-visual] "${fileName}": pdf-parse identified ${diagramCount} diagram candidate pages out of ${totalPages} total.`);
+
+    if (artifacts.length === 0) {
+      warnings.push(`${fileName}: pdf-parse could not identify any diagram pages using keyword and text-density heuristics.`);
+    }
+  } catch (err) {
+    warnings.push(`${fileName}: pdf-parse fallback analysis failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   return { artifacts, warnings };
@@ -3332,6 +3628,13 @@ async function startArbExtraction(principal, reviewId) {
       await addVisualEvidenceRecords(file, rendered.artifacts);
 
       if (rendered.artifacts.length > 0) {
+        // Render all remaining slides/pages beyond the first batch — diagrams and
+        // images can appear on any slide/page regardless of content type.
+        const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+        for (const warning of extra.warnings) visualExtractionErrors.push(warning);
+        if (extra.artifacts.length > 0) {
+          await addVisualEvidenceRecords(file, extra.artifacts);
+        }
         return;
       }
 
@@ -3376,13 +3679,25 @@ async function startArbExtraction(principal, reviewId) {
     }
     if (rendered.artifacts.length > 0) {
       await addVisualEvidenceRecords(file, rendered.artifacts);
+
+      // Render all remaining pages beyond the first batch — diagrams can appear
+      // on any page regardless of text density or keyword presence.
+      const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+      for (const warning of extra.warnings) visualExtractionErrors.push(warning);
+      if (extra.artifacts.length > 0) {
+        await addVisualEvidenceRecords(file, extra.artifacts);
+      }
       return;
     }
 
     const pages = Array.isArray(layout?.result?.pages) ? layout.result.pages : [];
     const fallbackPages = pages
-      .filter((page) => Number(page.pageNumber) >= 4 && Number(page.pageNumber) <= 9)
-      .slice(0, 6);
+      .filter((page) => {
+        const pageText = Array.isArray(page.lines) ? page.lines.map((l) => l.content).join(" ") : "";
+        const wordCount = pageText.split(/\s+/).filter(Boolean).length;
+        return (wordCount < 150 && PDF_FALLBACK_KEYWORDS.test(pageText)) || wordCount < 15;
+      })
+      .slice(0, 12);
     await addVisualEvidenceRecords(file, fallbackPages.map((page) => {
       const pageText = Array.isArray(page.lines)
         ? page.lines.map((line) => line.content).filter(Boolean).join("\n")
@@ -3571,7 +3886,10 @@ async function startArbExtraction(principal, reviewId) {
       const visionConfig = getVisionServiceConfiguration();
       const canUseVisionFallback = visionConfig.configured && supportsVisionExtraction(file.fileName);
 
-      if (!diConfig.configured && !canUseVisionFallback) {
+      const isPdf = getFileExtension(file.fileName) === ".pdf";
+      // PDFs always proceed — pdf-parse provides a zero-config fallback even without DI or Vision.
+      // Non-PDF DI formats (DOCX, PPTX, etc.) still need at least one configured service.
+      if (!isPdf && !diConfig.configured && !canUseVisionFallback) {
         nextFiles.push({
           ...file,
           extractionStatus: "Limited Evidence",
@@ -3601,33 +3919,54 @@ async function startArbExtraction(principal, reviewId) {
 
           await processOfficeVisualEvidence(file, buffer);
 
-          if (diConfig.configured) {
-            if (getFileExtension(file.fileName) === ".pdf") {
-              const [layoutResult, renderResult] = await Promise.allSettled([
-                extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true }),
-                renderOfficeVisualArtifacts(buffer, file.fileName)
-              ]);
+          if (isPdf) {
+            console.log(`[pdf-visual] Processing "${file.fileName}" — scanning for embedded images and diagram pages.`);
 
-              const prerendered = renderResult.status === "fulfilled"
-                ? renderResult.value
-                : {
-                  artifacts: [],
-                  warnings: [`${file.fileName}: PDF page render fallback failed: ${renderResult.reason instanceof Error ? renderResult.reason.message : String(renderResult.reason)}`]
-                };
-
-              if (layoutResult.status === "fulfilled") {
-                const layout = layoutResult.value;
-                text = layout.text;
-                await processPdfVisualEvidence(file, layout, buffer, prerendered);
-              } else {
-                const message = layoutResult.reason instanceof Error ? layoutResult.reason.message : String(layoutResult.reason);
-                visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
-                await processPdfVisualEvidence(file, null, buffer, prerendered);
-                text = await extractDocumentText(buffer, file.contentType, file.fileName);
-              }
-            } else {
-              text = await extractDocumentText(buffer, file.contentType, file.fileName);
+            // Office Renderer is independent of Document Intelligence — attempt for all PDFs.
+            // Previously this was nested inside if (diConfig.configured), which silently
+            // skipped visual evidence for all PDFs when DI was not configured.
+            const renderResult = await renderOfficeVisualArtifacts(buffer, file.fileName);
+            for (const warning of renderResult.warnings) {
+              visualExtractionErrors.push(warning);
             }
+            const prerendered = renderResult;
+
+            if (diConfig.configured) {
+              let layout = null;
+              try {
+                layout = await extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true });
+                text = layout.text;
+              } catch (err) {
+                const message = err instanceof Error ? err.message : String(err);
+                visualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
+                try {
+                  text = await extractDocumentText(buffer, file.contentType, file.fileName);
+                } catch {
+                  // text remains null; Vision OCR fallback runs below if configured
+                }
+              }
+              await processPdfVisualEvidence(file, layout, buffer, prerendered);
+            } else {
+              // DI not configured — use rendered page artifacts as visual evidence directly
+              if (prerendered.artifacts.length > 0) {
+                console.log(`[pdf-visual] "${file.fileName}": ${prerendered.artifacts.length} page-render visual evidence records created (Office Renderer; DI not configured).`);
+                await addVisualEvidenceRecords(file, prerendered.artifacts);
+              } else {
+                // Last resort: pdf-parse keyword + density heuristics — no external services required
+                const pdfFallback = await extractPdfDiagramPageEvidence(buffer, file.fileName);
+                for (const warning of pdfFallback.warnings) {
+                  visualExtractionErrors.push(warning);
+                }
+                if (pdfFallback.artifacts.length > 0) {
+                  console.log(`[pdf-visual] "${file.fileName}": ${pdfFallback.artifacts.length} pdf-parse diagram page evidence records created.`);
+                  await addVisualEvidenceRecords(file, pdfFallback.artifacts);
+                } else {
+                  console.log(`[pdf-visual] "${file.fileName}": no visual evidence extracted (DI not configured, Office Renderer returned no images, pdf-parse found no diagram pages).`);
+                }
+              }
+            }
+          } else if (diConfig.configured) {
+            text = await extractDocumentText(buffer, file.contentType, file.fileName);
           }
 
           // Vision Service OCR fallback — used when DI is not configured or returned no text.
@@ -3704,6 +4043,25 @@ async function startArbExtraction(principal, reviewId) {
         extractionStatus: "Completed",
         extractionError: null
       });
+
+      // Text-based diagram formats (Mermaid, PlantUML, Excalidraw) — create a visual
+      // evidence record so the agent treats them as architectural diagram evidence
+      // rather than generic text. GPT-4o natively understands these syntaxes.
+      if (DIAGRAM_TEXT_EXTENSIONS.has(getFileExtension(file.fileName))) {
+        const ext = getFileExtension(file.fileName);
+        const diagramType =
+          ext === ".mmd" || ext === ".mermaid" ? "Mermaid" :
+          ext === ".puml" || ext === ".plantuml" ? "PlantUML" :
+          ext === ".excalidraw" ? "Excalidraw" : "Diagram";
+        addVisualEvidenceRecord(file, {
+          sourceName: file.fileName,
+          summaryText: `[${diagramType} architecture diagram: ${file.fileName}]\n\nDiagram specification — describes architecture topology, components, and data flows:\n${text.slice(0, 5000)}`,
+          sourceExcerpt: `${diagramType} diagram specification extracted from ${file.fileName}.`,
+          extractionSource: `${diagramType} diagram specification analysis`
+        }).catch((err) => {
+          console.warn(`[diagram-visual] Failed to create visual evidence for "${file.fileName}":`, err?.message ?? err);
+        });
+      }
 
       // Index text chunks into Azure AI Search (best-effort)
       if (searchIndexed) {
