@@ -267,12 +267,19 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
   const now = new Date().toISOString();
   const userId = principal.userId;
 
-  if (agentResult.findings && agentResult.findings.length > 0) {
-    const safeFindings = capFindingsForTableStorage(agentResult.findings);
+  // When fallback fired, only persist rule-based findings — never store the placeholder finding
+  // that would pollute future runs. If agent succeeded fully, write everything.
+  const findingsToWrite = agentResult.fallbackUsed
+    ? (agentResult.findings ?? []).filter((f) => !String(f.findingId ?? "").startsWith("fallback-"))
+    : agentResult.findings;
+
+  if (findingsToWrite && findingsToWrite.length > 0) {
+    const safeFindings = capFindingsForTableStorage(findingsToWrite);
     await client.upsertEntity({ partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("FINDINGS", userId), findingsJson: JSON.stringify(safeFindings) }, "Replace");
   }
 
-  if (agentResult.scorecard) {
+  // Never overwrite a real scorecard with a fallback scorecard — preserve existing scores
+  if (agentResult.scorecard && !agentResult.fallbackUsed) {
     const sc = capScorecardForTableStorage(agentResult.scorecard);
     await client.upsertEntity({
       partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("SCORECARD", userId),

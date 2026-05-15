@@ -4624,6 +4624,36 @@ button.chip:disabled:hover {
   opacity: 0.8;
 }
 
+/* ── Partial-run notice (rules-only, AI unavailable) ── */
+.arb-partial-run-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.arb-partial-run-notice-text {
+  color: #1E40AF;
+  font-weight: 500;
+}
+
+.arb-partial-run-notice-link {
+  color: #1D4ED8;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.arb-partial-run-notice-link:hover {
+  text-decoration: underline;
+}
+
 .arb-upload-error {
   margin-top: 10px;
   font-size: 0.875rem;
