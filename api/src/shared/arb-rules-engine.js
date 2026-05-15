@@ -9,7 +9,8 @@ function loadArbRules() {
   const waf = require(path.join(RULES_DIR, "waf-rules.json")).rules ?? [];
   const caf = require(path.join(RULES_DIR, "caf-rules.json")).rules ?? [];
   const internal = require(path.join(RULES_DIR, "internal-rules.json")).rules ?? [];
-  _cachedRules = [...waf, ...caf, ...internal];
+  const migration = require(path.join(RULES_DIR, "migration-rules.json")).rules ?? [];
+  _cachedRules = [...waf, ...caf, ...internal, ...migration];
   return _cachedRules;
 }
 

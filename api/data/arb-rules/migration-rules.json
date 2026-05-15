@@ -1,0 +1,181 @@
+{
+  "_comment": "Migration assessment rules aligned to Microsoft Azure Migrate documentation, Azure Migration Guidance repository, and the Migration Execution Guide (MEG v0.96). Rules apply when projectCategory contains migration, cloud readiness, or migration readiness. Sources: https://learn.microsoft.com/azure/migrate/, https://github.com/Azure/Azure-Migration-Guidance",
+  "rules": [
+    {
+      "ruleId": "MIG-001",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Discover",
+      "domain": "Migration Readiness",
+      "severity": "Critical",
+      "title": "Azure Migrate discovery assessment is not evidenced",
+      "failureMessage": "The submission does not evidence Azure Migrate discovery, dependency mapping, server inventory, or workload assessment results. Discovery is the mandatory first step of the Microsoft migration methodology.",
+      "recommendation": "Run Azure Migrate: Discovery and Assessment on all in-scope servers, databases, and workloads. Export the assessment report and include it as evidence. See https://learn.microsoft.com/azure/migrate/migrate-services-overview",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/migrate/migrate-services-overview",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate", "cloud readiness", "migration readiness"],
+        "requiresEvidenceAbsence": ["azure migrate", "discovery assessment", "server assessment", "dependency analysis", "workload assessment", "migrate assessment"]
+      }
+    },
+    {
+      "ruleId": "MIG-002",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Assess",
+      "domain": "Migration Readiness",
+      "severity": "High",
+      "title": "Migration wave plan is not evidenced",
+      "failureMessage": "The submission does not evidence a migration wave plan, migration groups, or workload sequencing. Wave planning is required to manage dependency risk and control blast radius during migration execution.",
+      "recommendation": "Define migration waves based on application dependency analysis from Azure Migrate. Group workloads by dependency, criticality, and business impact. Document wave sequence, timeline, and rollback triggers. See https://learn.microsoft.com/azure/migrate/concepts-migration-planning",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/migrate/concepts-migration-planning",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate"],
+        "requiresEvidenceAbsence": ["wave", "migration wave", "migration group", "wave plan", "workload sequence", "migration phase"]
+      }
+    },
+    {
+      "ruleId": "MIG-003",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Assess",
+      "domain": "Migration Readiness",
+      "severity": "High",
+      "title": "Landing zone readiness for migration workloads is not evidenced",
+      "failureMessage": "The submission does not evidence that the Azure landing zone is ready to receive migrated workloads. Landing zone readiness is a prerequisite for any migration execution.",
+      "recommendation": "Validate that the target Azure landing zone has identity, networking, security baseline, monitoring, and management configuration in place before migrating workloads. Complete the ALZ readiness checklist. See https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate"],
+        "requiresEvidenceAbsence": ["landing zone ready", "landing zone readiness", "target subscription", "connectivity hub", "hub network", "vnet peering", "alz ready"]
+      }
+    },
+    {
+      "ruleId": "MIG-004",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Migrate",
+      "domain": "Migration Readiness",
+      "severity": "High",
+      "title": "Cutover and rollback plan is not evidenced",
+      "failureMessage": "The submission does not evidence a cutover plan, rollback criteria, or rollback procedures. Without documented cutover and rollback steps, the migration poses unacceptable risk to business continuity.",
+      "recommendation": "Document cutover window, cutover runbook, rollback decision criteria, rollback steps, and escalation contacts for each migration wave. Validate rollback steps in a test migration before production cutover. See https://learn.microsoft.com/azure/migrate/tutorial-migrate-vmware#run-a-test-migration",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/migrate/tutorial-migrate-vmware",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate"],
+        "requiresEvidenceAbsence": ["cutover", "rollback", "failback", "cutover plan", "migration cutover", "test migration", "cutover window"]
+      }
+    },
+    {
+      "ruleId": "MIG-005",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Assess",
+      "domain": "Migration Readiness",
+      "severity": "High",
+      "title": "Database migration assessment is not evidenced",
+      "failureMessage": "The submission includes database workloads but does not evidence database migration assessment, schema compatibility, or database migration service selection.",
+      "recommendation": "Run Azure Database Migration Service assessments for all in-scope databases. Assess schema compatibility, data volume, and migration method (online vs offline). Document target database service selection rationale (SQL Managed Instance, Azure SQL DB, PostgreSQL Flexible Server, etc.). See https://learn.microsoft.com/azure/dms/",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/dms/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["database", "sql server", "oracle", "mysql", "postgresql", "mongodb"],
+        "requiresEvidenceAbsence": ["database migration service", "dms", "schema compatibility", "database assessment", "data migration assistant", "migration service"]
+      }
+    },
+    {
+      "ruleId": "MIG-006",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Govern",
+      "domain": "Migration Readiness",
+      "severity": "Medium",
+      "title": "Migration RAID register is not evidenced",
+      "failureMessage": "The submission does not evidence a migration-specific RAID register (Risks, Assumptions, Issues, Dependencies). Migration projects carry complex inter-workload dependencies that must be tracked.",
+      "recommendation": "Maintain a live RAID register throughout the migration programme. Document discovered dependencies from Azure Migrate dependency analysis. Escalate blockers to the migration steering committee. Align with Migration Execution Guide (MEG) RAID management guidance.",
+      "learnMoreUrl": "https://github.com/Azure/Azure-Migration-Guidance",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate"],
+        "requiresEvidenceAbsence": ["raid", "risk register", "assumption", "dependency register", "migration risk", "open issue", "blocker"]
+      }
+    },
+    {
+      "ruleId": "MIG-007",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Secure",
+      "domain": "Security",
+      "severity": "High",
+      "title": "Post-migration security baseline is not evidenced",
+      "failureMessage": "The submission does not evidence a post-migration security baseline validation, including Defender for Cloud enablement, NSG rules, JIT access, and RBAC assignments for migrated workloads.",
+      "recommendation": "Define and validate the security baseline for all migrated workloads. Enable Microsoft Defender for Cloud on target subscriptions. Review NSG rules, JIT access, private endpoints, and RBAC. Complete security validation before hypercare sign-off. See https://learn.microsoft.com/azure/security/fundamentals/migration-security",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/security/fundamentals/migration-security",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate", "post-migration", "hypercare"],
+        "requiresEvidenceAbsence": ["defender for cloud", "security baseline", "nsg", "jit", "post-migration security", "security validation"]
+      }
+    },
+    {
+      "ruleId": "MIG-008",
+      "framework": "AzureMigrate",
+      "frameworkPillar": "Migrate:Govern",
+      "domain": "Operational Excellence",
+      "severity": "Medium",
+      "title": "Hypercare and operational handover plan is not evidenced",
+      "failureMessage": "The submission does not evidence a hypercare period, operational handover checklist, or support transition plan after migration cutover.",
+      "recommendation": "Define a hypercare period (typically 2–4 weeks) with support escalation paths, monitoring dashboards, and issue resolution SLAs. Document the operational handover checklist including backup verification, monitoring alerts, tagging, runbooks, and CMDB updates.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/cloud-adoption-framework/manage/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["migration", "migrate", "cutover"],
+        "requiresEvidenceAbsence": ["hypercare", "operational handover", "support transition", "handover checklist", "post-cutover", "monitoring alert"]
+      }
+    },
+    {
+      "ruleId": "CRA-001",
+      "framework": "CloudReadiness",
+      "frameworkPillar": "CRA:Assess",
+      "domain": "Cloud Readiness",
+      "severity": "High",
+      "title": "Current-state inventory and cloud readiness assessment is not evidenced",
+      "failureMessage": "The submission does not evidence a current-state server and application inventory, cloud readiness scoring, or readiness gap analysis. These are required inputs for a credible cloud readiness assessment.",
+      "recommendation": "Complete an Azure Migrate discovery of the current estate. Export the readiness report showing Ready, Ready with Conditions, Not Ready, and Unknown workloads. Document the readiness gap analysis and remediation actions for Not Ready workloads.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/migrate/concepts-assessment-calculation",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["cloud readiness", "readiness assessment", "current state"],
+        "requiresEvidenceAbsence": ["readiness assessment", "cloud readiness", "not ready", "ready with conditions", "migration readiness score", "inventory"]
+      }
+    },
+    {
+      "ruleId": "CRA-002",
+      "framework": "CloudReadiness",
+      "frameworkPillar": "CRA:Plan",
+      "domain": "Cloud Readiness",
+      "severity": "Medium",
+      "title": "Azure target sizing and cost estimate is not evidenced",
+      "failureMessage": "The submission does not evidence Azure target sizing recommendations or estimated Azure consumption costs for the assessed workloads.",
+      "recommendation": "Export Azure Migrate assessment sizing recommendations and monthly cost estimates. Present Total Cost of Ownership (TCO) comparison. Document reserved instance vs pay-as-you-go cost optimisation opportunities. See https://learn.microsoft.com/azure/migrate/concepts-azure-sql-assessment-calculation",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/migrate/concepts-azure-sql-assessment-calculation",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["cloud readiness", "migration", "assessment"],
+        "requiresEvidenceAbsence": ["sizing", "cost estimate", "tco", "total cost", "azure cost", "reserved instance", "recommended size", "target size"]
+      }
+    },
+    {
+      "ruleId": "CRA-003",
+      "framework": "CloudReadiness",
+      "frameworkPillar": "CRA:Assess",
+      "domain": "Cloud Readiness",
+      "severity": "Medium",
+      "title": "Operating model readiness is not evidenced",
+      "failureMessage": "The submission does not evidence operating model readiness, including cloud skills assessment, support model design, or governance readiness for the cloud-first operating model.",
+      "recommendation": "Assess current team cloud skills against the required cloud operating model. Define the target operating model (TOM) including cloud management, FinOps, DevSecOps, and governance responsibilities. Document skills gaps and training plan. See https://learn.microsoft.com/azure/cloud-adoption-framework/operating-model/",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/cloud-adoption-framework/operating-model/",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": ["cloud readiness", "operating model", "cloud adoption"],
+        "requiresEvidenceAbsence": ["operating model", "target operating model", "tom", "cloud skills", "finops", "support model", "cloud governance model"]
+      }
+    }
+  ]
+}
