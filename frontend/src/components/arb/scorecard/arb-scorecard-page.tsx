@@ -160,15 +160,20 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
     scorecard?.confidence === "Low" &&
     findings.some((f) => f.findingId.startsWith("fallback-"));
 
-  const shellReview: ArbReviewSummary = review ?? {
-    reviewId,
-    projectName: "Loading review…",
-    customerName: "",
-    workflowState: "Draft",
-    evidenceReadinessState: "Ready with Gaps",
-    overallScore: null,
-    recommendation: "Loading",
-    assignedReviewer: null,
+  const shellReview: ArbReviewSummary = {
+    ...(review ?? {
+      reviewId,
+      projectName: "Loading review…",
+      customerName: "",
+      workflowState: "Draft",
+      evidenceReadinessState: "Ready with Gaps",
+      overallScore: null,
+      recommendation: "Loading",
+      assignedReviewer: null,
+    }),
+    // Prefer the scorecard's computed score over the review summary's cached score,
+    // so the right panel never shows "—" when a score has been computed.
+    overallScore: scorecard?.overallScore ?? review?.overallScore ?? null,
   };
 
   // ── Render ─────────────────────────────────────────────────────────

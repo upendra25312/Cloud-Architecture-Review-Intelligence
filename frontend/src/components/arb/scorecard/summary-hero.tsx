@@ -36,15 +36,7 @@ export function SummaryHero({ scorecard, openActionCount }: SummaryHeroProps) {
         <span className={`${styles.scoreNumber} ${TONE_CLASS[tone] ?? styles.scoreNumberNeutral}`}>
           {scorecard.overallScore ?? "—"}
         </span>
-        <div>
-          <span className={styles.scoreBandLabel}>{bandLabel}</span>
-          <span
-            className={`${styles.recommendationBadge} ${BADGE_CLASS[recTone] ?? styles.recommendationBadgeNeutral}`}
-            style={{ marginLeft: 8 }}
-          >
-            {displayRecommendation}
-          </span>
-        </div>
+        <span className={styles.scoreBandLabel}>{bandLabel}</span>
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -55,6 +47,11 @@ export function SummaryHero({ scorecard, openActionCount }: SummaryHeroProps) {
         )}
 
         <div className={styles.metricsRow}>
+          <span
+            className={`${styles.recommendationBadge} ${BADGE_CLASS[recTone] ?? styles.recommendationBadgeNeutral}`}
+          >
+            {displayRecommendation}
+          </span>
           <span className={styles.metricBadge}>
             Confidence: <strong>{scorecard.confidence}</strong>
           </span>
