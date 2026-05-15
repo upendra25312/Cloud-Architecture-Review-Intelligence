@@ -65,11 +65,10 @@ export function generateSummary(
   scorecard: ArbScorecard | null,
 ): string {
   const blockers = findings.filter((f) => f.criticalBlocker);
-  const domainsAtRisk = [
-    ...new Set(
-      findings.filter((f) => f.severity === "High").map((f) => f.domain),
-    ),
-  ];
+  // When blockers exist, show only their domains (accurate to the preceding blocker sentence).
+  // When no blockers, fall back to all High-severity domains.
+  const sourceDomains = blockers.length > 0 ? blockers : findings.filter((f) => f.severity === "High");
+  const domainsAtRisk = [...new Set(sourceDomains.map((f) => f.domain))];
 
   const parts: string[] = [];
 
@@ -80,8 +79,14 @@ export function generateSummary(
   }
 
   if (domainsAtRisk.length > 0) {
+    const domainList =
+      domainsAtRisk.length === 1
+        ? domainsAtRisk[0]
+        : domainsAtRisk.length === 2
+          ? `${domainsAtRisk[0]} and ${domainsAtRisk[1]}`
+          : `${domainsAtRisk.slice(0, -1).join(", ")}, and ${domainsAtRisk[domainsAtRisk.length - 1]}`;
     parts.push(
-      `${domainsAtRisk.join(" and ")} domain${domainsAtRisk.length > 1 ? "s" : ""} need${domainsAtRisk.length === 1 ? "s" : ""} attention.`,
+      `${domainList} domain${domainsAtRisk.length > 1 ? "s" : ""} need${domainsAtRisk.length === 1 ? "s" : ""} attention.`,
     );
   }
 
