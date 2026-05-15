@@ -301,6 +301,7 @@ export function ArbLiveReviewStep(props: {
   const [agentStatusMessage, setAgentStatusMessage] = useState<string | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [deleteFileError, setDeleteFileError] = useState<string | null>(null);
+  const [timerNow, setTimerNow] = useState(() => Date.now());
   const actionSummary = summarizeActions(actions);
   const authRequired = error?.includes("Sign in is required") ?? false;
   const sowMissingForSignoff = Boolean(
@@ -664,6 +665,14 @@ export function ArbLiveReviewStep(props: {
     };
   }, [activeStep, agentRunning, reviewId]);
 
+  // Tick every second while extraction or agent is running so the elapsed timer updates smoothly
+  useEffect(() => {
+    const extractionRunning = extractionStatus?.state === "Running" || extractionStarting;
+    if (!extractionRunning && !agentRunning) return;
+    const id = window.setInterval(() => setTimerNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [extractionStatus?.state, extractionStarting, agentRunning]);
+
   const shellReview =
     review ??
     ({
@@ -808,16 +817,20 @@ export function ArbLiveReviewStep(props: {
     const epIsActive = (v?: string) => v === "Running";
     const epDoneCount = epSteps.filter((st) => epIsDone(st.value)).length;
     const epActiveCount = epSteps.filter((st) => epIsActive(st.value)).length;
-    const epPct = extractionStatus ? Math.min(99, epDoneCount * 25 + epActiveCount * 12) : 0;
     const epFileStatuses = extractionStatus?.fileStatuses ?? [];
     const epTotalFiles = epFileStatuses.length;
     const epDoneFiles = epFileStatuses.filter(
       (f) => f.extractionStatus === "Completed" || f.extractionStatus === "CompletedWithIssues" || f.extractionStatus === "Failed"
     ).length;
+    // If stage statuses haven't advanced yet, derive progress from per-file completion (capped at 60%)
+    // so the bar never shows 0% when files are already being processed.
+    const epPctFromFiles = epTotalFiles > 0 ? Math.round((epDoneFiles / epTotalFiles) * 60) : 0;
+    const epPctFromStages = epDoneCount * 25 + epActiveCount * 12;
+    const epPct = extractionStatus ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles)) : 0;
     let epElapsedLabel = "";
     let epEtaLabel = "";
     if (extractionStatus?.lastStartedAt) {
-      const elapsed = Math.floor((Date.now() - new Date(extractionStatus.lastStartedAt).getTime()) / 1000);
+      const elapsed = Math.floor((timerNow - new Date(extractionStatus.lastStartedAt).getTime()) / 1000);
       const mins = Math.floor(elapsed / 60);
       const secs = elapsed % 60;
       epElapsedLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
