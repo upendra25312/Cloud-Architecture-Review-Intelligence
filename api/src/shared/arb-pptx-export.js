@@ -232,9 +232,9 @@ function buildScorecardSlide(p, data) {
       fontSize: 13, bold: true, color: SCORE_COLOUR(score), fontFace: BRAND.font, align: "right",
     });
     if (d.reason) {
-      s.addText(d.reason.slice(0, 120), {
-        x: 0.3, y: y + 0.52, w: 9.4, h: 0.25,
-        fontSize: 7.5, color: BRAND.midGrey, fontFace: BRAND.font, italic: true,
+      s.addText(d.reason.slice(0, 200), {
+        x: 0.3, y: y + 0.52, w: 9.4, h: 0.32,
+        fontSize: 7.5, color: BRAND.midGrey, fontFace: BRAND.font, italic: true, wrap: true,
       });
     }
   });
@@ -280,6 +280,14 @@ function buildRiskRegisterSlide(p, data) {
   addFooter(s, data.reviewId);
 
   const findings = (data.findings || []).filter((f) => f.status !== "Closed").slice(0, 10);
+
+  if (findings.length === 0) {
+    s.addShape(p.ShapeType.rect, { x: 0.3, y: 2.2, w: 9.4, h: 0.7, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
+    s.addText("No open risk items. All findings are closed or no findings have been recorded.", {
+      x: 0.5, y: 2.35, w: 9.0, h: 0.4, fontSize: 11, color: BRAND.midGrey, fontFace: BRAND.font, italic: true,
+    });
+    return;
+  }
 
   const headers = ["#", "Severity", "Domain", "Title", "Owner", "Due Date", "Status"];
   const colWidths = [0.35, 0.9, 1.1, 3.8, 1.3, 1.0, 0.95];
@@ -399,17 +407,75 @@ function buildSowTraceabilitySlide(p, data) {
   });
 }
 
+const CATEGORY_NEXT_STEPS = {
+  "landing-zone": [
+    "Validate management group hierarchy and subscription design against ALZ reference architecture.",
+    "Review Policy assignments and confirm compliance with organisational guardrails.",
+    "Confirm hub-and-spoke network topology: Azure Firewall, Private DNS Resolver, peering.",
+    "Verify Managed Identity is used for all platform service-to-service authentication.",
+    "Obtain formal Landing Zone design sign-off from the Cloud Platform team.",
+    "Schedule a 30-day post-deployment health review with operations.",
+  ],
+  "cloud-readiness": [
+    "Complete Azure Migrate discovery for all in-scope workloads and export the readiness report.",
+    "Resolve all blockers identified in the Cloud Readiness Assessment before migration begins.",
+    "Define and agree the target landing zone design based on readiness findings.",
+    "Produce a cost estimate and TCO model for board approval.",
+    "Confirm operating model: cloud-native, hybrid, or managed service.",
+    "Schedule a readiness gate review before migration wave planning starts.",
+  ],
+  "well-architected-review": [
+    "Prioritise Critical and High severity WAF findings for immediate remediation.",
+    "Assign owners and due dates for all open remediation actions.",
+    "Re-run the Well-Architected Assessment after critical items are resolved to track improvement.",
+    "Update the architecture decision log with reviewer sign-off on accepted risk items.",
+    "Share the findings register with the customer architecture team for action tracking.",
+    "Schedule a follow-up WAR in 90 days to validate remediation progress.",
+  ],
+  "migration-readiness": [
+    "Resolve all migration blockers identified in the readiness assessment before wave 1.",
+    "Confirm wave plan and dependency mapping with the customer workload owners.",
+    "Validate landing zone readiness: networking, identity, and policy must be green.",
+    "Complete Azure Migrate agent deployment and dependency visualisation.",
+    "Agree cutover windows and rollback criteria with the customer operations team.",
+    "Obtain migration readiness sign-off from the delivery architect.",
+  ],
+  "migration": [
+    "Execute wave 1 migration per the agreed cutover plan with rollback criteria confirmed.",
+    "Validate all migrated workloads against acceptance criteria before decommission.",
+    "Run post-migration health checks: performance, connectivity, backup, and monitoring.",
+    "Decommission source workloads only after customer sign-off on validation.",
+    "Hand over operational runbooks and monitoring dashboards to the operations team.",
+    "Conduct a hypercare review 30 days post-migration.",
+  ],
+  "presales-poc": [
+    "Validate POC success criteria with the customer stakeholder before proceeding.",
+    "Document assumptions and risks identified during the POC for the SOW.",
+    "Produce an effort and cost estimate based on POC findings.",
+    "Confirm technical feasibility sign-off before commercial proposal.",
+    "Identify any mandatory pre-requisites the customer must complete before engagement starts.",
+    "Schedule a technical win review with the sales and architecture team.",
+  ],
+};
+
+const DEFAULT_NEXT_STEPS = [
+  "Review and validate all open findings with the architecture team.",
+  "Assign owners and due dates for all Critical and High severity remediation actions.",
+  "Obtain formal sign-off on the Architecture Decision record.",
+  "Upload a SOW to enable scope traceability and acceptance criteria tracking.",
+  "Re-submit for review after critical blockers are resolved.",
+  "Schedule a follow-up review to validate remediation progress.",
+];
+
 function buildNextStepsSlide(p, data) {
   const s = p.addSlide();
   addHeader(s, "Recommended Next Steps", data.projectCategory || "");
   addFooter(s, data.reviewId);
 
-  const steps = data.nextSteps || [
-    "Review and validate all open findings with the architecture team.",
-    "Assign owners and due dates for all Critical and High severity remediation actions.",
-    "Obtain formal sign-off on the Architecture Decision record.",
-    "Re-submit for review after critical blockers are resolved.",
-  ];
+  const categoryKey = (data.projectCategory || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  const steps = (data.nextSteps && data.nextSteps.length > 0)
+    ? data.nextSteps
+    : (CATEGORY_NEXT_STEPS[categoryKey] || DEFAULT_NEXT_STEPS);
 
   steps.slice(0, 6).forEach((step, i) => {
     const y = 1.4 + i * 0.85;
@@ -546,7 +612,7 @@ function shapeReviewDataForPptx(review, files, requirements, evidence, findings,
     inScope: review?.inScope ?? [],
     outOfScope: review?.outOfScope ?? [],
     assumptions: (requirements || []).filter((r) => r.category === "assumption").map((r) => r.normalizedText ?? r.sourceText ?? ""),
-    nextSteps: [],
+    nextSteps: null,
   };
 }
 
