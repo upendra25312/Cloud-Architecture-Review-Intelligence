@@ -53,7 +53,7 @@ export function SummaryHero({ scorecard, openActionCount }: SummaryHeroProps) {
             {displayRecommendation}
           </span>
           <span className={styles.metricBadge}>
-            Confidence: <strong>{scorecard.confidence}</strong>
+            Assessment: <strong>{scorecard.confidence}</strong>
           </span>
           {scorecard.criticalBlockers > 0 && (
             <span className={styles.blockerBadge}>

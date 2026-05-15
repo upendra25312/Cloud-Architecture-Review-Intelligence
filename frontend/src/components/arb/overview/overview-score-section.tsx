@@ -47,7 +47,7 @@ export function OverviewScoreSection({
       </span>
       {confidence && (
         <span className={styles.confidenceLabel}>
-          Confidence: {confidence}
+          Assessment: {confidence}
         </span>
       )}
     </div>
