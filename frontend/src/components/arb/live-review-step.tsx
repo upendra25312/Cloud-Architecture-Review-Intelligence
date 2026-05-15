@@ -985,7 +985,15 @@ export function ArbLiveReviewStep(props: {
             </p>
           ) : (
             <div className="arb-upload-file-list">
-              {uploadedFiles.map((upload) => (
+              {uploadedFiles.map((upload) => {
+                const isExtracted =
+                  upload.extractionStatus === "Completed" ||
+                  upload.extractionStatus === "CompletedWithIssues";
+                const visCount =
+                  typeof upload.visualEvidenceCount === "number" && upload.visualEvidenceCount > 0
+                    ? upload.visualEvidenceCount
+                    : null;
+                return (
                 <article key={upload.fileId} className="trace-card arb-upload-file">
                   <div className="arb-upload-file-copy">
                     <strong>{upload.fileName}</strong>
@@ -994,9 +1002,6 @@ export function ArbLiveReviewStep(props: {
                       <span className={upload.extractionStatus === "Completed" ? "arb-status-done" : undefined}>
                         {upload.extractionStatus}
                       </span>
-                      {typeof upload.visualEvidenceCount === "number" && upload.visualEvidenceCount > 0
-                        ? ` · ${upload.visualEvidenceCount} visual evidence`
-                        : ""}
                       {typeof upload.packageChildCount === "number"
                         ? ` · ${upload.packageChildCount} extracted`
                         : ""}
@@ -1012,6 +1017,21 @@ export function ArbLiveReviewStep(props: {
                         ZIP warnings: {upload.packageWarnings.join(" | ")}
                       </p>
                     ) : null}
+                    {isExtracted ? (
+                      <div className="arb-file-coverage-row" aria-label="What the agent analyzed from this file">
+                        {upload.supportedTextExtraction ? (
+                          <span className="arb-file-coverage-tag arb-file-coverage-tag-done">Text read</span>
+                        ) : null}
+                        {visCount !== null ? (
+                          <span className="arb-file-coverage-tag arb-file-coverage-tag-done">
+                            {visCount} {visCount === 1 ? "image" : "images"} analyzed
+                          </span>
+                        ) : null}
+                        {!upload.supportedTextExtraction && visCount === null ? (
+                          <span className="arb-file-coverage-tag arb-file-coverage-tag-meta">Content processed</span>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="arb-upload-file-actions">
                     <span className="pill">{upload.supportedTextExtraction ? "Supported" : "Limited"}</span>
@@ -1026,7 +1046,8 @@ export function ArbLiveReviewStep(props: {
                     </button>
                   </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
           )}
           {deleteFileError ? <p className="arb-upload-error">{deleteFileError}</p> : null}

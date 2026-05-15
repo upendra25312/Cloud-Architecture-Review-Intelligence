@@ -4493,6 +4493,37 @@ button.chip:disabled:hover {
   cursor: not-allowed;
 }
 
+/* ── Per-file analysis coverage tags ── */
+.arb-file-coverage-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.arb-file-coverage-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.01em;
+}
+
+.arb-file-coverage-tag-done {
+  background: #F0FDF4;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+
+.arb-file-coverage-tag-meta {
+  background: #F9FAFB;
+  color: #6B7280;
+  border: 1px solid #E5E7EB;
+}
+
 /* ── Upload status messages ── */
 .arb-upload-status {
   margin-top: 10px;
