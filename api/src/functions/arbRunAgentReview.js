@@ -52,16 +52,17 @@ function buildArbSearchQuery(review, requirements, evidence) {
   (review.targetRegions ?? []).forEach((r) => terms.add(r));
   const stopWords = new Set(["the","a","an","and","or","for","to","of","in","on","at","is","are","be","with","from","that","this","by","as","its","it","will","we","our","all","any","not","have","has","can"]);
   const allText = [
-    ...requirements.slice(0, 20).map((r) => r.normalizedText ?? ""),
-    ...evidence.slice(0, 15).map((e) => e.summary ?? "")
+    ...requirements.slice(0, 30).map((r) => r.normalizedText ?? ""),
+    ...evidence.slice(0, 25).map((e) => e.summary ?? "")
   ].join(" ");
   allText.split(/\W+/).forEach((tok) => {
     const t = tok.trim().toLowerCase();
     if (t.length >= 5 && !stopWords.has(t)) terms.add(tok.trim());
   });
-  const base = "Azure architecture security reliability WAF CAF";
-  const extra = [...terms].slice(0, 20).join(" ");
-  return `${base} ${extra}`.slice(0, 200).trim();
+  // Include key landing zone + WAF pillar terms to ensure broad document coverage
+  const base = "Azure architecture security reliability governance identity network connectivity backup monitoring WAF CAF landing zone";
+  const extra = [...terms].slice(0, 25).join(" ");
+  return `${base} ${extra}`.slice(0, 300).trim();
 }
 
 function getRowKey(baseKey, userId) {
@@ -156,7 +157,7 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
 
   const searchQuery = buildArbSearchQuery(review, requirementsList, evidenceList);
   await ensureArbSearchIndex();
-  const searchChunks = await searchArbDocuments(reviewId, searchQuery, 12);
+  const searchChunks = await searchArbDocuments(reviewId, searchQuery, 20);
   log("Search complete", { query: searchQuery.slice(0, 80), chunks: searchChunks.length });
 
   // Run deterministic rules first — these are authoritative and cost-free
