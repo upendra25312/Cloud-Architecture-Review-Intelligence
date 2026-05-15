@@ -185,7 +185,7 @@ export function ArbReviewShell(props: {
                 <p className="arb-shell-metric-value">{review.evidenceReadinessState}</p>
               </div>
               <div className="arb-shell-metric">
-                <p className="arb-shell-metric-label">AI Recommendation</p>
+                <p className="arb-shell-metric-label">CARI Recommendation</p>
                 <p className="arb-shell-metric-value">{aiRecommendation}</p>
               </div>
               {review.finalDecision && (
@@ -203,7 +203,7 @@ export function ArbReviewShell(props: {
             </div>
             {hasDecisionConflict && (
               <p style={{ margin: "8px 0 4px", fontSize: "0.78rem", color: "#B45309", fontWeight: 600, lineHeight: 1.4 }}>
-                ⚠ Reviewer decision overrides AI recommendation — ensure rationale is documented before export.
+                ⚠ Reviewer decision overrides CARI recommendation — ensure rationale is documented before export.
               </p>
             )}
             <p className="arb-shell-posture-note">{postureActionHint}</p>
