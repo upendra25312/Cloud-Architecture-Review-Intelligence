@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createArbExport,
   createArbAction,
@@ -302,6 +302,8 @@ export function ArbLiveReviewStep(props: {
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [deleteFileError, setDeleteFileError] = useState<string | null>(null);
   const [timerNow, setTimerNow] = useState(() => Date.now());
+  // Tracks highest progress seen — prevents bar from going backwards when polls return stale stage data
+  const epPctHighWater = useRef(0);
   const actionSummary = summarizeActions(actions);
   const authRequired = error?.includes("Sign in is required") ?? false;
   const sowMissingForSignoff = Boolean(
@@ -673,6 +675,11 @@ export function ArbLiveReviewStep(props: {
     return () => window.clearInterval(id);
   }, [extractionStatus?.state, extractionStarting, agentRunning]);
 
+  // Reset high-water mark when a new extraction job starts so the bar resets cleanly
+  useEffect(() => {
+    if (extractionStatus?.jobId) epPctHighWater.current = 0;
+  }, [extractionStatus?.jobId]);
+
   const shellReview =
     review ??
     ({
@@ -822,25 +829,40 @@ export function ArbLiveReviewStep(props: {
     const epDoneFiles = epFileStatuses.filter(
       (f) => f.extractionStatus === "Completed" || f.extractionStatus === "CompletedWithIssues" || f.extractionStatus === "Failed"
     ).length;
-    // Stage statuses update late in the pipeline; derive a floor from per-file completion
-    // so the bar never shows 0% while files are actively being processed.
+    // Stage statuses update late in the pipeline; derive a floor from per-file completion.
     // Cap file-based progress at 45% — stage progress takes over once stages advance.
     const epPctFromFiles = epTotalFiles > 0 ? Math.round((epDoneFiles / epTotalFiles) * 45) : 0;
     const epPctFromStages = epDoneCount * 25 + epActiveCount * 12;
     const usingFileFallback = epPctFromStages === 0;
-    const epPct = extractionStatus ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles)) : 0;
+
+    // Time-based crawl: once all files are done and stage statuses haven't advanced,
+    // slowly increment 1% per 12 seconds up to 88% so the bar visibly moves during the
+    // long analysis phase (8-20 min) rather than freezing.
+    const elapsedSec = extractionStatus?.lastStartedAt
+      ? Math.max(0, Math.floor((timerNow - new Date(extractionStatus.lastStartedAt).getTime()) / 1000))
+      : 0;
+    const allFilesDone = epTotalFiles > 0 && epDoneFiles === epTotalFiles;
+    const epPctTimeCrawl = usingFileFallback && allFilesDone
+      ? Math.min(88, epPctFromFiles + Math.floor(elapsedSec / 12))
+      : 0;
+
+    const epPctRaw = extractionStatus
+      ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles, epPctTimeCrawl))
+      : 0;
+    // Apply high-water mark: bar never goes backwards across polls
+    epPctHighWater.current = Math.max(epPctHighWater.current, epPctRaw);
+    const epPct = epPctHighWater.current;
+
     let epElapsedLabel = "";
     let epEtaLabel = "";
     if (extractionStatus?.lastStartedAt) {
-      const elapsed = Math.floor((timerNow - new Date(extractionStatus.lastStartedAt).getTime()) / 1000);
-      const mins = Math.floor(elapsed / 60);
-      const secs = elapsed % 60;
+      const mins = Math.floor(elapsedSec / 60);
+      const secs = elapsedSec % 60;
       epElapsedLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-      // Only show ETA when stage-level progress is driving the bar (not file fallback)
-      // — file completion happens too fast to give a meaningful time estimate.
+      // Only show ETA when stage-level progress is driving the bar (not file/time fallback)
       if (!usingFileFallback && epPct > 5) {
-        const totalEst = (elapsed / epPct) * 100;
-        const rem = Math.max(0, totalEst - elapsed);
+        const totalEst = (elapsedSec / epPct) * 100;
+        const rem = Math.max(0, totalEst - elapsedSec);
         const remMins = Math.round(rem / 60);
         epEtaLabel = remMins <= 1 ? "< 1 min remaining" : `~${remMins} min remaining`;
       }
