@@ -19,7 +19,7 @@ export const DOMAIN_ORDER: Record<string, number> = {
   Reliability: 1,
   Cost: 2,
   Operations: 3,
-  Architecture: 4,
+  Evidence: 4,
   Governance: 5,
   Delivery: 6,
 };

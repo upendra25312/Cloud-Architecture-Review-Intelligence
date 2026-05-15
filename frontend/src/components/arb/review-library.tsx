@@ -75,7 +75,7 @@ const EXAMPLE_SCORES = [
   { label: "Reliability", score: 91 },
   { label: "Cost", score: 72 },
   { label: "Operations", score: 88 },
-  { label: "Architecture", score: 78 },
+  { label: "Evidence", score: 78 },
 ];
 
 function formatFileSize(bytes: number) {
@@ -426,14 +426,14 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
           <p className="arb-create-label">Architecture review workspace</p>
           <h2 className="arb-create-title">Upload architecture documents and start a structured review.</h2>
           <p className="arb-create-sub">
-            Create the review, move straight into document upload, and generate Microsoft Learn-grounded findings across Security, Reliability, Cost, Operations, Architecture, Governance, and Delivery.
+            Create the review, move straight into document upload, and generate Microsoft Learn-grounded findings across Security, Reliability, Cost, Operations, Evidence, Governance, and Delivery.
           </p>
           <div className="arb-proof-strip" aria-label="Architecture review proof points">
             <span className="arb-proof-chip">Security</span>
             <span className="arb-proof-chip">Reliability</span>
             <span className="arb-proof-chip">Cost</span>
             <span className="arb-proof-chip">Operations</span>
-            <span className="arb-proof-chip">Architecture</span>
+            <span className="arb-proof-chip">Evidence</span>
             <span className="arb-proof-chip">Governance</span>
             <span className="arb-proof-chip">Delivery</span>
           </div>

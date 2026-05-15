@@ -17,7 +17,7 @@ const DOMAINS = [
   "Reliability",
   "Cost",
   "Operations",
-  "Architecture",
+  "Evidence",
   "Governance",
   "Delivery",
 ] as const;

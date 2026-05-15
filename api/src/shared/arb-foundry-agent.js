@@ -610,7 +610,7 @@ function parseAgentResponse(responseText) {
       findingId: `agent-finding-${i + 1}`,
       reviewId: "",  // populated by caller
       severity: parseSeverity(f.severity),
-      domain: String(f.domain ?? "Architecture"),
+      domain: String(f.domain ?? "Evidence"),
       findingType: String(f.findingType ?? f.framework ?? "WAF"),
       framework: String(f.framework ?? "WAF"),
       frameworkPillar: String(f.frameworkPillar ?? ""),
@@ -713,7 +713,7 @@ function buildFallbackAgentReview({ review, requirements, evidence, reason }) {
         findingId: "fallback-finding-1",
         reviewId: review.reviewId ?? "",
         severity: "High",
-        domain: "Architecture",
+        domain: "Evidence",
         findingType: "WAF",
         framework: "WAF",
         frameworkPillar: "WAF:Operational Excellence",

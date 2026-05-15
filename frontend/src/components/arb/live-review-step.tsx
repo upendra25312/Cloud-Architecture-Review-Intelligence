@@ -1281,7 +1281,7 @@ export function ArbLiveReviewStep(props: {
             </button>
             {agentRunning ? (
               <p className="arb-upload-status arb-upload-status-progress">
-                {agentStatusMessage || "Validating your documents against Security, Reliability, Cost, Operations, Architecture, Governance, and Delivery domains. Do not close this page."}
+                {agentStatusMessage || "Validating your documents against Security, Reliability, Cost, Operations, Evidence, Governance, and Delivery domains. Do not close this page."}
               </p>
             ) : null}
             {agentCompleted ? (
