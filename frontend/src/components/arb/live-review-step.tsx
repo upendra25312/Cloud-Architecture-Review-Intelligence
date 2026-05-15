@@ -822,10 +822,12 @@ export function ArbLiveReviewStep(props: {
     const epDoneFiles = epFileStatuses.filter(
       (f) => f.extractionStatus === "Completed" || f.extractionStatus === "CompletedWithIssues" || f.extractionStatus === "Failed"
     ).length;
-    // If stage statuses haven't advanced yet, derive progress from per-file completion (capped at 60%)
-    // so the bar never shows 0% when files are already being processed.
-    const epPctFromFiles = epTotalFiles > 0 ? Math.round((epDoneFiles / epTotalFiles) * 60) : 0;
+    // Stage statuses update late in the pipeline; derive a floor from per-file completion
+    // so the bar never shows 0% while files are actively being processed.
+    // Cap file-based progress at 45% — stage progress takes over once stages advance.
+    const epPctFromFiles = epTotalFiles > 0 ? Math.round((epDoneFiles / epTotalFiles) * 45) : 0;
     const epPctFromStages = epDoneCount * 25 + epActiveCount * 12;
+    const usingFileFallback = epPctFromStages === 0;
     const epPct = extractionStatus ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles)) : 0;
     let epElapsedLabel = "";
     let epEtaLabel = "";
@@ -834,7 +836,9 @@ export function ArbLiveReviewStep(props: {
       const mins = Math.floor(elapsed / 60);
       const secs = elapsed % 60;
       epElapsedLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-      if (epPct > 5) {
+      // Only show ETA when stage-level progress is driving the bar (not file fallback)
+      // — file completion happens too fast to give a meaningful time estimate.
+      if (!usingFileFallback && epPct > 5) {
         const totalEst = (elapsed / epPct) * 100;
         const rem = Math.max(0, totalEst - elapsed);
         const remMins = Math.round(rem / 60);
@@ -1144,7 +1148,11 @@ export function ArbLiveReviewStep(props: {
           {extractionIsRunning ? (
             <div className="arb-upload-status arb-upload-status-progress arb-ep-panel">
               <div className="arb-ep-header">
-                <span className="arb-ep-title">Analyzing documents…</span>
+                <span className="arb-ep-title">
+                  {usingFileFallback && epDoneFiles === epTotalFiles && epTotalFiles > 0
+                    ? "Preparing deep analysis…"
+                    : "Analyzing documents…"}
+                </span>
                 <span className="arb-ep-pct">{epPct}%</span>
               </div>
               <div className="arb-ep-bar-track" role="progressbar" aria-valuenow={epPct} aria-valuemin={0} aria-valuemax={100}>
