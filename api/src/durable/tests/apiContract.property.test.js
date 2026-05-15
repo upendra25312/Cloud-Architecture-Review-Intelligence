@@ -26,6 +26,7 @@ const {
 
 const nonEmptyString = fc.string({ minLength: 1 });
 const isoDateString = fc.date({ min: new Date('2020-01-01'), max: new Date('2030-01-01') })
+  .filter(d => !isNaN(d.getTime()))
   .map(d => d.toISOString());
 
 // ── runAgentReview202 ─────────────────────────────────────────────────────
