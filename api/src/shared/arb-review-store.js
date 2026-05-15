@@ -2345,14 +2345,37 @@ function toRequirementsEntity(reviewId, userId, requirements) {
   };
 }
 
+// Azure Table Storage limits each property to 32K characters (64KB UTF-16).
+// Visual evidence summaries can be up to 6000 chars each; with 12+ items this
+// blows the limit. Truncate before writing — the full summary text is already
+// persisted in blob storage at each record's imageUri.
+const TABLE_STORAGE_PROPERTY_CHAR_LIMIT = 28_000;
+
+function capVisualEvidenceForTableStorage(visualEvidence) {
+  if (!Array.isArray(visualEvidence) || visualEvidence.length === 0) return [];
+  // Shorten the two large fields on every record first.
+  const capped = visualEvidence.map((ve) => ({
+    ...ve,
+    summary: typeof ve.summary === "string" ? ve.summary.slice(0, 1500) : ve.summary,
+    sourceExcerpt: typeof ve.sourceExcerpt === "string" ? ve.sourceExcerpt.slice(0, 300) : ve.sourceExcerpt
+  }));
+  // If still over the limit, drop trailing records until it fits.
+  let subset = capped;
+  while (subset.length > 0 && JSON.stringify(subset).length > TABLE_STORAGE_PROPERTY_CHAR_LIMIT) {
+    subset = subset.slice(0, Math.max(1, Math.floor(subset.length * 0.8)));
+  }
+  return subset;
+}
+
 function toEvidenceEntity(reviewId, userId, evidence, visualEvidence = []) {
+  const safeVisualEvidence = capVisualEvidenceForTableStorage(visualEvidence);
   return {
     partitionKey: getPartitionKey(reviewId),
     rowKey: getRowKey(EVIDENCE_ROW_KEY, userId),
     reviewId,
     createdByUserId: userId,
     evidenceJson: JSON.stringify(evidence),
-    visualEvidenceJson: JSON.stringify(visualEvidence),
+    visualEvidenceJson: JSON.stringify(safeVisualEvidence),
     lastUpdated: new Date().toISOString()
   };
 }
