@@ -2066,20 +2066,32 @@ function deriveRequirementsAndEvidence(review, files, fileTexts) {
       }
     }
 
-    for (const line of lines.slice(0, 12)) {
-      if (!isVisualArtifact && !/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service/i.test(line)) {
+    const HIGH_CONFIDENCE_CATEGORIES = ["sow", "design_doc", "security_note", "cost_assumptions", "dr_ha_note", "ops_monitoring_note"];
+    const requiresKeywordFilter = isVisualArtifact
+      ? false
+      : !HIGH_CONFIDENCE_CATEGORIES.includes(file.logicalCategory);
+
+    for (const line of lines.slice(0, 20)) {
+      if (requiresKeywordFilter && !/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service/i.test(line)) {
         continue;
       }
+
+      const factType = buildRequirementCategory(line, isVisualArtifact ? "VisualArchitecture" : "Architecture");
+      const confidence = isVisualArtifact
+        ? "Medium"
+        : HIGH_CONFIDENCE_CATEGORIES.includes(file.logicalCategory)
+          ? "High"
+          : supportsTextExtraction(file.fileName) ? "Medium" : "Low";
 
       evidence.push({
         evidenceId: `${review.reviewId}-ev-${evidence.length + 1}`,
         reviewId: review.reviewId,
         sourceFileId: file.fileId,
         sourceFileName: file.fileName,
-        factType: isVisualArtifact ? "VisualArchitecture" : buildRequirementCategory(line, "Architecture"),
+        factType,
         summary: line,
         sourceExcerpt: line,
-        confidence: isVisualArtifact ? "Medium" : supportsTextExtraction(file.fileName) ? "Medium" : "Low"
+        confidence
       });
     }
   }
