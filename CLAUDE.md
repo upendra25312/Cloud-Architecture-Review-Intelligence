@@ -93,7 +93,35 @@ Deploys are automated via GitHub Actions on merge to `main`:
 - `api/**` changes → triggers `deploy-api.yml` → Azure Functions
 - `infrastructure/terraform/**` → triggers `terraform.yml` (plan/apply gated)
 
+## PowerPoint export — critical rules
+
+File: `api/src/shared/arb-pptx-export.js`  
+Standard: `standards/pptx-export-standard.md` — **read this before touching the file.**
+
+### Bugs that MUST NOT recur
+
+1. **`nextSteps: []` bug** — An empty array `[]` is truthy in JavaScript. `data.nextSteps || [defaults]` will NOT fall through to defaults if `nextSteps` is `[]`. Always set `nextSteps: null` in `shapeReviewDataForPptx` so the fallback fires correctly.
+
+2. **Empty-state omission** — Every slide that renders a table or list MUST have an explicit guard when the array is empty. Never let a slide render with only a header row and no body. See `buildRiskRegisterSlide` for the correct pattern.
+
+3. **Text truncation without wrap** — Never use `.slice(n)` on a text element without also setting `wrap: true`. Truncation without wrap still overflows the box. Always use both together.
+
+4. **Missing brand colours** — Purple (`#95008A`) is the static brand anchor: the cover slide category pill MUST use `fill: { color: BRAND.purple }`. Never change it to blue or any other colour. Teal appears conditionally (scorecard ≥80, recommendation "Recommended for Approval", action "Closed", SOW "In scope").
+
+5. **Category-aware Next Steps** — The `CATEGORY_NEXT_STEPS` map in `arb-pptx-export.js` contains 6 specific steps per category. When adding a new project category anywhere in the codebase, add its step list to this map first.
+
+6. **SOW Traceability data source** — Evidence objects in Azure Table Storage do NOT carry `logicalCategory`. Build `sowTraceability` from the `files` array (filter `logicalCategory === "sow"`) cross-referenced against `requirements` (filter by `sourceFileId`). Never filter `evidence` for SOW — it will always return empty.
+
+7. **`wrap: true` on all multi-line text** — Every `addText` call that could receive more than one line MUST have `wrap: true`. This includes Next Steps items and Action summaries, not just `.slice()` truncated fields.
+
+### Quality bar for every PPTX change
+
+Before committing any change to `arb-pptx-export.js`:
+- Run `npm --prefix api test` — all 140+ tests must pass
+- Mentally walk every slide: does it have content even when all data arrays are empty?
+- Check every `.slice()` call has a matching `wrap: true`
+- Confirm `nextSteps: null` (not `[]`) in `shapeReviewDataForPptx`
+
 ## Current branch context
 
-**Branch:** `feat/microsoft-standard-repo-structure`  
-**Plan:** `docs/RESTRUCTURING-PLAN.md` — check this file to understand what work is in progress and what remains.
+**Branch:** `main` (feat/cari-comprehensive-v2 merged 2026-05-15)

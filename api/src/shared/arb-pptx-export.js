@@ -112,12 +112,12 @@ function buildCoverSlide(p, data) {
     x: 0.5, y: 2.7, w: 9, h: 0.45,
     fontSize: 16, color: BRAND.white, fontFace: BRAND.font,
   });
-  // Category pill
+  // Category pill — purple is a static brand anchor; ensures #95008A appears in every deck
   const cat = data.projectCategory || "Architecture Review";
   s.addText(cat, {
     x: 0.5, y: 3.3, w: 3, h: 0.38,
     fontSize: 12, bold: true, color: BRAND.white, fontFace: BRAND.font,
-    fill: { color: BRAND.blue }, align: "center",
+    fill: { color: BRAND.purple }, align: "center",
   });
   // Date / status
   s.addText(`${data.reviewDate || ""}  ·  ${data.status || ""}`, {
@@ -333,7 +333,7 @@ function buildRemediationActionsSlide(p, data) {
     const statusColor = a.status === "In Progress" ? BRAND.blue : a.status === "Closed" ? BRAND.teal : BRAND.red;
     s.addShape(p.ShapeType.rect, { x: 0.3, y, w: 0.85, h: 0.22, fill: { color: statusColor }, line: { color: statusColor } });
     s.addText(a.status || "Open", { x: 0.3, y: y + 0.02, w: 0.85, h: 0.18, fontSize: 7, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
-    s.addText(a.actionSummary || "Action summary not provided", { x: 1.25, y, w: 5.8, h: 0.28, fontSize: 9, color: BRAND.darkGrey, fontFace: BRAND.font });
+    s.addText(a.actionSummary || "Action summary not provided", { x: 1.25, y, w: 5.8, h: 0.28, fontSize: 9, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true });
     s.addText(`Owner: ${a.owner || "TBC"}  ·  Due: ${a.dueDate ? new Date(a.dueDate).toLocaleDateString("en-GB") : "TBC"}`, { x: 1.25, y: y + 0.3, w: 5.8, h: 0.22, fontSize: 7.5, color: BRAND.midGrey, fontFace: BRAND.font });
     const sev = a.severity || "";
     if (sev) {
@@ -481,7 +481,7 @@ function buildNextStepsSlide(p, data) {
     const y = 1.4 + i * 0.85;
     s.addShape(p.ShapeType.ellipse, { x: 0.3, y: y + 0.07, w: 0.4, h: 0.4, fill: { color: BRAND.red }, line: { color: BRAND.red } });
     s.addText(String(i + 1), { x: 0.3, y: y + 0.1, w: 0.4, h: 0.35, fontSize: 12, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
-    s.addText(step, { x: 0.85, y: y + 0.08, w: 8.8, h: 0.45, fontSize: 10, color: BRAND.darkGrey, fontFace: BRAND.font });
+    s.addText(step, { x: 0.85, y: y + 0.08, w: 8.8, h: 0.45, fontSize: 10, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true });
   });
 
   // Disclaimer
