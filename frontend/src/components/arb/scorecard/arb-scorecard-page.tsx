@@ -29,6 +29,7 @@ import { DomainSection } from "./domain-section";
 import { ReviewerOverrideSection } from "./reviewer-override-section";
 import { NextActionsSection } from "./next-actions-section";
 import { ExportSection } from "./export-section";
+import { ApprovalBanner } from "./approval-banner";
 import styles from "./arb-scorecard-page.module.css";
 
 export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
@@ -192,6 +193,10 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
       );
     }
 
+    const finalDecision = shellReview.finalDecision ?? null;
+    const isApproved = !!finalDecision;
+    const override = scorecard.reviewerOverride;
+
     return (
       <>
         {isFallback && (
@@ -205,6 +210,15 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
           </div>
         )}
 
+        {finalDecision && (
+          <ApprovalBanner
+            decision={finalDecision}
+            reviewerName={override?.reviewerName ?? shellReview.assignedReviewer}
+            approvedAt={override?.overriddenAt ?? shellReview.lastUpdated}
+            rationale={override?.overrideRationale}
+          />
+        )}
+
         <ScorecardStatusBar
           scorecard={scorecard}
           actions={actions}
@@ -213,11 +227,15 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
           exportLoading={exportLoading}
         />
 
-        <SummaryHero scorecard={scorecard} openActionCount={openActions.length} />
+        <SummaryHero
+          scorecard={scorecard}
+          openActionCount={openActions.length}
+          finalDecision={finalDecision}
+        />
 
         <StrengthsSection strengths={scorecard.strengths ?? []} />
 
-        <ConditionsToClose actions={openActions} />
+        <ConditionsToClose actions={openActions} isApproved={isApproved} />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "12px 20px" }}>
           {sortedDomains.map((ds) => (

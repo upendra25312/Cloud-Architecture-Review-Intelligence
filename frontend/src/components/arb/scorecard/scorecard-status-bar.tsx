@@ -22,16 +22,20 @@ export function ScorecardStatusBar({
   // generateSummary expects findings — derive a minimal summary from scorecard data
   const summaryText = generateSummary([], scorecard);
 
+  const isDecided = !!review.finalDecision;
+  const displayWorkflow = isDecided ? "Decision Recorded" : review.workflowState;
+  const displayEvidence = isDecided ? "Decision Recorded" : scorecard.evidenceReadinessState;
+
   return (
     <div className={styles.statusBar}>
       <span className={styles.metricBadge}>{summaryText}</span>
 
       <span className={styles.metricBadge}>
-        Workflow: <strong>{review.workflowState}</strong>
+        Workflow: <strong>{displayWorkflow}</strong>
       </span>
 
       <span className={styles.metricBadge}>
-        Evidence: <strong>{scorecard.evidenceReadinessState}</strong>
+        Evidence: <strong>{displayEvidence}</strong>
       </span>
 
       <button

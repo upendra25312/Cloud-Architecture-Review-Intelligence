@@ -5,15 +5,18 @@ import styles from "./arb-scorecard-page.module.css";
 
 export interface ConditionsToCloseProps {
   actions: ArbAction[];
+  isApproved?: boolean;
 }
 
-export function ConditionsToClose({ actions }: ConditionsToCloseProps) {
+export function ConditionsToClose({ actions, isApproved }: ConditionsToCloseProps) {
   if (actions.length === 0) return null;
+
+  const heading = isApproved ? "Post-Approval Action Items" : "Conditions to Close";
 
   return (
     <section style={{ padding: "12px 20px" }}>
       <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--brand)" }}>
-        Conditions to Close
+        {heading}
       </p>
       <table className={`arb-conditions-table ${styles.conditionsTable}`} role="table">
         <thead>
