@@ -295,21 +295,25 @@ function buildScorecardSlide(p, data, slideNum) {
   }
 
   const domainLabelW = 3.5;
-  const barX = M + domainLabelW + 0.2;
-  const barW = CW - domainLabelW - 1.4;
+  const barX  = M + domainLabelW + 0.2;
+  const barW  = CW - domainLabelW - 1.6;
   const scoreX = barX + barW + 0.1;
 
   domains.slice(0, 6).forEach((d, i) => {
-    const y = BODY_Y + i * 0.95;
-    const score = Math.round(d.score ?? 0);
+    const y       = BODY_Y + i * 0.95;
+    const rawScore = Math.round(d.score    ?? 0);
+    const maxScore = Math.round(d.maxScore ?? 0);
+    const pct      = Math.min(100, Math.round(d.percentage ?? rawScore));
+    const scoreLabel = maxScore > 0 ? `${rawScore} / ${maxScore}` : String(rawScore);
+
     s.addText(d.domain || d.name || `Domain ${i + 1}`, {
       x: M, y: y + 0.05, w: domainLabelW, h: 0.45,
       fontSize: 11, fontFace: BRAND.font, color: BRAND.darkGrey, bold: true,
     });
-    pctBar(s, barX, y + 0.1, barW, 0.38, score, SCORE_COLOUR(score));
-    s.addText(String(score), {
-      x: scoreX, y: y + 0.05, w: 0.8, h: 0.45,
-      fontSize: 15, bold: true, color: SCORE_COLOUR(score), fontFace: BRAND.font, align: "right",
+    pctBar(s, barX, y + 0.1, barW, 0.38, pct, SCORE_COLOUR(pct));
+    s.addText(scoreLabel, {
+      x: scoreX, y: y + 0.05, w: 1.1, h: 0.45,
+      fontSize: 13, bold: true, color: SCORE_COLOUR(pct), fontFace: BRAND.font, align: "right",
     });
     if (d.reason) {
       s.addText(d.reason.slice(0, 200), {
@@ -468,6 +472,17 @@ function buildRemediationActionsSlide(p, data, slideNum) {
   });
 }
 
+// Returns fill/text colours for a decision-value cell based on the decision string.
+function decisionCellStyle(value) {
+  if (!value) return { bg: BRAND.lightGrey, fg: BRAND.darkGrey };
+  const v = String(value).toLowerCase();
+  if (v === "approved") return { bg: BRAND.teal, fg: BRAND.white };
+  if (v.includes("approved with conditions")) return { bg: "F0A500", fg: BRAND.white };
+  if (v.includes("needs remediation") || v.includes("needs revision")) return { bg: BRAND.red, fg: BRAND.white };
+  if (v.includes("review required") || v.includes("rejected")) return { bg: BRAND.midGrey, fg: BRAND.white };
+  return { bg: BRAND.lightGrey, fg: BRAND.darkGrey };
+}
+
 function buildDecisionSlide(p, data, slideNum) {
   const s = p.addSlide();
   addHeader(s, "Architecture Decision", "Reviewer sign-off and governance record");
@@ -477,24 +492,38 @@ function buildDecisionSlide(p, data, slideNum) {
   const labelW   = 3.2;
   const valueX   = M + labelW + 0.2;
   const valueW   = CW - labelW - 0.2;
-  const rowH     = 0.75;
+  const rowH     = 0.65;  // slightly reduced to leave room for warning callout
+  const rowGap   = 0.05;
 
   const fields = [
-    ["AI Recommendation",  decision.aiRecommendation  || "Pending"],
-    ["Reviewer Decision",  decision.reviewerDecision  || "Pending"],
-    ["Reviewer Name",      decision.reviewerName      || "Not recorded"],
-    ["Reviewer Role",      decision.reviewerRole      || "Not recorded"],
-    ["Date Recorded",      decision.recordedAt ? new Date(decision.recordedAt).toLocaleDateString("en-GB") : "Not recorded"],
-    ["Rationale",          (decision.rationale || "Not provided").slice(0, 300)],
+    ["Governance Posture",  decision.governancePosture || decision.aiRecommendation || "Pending",  true],
+    ["Reviewer Decision",   decision.reviewerDecision  || "Not Recorded",                          true],
+    ["Reviewer Name",       decision.reviewerName      || "Not recorded",                          false],
+    ["Reviewer Role",       decision.reviewerRole      || "Not recorded",                          false],
+    ["Date Recorded",       decision.recordedAt ? new Date(decision.recordedAt).toLocaleDateString("en-GB") : "Not recorded", false],
+    ["Rationale",           (decision.rationale || "Not provided").slice(0, 300),                  false],
   ];
 
-  fields.forEach(([label, value], i) => {
-    const y = BODY_Y + i * (rowH + 0.05);
-    s.addShape(p.ShapeType.rect, { x: M,      y, w: labelW, h: rowH, fill: { color: BRAND.darkGrey  }, line: { color: BRAND.darkGrey  } });
-    s.addText(label,  { x: M + 0.12, y: y + 0.18, w: labelW - 0.2, h: rowH - 0.3,  fontSize: 10.5, bold: true, color: BRAND.white,    fontFace: BRAND.font });
-    s.addShape(p.ShapeType.rect, { x: valueX, y, w: valueW, h: rowH, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
-    s.addText(value,  { x: valueX + 0.15, y: y + 0.1, w: valueW - 0.3, h: rowH - 0.18, fontSize: 10, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true, valign: "middle" });
+  fields.forEach(([label, value, colorCode], i) => {
+    const y = BODY_Y + i * (rowH + rowGap);
+    s.addShape(p.ShapeType.rect, { x: M, y, w: labelW, h: rowH, fill: { color: BRAND.darkGrey }, line: { color: BRAND.darkGrey } });
+    s.addText(label, { x: M + 0.12, y: y + 0.14, w: labelW - 0.2, h: rowH - 0.22, fontSize: 10.5, bold: true, color: BRAND.white, fontFace: BRAND.font });
+
+    const { bg, fg } = colorCode ? decisionCellStyle(value) : { bg: BRAND.lightGrey, fg: BRAND.darkGrey };
+    s.addShape(p.ShapeType.rect, { x: valueX, y, w: valueW, h: rowH, fill: { color: bg }, line: { color: bg } });
+    s.addText(value, { x: valueX + 0.15, y: y + 0.08, w: valueW - 0.3, h: rowH - 0.14, fontSize: 10, color: fg, fontFace: BRAND.font, wrap: true, valign: "middle", bold: colorCode });
   });
+
+  // Governance warning callout — shown prominently when posture conflicts with reviewer decision
+  if (decision.governanceWarning) {
+    const warningY = BODY_Y + fields.length * (rowH + rowGap) + 0.08;
+    const warningH = Math.max(0.5, FTR_Y - warningY - 0.45);
+    s.addShape(p.ShapeType.rect, { x: M, y: warningY, w: CW, h: warningH, fill: { color: "FEF3C7" }, line: { color: "F59E0B", pt: 1.5 } });
+    s.addText(`⚠  Governance Alert:  ${decision.governanceWarning}`, {
+      x: M + 0.18, y: warningY + 0.07, w: CW - 0.35, h: warningH - 0.12,
+      fontSize: 8.5, color: "92400E", fontFace: BRAND.font, wrap: true,
+    });
+  }
 }
 
 function buildSowTraceabilitySlide(p, data, slideNum) {
@@ -512,8 +541,8 @@ function buildSowTraceabilitySlide(p, data, slideNum) {
   }
 
   // Column widths total = CW = 12.33"
-  const colW = [3.5, 3.0, 3.73, 2.1];
-  const headers = ["Assessment Area", "SOW Reference", "Evidence Source", "Status"];
+  const colW = [2.8, 5.5, 2.33, 1.7];
+  const headers = ["Domain", "SOW Requirement", "Evidence Source", "Status"];
 
   const tableData = [
     headers.map((h) => ({
@@ -536,6 +565,27 @@ function buildSowTraceabilitySlide(p, data, slideNum) {
     color: BRAND.darkGrey,
     border: { type: "solid", pt: 0.3, color: BRAND.lightGrey },
     colW,
+  });
+}
+
+function buildNoOpenItemsSlide(p, data, slideNum) {
+  const s = p.addSlide();
+  addHeader(s, "Findings, Risk & Actions", "Open items summary");
+  addFooter(s, data.reviewId, slideNum);
+
+  // Teal status banner — clean bill of health
+  s.addShape(p.ShapeType.rect, {
+    x: M, y: 2.05, w: CW, h: 0.78,
+    fill: { color: BRAND.teal }, line: { color: BRAND.teal },
+  });
+  s.addText("No open findings, risks, or remediation actions are recorded for this review.", {
+    x: M + 0.25, y: 2.12, w: CW - 0.5, h: 0.64,
+    fontSize: 13, bold: true, color: BRAND.white, fontFace: BRAND.font, valign: "middle", wrap: true,
+  });
+
+  s.addText("All reviewed domains have been assessed. Refer to the Scorecard for domain-level scores and the Architecture Decision slide for the governance record.", {
+    x: M, y: 3.1, w: CW, h: 0.6,
+    fontSize: 11, color: BRAND.midGrey, fontFace: BRAND.font, wrap: true, valign: "top",
   });
 }
 
@@ -656,6 +706,8 @@ async function generateArbPptx(packOrReviewData) {
   const findings       = reviewData.findings || [];
   const findingPageCnt = Math.max(1, Math.ceil(findings.length / 4));
   const maxFindPages   = Math.min(findingPageCnt, 5);
+  const hasFindings    = findings.length > 0;
+  const hasOpenActions = (reviewData.actions || []).some((a) => a.status !== "Closed");
 
   let sn = 1; // slide number counter
 
@@ -664,12 +716,15 @@ async function generateArbPptx(packOrReviewData) {
   buildAssessmentScopeSlide(pptx, reviewData, sn++);
   buildScorecardSlide(pptx, reviewData, sn++);
 
-  for (let i = 0; i < maxFindPages; i++) {
-    buildFindingsSlide(pptx, { ...reviewData, totalFindingPages: maxFindPages }, i, sn++);
+  if (hasFindings) {
+    for (let i = 0; i < maxFindPages; i++) {
+      buildFindingsSlide(pptx, { ...reviewData, totalFindingPages: maxFindPages }, i, sn++);
+    }
+    buildRiskRegisterSlide(pptx, reviewData, sn++);
+    if (hasOpenActions) buildRemediationActionsSlide(pptx, reviewData, sn++);
+  } else {
+    buildNoOpenItemsSlide(pptx, reviewData, sn++);
   }
-
-  buildRiskRegisterSlide(pptx, reviewData, sn++);
-  buildRemediationActionsSlide(pptx, reviewData, sn++);
   buildDecisionSlide(pptx, reviewData, sn++);
   buildSowTraceabilitySlide(pptx, reviewData, sn++);
   buildNextStepsSlide(pptx, reviewData, sn++);

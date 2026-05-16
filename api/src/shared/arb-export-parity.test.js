@@ -177,9 +177,19 @@ test("pptx _pptx section is present and has correct fields", () => {
   assert.equal(pack._pptx.reviewId,     REVIEW.reviewId);
   assert.equal(pack._pptx.projectName,  REVIEW.projectMeta.projectName);
   assert.equal(pack._pptx.customerName, REVIEW.projectMeta.customerName);
-  assert.equal(pack._pptx.nextSteps,    null, "nextSteps must be null (not []) to trigger category defaults");
-  assert.ok(Array.isArray(pack._pptx.findings), "findings must be array");
-  assert.ok(Array.isArray(pack._pptx.actions),  "actions must be array");
+  // nextSteps is now a computed non-empty array — never null, never []
+  assert.ok(Array.isArray(pack._pptx.nextSteps), "nextSteps must be an array");
+  assert.ok(pack._pptx.nextSteps.length > 0,     "nextSteps must not be empty");
+  assert.ok(Array.isArray(pack._pptx.findings),  "findings must be array");
+  assert.ok(Array.isArray(pack._pptx.actions),   "actions must be array");
+});
+
+test("pptx _pptx nextSteps do not include upload-SOW when SOW file exists", () => {
+  const pack = buildPack("pptx");
+  const hasUploadSow = pack._pptx.nextSteps.some((s) =>
+    /upload.*sow|sow.*upload/i.test(s)
+  );
+  assert.equal(hasUploadSow, false, "should not prompt to upload SOW when SOW file is already present");
 });
 
 test("pptx _pptx findings use findingStatement key for slide builder compat", () => {

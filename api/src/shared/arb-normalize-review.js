@@ -632,6 +632,88 @@ function mapSourceType(logicalCategory) {
   return "Other";
 }
 
+// ─── State-aware next steps builder ──────────────────────────────────────────
+// Generates context-specific next steps based on the actual review state so
+// the PPTX slide is actionable rather than generic boilerplate.
+
+function buildStateAwareNextSteps(canonicalDecision, canonicalFindings, files) {
+  const steps = [];
+  const hasSow = (files || []).some((f) => (f.logicalCategory || "").toLowerCase() === "sow");
+  const open = (canonicalFindings || []).filter((f) => {
+    const s = String(f.status || "").toLowerCase();
+    return s === "open" || s === "in progress";
+  });
+  const openCrit = open.filter((f) => String(f.severity || "").toLowerCase() === "critical");
+  const openHigh = open.filter((f) => String(f.severity || "").toLowerCase() === "high");
+  const openMed  = open.filter((f) => String(f.severity || "").toLowerCase() === "medium");
+  const { reviewerDecision, governanceWarning } = canonicalDecision;
+
+  if (openCrit.length > 0) {
+    steps.push(`Immediately remediate ${openCrit.length} Critical finding${openCrit.length !== 1 ? "s" : ""} — no deployment or approval is permitted while Critical blockers remain open.`);
+  }
+  if (openHigh.length > 0) {
+    steps.push(`Assign owners and set firm remediation timelines for ${openHigh.length} High severity finding${openHigh.length !== 1 ? "s" : ""} within 14 days.`);
+  }
+  if (openMed.length > 0) {
+    steps.push(`Track and resolve ${openMed.length} Medium finding${openMed.length !== 1 ? "s" : ""} through the remediation action register before the next review cycle.`);
+  }
+  if (governanceWarning) {
+    steps.push("Record formal risk acceptance — document the risk owner, accepted residual risk, and approval conditions to align the governance record with the reviewer decision.");
+  }
+  if (!hasSow) {
+    steps.push("Upload a Statement of Work to enable full scope traceability and acceptance criteria tracking.");
+  }
+  if (open.length === 0 && reviewerDecision === "Approved") {
+    steps.push("Architecture approved — proceed to implementation against the reviewed and signed-off design baseline.");
+    steps.push("Schedule a 30-day post-deployment health check to confirm the architecture performs as designed in production.");
+  } else if (reviewerDecision === "Not Recorded") {
+    steps.push("Obtain formal reviewer sign-off on the Architecture Decision record before closing this review.");
+  }
+  steps.push("Distribute this review report to the customer architecture team, delivery lead, and relevant stakeholders.");
+  if (open.length > 0) {
+    steps.push("Schedule a follow-up architecture review after remediation actions are completed to validate progress and update the scorecard.");
+  } else {
+    steps.push("Update the project architecture decision register with this review as the approved design baseline.");
+  }
+  return steps.slice(0, 6);
+}
+
+// ─── Executive narrative builder ──────────────────────────────────────────────
+// Generates a meaningful summary paragraph when no stored executiveSummary exists.
+
+function buildExecutiveNarrative(customerName, projectName, fileCount, canonicalFindings, canonicalDecision, scorePct) {
+  const open     = (canonicalFindings || []).filter((f) => String(f.status || "").toLowerCase() !== "closed");
+  const openCrit = open.filter((f) => String(f.severity || "").toLowerCase() === "critical");
+  const openHigh = open.filter((f) => String(f.severity || "").toLowerCase() === "high");
+
+  let s = `${projectName} architecture review assessed ${fileCount} uploaded input${fileCount !== 1 ? "s" : ""} for ${customerName}.`;
+  if (scorePct >= 80) {
+    s += ` The architecture scored ${scorePct}/100, indicating strong alignment with WAF/CAF requirements.`;
+  } else if (scorePct >= 60) {
+    s += ` The architecture scored ${scorePct}/100, indicating moderate alignment with WAF/CAF requirements — some areas require attention before full approval.`;
+  } else {
+    s += ` The architecture scored ${scorePct}/100, indicating significant gaps against WAF/CAF requirements that must be addressed.`;
+  }
+  if (open.length === 0) {
+    s += " No open findings are recorded.";
+  } else if (openCrit.length > 0) {
+    s += ` ${openCrit.length} Critical finding${openCrit.length !== 1 ? "s" : ""} must be remediated before any approval or deployment.`;
+  } else if (openHigh.length > 0) {
+    s += ` ${openHigh.length} High severity finding${openHigh.length !== 1 ? "s" : ""} require remediation before unconditional approval.`;
+  } else {
+    s += ` ${open.length} finding${open.length !== 1 ? "s" : ""} have been identified for remediation.`;
+  }
+  const { reviewerDecision, governanceWarning } = canonicalDecision;
+  if (reviewerDecision === "Approved" && governanceWarning) {
+    s += " Note: The reviewer has approved this architecture. Formal risk acceptance is required to align the governance record.";
+  } else if (reviewerDecision === "Approved") {
+    s += " The architecture has been approved by the reviewer.";
+  } else if (reviewerDecision === "Needs Remediation") {
+    s += " Remediation is required before this architecture can be approved.";
+  }
+  return s;
+}
+
 // ─── Main normalization entry point ───────────────────────────────────────────
 
 /**
@@ -742,8 +824,8 @@ function normalizeReviewForExport(
   const sowReqs    = (requirements || []).filter((r) => sowFileIds.has(r.sourceFileId)).slice(0, 12);
   const sowTraceability = sowReqs.length > 0
     ? sowReqs.map((r) => ({
-        area:           r.category       || "Architecture",
-        sowRef:         r.sourceFileName || "SOW",
+        area:           classifyDomain(r.normalizedText || r.text || "", r.category) || "Architecture",
+        sowRef:         (r.normalizedText || r.text || r.sourceFileName || "").slice(0, 90),
         evidenceSource: r.sourceFileName || "SOW",
         status:         "In scope",
       }))
@@ -839,17 +921,38 @@ function normalizeReviewForExport(
       status:               review?.status ?? "Review Complete",
       overallScore:         canonicalScorecard.totalScore,
       recommendation:       recommendation,
-      executiveSummary:     review?.executiveSummary || scorecard?.executiveSummary || "",
+      executiveSummary:     review?.executiveSummary || scorecard?.executiveSummary ||
+        buildExecutiveNarrative(
+          review?.projectMeta?.customerName || review?.customerName || "the customer",
+          review?.projectMeta?.projectName  || review?.projectName  || "this project",
+          (files || []).length,
+          canonicalFindings,
+          canonicalDecision,
+          canonicalScorecard.percentage,
+        ),
       fileCount:            (files    || []).length,
       findingCount:         canonicalFindings.length,
       criticalBlockerCount: scorecard?.criticalBlockers
         ?? canonicalFindings.filter((f) => f.severity === "Critical" && f.status !== "Closed").length,
       actionCount:          remediationActions.length,
-      domainScores:         canonicalScorecard.domains.map((d) => ({
-        domain: d.domain,
-        score:  d.score,
-        reason: d.rationale,
-      })),
+      domainScores:         canonicalScorecard.domains.map((d) => {
+        const openForDomain = canonicalFindings.filter(
+          (f) => f.domain === d.domain &&
+                 String(f.status || "").toLowerCase() !== "closed"
+        );
+        const reason = openForDomain.length > 0
+          ? `${openForDomain.length} active finding${openForDomain.length !== 1 ? "s" : ""} currently influence this domain.`
+          : (d.rationale && !/\d+\s+active\s+finding/i.test(d.rationale))
+            ? d.rationale
+            : "No active blockers. Domain remains capped below full score until reviewer sign-off confirms control evidence.";
+        return {
+          domain:     d.domain,
+          score:      d.score,
+          maxScore:   d.maxScore,
+          percentage: d.percentage,
+          reason,
+        };
+      }),
       findings: canonicalFindings.map((f) => ({
         title:            f.title,
         severity:         f.severity,
@@ -868,14 +971,18 @@ function normalizeReviewForExport(
         dueDate:       a.dueDate,
         severity:      a.severity,
       })),
-      decision:      decision ?? {},
+      decision:      { ...canonicalDecision, aiRecommendation: recommendation },
       sowTraceability,
-      inScope:       review?.inScope    ?? [],
+      inScope: (review?.inScope || []).length > 0
+        ? review.inScope
+        : [...new Set(sowReqs.map((r) =>
+            classifyDomain(r.normalizedText || r.text || "", r.category) || "Architecture"
+          ))],
       outOfScope:    review?.outOfScope ?? [],
       assumptions:   (requirements || [])
         .filter((r) => r.category === "assumption")
         .map((r) => r.normalizedText ?? r.sourceText ?? ""),
-      nextSteps:     null,
+      nextSteps:     buildStateAwareNextSteps(canonicalDecision, canonicalFindings, files),
     },
   };
 
