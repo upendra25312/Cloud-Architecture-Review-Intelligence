@@ -207,11 +207,15 @@ function buildExecutiveSummarySlide(p, data, slideNum) {
 
   const score = data.overallScore ?? 0;
   const rec   = data.recommendation || "Pending";
-  const recColor = rec === "Recommended for Approval" ? BRAND.teal
-                 : rec === "Needs Revision"           ? "C85000"
+  // Colour maps to governance posture values (the badge now shows governancePosture directly)
+  const recColor = rec === "Approved"                   ? BRAND.teal
+                 : rec === "Approved with Conditions"   ? "F0A500"
+                 : rec === "Needs Remediation"          ? BRAND.red
+                 : rec === "Review Required"            ? BRAND.midGrey
+                 : rec === "Rejected"                   ? BRAND.darkGrey
                  : BRAND.red;
 
-  // Score circle — top right
+  // Score circle — top right (positioned so stat cards don't overlap it)
   const cx = W - M - 2.1;
   s.addShape(p.ShapeType.ellipse, { x: cx, y: BODY_Y, w: 2.0, h: 2.0, fill: { color: SCORE_COLOUR(score) }, line: { color: SCORE_COLOUR(score) } });
   s.addText(`${score}`, { x: cx, y: BODY_Y + 0.48, w: 2.0, h: 0.9, fontSize: 40, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
@@ -224,15 +228,15 @@ function buildExecutiveSummarySlide(p, data, slideNum) {
     fill: { color: recColor }, align: "center", valign: "middle",
   });
 
-  // Stat cards
+  // Stat cards — width and gap sized to stay left of the score circle (circle x ≈ 10.73")
   const stats = [
     ["Files Reviewed",    String(data.fileCount          ?? 0), BRAND.blue],
     ["Findings",          String(data.findingCount        ?? 0), BRAND.red],
     ["Critical Blockers", String(data.criticalBlockerCount ?? 0), BRAND.red],
     ["Actions",           String(data.actionCount         ?? 0), "C85000"],
   ];
-  const cardW = 2.5;
-  const cardGap = 0.25;
+  const cardW   = 2.35;
+  const cardGap = 0.2;
   stats.forEach(([label, val, color], i) => {
     const x = M + i * (cardW + cardGap);
     s.addShape(p.ShapeType.rect, { x, y: BODY_Y + 0.62, w: cardW, h: 0.95, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
@@ -240,10 +244,10 @@ function buildExecutiveSummarySlide(p, data, slideNum) {
     s.addText(label, { x, y: BODY_Y + 1.2,  w: cardW, h: 0.3,  fontSize: 9,  color: BRAND.midGrey, fontFace: BRAND.font, align: "center" });
   });
 
-  // Executive summary text
+  // Executive summary text — width capped to stay clear of the score circle (circle x ≈ 10.73")
   const summaryText = (data.executiveSummary || "Assessment complete. Review findings and remediation actions in the slides that follow.").slice(0, 800);
   s.addText(summaryText, {
-    x: M, y: BODY_Y + 1.78, w: CW, h: 3.55,
+    x: M, y: BODY_Y + 1.78, w: CW - 2.2, h: 3.55,
     fontSize: 11, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true, valign: "top",
   });
 
@@ -265,12 +269,12 @@ function buildAssessmentScopeSlide(p, data, slideNum) {
   const rowH   = 0.75;
 
   const rows = [
-    ["Project Category", data.projectCategory || "Not specified"],
+    ["Project Category", data.projectCategory || "Architecture Review"],
     ["Customer",         data.customerName    || "Not specified"],
     ["Project",          data.projectName     || "Not specified"],
     ["In-Scope Areas",   (data.inScope    || []).join(", ") || "See uploaded SOW"],
-    ["Out-of-Scope",     (data.outOfScope || []).join(", ") || "See uploaded SOW"],
-    ["Assumptions",      (data.assumptions || []).slice(0, 3).join("; ") || "Not provided"],
+    ["Out-of-Scope",     (data.outOfScope || []).join(", ") || "Not specified in review data"],
+    ["Assumptions",      (data.assumptions || []).slice(0, 3).join("; ") || "No assumptions recorded"],
   ];
 
   rows.forEach(([label, value], i) => {

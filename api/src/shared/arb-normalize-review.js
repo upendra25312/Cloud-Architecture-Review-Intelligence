@@ -319,8 +319,11 @@ function deriveGovernanceDecision(findings, scorecard, decision) {
   }
 
   // Warning: reviewer approved but governance requires more
+  // Only fire when open findings actually exist — posture mismatch from a stale scorecard
+  // recommendation (no open findings present) must not produce a false "open findings" warning.
+  const hasOpenFindings = (openCritical.length + openHigh.length + openMedium.length) > 0;
   let governanceWarning = null;
-  if (reviewerDecision === "Approved" && governancePosture !== "Approved") {
+  if (reviewerDecision === "Approved" && governancePosture !== "Approved" && hasOpenFindings) {
     governanceWarning = "Reviewer approval exists, but open findings require remediation, conditional approval, or formal risk acceptance before architecture closure.";
   }
 
@@ -632,6 +635,16 @@ function mapSourceType(logicalCategory) {
   return "Other";
 }
 
+// ─── Text truncation helper ───────────────────────────────────────────────────
+// Truncates at a word boundary so slide text never ends mid-word.
+
+function truncateAtWord(text, maxLen) {
+  if (!text || text.length <= maxLen) return String(text || "");
+  const cut       = String(text).slice(0, maxLen);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > maxLen * 0.6 ? cut.slice(0, lastSpace) : cut) + "…";
+}
+
 // ─── State-aware next steps builder ──────────────────────────────────────────
 // Generates context-specific next steps based on the actual review state so
 // the PPTX slide is actionable rather than generic boilerplate.
@@ -822,17 +835,23 @@ function normalizeReviewForExport(
   const sowFiles   = (files || []).filter((f) => (f.logicalCategory || "").toLowerCase() === "sow");
   const sowFileIds = new Set(sowFiles.map((f) => f.fileId));
   const sowReqs    = (requirements || []).filter((r) => sowFileIds.has(r.sourceFileId)).slice(0, 12);
+  // Use a single "SOW Document" label in the Evidence Source column when all rows
+  // originate from the same file — avoids repeating the same filename 12 times.
+  const uniqueSowSources = new Set(sowReqs.map((r) => r.sourceFileName || ""));
+  const singleSowSource  = uniqueSowSources.size <= 1;
   const sowTraceability = sowReqs.length > 0
     ? sowReqs.map((r) => ({
         area:           classifyDomain(r.normalizedText || r.text || "", r.category) || "Architecture",
-        sowRef:         (r.normalizedText || r.text || r.sourceFileName || "").slice(0, 90),
-        evidenceSource: r.sourceFileName || "SOW",
+        sowRef:         truncateAtWord(r.normalizedText || r.text || r.sourceFileName || "", 90),
+        evidenceSource: singleSowSource
+          ? "SOW Document"
+          : (r.sourceFileName || "SOW").replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
         status:         "In scope",
       }))
     : sowFiles.slice(0, 12).map((f) => ({
         area:           "Scope",
         sowRef:         f.fileName,
-        evidenceSource: f.fileName,
+        evidenceSource: "SOW Document",
         status:         "In scope",
       }));
 
@@ -920,7 +939,8 @@ function normalizeReviewForExport(
         : new Date().toLocaleDateString("en-GB"),
       status:               review?.status ?? "Review Complete",
       overallScore:         canonicalScorecard.totalScore,
-      recommendation:       recommendation,
+      // Use derived governancePosture (from current findings) not stale scorecard recommendation.
+      recommendation:       canonicalDecision.governancePosture,
       executiveSummary:     review?.executiveSummary || scorecard?.executiveSummary ||
         buildExecutiveNarrative(
           review?.projectMeta?.customerName || review?.customerName || "the customer",
