@@ -1700,10 +1700,12 @@ function renderMarkdownExportBody(review, files, requirements, evidence, finding
     summaryText ? "" : null,
     "## Uploaded Inputs",
     "",
-    ...files.map(
-      (file) =>
-        `- ${file.fileName} (${file.logicalCategory}, ${file.extractionStatus}, ${file.supportedTextExtraction ? "text-ready" : "stored-only"})`
-    ),
+    ...files.map((file) => {
+      const statusNote = file.extractionStatus === "Failed"
+        ? `⚠ Extraction failed${file.extractionError ? `: ${file.extractionError}` : ""}`
+        : file.extractionStatus;
+      return `- ${file.fileName} (${file.logicalCategory}) — ${statusNote}`;
+    }),
     "",
     "## Reviewed Requirements",
     "",
@@ -1729,9 +1731,10 @@ function renderMarkdownExportBody(review, files, requirements, evidence, finding
     "",
     ...findings.map((finding) =>
       [
-        `- [${finding.severity}] ${finding.title} (${finding.status})`,
+        `- [${finding.severity}] **${finding.title}** (${finding.domain} · ${finding.status})`,
         finding.findingStatement ? `  - Finding: ${finding.findingStatement}` : null,
         finding.recommendation ? `  - Recommendation: ${finding.recommendation}` : null,
+        finding.reviewerNote ? `  - Reviewer comment: ${finding.reviewerNote}` : null,
         finding.source ? `  - Source: ${finding.source}` : null
       ]
         .filter(Boolean)
@@ -1761,7 +1764,8 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       "severity",
       "owner",
       "dueDate",
-      "source"
+      "source",
+      "reviewerNote"
     ],
     [
       "review",
@@ -1775,6 +1779,7 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       scorecard?.recommendation || "",
       review.assignedReviewer || "",
       review.targetReviewDate || "",
+      "",
       ""
     ],
     ...(reviewerOverride
@@ -1791,7 +1796,8 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
             scorecard?.recommendation || "",
             reviewerOverride.reviewerName || review.assignedReviewer || "",
             reviewerOverride.overriddenAt || "",
-            "Human reviewer decision"
+            "Human reviewer decision",
+            ""
           ]
         ]
       : []),
@@ -1801,12 +1807,15 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       review.projectName,
       file.logicalCategory,
       file.fileName,
-      `Extraction=${file.extractionStatus}; Size=${file.sizeBytes}`,
+      file.extractionStatus === "Failed" && file.extractionError
+        ? `Extraction failed: ${file.extractionError}`
+        : `Extraction=${file.extractionStatus}; Size=${file.sizeBytes}`,
       file.fileName,
       file.extractionStatus,
       "",
       file.uploadedBy,
-      file.uploadedAt
+      file.uploadedAt,
+      ""
     ]),
     ...requirements.map((requirement) => [
       "requirement",
@@ -1819,6 +1828,7 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       requirement.reviewerStatus,
       requirement.criticality,
       "",
+      "",
       ""
     ]),
     ...evidence.map((fact) => [
@@ -1830,6 +1840,7 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       fact.sourceExcerpt,
       fact.sourceFileName || "",
       fact.confidence,
+      "",
       "",
       "",
       ""
@@ -1846,7 +1857,8 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       finding.severity,
       finding.owner || finding.suggestedOwner || "",
       finding.dueDate || finding.suggestedDueDate || "",
-      finding.source || ""
+      finding.source || "",
+      finding.reviewerNote || ""
     ]),
     ...actions.map((action) => [
       "action",
@@ -1859,7 +1871,8 @@ function renderCsvExportBody(review, files, requirements, evidence, findings, sc
       action.status,
       action.severity,
       action.owner || "",
-      action.dueDate || ""
+      action.dueDate || "",
+      ""
     ])
   ];
 
@@ -1966,14 +1979,27 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
 
   /* ── REVIEWER DECISION ── */
   if (reviewerOverride) {
+    const dec = String(reviewerOverride.overrideDecision || "");
+    const decStyle = dec === "Approved"
+      ? { bg: "#F0FDF4", border: "#16A34A", fg: "#14532D" }
+      : dec === "Conditionally Approved"
+        ? { bg: "#FFFBEB", border: "#D97706", fg: "#78350F" }
+        : dec === "Needs Revision"
+          ? { bg: "#EFF6FF", border: "#2563EB", fg: "#1E3A5F" }
+          : dec === "Needs Remediation"
+            ? { bg: "#FEF2F2", border: "#DC2626", fg: "#7F1D1D" }
+            : { bg: "#F9FAFB", border: "#9CA3AF", fg: "#374151" };
+    const decIcon = dec === "Approved" || dec === "Conditionally Approved" ? "✓"
+      : dec === "Needs Revision" ? "↻"
+        : dec === "Needs Remediation" ? "!" : "·";
     parts.push(
-      `<div style="margin-bottom:32px;padding:18px 22px;background:#FFF7ED;border:1px solid #FED7AA;border-left:4px solid #D92B2B;border-radius:8px;">`,
-      `<h2 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#0F172A;">Reviewer Decision</h2>`,
-      `<p style="margin:0 0 6px;font-size:14px;color:#1F2937;"><strong>Final decision:</strong> ${esc(reviewerOverride.overrideDecision)}</p>`,
-      `<p style="margin:0 0 6px;font-size:14px;color:#1F2937;"><strong>Reviewer:</strong> ${esc(reviewerOverride.reviewerName || "Not recorded")}</p>`,
-      `<p style="margin:0 0 10px;font-size:14px;color:#1F2937;"><strong>Recorded at:</strong> ${esc(reviewerOverride.overriddenAt || "Not recorded")}</p>`,
-      `<p style="margin:0;font-size:14px;line-height:1.7;color:#475569;"><strong>Rationale:</strong> ${esc(reviewerOverride.overrideRationale || "No rationale recorded.")}</p>`,
-      `</div>`
+      `<div style="margin-bottom:32px;display:flex;align-items:flex-start;gap:16px;padding:18px 22px;background:${decStyle.bg};border:1px solid ${decStyle.border};border-left:4px solid ${decStyle.border};border-radius:8px;">`,
+      `<span style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:${decStyle.border};color:#fff;font-size:1.25rem;font-weight:800;flex-shrink:0;line-height:1;">${decIcon}</span>`,
+      `<div style="flex:1;min-width:0;">`,
+      `<h2 style="margin:0 0 6px;font-size:18px;font-weight:700;color:${decStyle.fg};">${esc(dec)}</h2>`,
+      `<p style="margin:0 0 4px;font-size:13px;color:${decStyle.fg};opacity:0.85;">${esc(reviewerOverride.reviewerName || "Not recorded")} · ${esc(reviewerOverride.overriddenAt || "Not recorded")}</p>`,
+      reviewerOverride.overrideRationale ? `<p style="margin:4px 0 0;font-size:14px;line-height:1.6;color:${decStyle.fg};opacity:0.8;font-style:italic;">"${esc(reviewerOverride.overrideRationale)}"</p>` : "",
+      `</div></div>`
     );
   }
 
@@ -2031,40 +2057,47 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
     parts.push(`</div>`);
   }
 
-  /* ── FINDINGS TABLE ── */
+  /* ── FINDINGS (card per finding, with reviewer comment) ── */
   parts.push(divider);
   parts.push(
     `<div style="margin-bottom:32px;">`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Findings</h2>`
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Findings <span style="font-size:13px;font-weight:400;color:#64748B;">(${findings.length})</span></h2>`
   );
   if (findings.length === 0) {
     parts.push(`<p style="color:#64748B;font-style:italic;">No findings recorded.</p>`);
   } else {
-    parts.push(
-      `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
-      `<thead>`,
-      `<tr style="border-bottom:2px solid #E2E8F0;">`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Severity</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Finding</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Domain</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Recommendation</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Status</th>`,
-      `</tr>`,
-      `</thead>`,
-      `<tbody>`
-    );
     for (const f of findings) {
+      const sev = String(f.severity || "").toLowerCase();
+      const leftBorderColor = (sev === "high" || sev === "critical") ? "#D92B2B"
+        : sev === "medium" ? "#B45309" : "#0078D4";
+      const statusStyle = f.status === "Closed"
+        ? "background:#D1FAE5;color:#065F46;"
+        : f.status === "Open" ? "background:#FEE2E2;color:#D92B2B;"
+          : "background:#F1F5F9;color:#475569;";
       parts.push(
-        `<tr style="border-bottom:1px solid #F1F5F9;">`,
-        `<td style="padding:10px;vertical-align:top;">${severityBadge(f.severity)}</td>`,
-        `<td style="padding:10px;vertical-align:top;"><strong style="color:#0F172A;">${esc(f.title)}</strong><br/><span style="color:#64748B;font-size:12px;">${esc(f.findingStatement || "")}</span></td>`,
-        `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(f.domain || "")}</td>`,
-        `<td style="padding:10px;vertical-align:top;color:#475569;font-size:12px;">${esc(f.recommendation || "")}</td>`,
-        `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(f.status)}</span></td>`,
-        `</tr>`
+        `<div style="margin-bottom:16px;border:1px solid #E2E8F0;border-left:4px solid ${leftBorderColor};border-radius:6px;overflow:hidden;">`,
+        /* Finding header */
+        `<div style="padding:14px 18px;background:#FAFAFA;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">`,
+        `<div style="flex:1;min-width:0;">`,
+        `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">`,
+        severityBadge(f.severity),
+        `<span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px;${statusStyle}">${esc(f.status)}</span>`,
+        `<span style="font-size:11px;color:#94A3B8;">${esc(f.domain || "")}</span>`,
+        `</div>`,
+        `<p style="margin:0;font-size:14px;font-weight:600;color:#0F172A;line-height:1.4;">${esc(f.title)}</p>`,
+        `</div></div>`,
+        /* Finding body */
+        `<div style="padding:14px 18px;">`,
+        f.findingStatement ? `<p style="margin:0 0 10px;font-size:13px;color:#374151;line-height:1.6;">${esc(f.findingStatement)}</p>` : "",
+        f.recommendation
+          ? `<div style="margin-bottom:10px;padding:10px 14px;background:#EFF6FF;border-radius:4px;font-size:13px;color:#1E3A5F;"><strong>Recommendation:</strong> ${esc(f.recommendation)}</div>`
+          : "",
+        f.reviewerNote
+          ? `<div style="margin-bottom:4px;padding:10px 14px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;font-size:13px;color:#78350F;"><strong>Reviewer comment:</strong> ${esc(f.reviewerNote)}</div>`
+          : "",
+        `</div></div>`
       );
     }
-    parts.push(`</tbody></table>`);
   }
   parts.push(`</div>`);
 
@@ -2149,11 +2182,14 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
       `<tbody>`
     );
     for (const file of files) {
+      const statusCell = file.extractionStatus === "Failed"
+        ? `<span style="color:#D92B2B;font-weight:500;">⚠ Extraction failed</span>${file.extractionError ? `<br/><span style="font-size:11px;color:#64748B;">${esc(file.extractionError)}</span>` : ""}`
+        : `<span style="color:#059669;">${esc(file.extractionStatus)}</span>`;
       parts.push(
         `<tr style="border-bottom:1px solid #F1F5F9;">`,
-        `<td style="padding:8px 10px;">${esc(file.fileName)}</td>`,
-        `<td style="padding:8px 10px;color:#475569;">${esc(file.logicalCategory)}</td>`,
-        `<td style="padding:8px 10px;color:#475569;">${esc(file.extractionStatus)}</td>`,
+        `<td style="padding:8px 10px;font-size:13px;">${esc(file.fileName)}</td>`,
+        `<td style="padding:8px 10px;color:#475569;font-size:13px;">${esc(file.logicalCategory)}</td>`,
+        `<td style="padding:8px 10px;font-size:13px;">${statusCell}</td>`,
         `</tr>`
       );
     }
@@ -2202,7 +2238,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
   parts.push(
     divider,
     `<div style="text-align:center;padding:16px 0 8px;font-size:12px;color:#94A3B8;">`,
-    `Generated by Azure Review Assistant &middot; ${esc(timestamp)}`,
+    `Generated by Cloud Architecture Review Intelligence (CARI) &middot; ${esc(timestamp)}`,
     `</div>`
   );
 
