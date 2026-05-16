@@ -4012,13 +4012,30 @@ async function startArbExtraction(principal, reviewId) {
             extractionSource = "Azure Vision Service (OCR fallback)";
           }
 
+          // pdf-parse text fallback — zero-config, no external services.
+          // Handles text-layer PDFs when DI and Vision are both unavailable or returned nothing.
+          // Scanned/image-only PDFs will still return empty here and fall through to Failed.
+          if (!text || !text.trim()) {
+            try {
+              const pdfParse = require("pdf-parse");
+              const parsed = await pdfParse(buffer);
+              if (parsed.text && parsed.text.trim()) {
+                text = parsed.text;
+                extractionSource = "pdf-parse (native text layer)";
+                console.log(`[pdf-text] "${file.fileName}": extracted ${parsed.text.length} chars via pdf-parse native text layer.`);
+              }
+            } catch (pdfErr) {
+              console.warn(`[pdf-text] "${file.fileName}": pdf-parse text fallback failed:`, pdfErr?.message ?? pdfErr);
+            }
+          }
+
           if (!text || !text.trim()) {
             nextFiles.push({
               ...file,
               extractionStatus: "Failed",
               extractionError: diConfig.configured
-                ? "Azure AI Document Intelligence returned no text for this document."
-                : "Document Intelligence is not configured and Azure Vision Service OCR returned no text."
+                ? "Azure AI Document Intelligence returned no text. The document may be a scanned image — try uploading a text-layer PDF."
+                : "No text could be extracted. Document Intelligence is not configured, Azure Vision OCR returned nothing, and the PDF has no selectable text layer."
             });
             extractionErrors.push(`${file.fileName}: ${extractionSource} returned no text.`);
             return;
