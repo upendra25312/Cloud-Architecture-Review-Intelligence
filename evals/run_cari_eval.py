@@ -217,16 +217,27 @@ def call_cari(case: dict, mode: str, base_url: str, timeout: int) -> dict:
         "input": case["input"],
     }
 
-    try:
-        resp = requests.post(url, json=payload, timeout=timeout)
-        resp.raise_for_status()
-        return resp.json()
-    except requests.exceptions.Timeout:
-        return {"error": f"Request timed out after {timeout}s", "findings": [], "remediationActions": [], "output_text": ""}
-    except requests.exceptions.ConnectionError as exc:
-        return {"error": f"Connection error: {exc}", "findings": [], "remediationActions": [], "output_text": ""}
-    except Exception as exc:
-        return {"error": str(exc), "findings": [], "remediationActions": [], "output_text": ""}
+    last_error = None
+    for attempt in range(1, 3):  # up to 2 attempts for transient drops
+        try:
+            resp = requests.post(url, json=payload, timeout=timeout)
+            resp.raise_for_status()
+            return resp.json()
+        except requests.exceptions.Timeout:
+            return {"error": f"Request timed out after {timeout}s", "findings": [], "remediationActions": [], "output_text": ""}
+        except requests.exceptions.ChunkedEncodingError as exc:
+            last_error = f"Response ended prematurely (attempt {attempt}): {exc}"
+            if attempt < 2:
+                time.sleep(5)
+                continue
+        except requests.exceptions.ConnectionError as exc:
+            last_error = f"Connection error (attempt {attempt}): {exc}"
+            if attempt < 2:
+                time.sleep(5)
+                continue
+        except Exception as exc:
+            return {"error": str(exc), "findings": [], "remediationActions": [], "output_text": ""}
+    return {"error": last_error or "Unknown error after retries", "findings": [], "remediationActions": [], "output_text": ""}
 
 
 # ─── Evaluation checks ────────────────────────────────────────────────────────
