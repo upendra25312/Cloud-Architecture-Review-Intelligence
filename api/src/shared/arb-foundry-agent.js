@@ -1001,9 +1001,131 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
   }
 }
 
+/**
+ * AI-powered requirements extraction and validation.
+ *
+ * Extracts structured requirements from SOW files and validates each against
+ * architecture/design documents using the model-router LLM. Also identifies
+ * design items that are not traceable to any SOW requirement (gaps).
+ *
+ * Returns null when: AI is unavailable, no SOW files present, or parsing fails.
+ * Caller should fall back to keyword-based extraction in that case.
+ */
+async function aiEnhanceRequirements(review, files, fileTexts) {
+  const sowFiles = files.filter(f => f.logicalCategory === "sow");
+  if (sowFiles.length === 0) return null;
+
+  const designCategories = ["design_doc", "security_note", "cost_assumptions", "dr_ha_note", "ops_monitoring_note"];
+  const designFiles = files.filter(f => designCategories.includes(f.logicalCategory));
+
+  const sowText = sowFiles
+    .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 4000)}`)
+    .join("\n\n")
+    .slice(0, 6000);
+
+  const designText = designFiles.length > 0
+    ? designFiles
+        .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 2000)}`)
+        .join("\n\n")
+        .slice(0, 6000)
+    : "(No architecture or design documents uploaded yet)";
+
+  const sowSourceFileId = sowFiles[0]?.fileId ?? null;
+  const sowSourceFileName = sowFiles[0]?.fileName ?? null;
+
+  const systemPrompt =
+    "You are a senior Azure cloud architect performing an Architecture Review Board (ARB) requirements analysis. " +
+    "Extract precise, actionable requirements from the Statement of Work and validate them against architecture documents. " +
+    "Return ONLY valid JSON — no markdown, no explanation outside the JSON structure.";
+
+  const userPrompt =
+    `Review the following documents for the "${review.projectName}" architecture review.\n\n` +
+    `SOW CONTENT (customer-signed requirements document):\n${sowText}\n\n` +
+    `ARCHITECTURE / DESIGN DOCUMENTS:\n${designText}\n\n` +
+    `Return JSON with this exact schema:\n` +
+    `{\n` +
+    `  "requirements": [\n` +
+    `    {\n` +
+    `      "text": "normalized requirement statement from SOW",\n` +
+    `      "category": "Security|Identity|Networking|Reliability|Operations|Cost|Governance",\n` +
+    `      "criticality": "High|Medium",\n` +
+    `      "cariStatus": "Validated|Partial|Not Found",\n` +
+    `      "cariValidationNote": "one sentence: how design docs address this, or why it is not addressed"\n` +
+    `    }\n` +
+    `  ],\n` +
+    `  "gaps": [\n` +
+    `    {\n` +
+    `      "text": "design decision present in design docs but not traceable to any SOW requirement",\n` +
+    `      "category": "Security|Identity|Networking|Reliability|Operations|Cost|Governance",\n` +
+    `      "cariValidationNote": "brief description of the gap and its risk"\n` +
+    `    }\n` +
+    `  ]\n` +
+    `}\n\n` +
+    `Rules:\n` +
+    `- Extract up to 20 requirements. Requirements are statements the system MUST, SHALL, or SHOULD satisfy.\n` +
+    `- "Validated" = design docs clearly address this. "Partial" = partially addressed with gaps. "Not Found" = not addressed.\n` +
+    `- Return up to 10 gaps — items in design docs NOT traceable to any SOW requirement. Empty array if none.\n` +
+    `- Criticality "High" for security, compliance, availability, or business-critical requirements; "Medium" otherwise.`;
+
+  const messages = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt }
+  ];
+
+  const responseText = await chatCompletionsRequest(messages, {
+    maxTokens: 3000,
+    temperature: 0.1
+  });
+
+  let data;
+  try {
+    data = JSON.parse(responseText);
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(data?.requirements)) return null;
+
+  const requirements = data.requirements
+    .map((r, i) => ({
+      requirementId: `${review.reviewId}-req-ai-${i + 1}`,
+      reviewId: review.reviewId,
+      sourceFileId: sowSourceFileId,
+      sourceFileName: sowSourceFileName,
+      normalizedText: String(r.text || "").slice(0, 500),
+      category: String(r.category || "Architecture"),
+      criticality: r.criticality === "High" ? "High" : "Medium",
+      reviewerStatus: "Pending",
+      cariStatus: ["Validated", "Partial", "Not Found"].includes(r.cariStatus) ? r.cariStatus : "Pending",
+      cariValidationNote: String(r.cariValidationNote || "").slice(0, 300),
+      isGap: false
+    }))
+    .filter(r => r.normalizedText.length > 10);
+
+  const gaps = Array.isArray(data.gaps)
+    ? data.gaps
+        .map((g, i) => ({
+          requirementId: `${review.reviewId}-gap-${i + 1}`,
+          reviewId: review.reviewId,
+          sourceFileId: null,
+          sourceFileName: "Design Document Analysis",
+          normalizedText: String(g.text || "").slice(0, 500),
+          category: String(g.category || "Architecture"),
+          criticality: "Medium",
+          reviewerStatus: "Pending",
+          cariStatus: "Gap",
+          cariValidationNote: String(g.cariValidationNote || "").slice(0, 300),
+          isGap: true
+        }))
+        .filter(g => g.normalizedText.length > 10)
+    : [];
+
+  return { requirements, gaps };
+}
+
 module.exports = {
   buildFallbackAgentReview,
   getFoundryConfiguration,
   describeImageForReview,
-  runArbAgentReview
+  runArbAgentReview,
+  aiEnhanceRequirements
 };

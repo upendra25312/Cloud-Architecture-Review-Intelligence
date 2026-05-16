@@ -53,6 +53,21 @@ export function RequirementsSummaryMetrics({ metrics }: RequirementsSummaryMetri
           {metrics.rejectedCount} Rejected
         </span>
       </div>
+
+      {(metrics.validatedCount > 0 || metrics.gapCount > 0) && (
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          {metrics.validatedCount > 0 && (
+            <span style={{ fontSize: "0.78rem", fontWeight: 600, padding: "2px 10px", borderRadius: 10, background: "#DCFCE7", color: "#14532D", border: "1px solid #16A34A" }}>
+              {metrics.validatedCount} CARI Validated
+            </span>
+          )}
+          {metrics.gapCount > 0 && (
+            <span style={{ fontSize: "0.78rem", fontWeight: 600, padding: "2px 10px", borderRadius: 10, background: "#FFF7ED", color: "#7C2D12", border: "1px solid #EA580C" }}>
+              {metrics.gapCount} Design Gap{metrics.gapCount !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

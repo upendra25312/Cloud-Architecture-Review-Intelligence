@@ -15,7 +15,7 @@ const {
 } = require("./storage");
 const { getCopilotConfiguration, runCopilot } = require("./copilot");
 const { ensureArbSearchIndex, indexArbDocumentChunks, getSearchConfiguration } = require("./arb-search");
-const { describeImageForReview, getFoundryConfiguration } = require("./arb-foundry-agent");
+const { describeImageForReview, getFoundryConfiguration, aiEnhanceRequirements } = require("./arb-foundry-agent");
 const {
   getDocumentIntelligenceConfiguration,
   supportsDocumentIntelligenceExtraction,
@@ -4083,6 +4083,20 @@ async function startArbExtraction(principal, reviewId) {
     visualEvidenceCount: visualCountsByFile.get(file.fileId) || 0
   }));
   const derived = deriveRequirementsAndEvidence(review, nextFilesWithVisualEvidence, fileTexts);
+
+  // AI-powered requirement extraction and SOW-vs-design validation (best-effort)
+  if (getFoundryConfiguration().configured) {
+    try {
+      const aiResult = await aiEnhanceRequirements(review, nextFilesWithVisualEvidence, fileTexts);
+      if (aiResult && aiResult.requirements.length > 0) {
+        // Replace keyword-extracted requirements with AI-structured ones + gap items
+        derived.requirements = [...aiResult.requirements, ...aiResult.gaps];
+      }
+    } catch (aiErr) {
+      console.warn("[requirements] AI enhancement failed, using keyword extraction:", aiErr?.message ?? aiErr);
+    }
+  }
+
   const completedAt = new Date().toISOString();
   const readiness = buildReadinessFromFiles(nextFilesWithVisualEvidence);
   const contentReadiness = assessExtractedContentReadiness({

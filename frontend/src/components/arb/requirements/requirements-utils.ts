@@ -17,6 +17,10 @@ export interface RequirementsMetrics {
   rejectedCount: number;
   categoryCount: number;
   acceptanceRate: number;
+  /** Number of SOW requirements CARI validated against design docs */
+  validatedCount: number;
+  /** Number of design-doc items with no matching SOW requirement */
+  gapCount: number;
 }
 
 // ── Pure utility functions ────────────────────────────────────────────
@@ -28,6 +32,8 @@ export function computeRequirementsMetrics(requirements: ArbRequirement[]): Requ
   const pendingCount = requirements.filter((r) => r.reviewerStatus === "Pending").length;
   const acceptedCount = requirements.filter((r) => r.reviewerStatus === "Accepted").length;
   const rejectedCount = requirements.filter((r) => r.reviewerStatus === "Rejected").length;
+  const validatedCount = requirements.filter((r) => r.cariStatus === "Validated").length;
+  const gapCount = requirements.filter((r) => r.isGap === true).length;
 
   const categorySet = new Set<string>();
   for (const r of requirements) {
@@ -38,7 +44,7 @@ export function computeRequirementsMetrics(requirements: ArbRequirement[]): Requ
   const reviewed = acceptedCount + rejectedCount;
   const acceptanceRate = reviewed > 0 ? Math.round((acceptedCount / reviewed) * 100) : 0;
 
-  return { total, highCount, mediumCount, pendingCount, acceptedCount, rejectedCount, categoryCount, acceptanceRate };
+  return { total, highCount, mediumCount, pendingCount, acceptedCount, rejectedCount, categoryCount, acceptanceRate, validatedCount, gapCount };
 }
 
 export function groupRequirementsByCategory(

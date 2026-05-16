@@ -196,6 +196,12 @@ export interface ArbRequirement {
   category: string;
   criticality: string;
   reviewerStatus: string;
+  /** CARI's AI-assessed validation status for this requirement */
+  cariStatus?: "Validated" | "Partial" | "Not Found" | "Gap" | "Pending";
+  /** Brief note explaining the validation result */
+  cariValidationNote?: string | null;
+  /** True when this item is in design docs but missing from the SOW */
+  isGap?: boolean;
 }
 
 export interface ArbEvidenceFact {
