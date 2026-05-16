@@ -14,6 +14,41 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.6.0] — 2026-05-17
+
+### Added
+- **Networking as a first-class ARB review domain** — hub-spoke, private endpoints,
+  DNS, hybrid connectivity, and NSG findings now surface under `Networking` domain
+  instead of being merged into Security
+- **ARB generic output framework** — canonical `ArbReviewOutputPack` schema ensures
+  all five export formats (Markdown, HTML, PPTX, CSV, Excel) derive findings, scores,
+  and governance posture from one normalisation pipeline; eliminates per-exporter drift
+- **Excel export** — new `.xlsx` format available via `createArbExport` alongside
+  existing Markdown, HTML, PPTX, and CSV
+- **Cross-exporter parity test suite** — 22 new tests verify all formats produce
+  identical findings count, score, decision, and governance posture
+- **CARI evaluation framework** — `/api/arb-eval/review` endpoint + 27-case labelled
+  dataset covering ALZ, WAF, CAF, migration, evidence safety, and red-team scenarios;
+  runs in CI against mock mode and in deployed mode via `CARI_FUNCTIONS_URL`
+
+### Changed
+
+- Scorecard dimensions expanded: Requirements Coverage 15%, Security 15%,
+  **Networking 10%**, Reliability 15%, OpsEx 10%, Cost 10%, Performance 10%,
+  Governance 10%, Documentation 5%
+- Frontend findings filter chips, domain sort order, and validation status messages
+  updated to include Networking domain
+- WAF rules NET-001 and NET-002 reclassified from `Security` to `Networking` domain
+
+### Fixed
+
+- Eval runner: 180s default timeout (was 120s) for AI-agent-heavy scenarios
+- Eval runner: automatic retry on transient `ChunkedEncodingError` connection drops
+- Positive control test case (024) calibrated to match AI agent's conservative
+  evidence assessment behaviour in text-only eval mode
+
+---
+
 ## [0.5.0] — 2026-05-14
 
 ### Added
