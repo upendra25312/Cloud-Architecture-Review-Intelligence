@@ -188,14 +188,14 @@ def call_cari(case: dict, mode: str, base_url: str, timeout: int) -> dict:
         sys.exit(1)
 
     if mode == "local":
-        url = "http://localhost:7071/api/arb/eval/review"
+        url = "http://localhost:7071/api/arb-eval/review"
     elif mode == "deployed":
         if not base_url:
             print(
                 "ERROR: CARI_BASE_URL must be set for deployed mode.", file=sys.stderr
             )
             sys.exit(1)
-        url = f"{base_url.rstrip('/')}/api/arb/eval/review"
+        url = f"{base_url.rstrip('/')}/api/arb-eval/review"
     else:
         print(f"ERROR: Unknown CARI_EVAL_MODE '{mode}'. Use mock, local, or deployed.", file=sys.stderr)
         sys.exit(1)
