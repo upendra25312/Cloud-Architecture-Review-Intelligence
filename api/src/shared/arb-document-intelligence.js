@@ -38,6 +38,31 @@ const DI_EXTRACTABLE_EXTENSIONS = new Set([
   ".xlsx", ".xls", ".ods" // fallback only — SheetJS is preferred for spreadsheets
 ]);
 
+/**
+ * Converts a Document Intelligence HTTP error into a human-readable, actionable message.
+ * Used by both the REST and SDK code paths.
+ */
+function buildDiErrorMessage(operation, status, body = "") {
+  const snippet = (typeof body === "string" ? body : JSON.stringify(body)).slice(0, 300);
+  const base = `Document Intelligence ${operation} failed (HTTP ${status})`;
+  if (status === 429) {
+    return `${base}: Quota or rate limit exceeded. The Free tier (F0) allows only 500 pages/month — upgrade to S0 in Azure Portal or az CLI: az cognitiveservices account update --name <di-resource-name> --resource-group <rg> --sku S0`;
+  }
+  if (status === 401 || status === 403) {
+    return `${base}: Authentication failed. Verify the Function App Managed Identity has the "Cognitive Services User" role on the Document Intelligence resource in Azure Portal → IAM.`;
+  }
+  if (status === 413) {
+    return `${base}: File exceeds Document Intelligence's size limit (500 MB per document). Split the file before uploading.`;
+  }
+  if (status === 400) {
+    return `${base}: Unsupported document format or malformed file. Supported formats: PDF, DOCX, PPTX, XLSX. Detail: ${snippet}`;
+  }
+  if (status === 503 || status === 502) {
+    return `${base}: Service temporarily unavailable. Retry in a few minutes. Detail: ${snippet}`;
+  }
+  return `${base}: ${snippet}`;
+}
+
 function getDocumentIntelligenceConfiguration() {
   return {
     configured: Boolean(DI_ENDPOINT),
@@ -122,10 +147,15 @@ async function extractDocumentText(buffer, contentType, fileName) {
 
     return buildTextFromAnalysisResult(result, fileName);
   } catch (err) {
-    const msg = err?.name === "AbortError"
-      ? `Azure Document Intelligence timed out after 90 s for ${fileName}`
-      : `Azure Document Intelligence extraction failed for ${fileName}: ${err?.message ?? err}`;
-    throw new Error(msg);
+    if (err?.name === "AbortError") {
+      throw new Error(`Azure Document Intelligence timed out after 90 s for "${fileName}". Large or complex documents may need more time — consider splitting into smaller files.`);
+    }
+    // SDK wraps HTTP errors — inspect status code from RestError if available
+    const statusCode = err?.statusCode ?? err?.response?.status;
+    if (statusCode) {
+      throw new Error(buildDiErrorMessage("text extraction", statusCode, err?.message ?? ""));
+    }
+    throw new Error(`Azure Document Intelligence extraction failed for "${fileName}": ${err?.message ?? err}`);
   }
 }
 
@@ -213,7 +243,7 @@ async function extractDocumentLayout(buffer, contentType, fileName, options = {}
 
   if (!submitRes.ok) {
     const text = await submitRes.text().catch(() => `HTTP ${submitRes.status}`);
-    throw new Error(`Document Intelligence layout analysis failed ${submitRes.status}: ${text}`);
+    throw new Error(buildDiErrorMessage("layout analysis", submitRes.status, text));
   }
 
   const operationLocation = submitRes.headers.get("operation-location") || submitRes.headers.get("Operation-Location");
@@ -305,10 +335,51 @@ function buildTextFromAnalysisResult(result, fileName) {
   return parts.join("\n").trim();
 }
 
+/**
+ * Verifies that the Document Intelligence service is reachable and the
+ * Managed Identity has the correct RBAC permissions.
+ *
+ * Uses the GET /documentModels endpoint (read-only, no quota cost) rather than
+ * submitting a document, so this can be called from health-check routes safely.
+ *
+ * @returns {{ ok: boolean, configured: boolean, message: string, skuHint?: string }}
+ */
+async function checkDocumentIntelligenceHealth() {
+  const config = getDocumentIntelligenceConfiguration();
+  if (!config.configured) {
+    return { ok: false, configured: false, message: "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT / AZURE_DOCINT_ENDPOINT is not set in Application Settings." };
+  }
+
+  try {
+    const url = `${DI_ENDPOINT}/documentintelligence/documentModels?api-version=${DI_API_VERSION}`;
+    const headers = await getDocumentIntelligenceHeaders("application/json");
+    delete headers["Content-Type"];
+    const res = await fetch(url, { headers });
+
+    if (res.ok) {
+      return {
+        ok: true,
+        configured: true,
+        message: `Document Intelligence reachable at ${DI_ENDPOINT}. Auth mode: ${DI_KEY ? "API key" : "Managed Identity"}.`,
+        skuHint: "Verify SKU in Azure Portal — Free tier (F0) allows only 500 pages/month. Upgrade to S0 for production."
+      };
+    }
+
+    return {
+      ok: false,
+      configured: true,
+      message: buildDiErrorMessage("health check (GET /documentModels)", res.status, await res.text().catch(() => ""))
+    };
+  } catch (err) {
+    return { ok: false, configured: true, message: `Document Intelligence health check failed: ${err?.message ?? err}` };
+  }
+}
+
 module.exports = {
   getDocumentIntelligenceConfiguration,
   supportsDocumentIntelligenceExtraction,
   extractDocumentText,
   extractDocumentLayout,
+  checkDocumentIntelligenceHealth,
   DI_EXTRACTABLE_EXTENSIONS
 };

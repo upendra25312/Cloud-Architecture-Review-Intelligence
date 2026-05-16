@@ -86,7 +86,12 @@ async function extractTextWithVision(buffer, contentType, fileName) {
 
     if (!submitRes.ok) {
       const errText = await submitRes.text().catch(() => `HTTP ${submitRes.status}`);
-      console.error(`[VisionService] submit failed for ${fileName}: ${errText}`);
+      const status = submitRes.status;
+      let hint = "";
+      if (status === 429) hint = " Rate limit hit — S1 tier allows 5,000 transactions/month. Check usage in Azure Portal → Vision resource → Metrics.";
+      else if (status === 401 || status === 403) hint = " Auth failed — verify the Function App Managed Identity has 'Cognitive Services User' role on the Vision resource.";
+      else if (status === 400) hint = " Unsupported format or malformed payload.";
+      console.error(`[VisionService] submit failed for "${fileName}" (HTTP ${status})${hint}: ${errText.slice(0, 300)}`);
       return null;
     }
 
@@ -152,9 +157,48 @@ function buildTextFromVisionResult(data, fileName) {
   return parts.join("\n").trim();
 }
 
+/**
+ * Verifies that the Azure AI Vision service is reachable and the Managed Identity
+ * token can be obtained. Uses the models list endpoint (no quota cost).
+ *
+ * @returns {{ ok: boolean, configured: boolean, message: string }}
+ */
+async function checkVisionServiceHealth() {
+  const config = getVisionServiceConfiguration();
+  if (!config.configured) {
+    return { ok: false, configured: false, message: "AZURE_VISION_ENDPOINT is not set in Application Settings." };
+  }
+
+  try {
+    const token = await getVisionToken();
+    // Simple ping: retrieve Vision service info (GET /vision/v3.2/models)
+    const res = await fetch(`${VISION_ENDPOINT}/vision/v3.2/models`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.ok) {
+      return {
+        ok: true,
+        configured: true,
+        message: `Azure AI Vision reachable at ${VISION_ENDPOINT}. Auth: Managed Identity (token obtained).`
+      };
+    }
+
+    const errText = await res.text().catch(() => `HTTP ${res.status}`);
+    const status = res.status;
+    let hint = "";
+    if (status === 401 || status === 403) hint = " Managed Identity may be missing 'Cognitive Services User' role on the Vision resource.";
+    if (status === 404) hint = " Endpoint URL may be incorrect or the Vision v3.2 Read API is not available on this resource SKU.";
+    return { ok: false, configured: true, message: `Vision health check failed (HTTP ${status})${hint}: ${errText.slice(0, 200)}` };
+  } catch (err) {
+    return { ok: false, configured: true, message: `Vision health check failed: ${err?.message ?? err}` };
+  }
+}
+
 module.exports = {
   getVisionServiceConfiguration,
   supportsVisionExtraction,
   extractTextWithVision,
+  checkVisionServiceHealth,
   VISION_EXTRACTABLE_EXTENSIONS
 };
