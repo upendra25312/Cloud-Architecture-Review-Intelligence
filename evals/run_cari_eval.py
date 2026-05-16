@@ -8,13 +8,16 @@ evals/datasets/cari_arb_baseline_extended.jsonl.
 Modes:
   mock      — deterministic mock responses; validates evaluator logic without
               live infrastructure (default in CI)
-  local     — calls http://localhost:7071/api/arb/eval/review
-  deployed  — calls CARI_BASE_URL/api/arb/eval/review
+  local     — calls http://localhost:7071/api/arb-eval/review
+  deployed  — calls CARI_FUNCTIONS_URL/api/arb-eval/review (preferred) or CARI_BASE_URL
 
 Environment variables:
   CARI_EVAL_MODE              mock | local | deployed  (default: mock)
-  CARI_BASE_URL               base URL for deployed mode
-  CARI_EVAL_TIMEOUT_SECONDS   per-request timeout        (default: 60)
+  CARI_FUNCTIONS_URL          Azure Functions app URL for deployed mode
+                              (bypasses SWA, which blocks unauthenticated POST)
+                              e.g. https://func-arb-review-api.azurewebsites.net
+  CARI_BASE_URL               SWA base URL (fallback if CARI_FUNCTIONS_URL not set)
+  CARI_EVAL_TIMEOUT_SECONDS   per-request timeout        (default: 120)
   CARI_EVAL_DATASET           path to .jsonl dataset     (default: evals/datasets/cari_arb_baseline_extended.jsonl)
 """
 
@@ -190,12 +193,20 @@ def call_cari(case: dict, mode: str, base_url: str, timeout: int) -> dict:
     if mode == "local":
         url = "http://localhost:7071/api/arb-eval/review"
     elif mode == "deployed":
-        if not base_url:
+        # CARI_FUNCTIONS_URL bypasses SWA (which blocks unauthenticated POST).
+        # Use the Azure Functions app URL directly for eval calls.
+        functions_url = os.environ.get("CARI_FUNCTIONS_URL", "").strip()
+        if functions_url:
+            url = f"{functions_url.rstrip('/')}/api/arb-eval/review"
+        elif base_url:
+            url = f"{base_url.rstrip('/')}/api/arb-eval/review"
+        else:
             print(
-                "ERROR: CARI_BASE_URL must be set for deployed mode.", file=sys.stderr
+                "ERROR: Set CARI_FUNCTIONS_URL (e.g. https://func-arb-review-api.azurewebsites.net) "
+                "or CARI_BASE_URL for deployed mode.",
+                file=sys.stderr,
             )
             sys.exit(1)
-        url = f"{base_url.rstrip('/')}/api/arb-eval/review"
     else:
         print(f"ERROR: Unknown CARI_EVAL_MODE '{mode}'. Use mock, local, or deployed.", file=sys.stderr)
         sys.exit(1)
@@ -488,7 +499,7 @@ def print_summary(results: list[dict]) -> None:
 def main() -> int:
     mode = os.environ.get("CARI_EVAL_MODE", "mock").lower()
     base_url = os.environ.get("CARI_BASE_URL", "")
-    timeout = int(os.environ.get("CARI_EVAL_TIMEOUT_SECONDS", "60"))
+    timeout = int(os.environ.get("CARI_EVAL_TIMEOUT_SECONDS", "120"))
     dataset_path_env = os.environ.get("CARI_EVAL_DATASET", "")
     dataset_path = Path(dataset_path_env) if dataset_path_env else DEFAULT_DATASET
 
