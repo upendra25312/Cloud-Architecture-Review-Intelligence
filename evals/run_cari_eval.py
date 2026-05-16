@@ -499,7 +499,7 @@ def print_summary(results: list[dict]) -> None:
 def main() -> int:
     mode = os.environ.get("CARI_EVAL_MODE", "mock").lower()
     base_url = os.environ.get("CARI_BASE_URL", "")
-    timeout = int(os.environ.get("CARI_EVAL_TIMEOUT_SECONDS", "120"))
+    timeout = int(os.environ.get("CARI_EVAL_TIMEOUT_SECONDS", "180"))
     dataset_path_env = os.environ.get("CARI_EVAL_DATASET", "")
     dataset_path = Path(dataset_path_env) if dataset_path_env else DEFAULT_DATASET
 
