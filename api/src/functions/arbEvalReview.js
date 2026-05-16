@@ -237,7 +237,7 @@ async function handleArbEvalReview(request, context) {
 }
 
 app.http("arbEvalReview", {
-  route: "arb/eval/review",
+  route: "arb-eval/review",
   methods: ["POST"],
   authLevel: "anonymous",
   handler: handleArbEvalReview,

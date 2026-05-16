@@ -93,13 +93,6 @@
       ]
     },
     {
-      "route": "/api/arb/eval/*",
-      "allowedRoles": [
-        "anonymous",
-        "authenticated"
-      ]
-    },
-    {
       "route": "/api/arb/*",
       "allowedRoles": [
         "authenticated"
