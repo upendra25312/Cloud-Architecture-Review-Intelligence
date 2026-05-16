@@ -4999,6 +4999,19 @@ async function getArbScorecard(principal, reviewId) {
     "Replace"
   );
 
+  // Sync computed score + recommendation back to the summary entity so the
+  // review shell always displays the current score instead of "Pending".
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      overallScore: derivedScorecard.overallScore,
+      recommendation: derivedScorecard.recommendation,
+      lastUpdated: new Date().toISOString()
+    },
+    "Merge"
+  );
+
   return derivedScorecard;
 }
 
