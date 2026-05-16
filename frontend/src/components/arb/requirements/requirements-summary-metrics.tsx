@@ -12,6 +12,9 @@ export function RequirementsSummaryMetrics({ metrics }: RequirementsSummaryMetri
   const acceptanceTone =
     allPending ? "pending" : metrics.acceptanceRate >= 80 ? "green" : metrics.acceptanceRate >= 50 ? "amber" : "red";
   const acceptanceClass = acceptanceTone === "pending" ? styles.metricValue : styles[`metricValue--${acceptanceTone}`];
+  const acceptanceLabel = allPending
+    ? `${metrics.pendingCount} pending`
+    : `${metrics.acceptanceRate}%`;
 
   return (
     <div className={styles.summaryMetrics}>
@@ -38,7 +41,7 @@ export function RequirementsSummaryMetrics({ metrics }: RequirementsSummaryMetri
           Acceptance rate
         </p>
         <p className={acceptanceClass}>
-          {allPending ? "Not yet reviewed" : `${metrics.acceptanceRate}%`}
+          {acceptanceLabel}
         </p>
       </div>
 
