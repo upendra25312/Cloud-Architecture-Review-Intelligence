@@ -11,7 +11,9 @@
 
 Cloud Architecture Review Intelligence (CARI) is a professional solution accelerator for organizations that need to assess cloud architectures with greater **speed**, **consistency**, and **governance rigor**. It combines **Azure-native application architecture**, **AI-assisted review workflows**, **document intelligence**, **search**, **observability**, and **deterministic validation patterns** to support architecture review boards, cloud centers of excellence, platform engineering teams, and enterprise solution architects.
 
-**Live Platform:** [https://red-coast-0b2d8700f.7.azurestaticapps.net/arb](https://red-coast-0b2d8700f.7.azurestaticapps.net/arb)
+**Live Platform (Leadership Demo):** [https://thankful-pond-04383960f.7.azurestaticapps.net/arb](https://thankful-pond-04383960f.7.azurestaticapps.net/arb)
+
+> Previous environment: `https://red-coast-0b2d8700f.7.azurestaticapps.net/arb` (archived)
 
 ---
 

@@ -274,3 +274,167 @@ test("validateArbReviewOutputPack warns about open High/Critical findings", () =
   assert.ok(warnings.some((w) => /critical|high/i.test(w)),
     "should warn about open Critical/High findings");
 });
+
+// ─── P1: Cross-format consistency (all formats produce same canonical values) ──
+
+test("reviewId is identical across all formats", () => {
+  for (const fmt of ["html", "csv", "markdown", "pptx", "xlsx"]) {
+    const pack = buildPack(fmt);
+    assert.equal(pack.metadata.reviewId, REVIEW.reviewId,
+      `reviewId mismatch for format ${fmt}`);
+  }
+});
+
+test("customer name is identical across all formats", () => {
+  for (const fmt of ["html", "csv", "markdown", "pptx", "xlsx"]) {
+    const pack = buildPack(fmt);
+    assert.equal(pack.customer.name, REVIEW.projectMeta.customerName,
+      `customer.name mismatch for format ${fmt}`);
+  }
+});
+
+test("overall score percentage is identical across all formats", () => {
+  const pcts = ["html", "csv", "markdown", "pptx", "xlsx"].map((fmt) => buildPack(fmt).scorecard.percentage);
+  assert.ok(pcts.every((p) => p === pcts[0]),
+    `scorecard.percentage differs across formats: ${pcts}`);
+});
+
+test("findings count is identical across all formats", () => {
+  for (const fmt of ["html", "csv", "markdown", "pptx", "xlsx"]) {
+    const pack = buildPack(fmt);
+    assert.equal(pack.findings.length, FINDINGS.length,
+      `findings.length mismatch for format ${fmt}`);
+  }
+});
+
+test("governance posture is identical across all formats", () => {
+  const postures = ["html", "csv", "markdown", "pptx", "xlsx"].map((fmt) => buildPack(fmt).decision.governancePosture);
+  assert.ok(postures.every((p) => p === postures[0]),
+    `governancePosture differs across formats: ${postures}`);
+});
+
+test("reviewer decision is identical across all formats when decision is provided", () => {
+  const decisions = ["html", "csv", "markdown", "pptx", "xlsx"].map((fmt) => buildPack(fmt).decision.reviewerDecision);
+  // All formats must agree on the same canonical reviewer decision value
+  assert.ok(decisions.every((d) => d === decisions[0]),
+    `reviewerDecision differs across formats: ${decisions}`);
+  // Must not be null/undefined — a decision was provided in the fixture
+  assert.ok(decisions[0] && decisions[0] !== "Not Recorded",
+    `reviewerDecision must be recorded when a decision is provided; got: ${decisions[0]}`);
+});
+
+test("remediation action count is identical across all formats", () => {
+  for (const fmt of ["html", "csv", "markdown", "pptx", "xlsx"]) {
+    const pack = buildPack(fmt);
+    assert.equal(pack.remediationActions.length, ACTIONS.length,
+      `remediationActions.length mismatch for format ${fmt}`);
+  }
+});
+
+// ─── P1: Domain score maxScore is always set ──────────────────────────────────
+
+test("scorecard domains always have maxScore set to a positive number", () => {
+  const pack = buildPack();
+  for (const d of pack.scorecard.domains) {
+    assert.ok(d.maxScore > 0,
+      `domain ${d.domain} must have maxScore > 0, got ${d.maxScore}`);
+  }
+});
+
+test("scorecard domain percentage is between 0 and 100", () => {
+  const pack = buildPack();
+  for (const d of pack.scorecard.domains) {
+    assert.ok(d.percentage >= 0 && d.percentage <= 100,
+      `domain ${d.domain} percentage ${d.percentage} must be 0-100`);
+  }
+});
+
+// ─── P1: No undefined values in canonical pack fields ─────────────────────────
+
+test("pack metadata fields are never undefined", () => {
+  const pack = buildPack();
+  assert.notEqual(pack.metadata.reviewId,   undefined, "metadata.reviewId must not be undefined");
+  assert.notEqual(pack.customer.name,       undefined, "customer.name must not be undefined");
+  assert.notEqual(pack.project.name,        undefined, "project.name must not be undefined");
+  assert.notEqual(pack.workflow.currentState, undefined, "workflow.currentState must not be undefined");
+  assert.notEqual(pack.evidenceReadiness.status, undefined, "evidenceReadiness.status must not be undefined");
+});
+
+test("governance decision fields are never undefined", () => {
+  const pack = buildPack();
+  assert.notEqual(pack.decision.governancePosture,      undefined, "decision.governancePosture must not be undefined");
+  assert.notEqual(pack.decision.riskAcceptanceRequired, undefined, "decision.riskAcceptanceRequired must not be undefined");
+  assert.notEqual(pack.decision.reviewerDecision,       undefined, "decision.reviewerDecision must not be undefined");
+});
+
+// ─── P1: Missing metadata fallbacks ───────────────────────────────────────────
+
+test("pack with minimal review still produces valid customer and project", () => {
+  const minimalReview = { reviewId: "min-001", workflowState: "Draft" };
+  const pack = normalizeReviewForExport(minimalReview, [], [], [], [], [], null, null, "html");
+  assert.ok(pack.customer.name,  "customer.name must have a fallback when review has no customerName");
+  assert.ok(pack.project.name,   "project.name must have a fallback when review has no projectName");
+  assert.ok(pack.metadata.reviewId === "min-001", "reviewId must be preserved from minimal review");
+});
+
+test("pack with no scorecard still produces valid scorecard fields", () => {
+  const pack = normalizeReviewForExport(REVIEW, FILES, REQUIREMENTS, EVIDENCE, FINDINGS, ACTIONS, null, null, "html");
+  assert.equal(typeof pack.scorecard.percentage, "number",   "scorecard.percentage must be a number even with null scorecard");
+  assert.ok(Array.isArray(pack.scorecard.domains),           "scorecard.domains must be an array even with null scorecard");
+});
+
+// ─── P1: Reviewer approved but open high findings present ─────────────────────
+
+test("governance posture is Needs Remediation when reviewer Approved but open Critical exists", () => {
+  const pack = buildPack(); // fixture has open Critical fn1
+  assert.equal(pack.decision.governancePosture, "Needs Remediation",
+    "open Critical finding must force Needs Remediation posture regardless of reviewer decision");
+});
+
+test("riskAcceptanceRequired is true when open Critical finding exists", () => {
+  const pack = buildPack();
+  assert.equal(pack.decision.riskAcceptanceRequired, true,
+    "riskAcceptanceRequired must be true when open Critical finding exists");
+});
+
+test("governance warning absent when no open findings exist", () => {
+  const emptyFindingsPack = normalizeReviewForExport(
+    REVIEW, FILES, REQUIREMENTS, EVIDENCE, [], ACTIONS, SCORECARD, DECISION, "html"
+  );
+  assert.equal(emptyFindingsPack.decision.governanceWarning, null,
+    "governanceWarning must be null when no open findings exist");
+});
+
+// ─── P1: Partial extraction ───────────────────────────────────────────────────
+
+test("evidenceReadiness is not Ready when a required file has Failed extraction", () => {
+  const pack = buildPack();
+  // f3 (sow) failed extraction → evidence readiness must not be Ready
+  assert.notEqual(pack.evidenceReadiness.status, "Ready",
+    "evidenceReadiness.status must not be Ready when a required file failed extraction");
+});
+
+test("uploadedInputs include failed files with extractionStatus set", () => {
+  const pack = buildPack();
+  const failed = pack.uploadedInputs.find((i) => i.inputId === "f3" || i.fileName === "failed.pdf");
+  assert.ok(failed, "failed file must appear in uploadedInputs");
+  assert.ok(/fail/i.test(failed.extractionStatus), "failed file must have Failed extractionStatus");
+});
+
+// ─── P1: Correct canonical field names (no legacy leakage) ───────────────────
+
+test("canonical findings never expose findingStatement at top level", () => {
+  const pack = buildPack();
+  for (const f of pack.findings) {
+    assert.equal(f.findingStatement, undefined,
+      `canonical finding ${f.findingId} must not expose legacy findingStatement field`);
+  }
+});
+
+test("canonical actions never expose actionSummary at top level", () => {
+  const pack = buildPack();
+  for (const a of pack.remediationActions) {
+    assert.equal(a.actionSummary, undefined,
+      `canonical action ${a.actionId} must not expose legacy actionSummary field`);
+  }
+});

@@ -6,7 +6,7 @@ This file guides AI coding assistants (Claude Code, GitHub Copilot, etc.) on how
 
 **Cloud Architecture Review Intelligence (CARI)** is a production Azure-native platform for AI-assisted architecture review workflows.
 
-- **Live site:** https://red-coast-0b2d8700f.7.azurestaticapps.net/
+- **Live site (leadership demo):** [https://thankful-pond-04383960f.7.azurestaticapps.net/](https://thankful-pond-04383960f.7.azurestaticapps.net/)
 - **Platform:** Azure Static Web Apps (frontend) + Azure Functions (API) + Azure AI services
 - **Stack:** Next.js 16 (App Router) · TypeScript · Node.js 20 · Terraform · GitHub Actions
 

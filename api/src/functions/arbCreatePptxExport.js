@@ -28,8 +28,8 @@ async function handleArbCreatePptxExport(request, context) {
       getArbFiles(auth.principal, reviewId).catch(() => []),
       getArbRequirements(auth.principal, reviewId).catch(() => []),
       getArbEvidence(auth.principal, reviewId).catch(() => []),
-      getArbFindings(auth.principal, reviewId).catch(() => ({ findings: [] })),
-      getArbActions(auth.principal, reviewId).catch(() => ({ actions: [] })),
+      getArbFindings(auth.principal, reviewId).catch(() => []),
+      getArbActions(auth.principal, reviewId).catch(() => []),
       getArbScorecard(auth.principal, reviewId).catch(() => null),
       getArbDecision(auth.principal, reviewId).catch(() => null),
     ]);
@@ -39,8 +39,8 @@ async function handleArbCreatePptxExport(request, context) {
       files,
       requirements,
       evidence,
-      findingsResult?.findings ?? [],
-      actionsResult?.actions  ?? [],
+      Array.isArray(findingsResult) ? findingsResult : [],
+      Array.isArray(actionsResult)  ? actionsResult  : [],
       scorecard,
       decision,
       "pptx"

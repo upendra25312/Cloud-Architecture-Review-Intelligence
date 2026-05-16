@@ -50,9 +50,18 @@ These raw field names exist in storage entities but are NOT present in the canon
 
 ---
 
-## nextSteps Must Be null, Not []
+## nextSteps — Computed Array, Never null or []
 
-`_pptx.nextSteps` must always be set to `null`. An empty array `[]` is truthy in JavaScript, so `data.nextSteps || [defaults]` will **not** fall through to the category defaults if `nextSteps` is `[]`. The normalizer enforces `null` — never override this.
+`_pptx.nextSteps` is **always a computed non-empty array** produced by `buildStateAwareNextSteps()` in `arb-normalize-review.js`. It is set at normalization time and reflects the current review state (open findings, reviewer decision, evidence readiness, etc.).
+
+**Rules:**
+
+- Never set `_pptx.nextSteps = null` — the PPTX slide builder expects a populated array.
+- Never set `_pptx.nextSteps = []` — an empty array is truthy but will render a blank Next Steps slide.
+- If review context is insufficient to derive meaningful steps, the normalizer inserts one safe default: `"Complete reviewer sign-off and validate evidence readiness before closing this architecture review."`
+- The PPTX slide builder reads `_pptx.nextSteps` directly — it must never fall back to a hardcoded default list, because category-specific defaults are already applied by the normalizer via the `CATEGORY_NEXT_STEPS` map.
+
+**Enforced by:** `arb-export-parity.test.js` — asserts `Array.isArray(_pptx.nextSteps) && nextSteps.length > 0`.
 
 ---
 

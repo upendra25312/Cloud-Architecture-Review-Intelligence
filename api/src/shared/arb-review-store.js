@@ -2140,13 +2140,14 @@ function renderHtmlExportBody(pack, summaryText) {
       `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Domain Scores</h2>`
     );
     for (const ds of domainScores) {
-      const pct = ds.weight > 0 ? Math.round((Number(ds.score) / Number(ds.weight)) * 100) : 0;
+      const maxVal = Number(ds.maxScore ?? ds.weight ?? 0);
+      const pct = maxVal > 0 ? Math.round((Number(ds.score) / maxVal) * 100) : (ds.percentage ?? 0);
       const color = scoreColor(pct >= 85 ? 85 : pct >= 70 ? 75 : 50);
       parts.push(
         `<div style="margin-bottom:14px;">`,
         `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">`,
         `<span style="font-size:13px;font-weight:600;color:#1F2937;">${esc(ds.domain)}</span>`,
-        `<span style="font-size:12px;color:#64748B;">${esc(ds.score)} / ${esc(ds.weight)} (${pct}%)</span>`,
+        `<span style="font-size:12px;color:#64748B;">${esc(ds.score)} / ${esc(maxVal)} (${pct}%)</span>`,
         `</div>`,
         `<div style="height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;">`,
         `<div style="width:${Math.min(100, Math.max(0, pct))}%;height:100%;background:${color};border-radius:4px;"></div>`,
@@ -2364,6 +2365,7 @@ async function writeArbOutputArtifact({
   findings,
   scorecard,
   actions,
+  decision,
   format,
   generatedAt,
   summaryText,
@@ -2372,31 +2374,29 @@ async function writeArbOutputArtifact({
   const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
   const fileName = buildExportFileName(review.reviewId, format);
   const blobPath = buildExportBlobPath(principal.userId, review.reviewId, fileName);
-  let body;
-  let contentType;
 
-  if (format === "csv") {
-    body = renderCsvExportBody(review, files, requirements, evidence, findings, scorecard, actions);
-    contentType = "text/csv; charset=utf-8";
+  if (format === "xlsx") {
+    const xlsxPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, decision, "xlsx");
+    const body = await generateArbExcel(xlsxPack);
+    await uploadBinaryBlob(outputContainer, blobPath, body, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  } else if (format === "csv") {
+    const csvPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, decision, "csv");
+    const body = renderCsvExportBody(csvPack);
+    await uploadTextBlob(outputContainer, blobPath, body, "text/csv; charset=utf-8");
   } else if (format === "html") {
-    const htmlPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, null, "html");
-    body = renderHtmlExportBody(htmlPack, summaryText);
-    contentType = "text/html; charset=utf-8";
+    const htmlPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, decision, "html");
+    const body = renderHtmlExportBody(htmlPack, summaryText);
+    await uploadTextBlob(outputContainer, blobPath, body, "text/html; charset=utf-8");
   } else {
-    body = renderMarkdownExportBody(
-      review,
-      files,
-      requirements,
-      evidence,
-      findings,
-      scorecard,
-      actions,
-      summaryText
-    );
-    contentType = "text/markdown; charset=utf-8";
+    const mdPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, decision, "markdown");
+    const body = renderMarkdownExportBody(mdPack);
+    await uploadTextBlob(outputContainer, blobPath, body, "text/markdown; charset=utf-8");
   }
 
-  await uploadTextBlob(outputContainer, blobPath, body, contentType);
+  const contentType = format === "xlsx" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    : format === "csv"  ? "text/csv; charset=utf-8"
+    : format === "html" ? "text/html; charset=utf-8"
+    : "text/markdown; charset=utf-8";
 
   const exportRecord = {
     exportId: buildExportId(review.reviewId, format),
@@ -2426,6 +2426,7 @@ async function syncArbReviewedOutputs({
   findings,
   scorecard,
   actions,
+  decision,
   formats,
   generatedAt,
   existingExports
@@ -2454,6 +2455,7 @@ async function syncArbReviewedOutputs({
       findings,
       scorecard,
       actions,
+      decision,
       format,
       generatedAt,
       summaryText,
@@ -4609,6 +4611,7 @@ async function createArbExport(principal, reviewId, input = {}) {
   const findings = await getArbFindings(principal, reviewId);
   const actions = await getArbActions(principal, reviewId);
   const scorecard = await getArbScorecard(principal, reviewId);
+  const decision = await getArbDecision(principal, reviewId).catch(() => null);
   const exportsEntity = await getEntity(client, reviewId, getRowKey(EXPORTS_ROW_KEY, principal.userId));
   const exportsList = fromExportsEntity(exportsEntity);
   const format = normalizeExportFormat(input.format);
@@ -4636,6 +4639,7 @@ async function createArbExport(principal, reviewId, input = {}) {
     findings,
     scorecard,
     actions,
+    decision,
     formats: [format],
     generatedAt: new Date().toISOString(),
     existingExports: exportsList
