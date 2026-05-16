@@ -249,8 +249,9 @@ Do not mark missing diagrams, missing cost estimates, or incomplete documentatio
 
 Scoring model:
 Return scores from 0 to 100. Compute overallScore as a weighted score:
-- Requirements Coverage: 20%
-- Security and Compliance: 20%
+- Requirements Coverage: 15%
+- Security and Compliance: 15%
+- Networking and Connectivity: 10%
 - Reliability and Resilience: 15%
 - Operational Excellence: 10%
 - Cost Optimization: 10%
@@ -276,6 +277,7 @@ Microsoft Learn reference rules:
   - WAF Cost Optimization: https://learn.microsoft.com/azure/well-architected/cost-optimization/
   - WAF Operational Excellence: https://learn.microsoft.com/azure/well-architected/operational-excellence/
   - WAF Performance Efficiency: https://learn.microsoft.com/azure/well-architected/performance-efficiency/
+  - ALZ Networking: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/define-an-azure-network-topology
   - CAF: https://learn.microsoft.com/azure/cloud-adoption-framework/
   - ALZ: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/
 - Include the same URL inline in the recommendation text.
@@ -288,7 +290,7 @@ Return only a valid JSON object in this exact shape:
   "findings": [
     {
       "severity": "Critical|High|Medium|Low",
-      "domain": "Security|Reliability|Cost|Operations|Architecture|Governance|Performance",
+      "domain": "Security|Networking|Reliability|Cost|Operations|Architecture|Governance|Performance",
       "framework": "WAF|CAF|ALZ|MicrosoftLearn",
       "frameworkPillar": "string - e.g. WAF:Reliability, CAF:Govern, ALZ:NetworkTopology",
       "title": "string",
@@ -316,6 +318,7 @@ Return only a valid JSON object in this exact shape:
     "dimensions": [
       { "name": "Requirements Coverage", "score": 0, "rationale": "string", "blockers": ["string"] },
       { "name": "Security and Compliance", "score": 0, "rationale": "string", "blockers": ["string"] },
+      { "name": "Networking and Connectivity", "score": 0, "rationale": "string", "blockers": ["string"] },
       { "name": "Reliability and Resilience", "score": 0, "rationale": "string", "blockers": ["string"] },
       { "name": "Operational Excellence", "score": 0, "rationale": "string", "blockers": ["string"] },
       { "name": "Cost Optimization", "score": 0, "rationale": "string", "blockers": ["string"] },
@@ -630,9 +633,9 @@ function buildUserMessage(review, files, requirements, evidence, searchChunks, l
 
   parts.push(`## Analysis Instructions`);
   parts.push(`Analyze the uploaded evidence against ALL of the following CAF Landing Zone design areas and WAF pillars. For each area, identify what is evidenced (strengths), what is missing or incomplete (gaps), and produce a finding for every gap that affects ARB readiness:`);
-  parts.push(`1. Network Topology & Connectivity: hub-spoke or Virtual WAN, ExpressRoute/VPN, firewall, NSGs, UDRs, DNS, private endpoints, subnet design`);
-  parts.push(`2. Identity & Access Management: management group hierarchy, RBAC model, Entra ID, Privileged Identity Management, managed identities, service principals`);
-  parts.push(`3. Security & Compliance: Defender for Cloud, Sentinel, Key Vault, encryption at rest/in transit, WAF, network security, secrets management, threat detection`);
+  parts.push(`1. Network Topology & Connectivity [domain: Networking]: hub-spoke or Virtual WAN, ExpressRoute/VPN, firewall, NSGs, UDRs, DNS, private endpoints, private DNS resolver, subnet design, hybrid connectivity`);
+  parts.push(`2. Identity & Access Management [domain: Security]: management group hierarchy, RBAC model, Entra ID, Privileged Identity Management, managed identities, service principals, break-glass accounts`);
+  parts.push(`3. Security & Compliance [domain: Security]: Defender for Cloud, Sentinel, Key Vault, encryption at rest/in transit, WAF policies, secrets management, threat detection, certificate lifecycle`);
   parts.push(`4. Governance & Policy: Azure Policy assignments, initiative compliance, tagging strategy, subscription vending, management group policies, cost governance`);
   parts.push(`5. Management & Monitoring: Log Analytics workspaces, Azure Monitor alerts, diagnostic settings, automation, patch management, operational runbooks`);
   parts.push(`6. Reliability & Business Continuity: availability zones, backup vaults, Site Recovery, DR strategy, RTO/RPO definitions, tier classification (Tier 0/1/2/3)`);

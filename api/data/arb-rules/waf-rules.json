@@ -67,8 +67,8 @@
     {
       "ruleId": "NET-001",
       "framework": "WAF",
-      "frameworkPillar": "WAF:Security",
-      "domain": "Security",
+      "frameworkPillar": "WAF:Networking",
+      "domain": "Networking",
       "severity": "Critical",
       "title": "Internet-facing boundary control is not evidenced",
       "failureMessage": "The design appears to include public or internet-facing services without evidenced WAF, firewall, Application Gateway, Front Door, APIM, or NSG boundary control.",
@@ -83,8 +83,8 @@
     {
       "ruleId": "NET-002",
       "framework": "WAF",
-      "frameworkPillar": "WAF:Security",
-      "domain": "Security",
+      "frameworkPillar": "WAF:Networking",
+      "domain": "Networking",
       "severity": "High",
       "title": "Private connectivity is not evidenced",
       "failureMessage": "The design does not evidence private endpoints, private DNS, VNet integration, or equivalent private connectivity for platform services.",
