@@ -1,0 +1,86 @@
+name: CARI Evaluations
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "20.x"
+  PYTHON_VERSION: "3.11"
+  CARI_EVAL_MODE: mock
+  CARI_EVAL_TIMEOUT_SECONDS: "60"
+
+jobs:
+  evaluate-cari:
+    name: CARI Quality & Parity Evaluation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            api/package-lock.json
+            frontend/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      # ── API ────────────────────────────────────────────────────────────────
+
+      - name: Install API dependencies
+        run: npm --prefix api ci
+
+      - name: Run API tests
+        run: npm --prefix api test
+
+      # ── Canonical pack dump (for export parity eval) ───────────────────────
+      # Runs the parity test suite a second time with CARI_DUMP_PACKS=1.
+      # This writes out/<format>.pack.json for each format under test.
+      # These files are consumed by run_export_parity_eval.py.
+
+      - name: Dump canonical packs for parity evaluation
+        run: CARI_DUMP_PACKS=1 npm --prefix api test -- --test-name-pattern "parity"
+        continue-on-error: true
+
+      # ── Frontend ───────────────────────────────────────────────────────────
+
+      - name: Install frontend dependencies
+        run: npm --prefix frontend ci
+
+      - name: Build frontend
+        run: npm --prefix frontend run build
+
+      # ── Python evaluations ─────────────────────────────────────────────────
+
+      - name: Install Python evaluation dependencies
+        run: pip install requests tabulate
+
+      - name: Run CARI baseline evaluation (mock mode)
+        run: python evals/run_cari_eval.py
+
+      - name: Run CARI export parity evaluation
+        run: python evals/run_export_parity_eval.py
+
+      # ── Summary ────────────────────────────────────────────────────────────
+
+      - name: Upload pack files as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-pack-files
+          path: out/*.pack.json
+          if-no-files-found: ignore
+          retention-days: 7

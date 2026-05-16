@@ -6,14 +6,34 @@
  * These tests verify that all exporters consume the same canonical
  * ArbReviewOutputPack and produce consistent data — score, customer name,
  * project name, decision, and finding count must be identical across formats.
+ *
+ * Pack dump (for Python export parity evaluation):
+ *   Set CARI_DUMP_PACKS=1 to write out/<format>.pack.json after each
+ *   normalizeReviewForExport call. Used by evals/run_export_parity_eval.py.
  */
 
 const test   = require("node:test");
 const assert = require("node:assert/strict");
+const fs     = require("node:fs");
+const path   = require("node:path");
 
 const { normalizeReviewForExport, validateArbReviewOutputPack: _validate } =
   require("./arb-normalize-review");
 const { validateArbReviewOutputPack } = require("./arb-export-validator");
+
+// ─── Pack dump helper ─────────────────────────────────────────────────────────
+
+const DUMP_PACKS = process.env.CARI_DUMP_PACKS === "1";
+const DUMP_DIR   = path.resolve(__dirname, "../../../out");
+
+function maybeDumpPack(format, pack) {
+  if (!DUMP_PACKS) return;
+  try {
+    fs.mkdirSync(DUMP_DIR, { recursive: true });
+    const dest = path.join(DUMP_DIR, `${format}.pack.json`);
+    fs.writeFileSync(dest, JSON.stringify(pack, null, 2), "utf8");
+  } catch { /* non-fatal — dump is best-effort */ }
+}
 
 // ─── Shared fixture ───────────────────────────────────────────────────────────
 
@@ -82,9 +102,11 @@ const DECISION = {
 // ─── Helper: build pack once for all assertions ───────────────────────────────
 
 function buildPack(format = "html") {
-  return normalizeReviewForExport(
+  const pack = normalizeReviewForExport(
     REVIEW, FILES, REQUIREMENTS, EVIDENCE, FINDINGS, ACTIONS, SCORECARD, DECISION, format
   );
+  maybeDumpPack(format, pack);
+  return pack;
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
