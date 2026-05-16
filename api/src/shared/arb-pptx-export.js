@@ -11,7 +11,40 @@
 
 "use strict";
 
+const path      = require("path");
+const fs        = require("fs");
 const PptxGenJS = require("pptxgenjs");
+
+// ─── Template resolution (pptxgenjs 4.x cannot load existing .pptx files) ────
+// Resolution order: POWERPOINT_TEMPLATE_PATH env → repo root → templates dir.
+// Template is validated for existence only; the library limitation warning is
+// added to the pack's exportWarnings so downstream callers are informed.
+
+const TEMPLATE_CANDIDATES = [
+  process.env.POWERPOINT_TEMPLATE_PATH || null,
+  path.join(process.cwd(), "Rackspace Presentation Template.pptx"),
+  path.resolve(__dirname, "../../../templates/Rackspace Presentation Template.pptx"),
+].filter(Boolean);
+
+function resolveTemplatePath() {
+  for (const candidate of TEMPLATE_CANDIDATES) {
+    try { if (fs.existsSync(candidate)) return candidate; } catch { /* ignore */ }
+  }
+  return null;
+}
+
+function addTemplateWarnings(pack) {
+  if (!pack || !Array.isArray(pack.exportWarnings)) return;
+  const templatePath = resolveTemplatePath();
+  const w = templatePath
+    ? { warningId: "TEMPLATE_LIBRARY_LIMITATION", severity: "info",
+        message: `Rackspace template found at "${templatePath}" but cannot be applied — pptxgenjs@4.x does not support loading existing .pptx files. Brand styling is applied programmatically.`,
+        affectedSections: ["all"] }
+    : { warningId: "TEMPLATE_NOT_FOUND", severity: "info",
+        message: "Rackspace template not found. Set POWERPOINT_TEMPLATE_PATH or place template at repo root. Brand styling is applied programmatically.",
+        affectedSections: ["all"] };
+  pack.exportWarnings.push(w);
+}
 
 // ─── Brand constants ─────────────────────────────────────────────────────────
 const BRAND = {
@@ -601,10 +634,15 @@ function buildNextStepsSlide(p, data, slideNum) {
 
 /**
  * Generates a 16:9 PowerPoint deck from ARB review data.
- * @param {object} reviewData  Shaped payload from shapeReviewDataForPptx
+ * @param {object} packOrReviewData  Canonical ArbReviewOutputPack (has ._pptx) or legacy flat reviewData
  * @returns {Promise<Buffer>}  PPTX binary buffer
  */
-async function generateArbPptx(reviewData) {
+async function generateArbPptx(packOrReviewData) {
+  const isCanonicalPack = packOrReviewData != null && "_pptx" in packOrReviewData;
+  const reviewData = isCanonicalPack ? packOrReviewData._pptx : packOrReviewData;
+
+  if (isCanonicalPack) addTemplateWarnings(packOrReviewData);
+
   pptx = new PptxGenJS();
 
   // LAYOUT_WIDE = 13.33" × 7.5" (16:9 widescreen) — do NOT override with defineLayout

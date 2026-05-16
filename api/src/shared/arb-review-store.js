@@ -3,6 +3,9 @@ const path = require("node:path");
 const zlib = require("node:zlib");
 const ExcelJS = require("exceljs");
 const JSZip = require("jszip");
+const { normalizeReviewForExport } = require("./arb-normalize-review");
+const { validateArbReviewOutputPack } = require("./arb-export-validator");
+const { generateArbExcel } = require("./arb-excel-export");
 const {
   ARB_INPUT_CONTAINER_NAME,
   ARB_OUTPUT_CONTAINER_NAME,
@@ -1586,15 +1589,17 @@ function normalizeExportFormat(value) {
     return "markdown";
   }
 
-  if (normalized === "csv" || normalized === "html") {
-    return normalized;
+  if (normalized === "csv" || normalized === "html" || normalized === "xlsx" || normalized === "excel") {
+    return normalized === "excel" ? "xlsx" : normalized;
   }
 
-  throw createHttpError(400, "Supported ARB export formats are markdown, csv, and html.");
+  throw createHttpError(400, "Supported ARB export formats are markdown, csv, html, and xlsx.");
 }
 
 function getExportExtension(format) {
-  return format === "markdown" ? "md" : format;
+  if (format === "markdown") return "md";
+  if (format === "xlsx")     return "xlsx";
+  return format;
 }
 
 function buildExportId(reviewId, format) {
@@ -1666,237 +1671,333 @@ async function buildAiSummary(review, files, requirements, evidence, findings, s
   }
 }
 
-function renderMarkdownExportBody(review, files, requirements, evidence, findings, scorecard, actions, summaryText) {
-  const domainScores = scorecard?.domainScores || [];
-  const reviewerOverride = scorecard?.reviewerOverride || null;
-  const actionLines = actions.length
-    ? actions.map((action) => `- ${action.actionSummary} (${action.status})`)
-    : ["_No actions recorded._"];
+function renderMarkdownExportBody(pack) {
+  const meta   = pack.metadata        || {};
+  const proj   = pack.project         || {};
+  const cust   = pack.customer        || {};
+  const wf     = pack.workflow        || {};
+  const er     = pack.evidenceReadiness|| {};
+  const es     = pack.executiveSummary || {};
+  const sc     = pack.scorecard       || {};
+  const dc     = pack.decision        || {};
+  const warns  = pack.exportWarnings  || [];
 
-  return [
-    `# ${review.projectName} ARB Reviewed Output`,
-    "",
-    `- Review ID: ${review.reviewId}`,
-    `- Customer: ${review.customerName}`,
-    `- Workflow state: ${review.workflowState}`,
-    `- Evidence readiness: ${review.evidenceReadinessState}`,
-    `- Documents reviewed: ${files.length}`,
-    `- Requirements extracted: ${requirements.length}`,
-    `- Evidence facts extracted: ${evidence.length}`,
-    scorecard ? `- Overall score: ${scorecard.overallScore ?? "TBD"}` : null,
-    scorecard ? `- Recommendation: ${scorecard.recommendation}` : null,
-    reviewerOverride ? `- Reviewer decision: ${reviewerOverride.overrideDecision}` : null,
-    reviewerOverride ? `- Reviewer: ${reviewerOverride.reviewerName || "Not recorded"}` : null,
-    reviewerOverride ? `- Decision recorded at: ${reviewerOverride.overriddenAt || "Not recorded"}` : null,
-    "",
-    reviewerOverride ? "## Reviewer Decision" : null,
-    reviewerOverride ? "" : null,
-    reviewerOverride ? `- Final decision: ${reviewerOverride.overrideDecision}` : null,
-    reviewerOverride ? `- Reviewer: ${reviewerOverride.reviewerName || "Not recorded"}` : null,
-    reviewerOverride ? `- Recorded at: ${reviewerOverride.overriddenAt || "Not recorded"}` : null,
-    reviewerOverride ? `- Rationale: ${reviewerOverride.overrideRationale || "No rationale recorded."}` : null,
-    reviewerOverride ? "" : null,
-    summaryText ? `## Assessment Summary\n\n${summaryText}` : null,
-    summaryText ? "" : null,
-    "## Uploaded Inputs",
-    "",
-    ...files.map((file) => {
-      const statusNote = file.extractionStatus === "Failed"
-        ? `⚠ Extraction failed${file.extractionError ? `: ${file.extractionError}` : ""}`
-        : file.extractionStatus;
-      return `- ${file.fileName} (${file.logicalCategory}) — ${statusNote}`;
-    }),
-    "",
-    "## Reviewed Requirements",
-    "",
-    ...requirements.map(
-      (requirement) =>
-        `- [${requirement.category}/${requirement.criticality}] ${requirement.normalizedText}`
-    ),
-    "",
-    "## Reviewed Evidence",
-    "",
-    ...evidence.map(
-      (fact) => `- [${fact.factType}] ${fact.summary} (${fact.sourceFileName || "Derived summary"})`
-    ),
-    "",
-    "## Scorecard",
-    "",
-    ...domainScores.map(
-      (domainScore) =>
-        `- ${domainScore.domain}: ${domainScore.score}/${domainScore.weight} - ${domainScore.reason || "No rationale recorded."}`
-    ),
-    "",
-    "## Findings",
-    "",
-    ...findings.map((finding) =>
-      [
-        `- [${finding.severity}] **${finding.title}** (${finding.domain} · ${finding.status})`,
-        finding.findingStatement ? `  - Finding: ${finding.findingStatement}` : null,
-        finding.recommendation ? `  - Recommendation: ${finding.recommendation}` : null,
-        finding.reviewerNote ? `  - Reviewer comment: ${finding.reviewerNote}` : null,
-        finding.source ? `  - Source: ${finding.source}` : null
-      ]
-        .filter(Boolean)
-        .join("\n")
-    ),
-    "",
-    "## Actions",
-    "",
-    ...actionLines
-  ]
-    .filter(Boolean)
-    .join("\n");
-}
+  const hasDecision = dc.reviewerDecision && dc.reviewerDecision !== "Not Recorded";
+  const openFindings = (pack.findings || []).filter((f) => f.status === "Open" || f.status === "In Progress");
 
-function renderCsvExportBody(review, files, requirements, evidence, findings, scorecard, actions) {
-  const reviewerOverride = scorecard?.reviewerOverride || null;
-  const rows = [
-    [
-      "recordType",
-      "reviewId",
-      "projectName",
-      "category",
-      "title",
-      "details",
-      "sourceFile",
-      "status",
-      "severity",
-      "owner",
-      "dueDate",
-      "source",
-      "reviewerNote"
-    ],
-    [
-      "review",
-      review.reviewId,
-      review.projectName,
-      "summary",
-      review.customerName,
-      `Workflow=${review.workflowState}; Readiness=${review.evidenceReadinessState}; Score=${scorecard?.overallScore ?? "TBD"}`,
-      "",
-      review.workflowState,
-      scorecard?.recommendation || "",
-      review.assignedReviewer || "",
-      review.targetReviewDate || "",
-      "",
-      ""
-    ],
-    ...(reviewerOverride
-      ? [
-          [
-            "reviewerDecision",
-            review.reviewId,
-            review.projectName,
-            "finalDecision",
-            reviewerOverride.overrideDecision,
-            reviewerOverride.overrideRationale || "",
-            "",
-            "Recorded",
-            scorecard?.recommendation || "",
-            reviewerOverride.reviewerName || review.assignedReviewer || "",
-            reviewerOverride.overriddenAt || "",
-            "Human reviewer decision",
-            ""
-          ]
-        ]
-      : []),
-    ...files.map((file) => [
-      "file",
-      review.reviewId,
-      review.projectName,
-      file.logicalCategory,
-      file.fileName,
-      file.extractionStatus === "Failed" && file.extractionError
-        ? `Extraction failed: ${file.extractionError}`
-        : `Extraction=${file.extractionStatus}; Size=${file.sizeBytes}`,
-      file.fileName,
-      file.extractionStatus,
-      "",
-      file.uploadedBy,
-      file.uploadedAt,
-      ""
-    ]),
-    ...requirements.map((requirement) => [
-      "requirement",
-      review.reviewId,
-      review.projectName,
-      requirement.category,
-      requirement.normalizedText,
-      requirement.reviewerStatus,
-      requirement.sourceFileName || "",
-      requirement.reviewerStatus,
-      requirement.criticality,
-      "",
-      "",
-      ""
-    ]),
-    ...evidence.map((fact) => [
-      "evidence",
-      review.reviewId,
-      review.projectName,
-      fact.factType,
-      fact.summary,
-      fact.sourceExcerpt,
-      fact.sourceFileName || "",
-      fact.confidence,
-      "",
-      "",
-      "",
-      ""
-    ]),
-    ...findings.map((finding) => [
-      "finding",
-      review.reviewId,
-      review.projectName,
-      finding.domain,
-      finding.title,
-      finding.findingStatement,
-      formatEvidenceReferences(finding.evidenceFound),
-      finding.status,
-      finding.severity,
-      finding.owner || finding.suggestedOwner || "",
-      finding.dueDate || finding.suggestedDueDate || "",
-      finding.source || "",
-      finding.reviewerNote || ""
-    ]),
-    ...actions.map((action) => [
-      "action",
-      review.reviewId,
-      review.projectName,
-      "remediation",
-      action.actionSummary,
-      action.closureNotes || "",
-      action.sourceFindingId,
-      action.status,
-      action.severity,
-      action.owner || "",
-      action.dueDate || "",
-      ""
-    ])
+  const lines = [
+    `# ${proj.name || "Architecture Review"} — ARB Review Report`,
+    "",
+    `> **Confidentiality:** ${meta.confidentiality || "Confidential"}  `,
+    `> Generated by CARI — Cloud Architecture Review Intelligence  `,
+    `> ${meta.generatedAt || new Date().toISOString()}`,
+    "",
+    "## Review Metadata",
+    "",
+    `- **Review ID:** ${meta.reviewId}`,
+    `- **Customer:** ${cust.name}`,
+    `- **Project:** ${proj.name}`,
+    `- **Workflow state:** ${wf.currentState}`,
+    `- **Evidence readiness:** ${er.status}${er.confidence ? ` (${er.confidence} confidence)` : ""}`,
+    `- **Documents reviewed:** ${(pack.uploadedInputs || []).length}`,
+    `- **Requirements extracted:** ${(pack.requirements || []).length}`,
+    `- **Evidence facts:** ${(pack.evidence || []).length}`,
+    `- **Overall score:** ${es.overallScore ?? "TBD"} / 100 (${es.scoreBand || ""})`,
+    `- **Recommendation:** ${es.recommendation || "Pending"}`,
+    `- **Governance posture:** ${dc.governancePosture || "Pending"}`,
+    hasDecision ? `- **Reviewer decision:** ${dc.reviewerDecision}` : null,
+    hasDecision ? `- **Reviewer:** ${dc.reviewerName || "Not recorded"}` : null,
+    hasDecision ? `- **Decision date:** ${dc.recordedAt || "Not recorded"}` : null,
   ];
 
-  return rows.map((row) => row.map((value) => escapeCsvValue(value)).join(",")).join("\n");
+  // Evidence readiness warning
+  if (er.status !== "Ready") {
+    lines.push("", `> ⚠ **Evidence Readiness Warning:** ${er.reason}`);
+  }
+
+  // Export warnings
+  if (warns.length > 0) {
+    lines.push("", "## Export Warnings", "");
+    for (const w of warns) {
+      lines.push(`- **[${w.severity}]** ${w.message}`);
+    }
+  }
+
+  // Reviewer decision (human-readable section)
+  if (hasDecision) {
+    lines.push(
+      "", "## Reviewer Decision", "",
+      `- **Final decision:** ${dc.reviewerDecision}`,
+      `- **Governance posture:** ${dc.governancePosture}`,
+      `- **Reviewer:** ${dc.reviewerName || "Not recorded"}`,
+      `- **Recorded at:** ${dc.recordedAt || "Not recorded"}`,
+      `- **Rationale:** ${dc.rationale || "No rationale recorded."}`,
+    );
+    if (dc.governanceWarning) {
+      lines.push(`- ⚠ **Governance warning:** ${dc.governanceWarning}`);
+    }
+  }
+
+  // Architecture decision summary (governance posture)
+  lines.push(
+    "", "## Architecture Decision Summary", "",
+    `- **Governance posture:** ${dc.governancePosture}`,
+    `- **Risk acceptance required:** ${dc.riskAcceptanceRequired ? "Yes" : "No"}`,
+  );
+
+  // Uploaded inputs
+  lines.push("", "## Uploaded Inputs", "");
+  for (const inp of pack.uploadedInputs || []) {
+    const warn = inp.extractionStatus === "Failed"
+      ? `⚠ Extraction failed${inp.extractionSummary ? `: ${inp.extractionSummary}` : ""}`
+      : inp.extractionStatus;
+    lines.push(`- ${inp.fileName} (${inp.documentType}) — ${warn}`);
+  }
+
+  // Scorecard
+  lines.push("", "## Scorecard", "",
+    `**Overall: ${sc.percentage ?? 0}% (${sc.totalScore ?? 0} / ${sc.maxScore ?? 100})**`, "");
+  for (const d of sc.domains || []) {
+    lines.push(`- **${d.domain}:** ${d.score}/${d.maxScore} (${d.percentage}%) — ${d.rationale || "No rationale."}`);
+  }
+
+  // Findings
+  lines.push("", `## Findings (${(pack.findings || []).length} total, ${openFindings.length} open)`, "");
+  if ((pack.findings || []).length === 0) {
+    lines.push("_No findings recorded._");
+  } else {
+    for (const f of pack.findings || []) {
+      lines.push(`### [${f.severity}] ${f.title} (${f.domain} · ${f.status})`);
+      if (f.description)    lines.push(`- **Finding:** ${f.description}`);
+      if (f.recommendation) lines.push(`- **Recommendation:** ${f.recommendation}`);
+      if (f.evidenceGap)    lines.push(`- **Evidence gap:** ${f.evidenceGap}`);
+      lines.push("");
+    }
+  }
+
+  // Risk register
+  lines.push("", `## Risk Register (${(pack.riskRegister || []).length} open risks)`, "");
+  if ((pack.riskRegister || []).length === 0) {
+    lines.push("_No open risk items._");
+  } else {
+    for (const r of pack.riskRegister || []) {
+      lines.push(`- **[${r.severity}] ${r.riskTitle}** — Owner: ${r.riskOwner} · Status: ${r.status}`);
+      if (r.mitigation) lines.push(`  - Mitigation: ${r.mitigation}`);
+    }
+  }
+
+  // Remediation actions
+  lines.push("", `## Remediation Actions (${(pack.remediationActions || []).length})`, "");
+  if ((pack.remediationActions || []).length === 0) {
+    lines.push("_No actions recorded._");
+  } else {
+    for (const a of pack.remediationActions || []) {
+      lines.push(`- [${a.severity}] **${a.title}** — Owner: ${a.owner} · Due: ${a.dueDate || "Not set"} · ${a.dueStatus} · Status: ${a.status}`);
+    }
+  }
+
+  // Requirements
+  lines.push("", `## Requirements (${(pack.requirements || []).length})`, "");
+  for (const r of pack.requirements || []) {
+    lines.push(`- [${r.domain}/${r.priority}] ${r.text} _(${r.evidenceStatus})_`);
+  }
+
+  // Evidence
+  lines.push("", `## Evidence Register (${(pack.evidence || []).length})`, "");
+  for (const e of pack.evidence || []) {
+    lines.push(`- [${e.evidenceType}] ${e.text} _(${e.confidence} confidence · ${e.sourceFile || "Derived"})_`);
+  }
+
+  // Traceability
+  lines.push("", "## Requirements Traceability", "");
+  for (const t of pack.traceability || []) {
+    lines.push(`- **${t.requirementId}:** ${t.requirementText.slice(0, 80)}${t.requirementText.length > 80 ? "…" : ""} — ${t.evidenceStatus}`);
+  }
+
+  lines.push(
+    "",
+    "---",
+    `_Generated by CARI — Cloud Architecture Review Intelligence · ${meta.generatedAt || new Date().toISOString()}_`,
+    "_Findings are AI-assisted and evidence-linked. Final architecture decisions remain with authorised human reviewers._"
+  );
+
+  return lines.filter((l) => l !== null).join("\n");
 }
 
-function renderHtmlExportBody(review, files, requirements, evidence, findings, scorecard, actions, summaryText) {
+function renderCsvExportBody(pack) {
+  const meta = pack.metadata || {};
+  const cust = pack.customer || {};
+  const proj = pack.project  || {};
+  const dc   = pack.decision || {};
+  const now  = new Date().toISOString();
+
+  const header = [
+    "recordType","recordId","reviewId","customer","project",
+    "domain","severity","status","title","description",
+    "recommendation","source","sourceFile","linkedFindingId",
+    "owner","dueDate","dueStatus","createdAt","updatedAt",
+    "confidence","evidenceType"
+  ];
+
+  const rows = [header];
+
+  // Review summary row
+  rows.push([
+    "review", meta.reviewId, meta.reviewId,
+    cust.name, proj.name,
+    "", "", pack.workflow?.currentState || "",
+    `${proj.name} — ARB Review`,
+    `Score=${pack.executiveSummary?.overallScore ?? "TBD"}; Recommendation=${pack.executiveSummary?.recommendation || ""}; GovernancePosture=${dc.governancePosture || ""}`,
+    pack.executiveSummary?.recommendation || "",
+    "CARI", "", "", "", "", "", now, now, "", ""
+  ]);
+
+  // Reviewer decision row
+  if (dc.reviewerDecision && dc.reviewerDecision !== "Not Recorded") {
+    rows.push([
+      "reviewerDecision", `${meta.reviewId}-decision`, meta.reviewId,
+      cust.name, proj.name,
+      "", "", "Recorded",
+      `Reviewer Decision: ${dc.reviewerDecision}`,
+      dc.rationale || "",
+      dc.governancePosture || "",
+      "Human reviewer", "", "",
+      dc.reviewerName || "", dc.recordedAt || "", "Recorded",
+      dc.recordedAt || "", dc.recordedAt || "", "", ""
+    ]);
+  }
+
+  // Uploaded inputs
+  for (const inp of pack.uploadedInputs || []) {
+    rows.push([
+      "uploadedInput", inp.inputId, meta.reviewId,
+      cust.name, proj.name,
+      "", "", inp.extractionStatus,
+      inp.fileName, inp.extractionSummary || "",
+      "", "upload", inp.fileName, "",
+      "", "", "", now, now, "", inp.documentType
+    ]);
+  }
+
+  // Findings
+  for (const f of pack.findings || []) {
+    rows.push([
+      "finding", f.findingId, meta.reviewId,
+      cust.name, proj.name,
+      f.domain, f.severity, f.status,
+      f.title, f.description,
+      f.recommendation, f.source,
+      (f.sourceFiles || []).join("; "), "",
+      "", "", "",
+      now, now, f.confidence, ""
+    ]);
+  }
+
+  // Risks
+  for (const r of pack.riskRegister || []) {
+    rows.push([
+      "risk", r.riskId, meta.reviewId,
+      cust.name, proj.name,
+      "", r.severity, r.status,
+      r.riskTitle, r.impact,
+      r.mitigation, "derived",
+      "", r.linkedFindingId,
+      r.riskOwner, r.dueDate || "", "",
+      now, now, "", ""
+    ]);
+  }
+
+  // Remediation actions
+  for (const a of pack.remediationActions || []) {
+    rows.push([
+      "action", a.actionId, meta.reviewId,
+      cust.name, proj.name,
+      a.domain, a.severity, a.status,
+      a.title, a.action,
+      "", a.source,
+      "", a.linkedFindingId,
+      a.owner, a.dueDate || "", a.dueStatus,
+      now, now, "", ""
+    ]);
+  }
+
+  // Requirements
+  for (const r of pack.requirements || []) {
+    rows.push([
+      "requirement", r.requirementId, meta.reviewId,
+      cust.name, proj.name,
+      r.domain, r.priority, r.evidenceStatus,
+      r.text, "",
+      "", "extracted",
+      r.sourceFile, "",
+      "", "", "",
+      now, now, "", r.sourceType
+    ]);
+  }
+
+  // Evidence
+  for (const e of pack.evidence || []) {
+    rows.push([
+      "evidence", e.evidenceId, meta.reviewId,
+      cust.name, proj.name,
+      "", "", "",
+      e.evidenceType, e.text,
+      "", "extracted",
+      e.sourceFile, "",
+      "", "", "",
+      now, now, e.confidence, e.evidenceType
+    ]);
+  }
+
+  // Export warnings
+  for (const w of pack.exportWarnings || []) {
+    rows.push([
+      "exportWarning", w.warningId, meta.reviewId,
+      cust.name, proj.name,
+      "", w.severity, "Active",
+      `Export Warning: ${w.warningId}`, w.message,
+      "", "validation",
+      "", "",
+      "", "", "",
+      now, now, "", ""
+    ]);
+  }
+
+  return rows.map((row) => row.map((v) => escapeCsvValue(v ?? "")).join(",")).join("\n");
+}
+
+function renderHtmlExportBody(pack, summaryText) {
   const esc = escapeHtml;
-  const timestamp = new Date().toISOString();
+  const timestamp = pack.metadata?.generatedAt || new Date().toISOString();
+  const meta         = pack.metadata          || {};
+  const cust         = pack.customer          || {};
+  const proj         = pack.project           || {};
+  const wf           = pack.workflow          || {};
+  const er           = pack.evidenceReadiness || {};
+  const es           = pack.executiveSummary  || {};
+  const sc           = pack.scorecard         || {};
+  const dc           = pack.decision          || {};
+  const warns        = pack.exportWarnings    || [];
+  const findings     = pack.findings           || [];
+  const actions      = pack.remediationActions || [];
+  const evidence     = pack.evidence           || [];
+  const requirements = pack.requirements       || [];
+  const files        = pack.uploadedInputs     || [];
 
   /* ── colour helpers ── */
   const severityBadge = (sev) => {
     const s = String(sev || "").toLowerCase();
-    if (s === "high" || s === "critical")
-      return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEE2E2;color:#D92B2B;">${esc(sev)}</span>`;
-    if (s === "medium")
-      return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEF3C7;color:#B45309;">${esc(sev)}</span>`;
+    if (s === "critical") return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEE2E2;color:#7F1D1D;">${esc(sev)}</span>`;
+    if (s === "high")     return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEE2E2;color:#D92B2B;">${esc(sev)}</span>`;
+    if (s === "medium")   return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#FEF3C7;color:#B45309;">${esc(sev)}</span>`;
     return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#DBEAFE;color:#0078D4;">${esc(sev)}</span>`;
   };
 
   const recommendationBadge = (rec) => {
     const r = String(rec || "").toLowerCase();
     let bg = "#FEF3C7"; let fg = "#B45309";
-    if (r === "recommended for approval") { bg = "#D1FAE5"; fg = "#065F46"; }
+    if (r === "approved") { bg = "#D1FAE5"; fg = "#065F46"; }
+    else if (r.includes("conditions")) { bg = "#FEF3C7"; fg = "#78350F"; }
     else if (r === "rejected" || r.includes("reject")) { bg = "#FEE2E2"; fg = "#D92B2B"; }
     return `<span style="display:inline-block;padding:3px 14px;border-radius:12px;font-size:13px;font-weight:600;background:${bg};color:${fg};">${esc(rec)}</span>`;
   };
@@ -1916,10 +2017,10 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
     return "#D92B2B";
   };
 
-  const overallScore = scorecard?.overallScore ?? null;
-  const recommendation = scorecard?.recommendation ?? "Pending";
-  const domainScores = scorecard?.domainScores || [];
-  const reviewerOverride = scorecard?.reviewerOverride || null;
+  const overallScore      = es.overallScore ?? null;
+  const recommendation    = es.recommendation ?? "Pending";
+  const domainScores      = sc.domains || [];
+  const hasDecision       = dc.reviewerDecision && dc.reviewerDecision !== "Not Recorded";
 
   /* ── score bar helper ── */
   const scoreBar = (score, maxVal = 100) => {
@@ -1944,7 +2045,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
     `<head>`,
     `<meta charset="utf-8" />`,
     `<meta name="viewport" content="width=device-width, initial-scale=1" />`,
-    `<title>${esc(review.projectName)} \u2014 Architecture Review Pack</title>`,
+    `<title>${esc(proj.name)} \u2014 Architecture Review Pack</title>`,
     `</head>`,
     `<body style="margin:0;padding:0;background:#ffffff;color:#1F2937;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.6;">`
   );
@@ -1955,7 +2056,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
   /* ── HEADER ── */
   parts.push(
     `<div style="margin-bottom:8px;">`,
-    `<h1 style="margin:0 0 4px;font-size:26px;font-weight:700;color:#0F172A;letter-spacing:-0.3px;">${esc(review.projectName)}</h1>`,
+    `<h1 style="margin:0 0 4px;font-size:26px;font-weight:700;color:#0F172A;letter-spacing:-0.3px;">${esc(proj.name)}</h1>`,
     `<p style="margin:0;font-size:14px;color:#64748B;">Architecture Review Pack</p>`,
     `</div>`
   );
@@ -1964,22 +2065,22 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
   parts.push(
     `<div style="margin:20px 0 32px;padding:20px 24px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;">`,
     `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
-    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Review ID</td><td style="padding:4px 0;font-weight:500;">${esc(review.reviewId)}</td></tr>`,
-    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Customer</td><td style="padding:4px 0;font-weight:500;">${esc(review.customerName)}</td></tr>`,
-    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Workflow State</td><td style="padding:4px 0;font-weight:500;">${esc(review.workflowState)}</td></tr>`,
-    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Evidence Readiness</td><td style="padding:4px 0;font-weight:500;">${esc(review.evidenceReadinessState)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Review ID</td><td style="padding:4px 0;font-weight:500;">${esc(meta.reviewId)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Customer</td><td style="padding:4px 0;font-weight:500;">${esc(cust.name)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Workflow State</td><td style="padding:4px 0;font-weight:500;">${esc(wf.currentState)}</td></tr>`,
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Evidence Readiness</td><td style="padding:4px 0;font-weight:500;">${esc(er.status)}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Overall Score</td><td style="padding:4px 0;font-weight:600;">${overallScore !== null ? esc(overallScore) + " / 100" : "TBD"}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Recommendation</td><td style="padding:4px 0;">${recommendationBadge(recommendation)}</td></tr>`,
-    reviewerOverride ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer Decision</td><td style="padding:4px 0;font-weight:600;">${esc(reviewerOverride.overrideDecision)}</td></tr>` : "",
-    reviewerOverride ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer</td><td style="padding:4px 0;font-weight:500;">${esc(reviewerOverride.reviewerName || "Not recorded")}</td></tr>` : "",
-    reviewerOverride ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Decision Recorded</td><td style="padding:4px 0;font-weight:500;">${esc(reviewerOverride.overriddenAt || "Not recorded")}</td></tr>` : "",
+    hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer Decision</td><td style="padding:4px 0;font-weight:600;">${esc(dc.reviewerDecision)}</td></tr>` : "",
+    hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer</td><td style="padding:4px 0;font-weight:500;">${esc(dc.reviewerName || "Not recorded")}</td></tr>` : "",
+    hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Decision Recorded</td><td style="padding:4px 0;font-weight:500;">${esc(dc.recordedAt || "Not recorded")}</td></tr>` : "",
     `</table>`,
     `</div>`
   );
 
   /* ── REVIEWER DECISION ── */
-  if (reviewerOverride) {
-    const dec = String(reviewerOverride.overrideDecision || "");
+  if (hasDecision) {
+    const dec = String(dc.reviewerDecision || "");
     const decStyle = dec === "Approved"
       ? { bg: "#F0FDF4", border: "#16A34A", fg: "#14532D" }
       : dec === "Conditionally Approved"
@@ -1997,8 +2098,8 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
       `<span style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:${decStyle.border};color:#fff;font-size:1.25rem;font-weight:800;flex-shrink:0;line-height:1;">${decIcon}</span>`,
       `<div style="flex:1;min-width:0;">`,
       `<h2 style="margin:0 0 6px;font-size:18px;font-weight:700;color:${decStyle.fg};">${esc(dec)}</h2>`,
-      `<p style="margin:0 0 4px;font-size:13px;color:${decStyle.fg};opacity:0.85;">${esc(reviewerOverride.reviewerName || "Not recorded")} · ${esc(reviewerOverride.overriddenAt || "Not recorded")}</p>`,
-      reviewerOverride.overrideRationale ? `<p style="margin:4px 0 0;font-size:14px;line-height:1.6;color:${decStyle.fg};opacity:0.8;font-style:italic;">"${esc(reviewerOverride.overrideRationale)}"</p>` : "",
+      `<p style="margin:0 0 4px;font-size:13px;color:${decStyle.fg};opacity:0.85;">${esc(dc.reviewerName || "Not recorded")} · ${esc(dc.recordedAt || "Not recorded")}</p>`,
+      dc.rationale ? `<p style="margin:4px 0 0;font-size:14px;line-height:1.6;color:${decStyle.fg};opacity:0.8;font-style:italic;">"${esc(dc.rationale)}"</p>` : "",
       `</div></div>`
     );
   }
@@ -2088,7 +2189,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
         `</div></div>`,
         /* Finding body */
         `<div style="padding:14px 18px;">`,
-        f.findingStatement ? `<p style="margin:0 0 10px;font-size:13px;color:#374151;line-height:1.6;">${esc(f.findingStatement)}</p>` : "",
+        (f.description || f.findingStatement) ? `<p style="margin:0 0 10px;font-size:13px;color:#374151;line-height:1.6;">${esc(f.description || f.findingStatement)}</p>` : "",
         f.recommendation
           ? `<div style="margin-bottom:10px;padding:10px 14px;background:#EFF6FF;border-radius:4px;font-size:13px;color:#1E3A5F;"><strong>Recommendation:</strong> ${esc(f.recommendation)}</div>`
           : "",
@@ -2125,7 +2226,7 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
     for (const a of actions) {
       parts.push(
         `<tr style="border-bottom:1px solid #F1F5F9;">`,
-        `<td style="padding:10px;vertical-align:top;">${esc(a.actionSummary)}</td>`,
+        `<td style="padding:10px;vertical-align:top;">${esc(a.title || a.actionSummary)}</td>`,
         `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(a.owner || "Unassigned")}</td>`,
         `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(a.dueDate || "\u2014")}</td>`,
         `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(a.status)}</span></td>`,
@@ -2183,12 +2284,12 @@ function renderHtmlExportBody(review, files, requirements, evidence, findings, s
     );
     for (const file of files) {
       const statusCell = file.extractionStatus === "Failed"
-        ? `<span style="color:#D92B2B;font-weight:500;">⚠ Extraction failed</span>${file.extractionError ? `<br/><span style="font-size:11px;color:#64748B;">${esc(file.extractionError)}</span>` : ""}`
+        ? `<span style="color:#D92B2B;font-weight:500;">⚠ Extraction failed</span>${file.extractionSummary ? `<br/><span style="font-size:11px;color:#64748B;">${esc(file.extractionSummary)}</span>` : ""}`
         : `<span style="color:#059669;">${esc(file.extractionStatus)}</span>`;
       parts.push(
         `<tr style="border-bottom:1px solid #F1F5F9;">`,
         `<td style="padding:8px 10px;font-size:13px;">${esc(file.fileName)}</td>`,
-        `<td style="padding:8px 10px;color:#475569;font-size:13px;">${esc(file.logicalCategory)}</td>`,
+        `<td style="padding:8px 10px;color:#475569;font-size:13px;">${esc(file.documentType)}</td>`,
         `<td style="padding:8px 10px;font-size:13px;">${statusCell}</td>`,
         `</tr>`
       );
@@ -2278,16 +2379,8 @@ async function writeArbOutputArtifact({
     body = renderCsvExportBody(review, files, requirements, evidence, findings, scorecard, actions);
     contentType = "text/csv; charset=utf-8";
   } else if (format === "html") {
-    body = renderHtmlExportBody(
-      review,
-      files,
-      requirements,
-      evidence,
-      findings,
-      scorecard,
-      actions,
-      summaryText
-    );
+    const htmlPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, null, "html");
+    body = renderHtmlExportBody(htmlPack, summaryText);
     contentType = "text/html; charset=utf-8";
   } else {
     body = renderMarkdownExportBody(

@@ -41,3 +41,4 @@ Thumbs.db
 
 # Claude Code local session data
 .claude/settings.local.json
+backups/
