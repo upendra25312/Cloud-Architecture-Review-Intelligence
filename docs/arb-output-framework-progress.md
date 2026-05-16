@@ -2,7 +2,7 @@
 
 **Branch:** `feature/generic-arb-output-framework`
 **Started:** 2026-05-16
-**Status:** In progress — Phase 3-7 next
+**Status:** ✅ ALL PHASES COMPLETE — PR #30 open for review
 
 ---
 
@@ -18,14 +18,14 @@ Redesign CARI review output pipeline so all exports (MD, HTML, PPTX, CSV, Excel)
 |---|---|---|
 | 1 | Audit current export pipeline | ✅ Done |
 | 2 | Create branch + backup | ✅ Done |
-| 3-7 | Create canonical schema + normalization pipeline (arb-normalize-review.js) | ⏳ Next |
-| 8-10 | Refactor all exporters to consume canonical pack | ⏳ Pending |
-| 11 | Export validation gate | ⏳ Pending |
-| 12 | Cross-exporter parity tests | ⏳ Pending |
-| 13 | Regenerate sample outputs | ⏳ Pending |
-| 14 | Build + test (must pass 140+ existing tests) | ⏳ Pending |
-| 15 | Create 4 documentation files | ⏳ Pending |
-| 16 | Final output summary | ⏳ Pending |
+| 3-7 | Create canonical schema + normalization pipeline (arb-normalize-review.js) | ✅ Done |
+| 8-10 | Refactor all exporters to consume canonical pack | ✅ Done |
+| 11 | Export validation gate | ✅ Done |
+| 12 | Cross-exporter parity tests | ✅ Done — 22 new tests |
+| 13 | Regenerate sample outputs | ✅ Done |
+| 14 | Build + test (162/162 passing) | ✅ Done |
+| 15 | Create 4 documentation files | ✅ Done |
+| 16 | Final output summary + PR | ✅ Done — PR #30 |
 
 ---
 
