@@ -14,6 +14,7 @@ export interface FindingFilterChipsProps {
 const SEVERITIES = ["High", "Medium", "Low"] as const;
 const DOMAINS = [
   "Security",
+  "Networking",
   "Reliability",
   "Cost",
   "Operations",

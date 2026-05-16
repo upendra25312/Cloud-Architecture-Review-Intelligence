@@ -426,7 +426,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
           <p className="arb-create-label">Architecture review workspace</p>
           <h2 className="arb-create-title">Upload architecture documents and start a structured review.</h2>
           <p className="arb-create-sub">
-            Create the review, move straight into document upload, and generate Microsoft Learn-grounded findings across Security, Reliability, Cost, Operations, Evidence, Governance, and Delivery.
+            Create the review, move straight into document upload, and generate Microsoft Learn-grounded findings across Security, Networking, Reliability, Cost, Operations, Evidence, Governance, and Delivery.
           </p>
           <div className="arb-proof-strip" aria-label="Architecture review proof points">
             <span className="arb-proof-chip">Security</span>

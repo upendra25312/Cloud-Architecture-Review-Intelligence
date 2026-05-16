@@ -16,12 +16,13 @@ export const SEVERITY_ORDER: Record<string, number> = {
 
 export const DOMAIN_ORDER: Record<string, number> = {
   Security: 0,
-  Reliability: 1,
-  Cost: 2,
-  Operations: 3,
-  Evidence: 4,
-  Governance: 5,
-  Delivery: 6,
+  Networking: 1,
+  Reliability: 2,
+  Cost: 3,
+  Operations: 4,
+  Evidence: 5,
+  Governance: 6,
+  Delivery: 7,
 };
 
 // ── Sort: severity → blocker → domain ─────────────────────────────────
