@@ -1,6 +1,7 @@
 const { app } = require("@azure/functions");
 const { requireAuthenticated, safeErrorResponse } = require("../shared/auth");
-const { generateArbPptx, shapeReviewDataForPptx } = require("../shared/arb-pptx-export");
+const { generateArbPptx } = require("../shared/arb-pptx-export");
+const { normalizeReviewForExport } = require("../shared/arb-normalize-review");
 const {
   getArbReview,
   getArbFiles,
@@ -33,20 +34,21 @@ async function handleArbCreatePptxExport(request, context) {
       getArbDecision(auth.principal, reviewId).catch(() => null),
     ]);
 
-    const reviewData = shapeReviewDataForPptx(
+    const pack = normalizeReviewForExport(
       review,
       files,
       requirements,
       evidence,
       findingsResult?.findings ?? [],
-      actionsResult?.actions ?? [],
+      actionsResult?.actions  ?? [],
       scorecard,
-      decision
+      decision,
+      "pptx"
     );
 
-    const pptxBuffer = await generateArbPptx(reviewData);
+    const pptxBuffer = await generateArbPptx(pack);
 
-    const safeName = (reviewData.projectName || "architecture-review")
+    const safeName = (pack.project?.name || pack._pptx?.projectName || "architecture-review")
       .replace(/[^a-zA-Z0-9-_ ]/g, "")
       .replace(/\s+/g, "-")
       .toLowerCase()
