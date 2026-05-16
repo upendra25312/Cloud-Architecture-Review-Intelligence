@@ -190,12 +190,20 @@ def call_cari(case: dict, mode: str, base_url: str, timeout: int) -> dict:
     if mode == "local":
         url = "http://localhost:7071/api/arb-eval/review"
     elif mode == "deployed":
-        if not base_url:
+        # CARI_FUNCTIONS_URL bypasses SWA (which blocks unauthenticated POST).
+        # Use the Azure Functions app URL directly for eval calls.
+        functions_url = os.environ.get("CARI_FUNCTIONS_URL", "").strip()
+        if functions_url:
+            url = f"{functions_url.rstrip('/')}/api/arb-eval/review"
+        elif base_url:
+            url = f"{base_url.rstrip('/')}/api/arb-eval/review"
+        else:
             print(
-                "ERROR: CARI_BASE_URL must be set for deployed mode.", file=sys.stderr
+                "ERROR: Set CARI_FUNCTIONS_URL (e.g. https://func-arb-review-api.azurewebsites.net) "
+                "or CARI_BASE_URL for deployed mode.",
+                file=sys.stderr,
             )
             sys.exit(1)
-        url = f"{base_url.rstrip('/')}/api/arb-eval/review"
     else:
         print(f"ERROR: Unknown CARI_EVAL_MODE '{mode}'. Use mock, local, or deployed.", file=sys.stderr)
         sys.exit(1)

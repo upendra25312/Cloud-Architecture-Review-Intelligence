@@ -140,10 +140,15 @@ CARI_PARITY_MODE=local CARI_PARITY_REVIEW_ID=<reviewId> python evals/run_export_
 
 ### Against the deployed CARI environment
 
+The eval endpoint (`/api/arb-eval/review`) is served by the Azure Functions app directly.
+Azure Static Web Apps blocks unauthenticated POST requests, so use `CARI_FUNCTIONS_URL`
+(the Functions app URL) rather than `CARI_BASE_URL` (the SWA URL) for deployed eval runs.
+
 ```bash
+export CARI_FUNCTIONS_URL=https://func-arb-review-api.azurewebsites.net
 export CARI_BASE_URL=https://thankful-pond-04383960f.7.azurestaticapps.net
 
-# Baseline evaluation
+# Baseline evaluation (routes through Functions URL, not SWA)
 CARI_EVAL_MODE=deployed python evals/run_cari_eval.py
 
 # Export parity
