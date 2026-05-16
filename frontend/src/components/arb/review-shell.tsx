@@ -115,7 +115,13 @@ export function ArbReviewShell(props: {
   const activeStepLabel = steps.find((step) => step.key === activeStep)?.label ?? "Overview";
   const postureActionHint = getPostureActionHint(review);
   const aiRecommendation = review.recommendation ?? "Pending";
-  // Conflict: reviewer approved but AI recommends remediation/revision
+
+  // When a final decision is recorded, derive the correct display states regardless
+  // of what workflowState is stored (legacy records may still say "Review In Progress").
+  const displayedWorkflowState = review.finalDecision ? "Decision Recorded" : review.workflowState;
+  const displayedEvidenceReadiness = review.finalDecision ? "Decision Recorded" : review.evidenceReadinessState;
+
+  // Conflict: reviewer approved but CARI recommends remediation/revision
   const hasDecisionConflict =
     !!review.finalDecision &&
     !!review.recommendation &&
@@ -126,7 +132,7 @@ export function ArbReviewShell(props: {
   // Generate a derived summary when model-backed review output does not provide one.
   const derivedSummary = reviewSummary || (
     review.workflowState !== "Draft" && review.recommendation
-      ? `${review.projectName} review is ${review.workflowState.toLowerCase()}. Recommendation: ${review.recommendation}. Evidence readiness: ${review.evidenceReadinessState}.${review.overallScore != null ? ` Overall score: ${review.overallScore}/100.` : ""}`
+      ? `${review.projectName} review is ${displayedWorkflowState.toLowerCase()}. Recommendation: ${review.recommendation}. Evidence readiness: ${displayedEvidenceReadiness}.${review.overallScore != null ? ` Overall score: ${review.overallScore}/100.` : ""}`
       : null
   );
 
@@ -178,11 +184,11 @@ export function ArbReviewShell(props: {
             <div className="arb-shell-sidecar-metrics">
               <div className="arb-shell-metric">
                 <p className="arb-shell-metric-label">Workflow</p>
-                <p className="arb-shell-metric-value">{review.workflowState}</p>
+                <p className="arb-shell-metric-value">{displayedWorkflowState}</p>
               </div>
               <div className="arb-shell-metric">
                 <p className="arb-shell-metric-label">Evidence</p>
-                <p className="arb-shell-metric-value">{review.evidenceReadinessState}</p>
+                <p className="arb-shell-metric-value">{displayedEvidenceReadiness}</p>
               </div>
               <div className="arb-shell-metric">
                 <p className="arb-shell-metric-label">CARI Recommendation</p>
@@ -250,8 +256,8 @@ export function ArbReviewShell(props: {
             <div style={{ display: "grid", gap: "0" }}>
               {[
                 ["Active Stage", activeStepLabel],
-                ["Workflow State", review.workflowState],
-                ["Evidence Readiness", review.evidenceReadinessState],
+                ["Workflow State", displayedWorkflowState],
+                ["Evidence Readiness", displayedEvidenceReadiness],
                 ["Recommendation", review.recommendation ?? "Pending"],
                 ["Final Decision", review.finalDecision ?? "Pending"],
                 ["Assigned Reviewer", review.assignedReviewer ?? "Unassigned"],

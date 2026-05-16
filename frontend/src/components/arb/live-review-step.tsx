@@ -725,10 +725,7 @@ export function ArbLiveReviewStep(props: {
         currentReview
           ? {
               ...currentReview,
-              workflowState:
-                nextDecision.reviewerDecision === "Approved"
-                  ? "Approved"
-                  : "Decision Recorded",
+              workflowState: "Decision Recorded",
               finalDecision: nextDecision.reviewerDecision
             }
           : currentReview
