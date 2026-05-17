@@ -1,0 +1,270 @@
+.fullWidthShell {
+  width: 100%;
+}
+
+.decisionLayout {
+  padding: 28px 40px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 800px;
+}
+
+/* ── AI Recommendation panel ──────────────────────────────────────── */
+.aiPanel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aiPanelLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin: 0;
+}
+
+.aiPanelContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.aiRecommendation {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.aiRec--approved    { background: #d4f4e8; color: #146c43; }
+.aiRec--conditions  { background: #d0f0f0; color: #0f6674; }
+.aiRec--revision    { background: #fff3cd; color: #856404; }
+.aiRec--rejected    { background: #fde8e8; color: #a61c1c; }
+.aiRec--neutral     { background: var(--bg-strong); color: var(--t2); }
+
+.aiScore {
+  font-size: 0.85rem;
+  color: var(--t2);
+}
+
+.aiSummary {
+  font-size: 0.85rem;
+  color: var(--t2);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Decision form ────────────────────────────────────────────────── */
+.decisionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formSectionLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--t1);
+  margin: 0 0 8px;
+}
+
+.required {
+  color: #c0392b;
+}
+
+.decisionOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.decisionOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--bg-elevated);
+}
+
+.decisionOption:hover {
+  border-color: var(--brand);
+}
+
+.decisionOptionSelected.option--green  { border-color: #146c43; background: #f0faf5; }
+.decisionOptionSelected.option--teal   { border-color: #0f6674; background: #f0f9f9; }
+.decisionOptionSelected.option--amber  { border-color: #856404; background: #fffbf0; }
+.decisionOptionSelected.option--red    { border-color: #a61c1c; background: #fff5f5; }
+
+.radioInput {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--brand);
+}
+
+.optionLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+
+.optionDesc {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--t2);
+}
+
+.rationaleInput {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: var(--t1);
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.rationaleInput:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.reviewerRow {
+  display: flex;
+  gap: 16px;
+}
+
+.reviewerField {
+  flex: 1;
+}
+
+.textInput {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: var(--t1);
+  font-size: 0.9rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+/* ── Recorded state card ──────────────────────────────────────────── */
+.recordedCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recordedHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.recordedBadge {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.badge--approved   { background: #d4f4e8; color: #146c43; }
+.badge--conditions { background: #d0f0f0; color: #0f6674; }
+.badge--revision   { background: #fff3cd; color: #856404; }
+.badge--rejected   { background: #fde8e8; color: #a61c1c; }
+.badge--neutral    { background: var(--bg-strong); color: var(--t2); }
+
+.recordedAt {
+  font-size: 0.82rem;
+  color: var(--t3);
+}
+
+.reviewerLine {
+  font-size: 0.85rem;
+  color: var(--t2);
+  margin: 0;
+}
+
+.recordedRationale {
+  font-size: 0.9rem;
+  color: var(--t1);
+  line-height: 1.65;
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--bg-strong);
+  border-radius: 8px;
+  border-left: 3px solid var(--brand);
+}
+
+.recordedActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+}
+
+/* ── Dark mode overrides ──────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .aiRec--approved    { background: #0d3d26; color: #5fe8a0; }
+  .aiRec--conditions  { background: #083840; color: #4dd9e0; }
+  .aiRec--revision    { background: #3d2e00; color: #ffd966; }
+  .aiRec--rejected    { background: #3d0d0d; color: #ff8080; }
+
+  .decisionOptionSelected.option--green  { border-color: #5fe8a0; background: #0d3d26; }
+  .decisionOptionSelected.option--teal   { border-color: #4dd9e0; background: #083840; }
+  .decisionOptionSelected.option--amber  { border-color: #ffd966; background: #3d2e00; }
+  .decisionOptionSelected.option--red    { border-color: #ff8080; background: #3d0d0d; }
+
+  .badge--approved   { background: #0d3d26; color: #5fe8a0; }
+  .badge--conditions { background: #083840; color: #4dd9e0; }
+  .badge--revision   { background: #3d2e00; color: #ffd966; }
+  .badge--rejected   { background: #3d0d0d; color: #ff8080; }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .decisionLayout {
+    padding: 20px 16px 40px;
+  }
+
+  .reviewerRow {
+    flex-direction: column;
+  }
+}

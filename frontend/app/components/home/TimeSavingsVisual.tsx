@@ -60,7 +60,7 @@ export default function TimeSavingsVisual() {
           <div className="review-ts-stat review-ts-stat--after">10-20 min</div>
           <ul className="review-ts-steps review-ts-steps--after">
             <li>{CHECK} Drag-and-drop upload — PDF, Word, PPT, IaC, diagrams</li>
-            <li>{CHECK} AI reviews against WAF, CAF, ALZ, and 16 deterministic rules</li>
+            <li>{CHECK} Automated review against WAF, CAF, ALZ, and 16 deterministic rules</li>
             <li>{CHECK} Scored findings with Microsoft Learn reference links</li>
             <li>{CHECK} One-click reviewer sign-off with immutable audit trail</li>
             <li>{CHECK} Board-ready PDF — decision, findings, and assumption log</li>

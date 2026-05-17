@@ -9,6 +9,7 @@ import { ArbRequirementsPage } from "@/components/arb/requirements/arb-requireme
 import { ArbEvidencePage } from "@/components/arb/evidence/arb-evidence-page";
 import { ArbFindingsPage } from "@/components/arb/findings/arb-findings-page";
 import { ArbScorecardPage } from "@/components/arb/scorecard/arb-scorecard-page";
+import { ArbDecisionPage } from "@/components/arb/decision/arb-decision-page";
 import { ArbReviewLibrary } from "@/components/arb/review-library";
 import { ArbComparePage } from "@/components/arb/compare/arb-compare-page";
 
@@ -102,6 +103,9 @@ export function ArbLandingRouter() {
     }
     if (step === "scorecard") {
       return <ArbScorecardPage reviewId={reviewId} />;
+    }
+    if (step === "decision") {
+      return <ArbDecisionPage reviewId={reviewId} />;
     }
 
     // All other steps use the monolith

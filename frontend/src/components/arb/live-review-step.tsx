@@ -1254,7 +1254,7 @@ export function ArbLiveReviewStep(props: {
               {extractionStatus.visualExtractionErrors?.length ? (
                 <span style={{ color: "#B45309" }}>
                   {(extractionStatus.visualEvidenceCount ?? 0) > 0
-                    ? "Visual evidence was captured, but some AI visual summaries need retry: "
+                    ? "Visual evidence was captured, but some automated visual summaries need retry: "
                     : "Visual evidence extraction failed: "}
                   {extractionStatus.visualExtractionErrors.join(" | ")}. The review may not include all diagram-derived architecture findings until analysis is rerun.
                 </span>

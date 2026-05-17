@@ -353,14 +353,14 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
 
     return (
       <>
-        {/* Partial-run notice — shown when rule-based findings exist but AI analysis was unavailable */}
+        {/* Partial-run notice — shown when rule-based findings exist but automated analysis was unavailable */}
         {someFallback && (
           <div className="arb-partial-run-notice">
             <span className="arb-partial-run-notice-text">
-              Findings shown are rules-engine grounded. AI analysis was unavailable during the last run.
+              Findings shown are rules-engine grounded. Automated analysis was unavailable during the last run.
             </span>
             <a href={getArbStepHref(reviewId, "upload", "run-automated-analysis")} className="arb-partial-run-notice-link">
-              Re-run for full AI-grounded results →
+              Re-run for full automated results →
             </a>
           </div>
         )}
