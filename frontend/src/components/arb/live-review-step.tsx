@@ -24,7 +24,7 @@ import {
   updateArbAction,
   updateArbFinding
 } from "@/arb/api";
-import { getArbReviewSteps } from "@/arb/mock-review";
+import { getArbReviewSteps } from "@/arb/routes";
 import { getArbStepHref } from "@/arb/routes";
 import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
 import { trackArbEvent } from "@/lib/telemetry";

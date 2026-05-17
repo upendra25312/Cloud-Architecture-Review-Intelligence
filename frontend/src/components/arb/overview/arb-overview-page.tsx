@@ -13,7 +13,7 @@ import {
   listArbReviews,
 } from "@/arb/api";
 import { getArbCompareHref } from "@/arb/routes";
-import { getArbReviewSteps } from "@/arb/mock-review";
+import { getArbReviewSteps } from "@/arb/routes";
 import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
 import Link from "next/link";
 import type { Route } from "next";

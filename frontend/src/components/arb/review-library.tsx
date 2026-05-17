@@ -186,6 +186,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
       const newReview = await createArbReview({
         projectName: reReviewModal.projectName,
         customerName: reReviewModal.customerName,
+        projectId: reReviewModal.projectId,
       });
       window.location.href = getArbStepHref(newReview.reviewId, "upload", "upload-documents");
     } catch (err) {
