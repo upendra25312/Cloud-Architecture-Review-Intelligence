@@ -113,6 +113,9 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
   // High-water mark prevents progress bar from going backwards across polls
   const epPctHighWater = useRef(0);
   const epPctPrevJobId = useRef<string | undefined>(undefined);
+  // Local start time — set when the user clicks "Start analysis" on this page.
+  // Used as a floor so elapsed doesn't reset if the backend resets lastStartedAt on retry.
+  const epLocalStartedAt = useRef<number | null>(null);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -207,11 +210,14 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
     return () => window.clearInterval(id);
   }, [extractionStatus?.state, extractionStarting, agentRunning]);
 
-  // ── Reset high-water mark only when job changes ────────────────────────
+  // ── Reset high-water mark and local start time only when job changes ──
   useEffect(() => {
     const prev = epPctPrevJobId.current;
     const curr = extractionStatus?.jobId;
-    if (prev && curr && prev !== curr) epPctHighWater.current = 0;
+    if (prev && curr && prev !== curr) {
+      epPctHighWater.current = 0;
+      epLocalStartedAt.current = null;
+    }
     epPctPrevJobId.current = curr;
   }, [extractionStatus?.jobId]);
 
@@ -319,9 +325,20 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
   const epPctFromFiles = epTotalFiles > 0 ? Math.round((epDoneFiles / epTotalFiles) * 45) : 0;
   const epPctFromStages = epDoneCount * 25 + epActiveCount * 12;
   const usingFileFallback = epPctFromStages === 0;
-  const elapsedSec = extractionStatus?.lastStartedAt
-    ? Math.max(0, Math.floor((timerNow - new Date(extractionStatus.lastStartedAt).getTime()) / 1000))
-    : 0;
+  const elapsedSec = (() => {
+    const serverMs = extractionStatus?.lastStartedAt
+      ? new Date(extractionStatus.lastStartedAt).getTime()
+      : null;
+    const localMs = epLocalStartedAt.current;
+    // Use the earliest known start — whichever is smaller means "running longer"
+    const effectiveStart =
+      localMs !== null && serverMs !== null
+        ? Math.min(localMs, serverMs)
+        : (localMs ?? serverMs);
+    return effectiveStart !== null
+      ? Math.max(0, Math.floor((timerNow - effectiveStart) / 1000))
+      : 0;
+  })();
   const allFilesDone = epTotalFiles > 0 && epDoneFiles === epTotalFiles;
   const epPctTimeCrawl = usingFileFallback && allFilesDone
     ? Math.min(88, epPctFromFiles + Math.floor(elapsedSec / 12))
@@ -332,7 +349,7 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
 
   let epElapsedLabel = "";
   let epEtaLabel = "";
-  if (extractionStatus?.lastStartedAt) {
+  if (elapsedSec > 0) {
     const mins = Math.floor(elapsedSec / 60);
     const secs = elapsedSec % 60;
     epElapsedLabel = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
@@ -601,6 +618,7 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
             disabled={!canStartExtraction || extractionIsRunning}
             onClick={async () => {
               try {
+                epLocalStartedAt.current = Date.now();
                 setExtractionStarting(true);
                 setUploadError(null);
                 const next = await startArbExtraction(reviewId);
