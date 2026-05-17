@@ -160,6 +160,7 @@ function StatusBadge({ state }: { state: string }) {
 export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
   const { focus = "workspace" } = props;
   const { principal, resolved } = useAuthSession();
+  const [linkedProjectId, setLinkedProjectId] = useState<string | undefined>(undefined);
   const [reviews, setReviews] = useState<ArbReviewSummary[]>([]);
   const [projectName, setProjectName] = useState("");
   const [customerName, setCustomerName] = useState("");
@@ -211,6 +212,12 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
       setDeletingId(null);
     }
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get("projectId");
+    if (pid) setLinkedProjectId(pid);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -272,7 +279,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
     try {
       setSaving(true);
       setError(null);
-      const review = await createArbReview({ projectName, customerName });
+      const review = await createArbReview({ projectName, customerName, projectId: linkedProjectId });
       trackArbEvent({
         name: "arb_review_started",
         properties: { projectName, customerName: customerName || undefined },
