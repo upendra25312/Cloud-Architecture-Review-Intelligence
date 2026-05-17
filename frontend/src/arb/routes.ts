@@ -16,3 +16,7 @@ export function getArbFindingsHref(reviewId: string, domain?: string): Route {
   const domainQuery = domain ? `&domain=${encodeURIComponent(domain)}` : "";
   return `/arb?reviewId=${encodedReviewId}&step=findings${domainQuery}` as Route;
 }
+
+export function getArbCompareHref(baseId: string, headId: string): Route {
+  return `/arb?reviewId=${encodeURIComponent(baseId)}&compareWith=${encodeURIComponent(headId)}` as Route;
+}

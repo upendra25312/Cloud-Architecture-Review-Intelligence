@@ -281,3 +281,41 @@ export interface ArbDecision {
   reviewerRole: string | null;
   recordedAt: string;
 }
+
+// ─── Review Comparison ─────────────────────────────────────────────────────────
+
+export interface ArbDomainDelta {
+  domain: string;
+  weight: number;
+  baseScore: number;
+  headScore: number;
+  delta: number;
+  baseReason: string;
+  headReason: string;
+}
+
+export type ArbFindingChange = "new" | "resolved" | "improved" | "degraded" | "unchanged";
+
+export interface ArbFindingDiff {
+  change: ArbFindingChange;
+  domain: string;
+  severity: string;
+  title: string;
+  baseFinding: ArbFinding | null;
+  headFinding: ArbFinding | null;
+}
+
+export interface ArbReviewComparison {
+  base: ArbReviewSummary;
+  head: ArbReviewSummary;
+  baseScorecard: ArbScorecard | null;
+  headScorecard: ArbScorecard | null;
+  baseFindings: ArbFinding[];
+  headFindings: ArbFinding[];
+  overallDelta: number | null;
+  domainDeltas: ArbDomainDelta[];
+  findingDiffs: ArbFindingDiff[];
+  criticalBlockersDelta: number | null;
+  newFindingsCount: number;
+  resolvedFindingsCount: number;
+}

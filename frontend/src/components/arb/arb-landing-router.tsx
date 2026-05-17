@@ -10,6 +10,7 @@ import { ArbEvidencePage } from "@/components/arb/evidence/arb-evidence-page";
 import { ArbFindingsPage } from "@/components/arb/findings/arb-findings-page";
 import { ArbScorecardPage } from "@/components/arb/scorecard/arb-scorecard-page";
 import { ArbReviewLibrary } from "@/components/arb/review-library";
+import { ArbComparePage } from "@/components/arb/compare/arb-compare-page";
 
 function getRequestedStep(value: string | null): ArbReviewStepKey {
   const step = value?.toLowerCase();
@@ -73,8 +74,17 @@ export function ArbLandingRouter() {
 
     return raw;
   }, [searchParams]);
+  const compareWith = useMemo(() => {
+    const raw = searchParams.get("compareWith")?.trim() ?? "";
+    if (!raw || raw === "undefined" || raw === "null") return "";
+    return raw;
+  }, [searchParams]);
   const step = useMemo(() => getRequestedStep(searchParams.get("step")), [searchParams]);
   const stepMeta = useMemo(() => getStepMeta(step), [step]);
+
+  if (reviewId && compareWith) {
+    return <ArbComparePage baseId={reviewId} headId={compareWith} />;
+  }
 
   if (reviewId) {
     // Route to dedicated redesigned components
