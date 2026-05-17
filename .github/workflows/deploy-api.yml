@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '22.x'
   FUNCTION_APP_NAME: 'func-arb-review-api'  # Matches Terraform: func-${prefix}-api
 
 jobs:

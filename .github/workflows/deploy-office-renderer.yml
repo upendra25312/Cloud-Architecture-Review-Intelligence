@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '22.x'
   RESOURCE_GROUP: 'rg-arb-review-prod'
   ACR_NAME: 'acrcariofficerenderprod'
   CONTAINER_APP_NAME: 'ca-cari-office-renderer-prod'
