@@ -12,10 +12,11 @@ async function handleArbListProjectReviews(request, context) {
     const projectId = context.extraInputs?.get?.("id") || request.params?.id;
     if (!projectId) return jsonResponse(400, { error: "projectId is required" });
 
-    // Verify the project belongs to this user
+    // Verify the project belongs to this user and capture its metadata
     const projectsClient = await getTableClient(PROJECTS_TABLE);
+    let projectEntity;
     try {
-      await projectsClient.getEntity(
+      projectEntity = await projectsClient.getEntity(
         encodeTableKey(auth.principal.userId),
         encodeTableKey(projectId)
       );
@@ -41,7 +42,12 @@ async function handleArbListProjectReviews(request, context) {
     }
 
     reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    return jsonResponse(200, { projectId, reviews });
+    return jsonResponse(200, {
+      projectId,
+      name: projectEntity.name || null,
+      customerName: projectEntity.customerName || null,
+      reviews,
+    });
   } catch (error) {
     return safeErrorResponse(error, "Unable to list project reviews.", context);
   }

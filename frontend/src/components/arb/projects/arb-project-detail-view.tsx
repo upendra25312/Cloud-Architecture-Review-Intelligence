@@ -150,7 +150,10 @@ export function ArbProjectDetailView({ projectId }: { projectId: string }) {
         ) : (
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
             <div>
-              <h1 className="arb-page-title">Project: {projectId.slice(0, 12).toLowerCase()}</h1>
+              <h1 className="arb-page-title">{data?.name ?? projectId.slice(0, 12).toLowerCase()}</h1>
+              {data?.customerName && (
+                <p className="arb-page-sub" style={{ marginBottom: 2 }}>{data.customerName}</p>
+              )}
               <p className="arb-page-sub">
                 {(data?.reviews?.length ?? 0)} review{(data?.reviews?.length ?? 0) !== 1 ? "s" : ""} in this project
               </p>
