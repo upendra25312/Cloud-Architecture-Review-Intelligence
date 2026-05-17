@@ -11,6 +11,18 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.1] — 2026-05-17
+
+### Fixed
+
+- **Excel workbook no longer shows "content error" on open** — ExcelJS 4.4.0
+  writes `<autoFilter>` in the wrong XML element position when combined with
+  a frozen pane (`ws.views`); removed `ws.autoFilter` from the shared header
+  helper to fix the XML ordering; frozen pane behaviour is unchanged on all
+  12 worksheet tabs
+
+---
+
 ## [0.9.0] — 2026-05-17
 
 ### Added
