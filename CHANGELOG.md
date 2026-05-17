@@ -11,6 +11,30 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.0] — 2026-05-17
+
+### Added
+
+- **Excel export button in Evidence page UI** — "Export as Excel" button surfaces the
+  existing `.xlsx` API format directly in the browser; regenerate now covers all 5 formats
+  (Markdown, CSV, HTML, PPTX, Excel) in one click
+- **Eval framework documentation** — `docs/CARI-EVAL-FRAMEWORK.md` operational reference
+  and `docs/PRD-CARI-EVAL-FRAMEWORK.md` full PRD committed alongside the eval runner
+
+### Fixed
+
+- Eval dataset calibration: case 022 actions aligned to AI vocabulary
+  (`"security"`, `"monitor"`, `"identity"`) — AI does not say "hardening" or "Defender"
+- Eval dataset calibration: case 027 findings/actions aligned
+  (`"inconsist"`, `"standar"`) — AI says "inconsistent"/"standardize" not "conflict"/"canonical"
+
+### Changed
+
+- `ArbExportFormat` TypeScript type now includes `"xlsx"` (was missing despite API support)
+- Regenerate reviewed outputs handler now generates all 5 formats including Excel
+
+---
+
 ## [0.6.0] — 2026-05-17
 
 ### Added
