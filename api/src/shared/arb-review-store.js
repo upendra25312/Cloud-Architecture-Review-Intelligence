@@ -4600,7 +4600,10 @@ async function downloadArbExport(principal, reviewId, exportId) {
   }
 
   const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
-  const body = await readTextBlob(outputContainer, artifact.blobPath);
+  const isBinary = artifact.format === "xlsx" || artifact.format === "docx";
+  const body = isBinary
+    ? await readBinaryBlob(outputContainer, artifact.blobPath)
+    : await readTextBlob(outputContainer, artifact.blobPath);
 
   if (body == null) {
     throw createHttpError(404, `ARB export ${exportId} is missing from blob storage.`);

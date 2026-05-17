@@ -962,6 +962,52 @@ test("creating an ARB export writes export metadata", async () => {
   }
 });
 
+test("downloading an xlsx or docx export returns a Buffer, not a string", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-binary-export",
+    userDetails: "binary@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "binary-export",
+      projectName: "Binary Export"
+    });
+
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "solution-sow.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Reliability and security requirements.")
+      }
+    ]);
+    await store.startArbExtraction(principal, created.reviewId);
+
+    for (const format of ["xlsx", "docx"]) {
+      const exportRecord = await store.createArbExport(principal, created.reviewId, {
+        format,
+        includeFindings: true,
+        includeScorecard: true,
+        includeActions: true
+      });
+      const downloaded = await store.downloadArbExport(
+        principal,
+        created.reviewId,
+        exportRecord.exportId
+      );
+
+      assert.equal(exportRecord.format, format, `format should be ${format}`);
+      assert.ok(Buffer.isBuffer(downloaded.body), `${format} download body must be a Buffer, not a string`);
+      assert.ok(downloaded.body.length > 0, `${format} download body must not be empty`);
+    }
+  } finally {
+    cleanup();
+  }
+});
+
 test("ARB reviews are isolated per signed-in user and can be listed", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const firstPrincipal = {
