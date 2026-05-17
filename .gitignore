@@ -38,6 +38,12 @@ infrastructure/terraform/tf-outputs.json
 .DS_Store
 Thumbs.db
 
+# Demo / meeting artifacts — local only, not for VCS
+*.png
+"Test LZ files/"
+Test LZ files/
+demo meeting.png
+
 # IDE — commit .vscode/ for team settings; ignore user-specific overrides
 .vscode/*.code-workspace
 .idea/

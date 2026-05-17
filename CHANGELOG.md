@@ -9,9 +9,6 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### In progress
-- Azure Developer CLI (AZD) deployment path — PR #5
-
 ---
 
 ## [0.6.0] — 2026-05-17
