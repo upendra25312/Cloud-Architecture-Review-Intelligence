@@ -170,21 +170,25 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [reReviewModal, setReReviewModal] = useState<ArbReviewSummary | null>(null);
   const [reReviewingId, setReReviewingId] = useState<string | null>(null);
+  const [reReviewError, setReReviewError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const DECIDED_STATES = new Set(["Decision Recorded", "Approved", "Needs Revision", "Rejected", "Review Complete", "Closed"]);
 
-  async function handleReReview(review: ArbReviewSummary) {
-    setReReviewingId(review.reviewId);
+  async function handleConfirmReReview() {
+    if (!reReviewModal) return;
+    setReReviewingId(reReviewModal.reviewId);
+    setReReviewError(null);
     try {
       const newReview = await createArbReview({
-        projectName: review.projectName,
-        customerName: review.customerName,
+        projectName: reReviewModal.projectName,
+        customerName: reReviewModal.customerName,
       });
       window.location.href = getArbStepHref(newReview.reviewId, "upload", "upload-documents");
     } catch {
-      setError("Failed to create re-review. Please try again.");
+      setReReviewError("Could not create the new review cycle. Please try again.");
       setReReviewingId(null);
     }
   }
@@ -619,11 +623,10 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
                       <button
                         type="button"
                         className="arb-table-rereview"
-                        onClick={() => void handleReReview(review)}
-                        disabled={reReviewingId === review.reviewId}
+                        onClick={() => { setReReviewModal(review); setReReviewError(null); }}
                         title="Start a new review cycle for this project"
                       >
-                        {reReviewingId === review.reviewId ? "Creating…" : "Re-review"}
+                        Re-review
                       </button>
                     )}
                     {confirmDeleteId === review.reviewId ? (
@@ -689,6 +692,59 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
             ))}
           </div>
         </section>
+      )}
+
+      {/* ── Re-review confirmation modal ─────────────────────────────── */}
+      {reReviewModal && (
+        <div className="arb-rereview-overlay" onClick={() => { if (!reReviewingId) setReReviewModal(null); }}>
+          <div className="arb-rereview-modal" onClick={(e) => e.stopPropagation()}>
+            <p className="arb-rereview-modal-title">Start a new review cycle</p>
+
+            <div className="arb-rereview-modal-project">
+              <span className="arb-rereview-modal-project-name">{reReviewModal.projectName}</span>
+              {reReviewModal.customerName && (
+                <span className="arb-rereview-modal-project-customer">{reReviewModal.customerName}</span>
+              )}
+              <div className="arb-rereview-modal-project-meta">
+                {reReviewModal.workflowState && (
+                  <span className="arb-rereview-modal-badge">{reReviewModal.workflowState}</span>
+                )}
+                {reReviewModal.overallScore != null && (
+                  <span className="arb-rereview-modal-score">Score: {reReviewModal.overallScore}/100</span>
+                )}
+              </div>
+            </div>
+
+            <ul className="arb-rereview-modal-steps">
+              <li>A new, isolated review is created for <strong>{reReviewModal.projectName}</strong> — your existing review and its findings are untouched.</li>
+              <li>You will be taken to the upload step to provide the updated architecture documents for the new cycle.</li>
+              <li>Once the new review is complete, open it and use <strong>Overview → Previous review cycles</strong> to compare results side-by-side with this review.</li>
+            </ul>
+
+            {reReviewError && (
+              <p className="arb-rereview-modal-error">{reReviewError}</p>
+            )}
+
+            <div className="arb-rereview-modal-actions">
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => void handleConfirmReReview()}
+                disabled={!!reReviewingId}
+              >
+                {reReviewingId ? "Creating new cycle…" : "Create new review cycle →"}
+              </button>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setReReviewModal(null)}
+                disabled={!!reReviewingId}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
