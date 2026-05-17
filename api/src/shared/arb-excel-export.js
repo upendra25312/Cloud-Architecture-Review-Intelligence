@@ -45,7 +45,6 @@ function setHeaderRow(ws, headers, rowNum = 1) {
   });
   row.height = 22;
   ws.views = [{ state: "frozen", ySplit: rowNum }];
-  ws.autoFilter = { from: { row: rowNum, column: 1 }, to: { row: rowNum, column: headers.length } };
 }
 
 function addDataRow(ws, values, severity) {
