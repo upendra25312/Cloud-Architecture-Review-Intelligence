@@ -8,9 +8,11 @@ export interface EvidenceExportSectionProps {
   onRegenerate: () => void;
   onDownload: (artifact: ArbExportArtifact) => void;
   onDownloadPptx: () => void;
+  onDownloadExcel: () => void;
   regenerating: boolean;
   downloadingId: string | null;
   downloadingPptx: boolean;
+  downloadingExcel: boolean;
   error: string | null;
 }
 
@@ -19,9 +21,11 @@ export function EvidenceExportSection({
   onRegenerate,
   onDownload,
   onDownloadPptx,
+  onDownloadExcel,
   regenerating,
   downloadingId,
   downloadingPptx,
+  downloadingExcel,
   error,
 }: EvidenceExportSectionProps) {
   return (
@@ -31,7 +35,7 @@ export function EvidenceExportSection({
       </p>
 
       <p style={{ margin: "0 0 8px", fontSize: "0.9rem", color: "var(--t2)" }}>
-        Formats: Markdown, CSV, HTML, PowerPoint (PPTX)
+        Formats: Markdown, CSV, HTML, PowerPoint (PPTX), Excel (XLSX)
       </p>
 
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
@@ -48,6 +52,17 @@ export function EvidenceExportSection({
         >
           <span style={{ fontSize: "1rem" }}>📊</span>
           {downloadingPptx ? "Generating PowerPoint…" : "Export as PowerPoint"}
+        </button>
+
+        <button
+          className="secondary-button"
+          onClick={onDownloadExcel}
+          disabled={downloadingExcel}
+          title="Download a 12-tab Excel workbook with findings, risks, actions, scorecard, and traceability"
+          style={{ display: "flex", alignItems: "center", gap: 6 }}
+        >
+          <span style={{ fontSize: "1rem" }}>📗</span>
+          {downloadingExcel ? "Generating Excel…" : "Export as Excel"}
         </button>
       </div>
 
