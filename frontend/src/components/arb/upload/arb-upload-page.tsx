@@ -369,7 +369,7 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
     { label: "Confidentiality and handling note is acknowledged", complete: confidentialityConfirmed },
   ];
   const canStartExtraction = readinessChecks.every((c) => c.complete) && !uploadSaving;
-  const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running";
+  const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running" || extractionStatus?.state === "Queued";
   const extractionPreview =
     supportedUploads.length === 0
       ? [
@@ -656,6 +656,8 @@ export function ArbUploadPage({ reviewId }: { reviewId: string }) {
               <><span className="arb-spinner" aria-hidden="true" /> Starting analysis…</>
             ) : extractionStatus?.state === "Running" ? (
               <><span className="arb-spinner" aria-hidden="true" /> Analysis in progress…</>
+            ) : extractionStatus?.state === "Queued" ? (
+              <><span className="arb-spinner" aria-hidden="true" /> Queued — analysis pending…</>
             ) : extractionStatus?.state === "Failed" ? (
               "Retry analysis →"
             ) : (
