@@ -11,6 +11,18 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.1] — 2026-05-17
+
+### Fixed
+
+- **Export parity on Scorecard and Requirements pages** — Scorecard now shows
+  "Export as PowerPoint" and "Export as Excel" buttons (was Regenerate only);
+  Requirements now shows "Export as Excel" button
+- Scorecard regenerate handler now includes `xlsx` format (was missing) and
+  refreshes artifact list via API fetch instead of appending to stale state
+
+---
+
 ## [0.7.0] — 2026-05-17
 
 ### Added
@@ -38,6 +50,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.6.0] — 2026-05-17
 
 ### Added
+
 - **Networking as a first-class ARB review domain** — hub-spoke, private endpoints,
   DNS, hybrid connectivity, and NSG findings now surface under `Networking` domain
   instead of being merged into Security
@@ -73,6 +86,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.5.0] — 2026-05-14
 
 ### Added
+
 - Production change control standard classifying changes as Safe / Sensitive / Blocked
 - Release standards defining validation gates and rollback expectations
 - Architecture, engineering, security, and UX standards documents
@@ -86,10 +100,12 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.4.0] — 2026-05-13
 
 ### Added
+
 - Time-to-Value section on homepage aligned to validated CARI metrics
 - ARB findings navigation canonicalisation fix
 
 ### Fixed
+
 - Domain filter state initialisation using lazy initializer pattern
 - Domain filter from URL now correctly applied on Findings page navigation
 
@@ -98,11 +114,13 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.3.0] — 2026-05-12
 
 ### Added
+
 - Auto-sync between finding status, owner, due date, and linked remediation actions
 - Security approval prerequisites documentation for Rackspace deployment
 - AZD lifecycle hook scripts (`scripts/azd/`) — draft, pending finalisation
 
 ### Fixed
+
 - Export Board Pack now automatically downloads the generated file
 - 401 authentication error handling with user-friendly login prompt
 
@@ -111,6 +129,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.2.0] — 2026-05-12
 
 ### Added
+
 - **Azure Durable Functions migration** for Agent Review and Extraction workflows
   - `orchestratorAgentReview` — reliable, resumable AI review with automatic retry
   - `orchestratorExtraction` — parallel document fan-out with configurable concurrency
@@ -124,6 +143,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.1.0] — 2026-05-11
 
 ### Added
+
 - Initial platform release
 - Azure Static Web Apps frontend (Next.js 16, React 19, TypeScript)
 - Azure Functions API (47 HTTP-triggered functions)
