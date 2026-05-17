@@ -11,6 +11,18 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.8.0] — 2026-05-17
+
+### Added
+
+- **Findings bulk actions** — multi-select findings via checkboxes in the list
+  panel; sticky command bar lets reviewers set status, owner, and due date
+  across all selected findings in one click; "select all visible" checkbox
+  respects active filter state; parallel API updates with per-field patch
+  semantics (blank fields preserve existing values)
+
+---
+
 ## [0.7.1] — 2026-05-17
 
 ### Fixed

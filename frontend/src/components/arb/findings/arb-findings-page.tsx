@@ -28,6 +28,7 @@ import { ArbReviewShell } from "@/components/arb/review-shell";
 import { FindingsStatusBar } from "./findings-status-bar";
 import { FindingsListPanel } from "./findings-list-panel";
 import { FindingDetailPanel } from "./finding-detail-panel";
+import { FindingsBulkActionBar } from "./findings-bulk-action-bar";
 import styles from "./arb-findings-page.module.css";
 
 export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
@@ -55,6 +56,11 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
   const [findingError, setFindingError] = useState<string | null>(null);
   const [exportLoading, setExportLoading] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [bulkOwner, setBulkOwner] = useState("");
+  const [bulkDueDate, setBulkDueDate] = useState("");
+  const [bulkApplying, setBulkApplying] = useState(false);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -236,6 +242,60 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
     );
   }
 
+  function handleToggleCheck(findingId: string) {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(findingId)) next.delete(findingId);
+      else next.add(findingId);
+      return next;
+    });
+  }
+
+  function handleToggleAll(select: boolean, ids: string[]) {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      for (const id of ids) {
+        if (select) next.add(id);
+        else next.delete(id);
+      }
+      return next;
+    });
+  }
+
+  async function handleBulkApply() {
+    if (checkedIds.size === 0) return;
+    try {
+      setBulkApplying(true);
+      setFindingError(null);
+      const updates = Array.from(checkedIds)
+        .map((id) => findings.find((f) => f.findingId === id))
+        .filter((f): f is ArbFinding => f !== undefined)
+        .map((f) =>
+          updateArbFinding({
+            reviewId,
+            findingId: f.findingId,
+            status: bulkStatus || f.status,
+            owner: bulkOwner.trim() !== "" ? bulkOwner.trim() : f.owner,
+            dueDate: bulkDueDate || f.dueDate,
+            reviewerNote: f.reviewerNote,
+            criticalBlocker: f.criticalBlocker,
+          }),
+        );
+      const results = await Promise.all(updates);
+      setFindings((prev) =>
+        prev.map((f) => results.find((r) => r.findingId === f.findingId) ?? f),
+      );
+      setCheckedIds(new Set());
+      setBulkStatus("");
+      setBulkOwner("");
+      setBulkDueDate("");
+    } catch (err) {
+      setFindingError(err instanceof Error ? err.message : "Unable to apply bulk update.");
+    } finally {
+      setBulkApplying(false);
+    }
+  }
+
   const selectedFinding = filteredNonFallbackFindings.find((f) => f.findingId === selectedFindingId) ?? null;
   const selectedAction = selectedFinding
     ? actions.find((a) => a.sourceFindingId === selectedFinding.findingId) ?? null
@@ -319,6 +379,19 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
           </p>
         ) : null}
 
+        <FindingsBulkActionBar
+          selectedCount={checkedIds.size}
+          bulkStatus={bulkStatus}
+          bulkOwner={bulkOwner}
+          bulkDueDate={bulkDueDate}
+          applying={bulkApplying}
+          onStatusChange={setBulkStatus}
+          onOwnerChange={setBulkOwner}
+          onDueDateChange={setBulkDueDate}
+          onApply={handleBulkApply}
+          onClear={() => { setCheckedIds(new Set()); setBulkStatus(""); setBulkOwner(""); setBulkDueDate(""); }}
+        />
+
         <div className={styles.masterDetail}>
           <FindingsListPanel
             findings={nonFallbackFindings}
@@ -326,6 +399,9 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
             onSelectFinding={setSelectedFindingId}
             filters={filters}
             onFiltersChange={setFilters}
+            checkedIds={checkedIds}
+            onToggleCheck={handleToggleCheck}
+            onToggleAll={handleToggleAll}
           />
 
           {selectedFinding ? (
