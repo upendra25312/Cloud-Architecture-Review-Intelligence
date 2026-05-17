@@ -11,6 +11,19 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.2] — 2026-05-17
+
+### Fixed
+
+- **Word and Excel downloads no longer produce corrupt files** — `downloadArbExport`
+  was calling `readTextBlob` for all export formats; binary formats (`.xlsx`, `.docx`)
+  were UTF-8 decoded during blob read, mangling the binary payload and causing
+  "The file is corrupt" / "Word found unreadable content" errors on every download;
+  fixed by routing `xlsx` and `docx` to `readBinaryBlob` so the raw buffer reaches
+  the HTTP response unchanged; regression test added
+
+---
+
 ## [0.9.1] — 2026-05-17
 
 ### Fixed
