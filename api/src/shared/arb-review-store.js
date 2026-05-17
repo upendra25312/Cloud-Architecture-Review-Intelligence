@@ -4604,7 +4604,7 @@ async function extractSingleFileContent(file, {
             indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
           }
         }
-      }, 480000);
+      }, 720000);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
       fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
@@ -4755,7 +4755,7 @@ async function extractSingleFileContent(file, {
           if (searchIndexed) {
             indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
           }
-        }, 480000);
+        }, 720000);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown Document Intelligence error.";
         fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
