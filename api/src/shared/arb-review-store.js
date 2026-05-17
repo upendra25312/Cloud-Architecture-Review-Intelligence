@@ -4585,11 +4585,13 @@ async function extractSingleFileContent(file, {
 
   if (isSpreadsheet) {
     try {
-      const buffer = await readBinaryBlob(inputContainer, file.blobPath);
-      if (!buffer || buffer.length === 0) {
-        fileResult = { ...file, extractionStatus: "Failed", extractionError: "Spreadsheet file could not be read from storage." };
-        localExtractionErrors.push(`${file.fileName}: empty blob.`);
-      } else {
+      await withFileTimeout(async () => {
+        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+        if (!buffer || buffer.length === 0) {
+          fileResult = { ...file, extractionStatus: "Failed", extractionError: "Spreadsheet file could not be read from storage." };
+          localExtractionErrors.push(`${file.fileName}: empty blob.`);
+          return;
+        }
         await processOfficeVisualEvidence(buffer);
         const text = await extractSpreadsheetText(buffer);
         if (!text || !text.trim()) {
@@ -4602,7 +4604,7 @@ async function extractSingleFileContent(file, {
             indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
           }
         }
-      }
+      }, 480000);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
       fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
@@ -4753,7 +4755,7 @@ async function extractSingleFileContent(file, {
           if (searchIndexed) {
             indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
           }
-        }, file);
+        }, 480000);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown Document Intelligence error.";
         fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
