@@ -12,9 +12,13 @@ import {
   fetchArbRequirements,
   fetchArbReview,
   fetchArbScorecard,
+  listArbReviews,
 } from "@/arb/api";
+import { getArbCompareHref } from "@/arb/routes";
 import { getArbReviewSteps } from "@/arb/mock-review";
 import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
+import Link from "next/link";
+import type { Route } from "next";
 import type {
   ArbAction,
   ArbEvidenceFact,
@@ -41,6 +45,7 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
   const [evidence, setEvidence] = useState<ArbEvidenceFact[]>([]);
   const [requirements, setRequirements] = useState<ArbRequirement[]>([]);
   const [exports, setExports] = useState<ArbExportArtifact[]>([]);
+  const [siblingReviews, setSiblingReviews] = useState<ArbReviewSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [exportLoading, setExportLoading] = useState(false);
@@ -64,6 +69,7 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           evidenceRes,
           requirementsRes,
           exportsRes,
+          allReviewsRes,
         ] = await Promise.all([
           fetchArbReview(reviewId),
           fetchArbFindings(reviewId),
@@ -72,6 +78,7 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           fetchArbEvidence(reviewId),
           fetchArbRequirements(reviewId),
           fetchArbExports(reviewId),
+          listArbReviews().catch(() => ({ reviews: [] })),
         ]);
 
         if (!cancelled) {
@@ -82,6 +89,13 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           setEvidence(evidenceRes);
           setRequirements(requirementsRes);
           setExports(exportsRes);
+          const siblings = (allReviewsRes.reviews ?? []).filter(
+            (r) =>
+              r.reviewId !== reviewId &&
+              r.projectName === reviewRes.projectName &&
+              r.customerName === reviewRes.customerName
+          );
+          setSiblingReviews(siblings);
         }
       } catch (loadError) {
         if (!cancelled) {
@@ -233,6 +247,31 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
         )}
 
         <OverviewQuickLinks steps={workflowSteps} reviewId={reviewId} />
+
+        {siblingReviews.length > 0 && (
+          <div className={styles.relatedReviews}>
+            <p className={styles.relatedReviewsTitle}>Previous review cycles for this project</p>
+            <div className={styles.relatedReviewsList}>
+              {siblingReviews.map((sibling) => (
+                <div key={sibling.reviewId} className={styles.relatedReviewItem}>
+                  <div className={styles.relatedReviewMeta}>
+                    <span className={styles.relatedReviewState}>{sibling.workflowState}</span>
+                    {sibling.overallScore !== null && sibling.overallScore !== undefined && (
+                      <span className={styles.relatedReviewScore}>Score: {sibling.overallScore}/100</span>
+                    )}
+                  </div>
+                  <p className={styles.relatedReviewId}>{sibling.reviewId}</p>
+                  <Link
+                    href={getArbCompareHref(sibling.reviewId, reviewId) as Route}
+                    className={styles.relatedReviewCompare}
+                  >
+                    Compare with current →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </>
     );
   }

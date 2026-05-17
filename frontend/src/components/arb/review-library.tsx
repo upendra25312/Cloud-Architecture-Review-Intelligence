@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createArbReview, listArbReviews, uploadArbFiles, deleteArbReview } from "@/arb/api";
-import { getArbStepHref, getArbCompareHref } from "@/arb/routes";
+import { getArbStepHref } from "@/arb/routes";
 import type { ArbReviewSummary } from "@/arb/types";
 import { useAuthSession } from "@/components/auth-session-provider";
 import { EvidenceGuidancePanel } from "@/components/arb/evidence-guidance";
@@ -170,8 +170,24 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [comparingFromId, setComparingFromId] = useState<string | null>(null);
+  const [reReviewingId, setReReviewingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const DECIDED_STATES = new Set(["Decision Recorded", "Approved", "Needs Revision", "Rejected", "Review Complete", "Closed"]);
+
+  async function handleReReview(review: ArbReviewSummary) {
+    setReReviewingId(review.reviewId);
+    try {
+      const newReview = await createArbReview({
+        projectName: review.projectName,
+        customerName: review.customerName,
+      });
+      window.location.href = getArbStepHref(newReview.reviewId, "upload", "upload-documents");
+    } catch {
+      setError("Failed to create re-review. Please try again.");
+      setReReviewingId(null);
+    }
+  }
 
   async function handleDeleteReview(reviewId: string) {
     // First click: show inline confirm
@@ -558,20 +574,6 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
         {error ? <p className="arb-create-error">{error}</p> : null}
       </section>
 
-      {comparingFromId && (
-        <div className="arb-compare-banner">
-          <span>
-            Comparing from <strong>{filteredReviews.find((r) => r.reviewId === comparingFromId)?.projectName ?? comparingFromId}</strong> — select another review to compare with
-          </span>
-          <button
-            type="button"
-            className="arb-compare-banner-cancel"
-            onClick={() => setComparingFromId(null)}
-          >
-            Cancel
-          </button>
-        </div>
-      )}
 
       {filteredReviews.length === 0 ? (
         <section className="arb-empty-state">
@@ -613,23 +615,15 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
                     <Link href={getPrimaryHref(review, focus)} className="arb-table-open">
                       {getPrimaryLabel(review, focus)}
                     </Link>
-                    {comparingFromId && comparingFromId !== review.reviewId ? (
-                      <Link
-                        href={getArbCompareHref(comparingFromId, review.reviewId)}
-                        className="arb-table-compare-with"
-                      >
-                        Compare with this
-                      </Link>
-                    ) : (
+                    {DECIDED_STATES.has(review.workflowState) && (
                       <button
                         type="button"
-                        className={`arb-table-compare${comparingFromId === review.reviewId ? " arb-table-compare--active" : ""}`}
-                        onClick={() => setComparingFromId(
-                          comparingFromId === review.reviewId ? null : review.reviewId
-                        )}
-                        title="Compare this review with another"
+                        className="arb-table-rereview"
+                        onClick={() => void handleReReview(review)}
+                        disabled={reReviewingId === review.reviewId}
+                        title="Start a new review cycle for this project"
                       >
-                        {comparingFromId === review.reviewId ? "Comparing… (cancel)" : "Compare"}
+                        {reReviewingId === review.reviewId ? "Creating…" : "Re-review"}
                       </button>
                     )}
                     {confirmDeleteId === review.reviewId ? (

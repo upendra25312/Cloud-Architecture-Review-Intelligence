@@ -330,3 +330,92 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ── Related reviews (re-review siblings) ─────────────────────────── */
+.relatedReviews {
+  margin: 20px 0 8px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elevated, #fff);
+}
+
+.relatedReviewsTitle {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--t3);
+}
+
+.relatedReviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.relatedReviewItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-strong, #F8FAFC);
+  flex-wrap: wrap;
+}
+
+.relatedReviewMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.relatedReviewState {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--t2);
+  white-space: nowrap;
+}
+
+.relatedReviewScore {
+  font-size: 0.78rem;
+  color: var(--t3);
+  white-space: nowrap;
+}
+
+.relatedReviewId {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--t3);
+  font-family: monospace;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relatedReviewCompare {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brand);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.relatedReviewCompare:hover {
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .relatedReviews {
+  background: rgba(255,255,255,0.03);
+}
+
+[data-theme="dark"] .relatedReviewItem {
+  background: rgba(255,255,255,0.04);
+}
