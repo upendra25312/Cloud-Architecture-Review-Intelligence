@@ -9,7 +9,10 @@ async function handleArbCreateProject(request, context) {
   if (auth.response) return auth.response;
 
   try {
-    const body = await request.json().catch(() => ({}));
+    let body;
+    try { body = await request.json(); } catch {
+      return jsonResponse(400, { error: "Request body must be valid JSON." });
+    }
     const { name, customerName, description = "", reviewFramework = "azure",
             targetRegions = [], tags = [] } = body;
 

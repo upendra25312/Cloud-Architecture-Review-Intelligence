@@ -13,7 +13,10 @@ async function handleArbUpdateProject(request, context) {
     const projectId = context.extraInputs?.get?.("id") || request.params?.id;
     if (!projectId) return jsonResponse(400, { error: "projectId is required" });
 
-    const body = await request.json().catch(() => ({}));
+    let body;
+    try { body = await request.json(); } catch {
+      return jsonResponse(400, { error: "Request body must be valid JSON." });
+    }
     const client = await getTableClient(PROJECTS_TABLE);
 
     const pk = encodeTableKey(auth.principal.userId);

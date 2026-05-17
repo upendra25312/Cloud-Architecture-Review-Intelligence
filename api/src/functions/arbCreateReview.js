@@ -9,7 +9,10 @@ async function handleArbCreateReview(request, context) {
   }
 
   try {
-    const body = await request.json().catch(() => ({}));
+    let body;
+    try { body = await request.json(); } catch {
+      return jsonResponse(400, { error: "Request body must be valid JSON." });
+    }
 
     const projectName = String(body.projectName ?? "").trim();
     if (!projectName || projectName.length < 2) {

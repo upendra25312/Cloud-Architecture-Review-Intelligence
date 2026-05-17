@@ -10,7 +10,10 @@ async function handleArbCreateExport(request, context) {
 
   try {
     const reviewId = request.params?.reviewId || "demo-review";
-    const body = await request.json().catch(() => ({}));
+    let body;
+    try { body = await request.json(); } catch {
+      return jsonResponse(400, { error: "Request body must be valid JSON." });
+    }
     return jsonResponse(201, {
       reviewId,
       exportArtifact: await createArbExport(auth.principal, reviewId, body)
