@@ -1,43 +1,66 @@
 'use strict';
 
 const df = require('durable-functions');
+const {
+  ARB_INPUT_CONTAINER_NAME,
+  ARB_OUTPUT_CONTAINER_NAME,
+  getContainerClient
+} = require('../../shared/storage');
+const { getFoundryConfiguration } = require('../../shared/arb-foundry-agent');
+const { extractSingleFileContent } = require('../../shared/arb-review-store');
 
 /**
  * Activity: extractSingleFile
  *
- * STATUS: STUB — requires follow-up refactor before the durable extraction
- * path can be enabled in production.
- *
- * The existing `startArbExtraction` function in `api/src/shared/arb-review-store.js`
- * processes all files in a single loop with shared mutable state
- * (`visualEvidence[]`, `visualCountsByFile`, `fileTexts`, `extractionErrors[]`,
- * `nextFiles[]`). Converting it to a fan-out Durable pattern requires
- * extracting a self-contained per-file helper that returns:
- *
- *   { fileId, fileName, extractionStatus, extractedText, visualRecords[], errors[], durationMs }
- *
- * This refactor is intentionally deferred to keep the current migration PR
- * focused on orchestration plumbing. Until that refactor lands:
- *   - The `USE_DURABLE_ORCHESTRATION` app setting MUST remain OFF for
- *     extraction to use the legacy queue-based path (which works unchanged)
- *   - The durable extraction orchestration WILL FAIL with this stub error
- *     if someone flips the flag prematurely
- *
- * The agent-review durable orchestration is independent and DOES work with
- * the flag set to ON — only extraction fan-out requires this completion.
+ * Extracts content from a single uploaded file (text + visual evidence).
+ * Runs as a parallel fan-out activity — one per file in the review package.
+ * Visual artifacts are written to blob storage during this activity; the
+ * returned result contains only JSON-serializable metadata.
  *
  * Input:  { reviewId, principal, file }
- * Output: { fileId, fileName, extractionStatus, extractedText, visualRecords, errors, durationMs }
+ * Output: { fileResult, extractedText, visualRecords, visualExtractionErrors, extractionErrors }
  */
 async function extractSingleFileHandler(input, context) {
-  const err = new Error(
-    'extractSingleFile activity is not yet implemented. ' +
-    'Per-file extraction helper must be refactored out of startArbExtraction ' +
-    'before the durable extraction path can be enabled. ' +
-    'Set USE_DURABLE_ORCHESTRATION=OFF to use the legacy queue-based extraction path.'
-  );
-  err.statusCode = 501;
-  throw err;
+  const { reviewId, principal, file } = input || {};
+
+  if (!reviewId) {
+    throw Object.assign(new Error('reviewId is required.'), { statusCode: 400 });
+  }
+  if (!principal || !principal.userId) {
+    throw Object.assign(new Error('principal with userId is required.'), { statusCode: 400 });
+  }
+  if (!file || !file.fileId) {
+    throw Object.assign(new Error('file with fileId is required.'), { statusCode: 400 });
+  }
+
+  const [inputContainer, outputContainer] = await Promise.all([
+    getContainerClient(ARB_INPUT_CONTAINER_NAME),
+    getContainerClient(ARB_OUTPUT_CONTAINER_NAME)
+  ]);
+  const visionAvailable = getFoundryConfiguration().configured;
+
+  const result = await extractSingleFileContent(file, {
+    reviewId,
+    principal,
+    inputContainer,
+    outputContainer,
+    visionAvailable,
+    searchIndexed: false // search indexing is deferred to persistExtractionResults
+  });
+
+  if (context && typeof context.log === 'function') {
+    context.log(JSON.stringify({
+      activity: 'extractSingleFile',
+      reviewId,
+      fileId: file.fileId,
+      fileName: file.fileName,
+      extractionStatus: result.fileResult?.extractionStatus,
+      visualRecordCount: (result.visualRecords || []).length,
+      errorCount: (result.extractionErrors || []).length
+    }));
+  }
+
+  return result;
 }
 
 df.app.activity('extractSingleFile', { handler: extractSingleFileHandler });

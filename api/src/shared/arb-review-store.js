@@ -1059,12 +1059,13 @@ async function persistAndAnalyzeVisualArtifact({
   principal,
   reviewId,
   visualIndex,
+  visualEvidenceIdOverride,
   sourceFile,
   artifact,
   outputContainer,
   canUseMultimodal
 }) {
-  const visualEvidenceId = buildVisualEvidenceId(reviewId, visualIndex);
+  const visualEvidenceId = visualEvidenceIdOverride || buildVisualEvidenceId(reviewId, visualIndex);
   const extension = artifact.extension || getExtensionFromPath(artifact.sourceName || sourceFile.fileName) || ".png";
   const imageUri = artifact.buffer
     ? `${sanitizePathSegment(principal.userId)}/reviews/${sanitizePathSegment(reviewId)}/visual/${visualEvidenceId}${extension}`
@@ -4416,6 +4417,603 @@ async function startArbExtraction(principal, reviewId) {
   return extraction;
 }
 
+// ── Durable extraction helpers ────────────────────────────────────────────────
+// Used by the durable fan-out activity (extractSingleFile). The legacy
+// startArbExtraction path is unchanged; these functions share none of its
+// mutable outer state.
+
+/**
+ * Extracts content for a single file and returns self-contained, serializable results.
+ * Each call is completely independent — safe to run in parallel Durable activities.
+ */
+async function extractSingleFileContent(file, {
+  reviewId,
+  principal,
+  inputContainer,
+  outputContainer,
+  visionAvailable,
+  searchIndexed = false
+}) {
+  const localVisualRecords = [];
+  const localVisualExtractionErrors = [];
+  const localExtractionErrors = [];
+  let fileResult = null;
+  let extractedText = null;
+
+  // File-scoped ID prefix avoids blob-path collisions when multiple activities run in parallel
+  const shortFileId = (file.fileId || "").replace(/[^a-zA-Z0-9]/g, "").slice(-8) || "unknown";
+
+  async function addVisualEvidenceRecord(artifact, localIndexOverride = null) {
+    try {
+      const idx = localIndexOverride ?? localVisualRecords.length;
+      const visualEvidenceIdOverride = `${reviewId}-${shortFileId}-v${String(idx + 1).padStart(3, "0")}`;
+      const record = await persistAndAnalyzeVisualArtifact({
+        principal,
+        reviewId,
+        visualIndex: idx,
+        visualEvidenceIdOverride,
+        sourceFile: file,
+        artifact,
+        outputContainer,
+        canUseMultimodal: visionAvailable
+      });
+      localVisualRecords.push(record);
+      if (record.analysisError) {
+        localVisualExtractionErrors.push(`${file.fileName}: visual analysis warning for ${record.visualEvidenceId}: ${record.analysisError}`);
+      }
+      if (record.promptInjectionRisk && record.promptInjectionRisk !== "NoneDetected") {
+        localVisualExtractionErrors.push(`${file.fileName}: possible prompt-injection text detected in ${record.visualEvidenceId}; treated as untrusted evidence.`);
+      }
+      return record;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      localVisualExtractionErrors.push(`${file.fileName}: visual evidence extraction failed: ${message}`);
+      return null;
+    }
+  }
+
+  async function addVisualEvidenceRecords(artifacts, concurrency = 1) {
+    if (!Array.isArray(artifacts) || artifacts.length === 0) return [];
+    const records = [];
+    for (let i = 0; i < artifacts.length; i += concurrency) {
+      const chunk = artifacts.slice(i, i + concurrency);
+      const chunkRecords = await Promise.all(
+        chunk.map((artifact, ci) => addVisualEvidenceRecord(artifact, localVisualRecords.length + i + ci))
+      );
+      records.push(...chunkRecords.filter(Boolean));
+    }
+    return records;
+  }
+
+  async function processOfficeVisualEvidence(buffer) {
+    const extension = getFileExtension(file.fileName);
+    if (![".docx", ".pptx", ".xlsx"].includes(extension)) return;
+    const { artifacts, warnings } = await extractOfficeMediaArtifacts(buffer, file.fileName);
+    for (const warning of warnings) localVisualExtractionErrors.push(warning);
+    await addVisualEvidenceRecords(artifacts);
+    const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
+    if (shouldRunFallback) {
+      const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
+      for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
+      await addVisualEvidenceRecords(rendered.artifacts);
+      if (rendered.artifacts.length > 0) {
+        const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+        for (const warning of extra.warnings) localVisualExtractionErrors.push(warning);
+        if (extra.artifacts.length > 0) await addVisualEvidenceRecords(extra.artifacts);
+        return;
+      }
+      const fallback = await extractOfficeRenderFallbackEvidence(buffer, file.fileName);
+      for (const warning of fallback.warnings) localVisualExtractionErrors.push(warning);
+      await addVisualEvidenceRecords(fallback.artifacts);
+    }
+  }
+
+  async function processPdfVisualEvidence(layout, buffer, prerendered = null) {
+    const figures = Array.isArray(layout?.figures) ? layout.figures : [];
+    const figureArtifacts = [];
+    for (const figure of figures) {
+      if (!figure.buffer) {
+        localVisualExtractionErrors.push(`${file.fileName}: Document Intelligence could not retrieve figure ${figure.figureId || "unknown"}.`);
+        continue;
+      }
+      figureArtifacts.push({
+        sourceName: `${file.fileName}-${figure.figureId || "figure"}.png`,
+        buffer: figure.buffer,
+        extension: ".png",
+        contentType: figure.contentType || "image/png",
+        sourcePage: figure.sourcePage ?? figure.pageNumber ?? null,
+        figureId: figure.figureId ?? null,
+        sourceExcerpt: `Visual analysis of embedded architecture figure ${figure.figureId || ""} in ${file.fileName}.`.trim(),
+        extractionSource: "Document Intelligence figures + multimodal analysis"
+      });
+    }
+    const persistedFigureRecords = await addVisualEvidenceRecords(figureArtifacts);
+    if (persistedFigureRecords.length > 0) return;
+    const rendered = prerendered || await renderOfficeVisualArtifacts(buffer, file.fileName);
+    for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
+    if (rendered.artifacts.length > 0) {
+      await addVisualEvidenceRecords(rendered.artifacts);
+      const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+      for (const warning of extra.warnings) localVisualExtractionErrors.push(warning);
+      if (extra.artifacts.length > 0) await addVisualEvidenceRecords(extra.artifacts);
+      return;
+    }
+    const pages = Array.isArray(layout?.result?.pages) ? layout.result.pages : [];
+    const fallbackPages = pages
+      .filter((page) => {
+        const pageText = Array.isArray(page.lines) ? page.lines.map((l) => l.content).join(" ") : "";
+        const wordCount = pageText.split(/\s+/).filter(Boolean).length;
+        return (wordCount < 150 && PDF_FALLBACK_KEYWORDS.test(pageText)) || wordCount < 15;
+      })
+      .slice(0, 12);
+    await addVisualEvidenceRecords(fallbackPages.map((page) => {
+      const pageText = Array.isArray(page.lines)
+        ? page.lines.map((line) => line.content).filter(Boolean).join("\n")
+        : "";
+      return {
+        sourceName: `${file.fileName}-page-${page.pageNumber}.txt`,
+        sourcePage: page.pageNumber ?? null,
+        summaryText: pageText
+          ? `PDF page ${page.pageNumber} was treated as visual evidence fallback. Extracted page labels:\n${pageText.slice(0, 4000)}`
+          : `PDF page ${page.pageNumber} was treated as visual evidence fallback because no cropped figures were returned by Document Intelligence.`,
+        sourceExcerpt: `Visual analysis fallback for full-page architecture content on page ${page.pageNumber}.`,
+        extractionSource: "PDF page render fallback + extracted page evidence"
+      };
+    }));
+  }
+
+  function withFileTimeout(fn, timeoutMs = 120000) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`File extraction timed out after ${timeoutMs / 1000}s`)), timeoutMs);
+    });
+    return Promise.race([fn(), timeout]).finally(() => clearTimeout(timer));
+  }
+
+  // ── Per-file extraction (mirrors startArbExtraction loop body) ─────────────
+  const isSpreadsheet = supportsSpreadsheetExtraction(file.fileName);
+  const isDiagram = supportsDiagramExtraction(file.fileName);
+  const isImage = supportsImageExtraction(file.fileName);
+
+  if (isSpreadsheet) {
+    try {
+      const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+      if (!buffer || buffer.length === 0) {
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: "Spreadsheet file could not be read from storage." };
+        localExtractionErrors.push(`${file.fileName}: empty blob.`);
+      } else {
+        await processOfficeVisualEvidence(buffer);
+        const text = await extractSpreadsheetText(buffer);
+        if (!text || !text.trim()) {
+          fileResult = { ...file, extractionStatus: "Failed", extractionError: "No data rows could be extracted from the spreadsheet." };
+          localExtractionErrors.push(`${file.fileName}: no data rows found.`);
+        } else {
+          extractedText = text;
+          fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+          if (searchIndexed) {
+            indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+          }
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
+      fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
+      localExtractionErrors.push(`${file.fileName}: ${message}`);
+    }
+  } else if (isDiagram) {
+    try {
+      const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+      if (!buffer || buffer.length === 0) {
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: "Diagram file could not be read from storage." };
+        localExtractionErrors.push(`${file.fileName}: empty blob.`);
+      } else {
+        const text = await extractDiagramText(buffer, file.fileName);
+        if (!text || !text.trim()) {
+          fileResult = { ...file, extractionStatus: "Failed", extractionError: "No readable labels or diagram metadata could be extracted." };
+          localExtractionErrors.push(`${file.fileName}: no readable diagram labels found.`);
+        } else {
+          await addVisualEvidenceRecord({
+            sourceName: file.fileName,
+            summaryText: text,
+            sourceExcerpt: `Readable diagram labels and metadata extracted from ${file.fileName}.`,
+            extractionSource: "Native diagram file extraction + visual evidence normalization"
+          });
+          extractedText = text;
+          fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+          if (searchIndexed) {
+            indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+          }
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown diagram extraction error.";
+      fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
+      localExtractionErrors.push(`${file.fileName}: ${message}`);
+    }
+  } else if (isImage) {
+    try {
+      const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+      if (!buffer || buffer.length === 0) {
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: "Image file could not be read from storage." };
+        localExtractionErrors.push(`${file.fileName}: empty blob.`);
+      } else {
+        const visualRecord = await addVisualEvidenceRecord({
+          sourceName: file.fileName,
+          buffer,
+          extension: getFileExtension(file.fileName),
+          contentType: file.contentType,
+          summaryText: visionAvailable
+            ? ""
+            : "Standalone image uploaded as visual architecture evidence. Multimodal analysis is unavailable because FOUNDRY_PROJECT_ENDPOINT is not configured.",
+          sourceExcerpt: `Visual analysis of standalone uploaded image ${file.fileName}.`,
+          extractionSource: "Standalone image upload + multimodal analysis"
+        });
+        const description = visualRecord?.summary || "";
+        if (!description || !description.trim()) {
+          fileResult = { ...file, extractionStatus: "Failed", extractionError: "Vision model returned no description for the image." };
+          localExtractionErrors.push(`${file.fileName}: vision returned empty response.`);
+        } else {
+          extractedText = `[Architecture diagram: ${file.fileName}]\n\n${description}`;
+          fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+          if (searchIndexed) {
+            indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, extractedText).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+          }
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown image analysis error.";
+      fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
+      localExtractionErrors.push(`${file.fileName}: ${message}`);
+    }
+  } else if (supportsDocumentIntelligenceExtraction(file.fileName)) {
+    const diConfig = getDocumentIntelligenceConfiguration();
+    const visionConfig = getVisionServiceConfiguration();
+    const canUseVisionFallback = visionConfig.configured && supportsVisionExtraction(file.fileName);
+    const isPdf = getFileExtension(file.fileName) === ".pdf";
+    if (!isPdf && !diConfig.configured && !canUseVisionFallback) {
+      fileResult = {
+        ...file,
+        extractionStatus: "Limited Evidence",
+        extractionError: "Azure AI Document Intelligence is not configured. Text extraction is unavailable for this file format."
+      };
+    } else {
+      try {
+        await withFileTimeout(async () => {
+          const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+          if (!buffer || buffer.length === 0) {
+            fileResult = { ...file, extractionStatus: "Failed", extractionError: "Document file could not be read from storage." };
+            localExtractionErrors.push(`${file.fileName}: empty blob.`);
+            return;
+          }
+          let text = null;
+          let extractionSource = "Document Intelligence";
+          await processOfficeVisualEvidence(buffer);
+          if (isPdf) {
+            const renderResult = await renderOfficeVisualArtifacts(buffer, file.fileName);
+            for (const warning of renderResult.warnings) localVisualExtractionErrors.push(warning);
+            const prerendered = renderResult;
+            if (diConfig.configured) {
+              let layout = null;
+              try {
+                layout = await extractDocumentLayout(buffer, file.contentType, file.fileName, { includeFigures: true });
+                text = layout.text;
+              } catch (err) {
+                const message = err instanceof Error ? err.message : String(err);
+                localVisualExtractionErrors.push(`${file.fileName}: PDF figure extraction failed: ${message}`);
+                try { text = await extractDocumentText(buffer, file.contentType, file.fileName); } catch { /* falls through */ }
+              }
+              await processPdfVisualEvidence(layout, buffer, prerendered);
+            } else {
+              if (prerendered.artifacts.length > 0) {
+                await addVisualEvidenceRecords(prerendered.artifacts);
+              } else {
+                const pdfFallback = await extractPdfDiagramPageEvidence(buffer, file.fileName);
+                for (const warning of pdfFallback.warnings) localVisualExtractionErrors.push(warning);
+                if (pdfFallback.artifacts.length > 0) await addVisualEvidenceRecords(pdfFallback.artifacts);
+              }
+            }
+          } else if (diConfig.configured) {
+            text = await extractDocumentText(buffer, file.contentType, file.fileName);
+          }
+          if ((!text || !text.trim()) && canUseVisionFallback) {
+            text = await extractTextWithVision(buffer, file.contentType, file.fileName);
+            extractionSource = "Azure Vision Service (OCR fallback)";
+          }
+          if (!text || !text.trim()) {
+            try {
+              const pdfParse = require("pdf-parse");
+              const parsed = await pdfParse(buffer);
+              if (parsed.text && parsed.text.trim()) {
+                text = parsed.text;
+                extractionSource = "pdf-parse (native text layer)";
+              }
+            } catch { /* best-effort */ }
+          }
+          if (!text || !text.trim()) {
+            fileResult = {
+              ...file,
+              extractionStatus: "Failed",
+              extractionError: diConfig.configured
+                ? "Azure AI Document Intelligence returned no text. The document may be a scanned image."
+                : "No text could be extracted. Document Intelligence is not configured and the PDF has no selectable text layer."
+            };
+            localExtractionErrors.push(`${file.fileName}: ${extractionSource} returned no text.`);
+            return;
+          }
+          extractedText = text;
+          fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+          if (searchIndexed) {
+            indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+          }
+        }, file);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown Document Intelligence error.";
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
+        localExtractionErrors.push(`${file.fileName}: ${message}`);
+      }
+    }
+  } else if (file.logicalCategory === "evidence_package") {
+    fileResult = { ...file, extractionStatus: file.extractionStatus || "Expanded", extractionError: file.extractionError || null };
+  } else if (!file.supportedTextExtraction) {
+    fileResult = {
+      ...file,
+      extractionStatus: "Limited Evidence",
+      extractionError: file.extractionError || "File is stored successfully but needs a richer text extraction worker for this format."
+    };
+  } else {
+    try {
+      const text = await readTextBlob(inputContainer, file.blobPath);
+      if (!text || !text.trim()) {
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: "No readable text could be extracted from the uploaded file." };
+        localExtractionErrors.push(`${file.fileName}: no readable text could be extracted.`);
+      } else {
+        extractedText = text;
+        fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+        if (DIAGRAM_TEXT_EXTENSIONS.has(getFileExtension(file.fileName))) {
+          const ext = getFileExtension(file.fileName);
+          const diagramType =
+            ext === ".mmd" || ext === ".mermaid" ? "Mermaid" :
+            ext === ".puml" || ext === ".plantuml" ? "PlantUML" :
+            ext === ".excalidraw" ? "Excalidraw" : "Diagram";
+          addVisualEvidenceRecord({
+            sourceName: file.fileName,
+            summaryText: `[${diagramType} architecture diagram: ${file.fileName}]\n\nDiagram specification — describes architecture topology, components, and data flows:\n${text.slice(0, 5000)}`,
+            sourceExcerpt: `${diagramType} diagram specification extracted from ${file.fileName}.`,
+            extractionSource: `${diagramType} diagram specification analysis`
+          }).catch((err) => { console.warn(`[diagram-visual] Failed to create visual evidence for "${file.fileName}":`, err?.message ?? err); });
+        }
+        if (searchIndexed) {
+          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown extraction error.";
+      fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
+      localExtractionErrors.push(`${file.fileName}: ${message}`);
+    }
+  }
+
+  if (!fileResult) {
+    fileResult = { ...file, extractionStatus: "Failed", extractionError: "Unknown extraction path — file type not handled." };
+    localExtractionErrors.push(`${file.fileName}: unhandled file type.`);
+  }
+
+  return {
+    fileResult,
+    extractedText,
+    visualRecords: localVisualRecords,
+    visualExtractionErrors: localVisualExtractionErrors,
+    extractionErrors: localExtractionErrors
+  };
+}
+
+/**
+ * Aggregates fan-out results and writes all entities to Table Storage.
+ * Called by the durable persistExtractionResults activity.
+ */
+async function persistAggregatedExtractionResults({ reviewId, principal, fileResults, jobId, startedAt }) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const review = await getArbReview(principal, reviewId);
+
+  const nextFiles = fileResults.map((r) => r.fileResult);
+  const allVisualRecords = fileResults.flatMap((r) => r.visualRecords || []);
+  const allVisualExtractionErrors = fileResults.flatMap((r) => r.visualExtractionErrors || []);
+  const allExtractionErrors = fileResults.flatMap((r) => r.extractionErrors || []);
+
+  const fileTexts = new Map(
+    fileResults.filter((r) => r.extractedText).map((r) => [r.fileResult.fileId, r.extractedText])
+  );
+
+  const visualCountsByFile = new Map();
+  for (const vr of allVisualRecords) {
+    if (vr && vr.sourceFileId) {
+      visualCountsByFile.set(vr.sourceFileId, (visualCountsByFile.get(vr.sourceFileId) || 0) + 1);
+    }
+  }
+
+  const nextFilesWithVisualEvidence = nextFiles.map((file) => ({
+    ...file,
+    visualEvidenceCount: visualCountsByFile.get(file.fileId) || 0
+  }));
+
+  const derived = deriveRequirementsAndEvidence(review, nextFilesWithVisualEvidence, fileTexts);
+
+  if (getFoundryConfiguration().configured) {
+    try {
+      const aiResult = await aiEnhanceRequirements(review, nextFilesWithVisualEvidence, fileTexts);
+      if (aiResult && aiResult.requirements.length > 0) {
+        derived.requirements = [...aiResult.requirements, ...aiResult.gaps];
+      }
+    } catch (aiErr) {
+      console.warn("[requirements] AI enhancement failed, using keyword extraction:", aiErr?.message ?? aiErr);
+    }
+  }
+
+  const completedAt = new Date().toISOString();
+  const readiness = buildReadinessFromFiles(nextFilesWithVisualEvidence);
+  const contentReadiness = assessExtractedContentReadiness({
+    files: nextFilesWithVisualEvidence,
+    requirements: derived.requirements,
+    evidence: derived.evidence,
+    visualEvidence: allVisualRecords
+  });
+  const missingRecommendedItems = readiness.missingRecommendedItems.filter(
+    (item) => !contentReadiness.coveredRecommendedItems.includes(item)
+  );
+  const recommendedEvidenceCoverage = Math.max(
+    readiness.recommendedEvidenceCoverage,
+    contentReadiness.recommendedCoverage
+  );
+  const hasEnoughExtractedEvidence = readiness.requiredEvidencePresent || contentReadiness.sufficient;
+  const evidenceReadinessState =
+    derived.requirements.length > 0 && hasEnoughExtractedEvidence
+      ? readiness.requiredEvidencePresent && missingRecommendedItems.length === 0
+        ? "Ready for Review"
+        : "Ready with Gaps"
+      : "Insufficient Evidence";
+  const readinessNotes =
+    contentReadiness.sufficient && !readiness.requiredEvidencePresent
+      ? "A standalone SOW is not uploaded, but the extracted architecture pack contains enough design, visual, security, cost, HA/DR, and operations evidence to start review with gaps."
+      : readiness.readinessNotes;
+  const extractionState =
+    allExtractionErrors.length > 0 || allVisualExtractionErrors.length > 0
+      ? "Completed with Issues"
+      : "Completed";
+  const extractionConfidencePercent = calculateExtractionConfidencePercent({
+    files: nextFilesWithVisualEvidence,
+    requirements: derived.requirements,
+    evidence: derived.evidence,
+    readiness,
+    extractionErrors: [...allExtractionErrors, ...allVisualExtractionErrors]
+  });
+
+  const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
+  const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
+  const exportsEntity = await getEntity(client, reviewId, getRowKey(EXPORTS_ROW_KEY, principal.userId));
+  const findings = fromFindingsEntity(findingsEntity, reviewId);
+  const actions = fromActionsEntity(actionsEntity);
+
+  const nextReview = {
+    ...review,
+    workflowState: "Review In Progress",
+    evidenceReadinessState,
+    requiredEvidencePresent: readiness.requiredEvidencePresent,
+    recommendedEvidenceCoverage,
+    missingRequiredItems: readiness.missingRequiredItems,
+    missingRecommendedItems,
+    readinessOutcome: evidenceReadinessState,
+    readinessNotes,
+    documentCount: nextFilesWithVisualEvidence.length,
+    lastUpdated: completedAt
+  };
+  const scorecard = buildDerivedScorecard(nextReview, findings, null);
+
+  const extraction = {
+    reviewId,
+    jobId: jobId || `${reviewId}-durable-${Date.now()}`,
+    state: extractionState,
+    extractionConfidencePercent,
+    completedSteps: [
+      "files-registered",
+      "blob-read",
+      "text-extraction",
+      "table-extraction",
+      "requirements-normalized",
+      "evidence-normalized",
+      ...(allVisualRecords.length > 0 ? ["visual-evidence-extracted"] : [])
+    ],
+    failedSteps: [
+      ...(allExtractionErrors.length > 0 ? ["text-extraction"] : []),
+      ...(allVisualExtractionErrors.length > 0 ? ["visual-extraction"] : [])
+    ],
+    textExtractionStatus: allExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    tableExtractionStatus: "CompletedOrNotApplicable",
+    figureExtractionStatus: allVisualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    visualAnalysisStatus: allVisualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    visualEvidenceCount: allVisualRecords.length,
+    visualExtractionErrors: allVisualExtractionErrors,
+    evidenceReadinessState,
+    missingRequiredItems: readiness.missingRequiredItems,
+    missingRecommendedItems,
+    readinessNotes,
+    extractionErrors: allExtractionErrors,
+    lastStartedAt: startedAt || completedAt,
+    lastCompletedAt: completedAt,
+    fileStatuses: nextFilesWithVisualEvidence.map((f) => ({
+      fileId: f.fileId,
+      fileName: f.fileName,
+      extractionStatus: f.extractionStatus,
+      extractionError: f.extractionError,
+      visualEvidenceCount: f.visualEvidenceCount || 0
+    }))
+  };
+
+  await client.upsertEntity(toFilesEntity(reviewId, principal.userId, nextFilesWithVisualEvidence), "Replace");
+  await client.upsertEntity(toRequirementsEntity(reviewId, principal.userId, derived.requirements), "Replace");
+  await client.upsertEntity(toEvidenceEntity(reviewId, principal.userId, derived.evidence, allVisualRecords), "Replace");
+  await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
+  await client.upsertEntity(
+    {
+      ...toScorecardEntity(reviewId, principal.userId, scorecard),
+      evidenceReadinessState: scorecard.evidenceReadinessState,
+      reviewerOverrideJson: JSON.stringify(scorecard.reviewerOverride)
+    },
+    "Replace"
+  );
+  await client.upsertEntity(
+    {
+      partitionKey: getPartitionKey(reviewId),
+      rowKey: getRowKey(SUMMARY_ROW_KEY, principal.userId),
+      workflowState: "Review In Progress",
+      evidenceReadinessState,
+      requiredEvidencePresent: readiness.requiredEvidencePresent,
+      recommendedEvidenceCoverage,
+      readinessOutcome: evidenceReadinessState,
+      readinessNotes,
+      missingRequiredItemsJson: JSON.stringify(readiness.missingRequiredItems),
+      missingRecommendedItemsJson: JSON.stringify(missingRecommendedItems),
+      documentCount: nextFilesWithVisualEvidence.length,
+      lastUpdated: completedAt
+    },
+    "Merge"
+  );
+
+  const evidenceForOutputs = [
+    ...derived.evidence,
+    ...allVisualRecords.map((v) => ({
+      evidenceId: v.visualEvidenceId,
+      reviewId: v.reviewId,
+      sourceFileId: v.sourceFileId,
+      sourceFileName: v.sourceFileName,
+      factType: v.factType,
+      summary: v.summary,
+      sourceExcerpt: v.sourceExcerpt,
+      confidence: v.confidence
+    }))
+  ];
+
+  const syncedOutputs = await syncArbReviewedOutputs({
+    principal,
+    review: nextReview,
+    files: nextFilesWithVisualEvidence,
+    requirements: derived.requirements,
+    evidence: evidenceForOutputs,
+    findings,
+    scorecard,
+    actions,
+    formats: ["markdown", "csv", "html"],
+    generatedAt: completedAt,
+    existingExports: fromExportsEntity(exportsEntity)
+  });
+
+  await client.upsertEntity(
+    toExportsEntity(reviewId, principal.userId, syncedOutputs.exportsList),
+    "Replace"
+  );
+
+  return extraction;
+}
+
 async function markArbExtractionQueued(principal, reviewId) {
   const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
   const review = await getArbReview(principal, reviewId);
@@ -5138,6 +5736,8 @@ module.exports = {
   getArbScorecard,
   recordArbDecision,
   startArbExtraction,
+  extractSingleFileContent,
+  persistAggregatedExtractionResults,
   syncArbReviewedOutputs,
   uploadArbFiles,
   updateArbAction,

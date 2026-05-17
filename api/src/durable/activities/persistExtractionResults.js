@@ -1,28 +1,80 @@
 'use strict';
 
 const df = require('durable-functions');
+const { getSearchConfiguration, indexArbDocumentChunks } = require('../../shared/arb-search');
+const { persistAggregatedExtractionResults } = require('../../shared/arb-review-store');
 
 /**
  * Activity: persistExtractionResults
  *
- * STATUS: STUB — paired with `extractSingleFile` stub. See the note in
- * `extractSingleFile.js` for the follow-up refactor needed.
+ * Aggregates per-file fan-out results, derives requirements and evidence,
+ * and writes all entities to Table Storage. Also handles search indexing
+ * (deferred from extractSingleFile to avoid per-file storage round-trips).
  *
- * Aggregates per-file extraction results from the fan-out, updates file
- * statuses / evidence records / search index in Table Storage, and writes
- * the final `arbjobs` status row for backward-compatible polling.
- *
- * Input:  { reviewId, principal, results }
+ * Input:  { reviewId, principal, results, jobId, startedAt }
  * Output: { persisted: true, indexedChunks, successCount, errorCount }
  */
 async function persistExtractionResultsHandler(input, context) {
-  const err = new Error(
-    'persistExtractionResults activity is not yet implemented. ' +
-    'Aggregation of fan-out results requires the extractSingleFile helper to exist. ' +
-    'Set USE_DURABLE_ORCHESTRATION=OFF to use the legacy queue-based extraction path.'
-  );
-  err.statusCode = 501;
-  throw err;
+  const { reviewId, principal, results, jobId, startedAt } = input || {};
+
+  if (!reviewId) {
+    throw Object.assign(new Error('reviewId is required.'), { statusCode: 400 });
+  }
+  if (!principal || !principal.userId) {
+    throw Object.assign(new Error('principal with userId is required.'), { statusCode: 400 });
+  }
+  if (!Array.isArray(results)) {
+    throw Object.assign(new Error('results must be an array.'), { statusCode: 400 });
+  }
+
+  // Search indexing: fire-and-forget, best-effort
+  const searchConfig = getSearchConfiguration();
+  if (searchConfig && searchConfig.configured) {
+    for (const r of results) {
+      if (r.extractedText && r.fileResult) {
+        const { fileId, fileName, logicalCategory } = r.fileResult;
+        indexArbDocumentChunks(reviewId, fileId, fileName, logicalCategory, r.extractedText)
+          .catch((err) => {
+            if (context && typeof context.log === 'function') {
+              context.log(`[search-index] Failed to index "${fileName}": ${err?.message ?? err}`);
+            }
+          });
+      }
+    }
+  }
+
+  const extraction = await persistAggregatedExtractionResults({
+    reviewId,
+    principal,
+    fileResults: results,
+    jobId: jobId || `${reviewId}-durable-${Date.now()}`,
+    startedAt: startedAt || new Date().toISOString()
+  });
+
+  const successCount = results.filter(
+    (r) => r.fileResult?.extractionStatus === 'Completed' || r.fileResult?.extractionStatus === 'CompletedWithIssues'
+  ).length;
+  const errorCount = results.filter(
+    (r) => r.fileResult?.extractionStatus === 'Failed'
+  ).length;
+
+  if (context && typeof context.log === 'function') {
+    context.log(JSON.stringify({
+      activity: 'persistExtractionResults',
+      reviewId,
+      extractionState: extraction.state,
+      fileCount: results.length,
+      successCount,
+      errorCount
+    }));
+  }
+
+  return {
+    persisted: true,
+    indexedChunks: (extraction.completedSteps || []).length,
+    successCount,
+    errorCount
+  };
 }
 
 df.app.activity('persistExtractionResults', { handler: persistExtractionResultsHandler });

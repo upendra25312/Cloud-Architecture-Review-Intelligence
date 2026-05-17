@@ -199,7 +199,7 @@ describe('orchestratorExtraction constants', () => {
     assert.equal(DEFAULT_RETRY_OPTIONS.maxNumberOfAttempts, 3);
   });
 
-  it('ORCHESTRATION_TIMEOUT_MINUTES is 30', () => {
-    assert.equal(ORCHESTRATION_TIMEOUT_MINUTES, 30);
+  it('ORCHESTRATION_TIMEOUT_MINUTES is 40', () => {
+    assert.equal(ORCHESTRATION_TIMEOUT_MINUTES, 40);
   });
 });

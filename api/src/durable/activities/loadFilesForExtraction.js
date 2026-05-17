@@ -1,7 +1,7 @@
 'use strict';
 
 const df = require('durable-functions');
-const { getArbFiles } = require('../../shared/arb-review-store');
+const { getArbFiles, markArbExtractionRunning } = require('../../shared/arb-review-store');
 
 /**
  * Activity: loadFilesForExtraction
@@ -35,6 +35,9 @@ async function loadFilesForExtractionHandler(input, context) {
 
   // Files already marked Completed are skipped to avoid re-running extraction.
   const pendingFiles = files.filter((f) => f && f.extractionStatus !== 'Completed');
+
+  // Mark extraction as Running so the UI shows progress immediately
+  await markArbExtractionRunning(principal, reviewId);
 
   if (context && typeof context.log === 'function') {
     context.log(JSON.stringify({

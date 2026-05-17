@@ -20,7 +20,7 @@ const DEFAULT_RETRY_OPTIONS = new df.RetryOptions(5000, 3);
 DEFAULT_RETRY_OPTIONS.backoffCoefficient = 2;
 
 /** Maximum orchestration duration before the timer race fails the run. */
-const ORCHESTRATION_TIMEOUT_MINUTES = 30;
+const ORCHESTRATION_TIMEOUT_MINUTES = 40;
 
 /**
  * Sub-orchestrator: runs the extraction activity chain.
