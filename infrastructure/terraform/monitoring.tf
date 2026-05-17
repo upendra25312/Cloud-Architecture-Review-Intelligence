@@ -120,12 +120,12 @@ resource "azurerm_monitor_metric_alert" "storage_transactions" {
 # only exist after the first orchestration runs. This queries Application Insights
 # logs for orchestration failures.
 resource "azurerm_monitor_scheduled_query_rules_alert_v2" "orchestration_failures" {
-  name                = "alert-orchestration-failures-${var.env}"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  scopes              = [azurerm_application_insights.main.id]
-  severity            = 1
-  window_duration     = "PT1H"
+  name                 = "alert-orchestration-failures-${var.env}"
+  resource_group_name  = azurerm_resource_group.main.name
+  location             = azurerm_resource_group.main.location
+  scopes               = [azurerm_application_insights.main.id]
+  severity             = 1
+  window_duration      = "PT1H"
   evaluation_frequency = "PT5M"
 
   criteria {

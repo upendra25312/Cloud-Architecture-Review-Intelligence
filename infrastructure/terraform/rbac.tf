@@ -3,7 +3,7 @@
 # Zero API keys or service principal secrets anywhere in the application.
 
 locals {
-  func_principal_id = azurerm_linux_function_app.main.identity[0].principal_id
+  func_principal_id = azurerm_function_app_flex_consumption.main.identity[0].principal_id
   hub_principal_id  = azapi_resource.foundry_hub.identity[0].principal_id
 }
 
@@ -97,7 +97,7 @@ data "azurerm_resource_group" "main" {
 # count = 0 when github_actions_principal_id is not yet set (fill after Step 2.1)
 resource "azurerm_role_assignment" "gh_func_contributor" {
   count                = var.github_actions_principal_id != "" ? 1 : 0
-  scope                = azurerm_linux_function_app.main.id
+  scope                = azurerm_function_app_flex_consumption.main.id
   role_definition_name = "Website Contributor"
   principal_id         = var.github_actions_principal_id
 }

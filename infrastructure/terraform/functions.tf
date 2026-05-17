@@ -1,32 +1,46 @@
+# ─── FLEX CONSUMPTION PLAN ───────────────────────────────────────────────────
+# FC1 replaces Y1 (Consumption). Same pay-per-execution billing model but
+# supports up to 60-min function timeouts (vs Y1's 10-min hard cap) and
+# faster cold starts. One app per plan is an FC1 constraint.
 resource "azurerm_service_plan" "main" {
   name                = "asp-${var.prefix}-${var.env}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   os_type             = "Linux"
-  sku_name            = "Y1" # Consumption plan — zero fixed cost
+  sku_name            = "FC1" # Flex Consumption — replaces Y1
 
   tags = azurerm_resource_group.main.tags
 }
 
-resource "azurerm_linux_function_app" "main" {
+# Dedicated blob container for Flex Consumption deployment storage.
+# Flex uses Managed Identity auth instead of a storage access key.
+resource "azurerm_storage_container" "func_deployment" {
+  name                  = "func-flex-deployment"
+  storage_account_id    = azurerm_storage_account.main.id
+  container_access_type = "private"
+}
+
+resource "azurerm_function_app_flex_consumption" "main" {
   name                = "func-${var.prefix}-api"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   service_plan_id     = azurerm_service_plan.main.id
 
-  # Functions runtime storage — uses access key (required by Azure Functions host)
-  storage_account_name       = azurerm_storage_account.main.name
-  storage_account_access_key = azurerm_storage_account.main.primary_access_key
+  # Deployment storage — Managed Identity auth, no access key required
+  storage_container_type      = "blobContainer"
+  storage_container_endpoint  = "${azurerm_storage_account.main.primary_blob_endpoint}${azurerm_storage_container.func_deployment.name}"
+  storage_authentication_type = "SystemAssignedIdentity"
+
+  runtime_name           = "node"
+  runtime_version        = "20"
+  instance_memory_in_mb  = 2048 # 2048 MB for document-processing workloads
+  maximum_instance_count = 100
 
   identity {
     type = "SystemAssigned"
   }
 
   site_config {
-    application_stack {
-      node_version = "20"
-    }
-
     cors {
       allowed_origins = [
         "https://${azurerm_static_web_app.main.default_host_name}",
@@ -34,43 +48,43 @@ resource "azurerm_linux_function_app" "main" {
       ]
       support_credentials = false
     }
-
-    # Keep warm to reduce cold starts
-    application_insights_connection_string = azurerm_application_insights.main.connection_string
   }
 
   app_settings = {
     # Runtime
-    "FUNCTIONS_EXTENSION_VERSION"           = "~4"
     "FUNCTIONS_WORKER_RUNTIME"              = "node"
     "WEBSITE_NODE_DEFAULT_VERSION"          = "~20"
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.main.connection_string
 
-    # Foundry Agents API — Managed Identity auth (no key needed)
+    # AzureWebJobsStorage workaround: Flex + SystemAssignedIdentity requires
+    # setting the legacy key to "" and using __accountName for MI-based auth.
+    # See: https://github.com/hashicorp/terraform-provider-azurerm/pull/29099
+    "AzureWebJobsStorage"              = ""
+    "AzureWebJobsStorage__accountName" = azurerm_storage_account.main.name
+
+    # Foundry Agents API — Managed Identity auth
     "FOUNDRY_PROJECT_ENDPOINT" = var.foundry_project_endpoint
     "FOUNDRY_AGENT_NAME"       = "cari-arb-review-agent"
     "FOUNDRY_AGENT_VERSION"    = "7"
     "FOUNDRY_AGENT_MODEL"      = azurerm_cognitive_deployment.model_router.name
 
-    # AI Search — Managed Identity auth (Search Index Data Contributor role assigned in rbac.tf)
+    # AI Search — Managed Identity auth
     "AZURE_SEARCH_ENDPOINT"   = "https://${azurerm_search_service.main.name}.search.windows.net"
     "AZURE_SEARCH_INDEX_NAME" = "arb-documents"
-    "AZURE_SEARCH_USE_MI"     = "true" # Signals code to use DefaultAzureCredential
+    "AZURE_SEARCH_USE_MI"     = "true"
 
-    # Document Intelligence — Managed Identity auth (Cognitive Services User role in rbac.tf)
+    # Document Intelligence — Managed Identity auth
     "AZURE_DOCINT_ENDPOINT" = azurerm_cognitive_account.doc_intel.endpoint
-    "AZURE_DOCINT_USE_MI"   = "true" # Signals code to use DefaultAzureCredential
+    "AZURE_DOCINT_USE_MI"   = "true"
 
-    # Storage — Managed Identity auth for blob/table ops; key used only by Functions host
+    # Storage — Managed Identity for blob/table ops
     "AZURE_STORAGE_ACCOUNT_NAME" = azurerm_storage_account.main.name
+    "STORAGE_ACCOUNT_URL"        = azurerm_storage_account.main.primary_blob_endpoint
 
-    # Storage account URL — for Table Storage SDK with Managed Identity (DefaultAzureCredential)
-    "STORAGE_ACCOUNT_URL" = azurerm_storage_account.main.primary_blob_endpoint
-
-    # Azure AI Vision — diagram image analysis (PRD audit C-01, ai_vision.tf)
+    # Azure AI Vision
     "AZURE_VISION_ENDPOINT" = azurerm_cognitive_account.vision.endpoint
 
-    # Foundry Agent ID — only secret; stored in Key Vault
+    # Foundry Agent ID — only secret, stored in Key Vault
     "FOUNDRY_AGENT_ID" = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault.main.vault_uri}secrets/foundry-agent-id/)"
 
     # Durable Functions feature flag (ON, OFF, DRAIN)

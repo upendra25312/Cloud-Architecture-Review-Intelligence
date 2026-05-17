@@ -23,5 +23,5 @@ resource "azurerm_static_web_app" "main" {
 # The SWA proxies /api/* to the Function App and injects x-ms-client-principal auth headers.
 resource "azurerm_static_web_app_function_app_registration" "api" {
   static_web_app_id = azurerm_static_web_app.main.id
-  function_app_id   = azurerm_linux_function_app.main.id
+  function_app_id   = azurerm_function_app_flex_consumption.main.id
 }

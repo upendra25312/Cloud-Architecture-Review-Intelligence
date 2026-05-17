@@ -5,12 +5,12 @@ output "resource_group_name" {
 
 output "function_app_name" {
   description = "Azure Function App name (used in GitHub Actions deploy)"
-  value       = azurerm_linux_function_app.main.name
+  value       = azurerm_function_app_flex_consumption.main.name
 }
 
 output "function_app_url" {
   description = "Base URL for the API"
-  value       = "https://${azurerm_linux_function_app.main.default_hostname}"
+  value       = "https://${azurerm_function_app_flex_consumption.main.default_hostname}"
 }
 
 output "storage_account_name" {
@@ -72,7 +72,7 @@ output "app_insights_connection_string" {
 
 output "function_app_mi_principal_id" {
   description = "Function App Managed Identity principal ID (for RBAC verification)"
-  value       = azurerm_linux_function_app.main.identity[0].principal_id
+  value       = azurerm_function_app_flex_consumption.main.identity[0].principal_id
 }
 
 output "office_renderer_container_registry_name" {
