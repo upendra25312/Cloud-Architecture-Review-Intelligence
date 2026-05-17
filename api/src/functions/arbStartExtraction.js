@@ -43,9 +43,20 @@ async function handleArbStartExtraction(request, context) {
         const client = df.getClient(context);
         const baseInstanceId = computeInstanceId("extraction", reviewId, auth.principal.userId);
 
+        // The Durable extension throws HTTP 404 when no instance exists for the
+        // given ID instead of returning null/undefined. Treat 404 as "no prior
+        // orchestration" so the first-time start path proceeds normally.
+        let existingStatus = null;
+        try {
+          existingStatus = await client.getStatus(baseInstanceId);
+        } catch (statusErr) {
+          const statusMsg = statusErr instanceof Error ? statusErr.message : String(statusErr);
+          if (!statusMsg.includes('404')) throw statusErr;
+          // 404 means no instance — existingStatus stays null
+        }
+
         // If an orchestration is already running/pending for this (review, user),
         // return its current status rather than starting a duplicate.
-        const existingStatus = await client.getStatus(baseInstanceId);
         if (
           existingStatus &&
           (existingStatus.runtimeStatus === "Running" ||
