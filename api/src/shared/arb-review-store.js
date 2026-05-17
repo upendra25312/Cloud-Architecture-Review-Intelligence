@@ -2627,6 +2627,7 @@ function buildDefaultReview(reviewId, principal, input = {}) {
     missingRecommendedItems: readiness.missingRecommendedItems,
     readinessOutcome: readiness.readinessOutcome,
     readinessNotes: readiness.readinessNotes,
+    projectId: normalizeNullableString(input.projectId),
     projectCategory: normalizeNullableString(input.projectCategory),
     inScope: Array.isArray(input.inScope) ? input.inScope : [],
     outOfScope: Array.isArray(input.outOfScope) ? input.outOfScope : [],
@@ -3007,7 +3008,9 @@ function fromSummaryEntity(entity) {
     readinessOutcome: entity.readinessOutcome || entity.evidenceReadinessState,
     readinessNotes: entity.readinessNotes || null,
     documentCount: Number(entity.documentCount ?? 0),
-    lastUpdated: entity.lastUpdated
+    lastUpdated: entity.lastUpdated,
+    projectId: entity.projectId || null,
+    projectCategory: entity.projectCategory || null
   };
 }
 

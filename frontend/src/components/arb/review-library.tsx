@@ -595,11 +595,16 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
         </section>
       ) : (
         <section className="arb-review-table-wrap">
-          <div className="arb-review-section-head">
-            <h2 className="arb-review-table-heading">Resume an active review</h2>
-            <p className="arb-review-table-sub">
-              Each card shows current posture, evidence readiness, and the next action needed to reach a board-ready pack.
-            </p>
+          <div className="arb-review-section-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+            <div>
+              <h2 className="arb-review-table-heading">Resume an active review</h2>
+              <p className="arb-review-table-sub">
+                Each card shows current posture, evidence readiness, and the next action needed to reach a board-ready pack.
+              </p>
+            </div>
+            <Link href="/arb/projects" className="outline-button" style={{ flexShrink: 0, fontSize: "0.88rem", whiteSpace: "nowrap" }}>
+              View projects →
+            </Link>
           </div>
           <div className="arb-review-list">
             {filteredReviews.map((review) => (

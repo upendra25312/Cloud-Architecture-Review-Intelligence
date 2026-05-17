@@ -7,6 +7,9 @@ import type {
   ArbExportFormat,
   ArbFinding,
   ArbExtractionStatus,
+  ArbProject,
+  ArbProjectListResponse,
+  ArbProjectReviewsResponse,
   ArbRequirement,
   ArbReviewLibraryResponse,
   ArbReviewSummary,
@@ -114,6 +117,7 @@ export async function createArbReview(input: {
   projectName: string;
   customerName: string;
   projectCode?: string;
+  projectId?: string | null;
 }): Promise<ArbReviewSummary> {
   const response = await apiFetch("/api/arb/reviews", {
     method: "POST",
@@ -655,6 +659,72 @@ export async function downloadArbExport(reviewId: string, exportArtifact: ArbExp
  * Downloads an executive PowerPoint report for the review using the Rackspace
  * presentation template style. Returns the PPTX binary as a browser download.
  */
+export async function listArbProjects(): Promise<ArbProjectListResponse> {
+  const response = await apiFetch("/api/arb/projects", {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store"
+  });
+  return readJsonResponse<ArbProjectListResponse>(response, `Unable to load projects (${response.status}).`);
+}
+
+export async function createArbProject(input: {
+  name: string;
+  customerName: string;
+  description?: string;
+  reviewFramework?: string;
+  targetRegions?: string[];
+  tags?: string[];
+}): Promise<{ projectId: string; blobPrefix: string; createdAt: string }> {
+  const response = await apiFetch("/api/arb/projects", {
+    method: "POST",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: JSON.stringify(input)
+  });
+  return readJsonResponse<{ projectId: string; blobPrefix: string; createdAt: string }>(
+    response,
+    `Unable to create project (${response.status}).`
+  );
+}
+
+export async function updateArbProject(
+  projectId: string,
+  updates: Partial<Pick<ArbProject, "name" | "customerName" | "description" | "reviewFramework" | "targetRegions" | "tags" | "status">>
+): Promise<{ projectId: string; updatedAt: string }> {
+  const response = await apiFetch(`/api/arb/projects/${encodeURIComponent(projectId)}`, {
+    method: "PATCH",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: JSON.stringify(updates)
+  });
+  return readJsonResponse<{ projectId: string; updatedAt: string }>(
+    response,
+    `Unable to update project (${response.status}).`
+  );
+}
+
+export async function deleteArbProject(projectId: string): Promise<{ projectId: string; status: string }> {
+  const response = await apiFetch(`/api/arb/projects/${encodeURIComponent(projectId)}`, {
+    method: "DELETE",
+    headers: { Accept: "application/json" }
+  });
+  return readJsonResponse<{ projectId: string; status: string }>(
+    response,
+    `Unable to delete project (${response.status}).`
+  );
+}
+
+export async function listArbProjectReviews(projectId: string): Promise<ArbProjectReviewsResponse> {
+  const response = await apiFetch(`/api/arb/projects/${encodeURIComponent(projectId)}/reviews`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store"
+  });
+  return readJsonResponse<ArbProjectReviewsResponse>(
+    response,
+    `Unable to load project reviews (${response.status}).`
+  );
+}
+
 export async function downloadArbPptxExport(reviewId: string): Promise<void> {
   const url = `/api/arb/reviews/${encodeURIComponent(reviewId)}/exports/pptx`;
 

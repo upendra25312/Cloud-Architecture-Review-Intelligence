@@ -14352,3 +14352,131 @@ button.chip:disabled:hover {
   box-shadow: 0 4px 18px rgba(0,0,0,0.08);
   transform: translateX(4px);
 }
+
+/* ── Projects feature ──────────────────────────────────────────── */
+.arb-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.arb-modal-panel {
+  width: min(520px, 100%);
+  background: var(--surf-2, #fff);
+  border: 1px solid var(--border-md);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+}
+
+.arb-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.arb-modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.arb-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--t3);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.arb-modal-close:hover {
+  background: var(--surf-1);
+  color: var(--t1);
+}
+
+.arb-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px 24px;
+}
+
+.arb-modal-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.arb-form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.arb-form-input {
+  padding: 9px 12px;
+  border: 1px solid var(--border-md);
+  border-radius: 7px;
+  background: var(--surf-0);
+  color: var(--t1);
+  font-size: 0.92rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 140ms;
+}
+
+.arb-form-input:focus {
+  border-color: #c41230;
+  box-shadow: 0 0 0 3px rgba(196, 18, 48, 0.12);
+}
+
+.arb-form-error {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #c41230;
+  background: #fff5f6;
+  border: 1px solid #fecdd3;
+  border-radius: 6px;
+  padding: 9px 12px;
+}
+
+.arb-project-card {
+  transition: border-color 140ms, box-shadow 140ms;
+}
+
+.arb-project-card:hover {
+  border-color: var(--border-md);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.arb-project-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 640px;
+}
+
+.arb-project-title-input {
+  font-size: 1.5rem;
+  font-weight: 800;
+  padding: 8px 12px;
+}

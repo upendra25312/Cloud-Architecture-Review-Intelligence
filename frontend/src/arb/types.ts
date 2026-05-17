@@ -53,6 +53,32 @@ export interface ArbReviewSummary {
   readinessOutcome?: string | null;
   readinessNotes?: string | null;
   documentCount?: number;
+  projectId?: string | null;
+  projectCategory?: string | null;
+}
+
+export interface ArbProject {
+  projectId: string;
+  name: string;
+  customerName: string;
+  description: string;
+  reviewFramework: string;
+  targetRegions: string[];
+  tags: string[];
+  status: string;
+  reviewCount: number;
+  blobPrefix: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ArbProjectListResponse {
+  projects: ArbProject[];
+}
+
+export interface ArbProjectReviewsResponse {
+  projectId: string;
+  reviews: Array<Pick<ArbReviewSummary, "reviewId" | "projectName" | "customerName" | "workflowState" | "overallScore" | "createdAt" | "lastUpdated">>;
 }
 
 export interface ArbReviewLibraryResponse {
