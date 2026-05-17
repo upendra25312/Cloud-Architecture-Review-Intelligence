@@ -7,8 +7,10 @@ export interface RequirementsExportSectionProps {
   exportArtifacts: ArbExportArtifact[];
   onRegenerate: () => void;
   onDownload: (artifact: ArbExportArtifact) => void;
+  onDownloadExcel: () => void;
   regenerating: boolean;
   downloadingId: string | null;
+  downloadingExcel: boolean;
   error: string | null;
 }
 
@@ -16,8 +18,10 @@ export function RequirementsExportSection({
   exportArtifacts,
   onRegenerate,
   onDownload,
+  onDownloadExcel,
   regenerating,
   downloadingId,
+  downloadingExcel,
   error,
 }: RequirementsExportSectionProps) {
   return (
@@ -27,12 +31,23 @@ export function RequirementsExportSection({
       </p>
 
       <p style={{ margin: "0 0 8px", fontSize: "0.9rem", color: "var(--t2)" }}>
-        Formats: Markdown, CSV, HTML
+        Formats: Markdown, CSV, HTML, Excel (XLSX)
       </p>
 
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         <button className="secondary-button" onClick={onRegenerate} disabled={regenerating}>
           {regenerating ? "Regenerating…" : "Regenerate reviewed outputs"}
+        </button>
+
+        <button
+          className="secondary-button"
+          onClick={onDownloadExcel}
+          disabled={downloadingExcel}
+          title="Download a 12-tab Excel workbook with findings, risks, actions, scorecard, and traceability"
+          style={{ display: "flex", alignItems: "center", gap: 6 }}
+        >
+          <span style={{ fontSize: "1rem" }}>📗</span>
+          {downloadingExcel ? "Generating Excel…" : "Export as Excel"}
         </button>
       </div>
 

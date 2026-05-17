@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   createArbExport,
   downloadArbExport,
+  downloadArbPptxExport,
   fetchArbActions,
   fetchArbExports,
   fetchArbFindings,
@@ -15,6 +16,7 @@ import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
 import type {
   ArbAction,
   ArbExportArtifact,
+  ArbExportFormat,
   ArbFinding,
   ArbReviewSummary,
   ArbScorecard,
@@ -45,6 +47,8 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
   const [regenerating, setRegenerating] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [downloadingPptx, setDownloadingPptx] = useState(false);
+  const [downloadingExcel, setDownloadingExcel] = useState(false);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -115,11 +119,11 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
   }
 
   async function handleRegenerate() {
+    const formats: ArbExportFormat[] = ["markdown", "csv", "html", "xlsx"];
     try {
       setRegenerating(true);
       setExportError(null);
-      const formats = ["markdown", "csv", "html"] as const;
-      const results = await Promise.all(
+      await Promise.all(
         formats.map((format) =>
           createArbExport({
             reviewId,
@@ -130,13 +134,45 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
           })
         )
       );
-      setExports((prev) => [...prev, ...results]);
+      const nextExports = await fetchArbExports(reviewId);
+      setExports(nextExports);
     } catch (err) {
       setExportError(
         err instanceof Error ? err.message : "Unable to regenerate exports."
       );
     } finally {
       setRegenerating(false);
+    }
+  }
+
+  async function handleDownloadPptx() {
+    try {
+      setDownloadingPptx(true);
+      setExportError(null);
+      await downloadArbPptxExport(reviewId);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the PowerPoint export.");
+    } finally {
+      setDownloadingPptx(false);
+    }
+  }
+
+  async function handleDownloadExcel() {
+    try {
+      setDownloadingExcel(true);
+      setExportError(null);
+      const artifact = await createArbExport({
+        reviewId,
+        format: "xlsx",
+        includeFindings: true,
+        includeScorecard: true,
+        includeActions: true,
+      });
+      await downloadArbExport(reviewId, artifact);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the Excel export.");
+    } finally {
+      setDownloadingExcel(false);
     }
   }
 
@@ -261,8 +297,12 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
           exportArtifacts={exports}
           onRegenerate={handleRegenerate}
           onDownload={handleDownload}
+          onDownloadPptx={handleDownloadPptx}
+          onDownloadExcel={handleDownloadExcel}
           regenerating={regenerating}
           downloadingId={downloadingId}
+          downloadingPptx={downloadingPptx}
+          downloadingExcel={downloadingExcel}
           error={exportError}
         />
       </>

@@ -50,6 +50,7 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
   const [exportRegenerating, setExportRegenerating] = useState(false);
   const [exportDownloadingId, setExportDownloadingId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [downloadingExcel, setDownloadingExcel] = useState(false);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -148,6 +149,25 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
     }
   }
 
+  async function handleDownloadExcel() {
+    try {
+      setDownloadingExcel(true);
+      setExportError(null);
+      const artifact = await createArbExport({
+        reviewId,
+        format: "xlsx",
+        includeFindings: true,
+        includeScorecard: true,
+        includeActions: true,
+      });
+      await downloadArbExport(reviewId, artifact);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the Excel export.");
+    } finally {
+      setDownloadingExcel(false);
+    }
+  }
+
   // ── Shell fallback ─────────────────────────────────────────────────
   const shellReview: ArbReviewSummary = review ?? {
     reviewId,
@@ -227,8 +247,10 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
           exportArtifacts={exportArtifacts}
           onRegenerate={handleRegenerate}
           onDownload={handleDownload}
+          onDownloadExcel={handleDownloadExcel}
           regenerating={exportRegenerating}
           downloadingId={exportDownloadingId}
+          downloadingExcel={downloadingExcel}
           error={exportError}
         />
       </>
