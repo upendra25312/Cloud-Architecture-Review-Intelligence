@@ -80,6 +80,7 @@ export interface ArbProjectReviewsResponse {
   projectId: string;
   name?: string | null;
   customerName?: string | null;
+  description?: string | null;
   reviews: Array<Pick<ArbReviewSummary, "reviewId" | "projectName" | "customerName" | "workflowState" | "overallScore" | "createdAt" | "lastUpdated">>;
 }
 

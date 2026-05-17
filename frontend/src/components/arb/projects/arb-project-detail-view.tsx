@@ -68,6 +68,14 @@ export function ArbProjectDetailView({ projectId }: { projectId: string }) {
     return () => { cancelled = true; };
   }, [signedIn, resolved, projectId]);
 
+  function openEdit() {
+    setEditName(data?.name ?? "");
+    setEditCustomer(data?.customerName ?? "");
+    setEditDesc(data?.description ?? "");
+    setSaveError(null);
+    setEditing(true);
+  }
+
   async function handleSaveEdit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -78,6 +86,12 @@ export function ArbProjectDetailView({ projectId }: { projectId: string }) {
         customerName: editCustomer.trim() || undefined,
         description: editDesc.trim(),
       });
+      setData((prev) => prev ? {
+        ...prev,
+        name: editName.trim() || prev.name,
+        customerName: editCustomer.trim() || prev.customerName,
+        description: editDesc.trim(),
+      } : prev);
       setEditing(false);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Could not save changes.");
@@ -165,6 +179,15 @@ export function ArbProjectDetailView({ projectId }: { projectId: string }) {
               >
                 + New review
               </Link>
+              {!confirmArchive && (
+                <button
+                  className="outline-button"
+                  onClick={openEdit}
+                  style={{ color: "var(--t2)" }}
+                >
+                  Edit
+                </button>
+              )}
               {!confirmArchive ? (
                 <button
                   className="outline-button"

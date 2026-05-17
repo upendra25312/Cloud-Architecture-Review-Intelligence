@@ -46,6 +46,7 @@ async function handleArbListProjectReviews(request, context) {
       projectId,
       name: projectEntity.name || null,
       customerName: projectEntity.customerName || null,
+      description: projectEntity.description || null,
       reviews,
     });
   } catch (error) {
