@@ -6,8 +6,7 @@
       "hubName": "arbprodv1",
       "storageProvider": { "type": "azureStorage" },
       "maxConcurrentActivityFunctions": 3,
-      "maxConcurrentOrchestratorFunctions": 5,
-      "activityFunctionTimeout": "00:40:00"
+      "maxConcurrentOrchestratorFunctions": 5
     },
     "queues": {
       "batchSize": 1,
