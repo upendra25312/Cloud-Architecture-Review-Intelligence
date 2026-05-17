@@ -4498,21 +4498,21 @@ async function extractSingleFileContent(file, {
     if (![".docx", ".pptx", ".xlsx"].includes(extension)) return;
     const { artifacts, warnings } = await extractOfficeMediaArtifacts(buffer, file.fileName);
     for (const warning of warnings) localVisualExtractionErrors.push(warning);
-    await addVisualEvidenceRecords(artifacts);
+    await addVisualEvidenceRecords(artifacts, 3);
     const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
     if (shouldRunFallback) {
       const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
       for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
-      await addVisualEvidenceRecords(rendered.artifacts);
+      await addVisualEvidenceRecords(rendered.artifacts, 3);
       if (rendered.artifacts.length > 0) {
         const extra = await renderDocumentRemainingPages(buffer, file.fileName);
         for (const warning of extra.warnings) localVisualExtractionErrors.push(warning);
-        if (extra.artifacts.length > 0) await addVisualEvidenceRecords(extra.artifacts);
+        if (extra.artifacts.length > 0) await addVisualEvidenceRecords(extra.artifacts, 3);
         return;
       }
       const fallback = await extractOfficeRenderFallbackEvidence(buffer, file.fileName);
       for (const warning of fallback.warnings) localVisualExtractionErrors.push(warning);
-      await addVisualEvidenceRecords(fallback.artifacts);
+      await addVisualEvidenceRecords(fallback.artifacts, 3);
     }
   }
 
