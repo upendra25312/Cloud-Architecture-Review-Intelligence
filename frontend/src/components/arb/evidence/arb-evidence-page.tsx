@@ -50,7 +50,6 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
   const [groupMode, setGroupMode] = useState<"domain" | "sourceFile">("domain");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [exportLoading, setExportLoading] = useState(false);
   const [exportRegenerating, setExportRegenerating] = useState(false);
   const [exportDownloadingId, setExportDownloadingId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -111,25 +110,6 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
     evidence.length > 0 && evidence.every((e) => e.confidence === "Low");
 
   // ── Handlers ───────────────────────────────────────────────────────
-  async function handleExport() {
-    try {
-      setExportLoading(true);
-      const artifact = await createArbExport({
-        reviewId,
-        format: "markdown",
-        includeFindings: true,
-        includeScorecard: true,
-        includeActions: true,
-      });
-      // Automatically download the exported file
-      await downloadArbExport(reviewId, artifact);
-    } catch {
-      // Export error is non-blocking
-    } finally {
-      setExportLoading(false);
-    }
-  }
-
   async function handleRegenerate() {
     const formats: ArbExportFormat[] = ["markdown", "csv", "html", "xlsx"];
     try {
@@ -268,8 +248,6 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
         <EvidenceStatusBar
           evidence={evidence}
           review={shellReview}
-          onExport={handleExport}
-          exportLoading={exportLoading}
         />
 
         <EvidenceSummaryMetrics metrics={metrics} />

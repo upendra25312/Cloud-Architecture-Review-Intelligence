@@ -4,8 +4,8 @@ export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 let _cachedPrincipal: object | null | undefined = undefined;
 
-async function fetchClientPrincipal(): Promise<object | null> {
-  if (_cachedPrincipal !== undefined) return _cachedPrincipal;
+async function fetchClientPrincipal(forceRefresh = false): Promise<object | null> {
+  if (!forceRefresh && _cachedPrincipal !== undefined) return _cachedPrincipal;
   try {
     const res = await fetch("/.auth/me", { cache: "no-store" });
     if (!res.ok) return (_cachedPrincipal = null);
@@ -20,7 +20,8 @@ async function fetchClientPrincipal(): Promise<object | null> {
 //  1. Prefixes the path with the Function App base URL (when NEXT_PUBLIC_API_URL is set)
 //  2. Injects x-ms-client-principal so the Function App can identify the caller
 export async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
-  const principal = await fetchClientPrincipal();
+  const isWrite = Boolean(init?.method && !["GET", "HEAD", "OPTIONS"].includes(init.method.toUpperCase()));
+  const principal = await fetchClientPrincipal(isWrite);
   const authHeader: Record<string, string> = principal
     ? { "x-ms-client-principal": btoa(JSON.stringify(principal)) }
     : {};

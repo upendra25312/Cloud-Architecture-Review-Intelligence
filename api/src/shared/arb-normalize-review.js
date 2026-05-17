@@ -827,9 +827,11 @@ function normalizeReviewForExport(
   );
 
   // ── Recommendation (canonical) ────────────────────────────────────────────────
-  const recommendation = normalizeRecommendation(
-    scorecard?.recommendation, canonicalDecision.governancePosture
-  );
+  // Always derive from the current governance posture (based on actual open findings)
+  // so all export formats — Excel, Word, HTML, CSV, MD, PPTX — agree on the same value.
+  // Using the stale scorecard.recommendation here caused PPTX to say "Needs Remediation"
+  // while Excel/Word showed "Approved", contradicting each other in the same board pack.
+  const recommendation = canonicalDecision.governancePosture || "Review Required";
 
   // ── SOW traceability (for PPTX backward compat) ───────────────────────────────
   const sowFiles   = (files || []).filter((f) => (f.logicalCategory || "").toLowerCase() === "sow");

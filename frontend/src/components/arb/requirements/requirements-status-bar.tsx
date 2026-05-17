@@ -7,15 +7,11 @@ import styles from "./arb-requirements-page.module.css";
 export interface RequirementsStatusBarProps {
   requirements: ArbRequirement[];
   review: ArbReviewSummary;
-  onExport: () => void;
-  exportLoading: boolean;
 }
 
 export function RequirementsStatusBar({
   requirements,
   review,
-  onExport,
-  exportLoading,
 }: RequirementsStatusBarProps) {
   if (requirements.length === 0) {
     return (
@@ -42,13 +38,6 @@ export function RequirementsStatusBar({
       <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--t1)" }}>
         {metrics.total} total
       </span>
-      <button
-        className="primary-button"
-        onClick={onExport}
-        disabled={exportLoading}
-      >
-        {exportLoading ? "Exporting…" : "Export Board Pack"}
-      </button>
     </div>
   );
 }

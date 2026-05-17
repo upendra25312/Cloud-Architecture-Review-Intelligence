@@ -187,8 +187,8 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
         customerName: reReviewModal.customerName,
       });
       window.location.href = getArbStepHref(newReview.reviewId, "upload", "upload-documents");
-    } catch {
-      setReReviewError("Could not create the new review cycle. Please try again.");
+    } catch (err) {
+      setReReviewError(err instanceof Error ? err.message : "Could not create the new review cycle. Please try again.");
       setReReviewingId(null);
     }
   }

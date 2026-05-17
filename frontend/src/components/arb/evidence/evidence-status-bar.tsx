@@ -7,15 +7,11 @@ import styles from "./arb-evidence-page.module.css";
 export interface EvidenceStatusBarProps {
   evidence: ArbEvidenceFact[];
   review: ArbReviewSummary;
-  onExport: () => void;
-  exportLoading: boolean;
 }
 
 export function EvidenceStatusBar({
   evidence,
   review,
-  onExport,
-  exportLoading,
 }: EvidenceStatusBarProps) {
   if (evidence.length === 0) {
     return (
@@ -45,13 +41,6 @@ export function EvidenceStatusBar({
       <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--t1)" }}>
         {metrics.total} total
       </span>
-      <button
-        className="primary-button"
-        onClick={onExport}
-        disabled={exportLoading}
-      >
-        {exportLoading ? "Exporting…" : "Export Board Pack"}
-      </button>
     </div>
   );
 }

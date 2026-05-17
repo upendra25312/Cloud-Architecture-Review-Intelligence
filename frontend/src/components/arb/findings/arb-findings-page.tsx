@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  createArbExport,
   createArbAction,
-  downloadArbExport,
+  downloadArbPptxExport,
   fetchArbActions,
   fetchArbFindings,
   fetchArbReview,
@@ -215,14 +214,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
     try {
       setExportLoading(true);
       setExportError(null);
-      const artifact = await createArbExport({
-        reviewId,
-        format: "markdown",
-        includeFindings: true,
-        includeScorecard: true,
-        includeActions: true,
-      });
-      await downloadArbExport(reviewId, artifact);
+      await downloadArbPptxExport(reviewId);
     } catch (err) {
       setExportError(err instanceof Error ? err.message : "Unable to export the board pack.");
     } finally {

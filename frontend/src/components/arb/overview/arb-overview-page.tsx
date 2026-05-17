@@ -3,11 +3,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
-  createArbExport,
-  downloadArbExport,
+  downloadArbPptxExport,
   fetchArbActions,
   fetchArbEvidence,
-  fetchArbExports,
   fetchArbFindings,
   fetchArbRequirements,
   fetchArbReview,
@@ -22,7 +20,6 @@ import type { Route } from "next";
 import type {
   ArbAction,
   ArbEvidenceFact,
-  ArbExportArtifact,
   ArbFinding,
   ArbRequirement,
   ArbReviewSummary,
@@ -44,7 +41,6 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
   const [scorecard, setScorecard] = useState<ArbScorecard | null>(null);
   const [evidence, setEvidence] = useState<ArbEvidenceFact[]>([]);
   const [requirements, setRequirements] = useState<ArbRequirement[]>([]);
-  const [exports, setExports] = useState<ArbExportArtifact[]>([]);
   const [siblingReviews, setSiblingReviews] = useState<ArbReviewSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +64,6 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           scorecardRes,
           evidenceRes,
           requirementsRes,
-          exportsRes,
           allReviewsRes,
         ] = await Promise.all([
           fetchArbReview(reviewId),
@@ -77,7 +72,6 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           fetchArbScorecard(reviewId),
           fetchArbEvidence(reviewId),
           fetchArbRequirements(reviewId),
-          fetchArbExports(reviewId),
           listArbReviews().catch(() => ({ reviews: [] })),
         ]);
 
@@ -88,7 +82,6 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
           setScorecard(scorecardRes);
           setEvidence(evidenceRes);
           setRequirements(requirementsRes);
-          setExports(exportsRes);
           const siblings = (allReviewsRes.reviews ?? []).filter(
             (r) =>
               r.reviewId !== reviewId &&
@@ -120,16 +113,7 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
   async function handleExport() {
     try {
       setExportLoading(true);
-      const artifact = await createArbExport({
-        reviewId,
-        format: "markdown",
-        includeFindings: true,
-        includeScorecard: true,
-        includeActions: true,
-      });
-      setExports((prev) => [...prev, artifact]);
-      // Automatically download the exported file
-      await downloadArbExport(reviewId, artifact);
+      await downloadArbPptxExport(reviewId);
     } catch {
       // Export error is non-blocking
     } finally {

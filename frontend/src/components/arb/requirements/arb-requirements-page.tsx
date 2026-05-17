@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   createArbExport,
   downloadArbExport,
+  downloadArbPptxExport,
   fetchArbExports,
   fetchArbRequirements,
   fetchArbReview,
@@ -46,7 +47,7 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
   const [groupMode, setGroupMode] = useState<"category" | "sourceFile">("category");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [exportLoading, setExportLoading] = useState(false);
+  const [downloadingPptx, setDownloadingPptx] = useState(false);
   const [exportRegenerating, setExportRegenerating] = useState(false);
   const [exportDownloadingId, setExportDownloadingId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -100,27 +101,20 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
       : groupRequirementsBySourceFile(filtered);
 
   // ── Handlers ───────────────────────────────────────────────────────
-  async function handleExport() {
+  async function handleDownloadPptx() {
     try {
-      setExportLoading(true);
-      const artifact = await createArbExport({
-        reviewId,
-        format: "markdown",
-        includeFindings: true,
-        includeScorecard: true,
-        includeActions: true,
-      });
-      // Automatically download the exported file
-      await downloadArbExport(reviewId, artifact);
-    } catch {
-      // Export error is non-blocking
+      setDownloadingPptx(true);
+      setExportError(null);
+      await downloadArbPptxExport(reviewId);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the PowerPoint export.");
     } finally {
-      setExportLoading(false);
+      setDownloadingPptx(false);
     }
   }
 
   async function handleRegenerate() {
-    const formats: ArbExportFormat[] = ["markdown", "csv", "html"];
+    const formats: ArbExportFormat[] = ["markdown", "csv", "html", "xlsx", "docx"];
     try {
       setExportRegenerating(true);
       setExportError(null);
@@ -229,8 +223,6 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
         <RequirementsStatusBar
           requirements={requirements}
           review={shellReview}
-          onExport={handleExport}
-          exportLoading={exportLoading}
         />
 
         <RequirementsSummaryMetrics metrics={metrics} />
@@ -267,10 +259,12 @@ export function ArbRequirementsPage({ reviewId }: { reviewId: string }) {
           exportArtifacts={exportArtifacts}
           onRegenerate={handleRegenerate}
           onDownload={handleDownload}
+          onDownloadPptx={handleDownloadPptx}
           onDownloadExcel={handleDownloadExcel}
           onDownloadDocx={handleDownloadDocx}
           regenerating={exportRegenerating}
           downloadingId={exportDownloadingId}
+          downloadingPptx={downloadingPptx}
           downloadingExcel={downloadingExcel}
           downloadingDocx={downloadingDocx}
           error={exportError}

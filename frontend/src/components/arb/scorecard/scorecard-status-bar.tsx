@@ -8,16 +8,12 @@ export interface ScorecardStatusBarProps {
   scorecard: ArbScorecard;
   actions: ArbAction[];
   review: ArbReviewSummary;
-  onExport: () => void;
-  exportLoading: boolean;
 }
 
 export function ScorecardStatusBar({
   scorecard,
   actions,
   review,
-  onExport,
-  exportLoading,
 }: ScorecardStatusBarProps) {
   // generateSummary expects findings — derive a minimal summary from scorecard data
   const summaryText = generateSummary([], scorecard);
@@ -38,14 +34,6 @@ export function ScorecardStatusBar({
         Evidence: <strong>{displayEvidence}</strong>
       </span>
 
-      <button
-        className="primary-button"
-        onClick={onExport}
-        disabled={exportLoading}
-        style={{ marginLeft: "auto" }}
-      >
-        {exportLoading ? "Exporting…" : "Export Board Pack"}
-      </button>
     </div>
   );
 }

@@ -43,7 +43,6 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [exportLoading, setExportLoading] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -98,27 +97,6 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
   }, [reviewId]);
 
   // ── Handlers ───────────────────────────────────────────────────────
-  async function handleExport() {
-    try {
-      setExportLoading(true);
-      setExportError(null);
-      const artifact = await createArbExport({
-        reviewId,
-        format: "markdown",
-        includeFindings: true,
-        includeScorecard: true,
-        includeActions: true,
-      });
-      setExports((prev) => [...prev, artifact]);
-      // Automatically download the exported file
-      await downloadArbExport(reviewId, artifact);
-    } catch (err) {
-      setExportError(err instanceof Error ? err.message : "Unable to export.");
-    } finally {
-      setExportLoading(false);
-    }
-  }
-
   async function handleRegenerate() {
     const formats: ArbExportFormat[] = ["markdown", "csv", "html", "xlsx"];
     try {
@@ -279,8 +257,6 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
           scorecard={scorecard}
           actions={actions}
           review={shellReview}
-          onExport={handleExport}
-          exportLoading={exportLoading}
         />
 
         <SummaryHero

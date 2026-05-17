@@ -3334,11 +3334,13 @@ async function createArbReview(principal, input = {}) {
   const review = buildDefaultReview(reviewId, principal, input);
   const findings = buildDefaultFindings(review);
   const scorecard = buildDefaultScorecard(review);
+  const actions = buildDefaultActions();
   const extraction = buildDefaultExtractionStatus(review);
 
   await client.upsertEntity(toSummaryEntity(review), "Replace");
   await client.upsertEntity(toFindingsEntity(reviewId, principal.userId, findings), "Replace");
   await client.upsertEntity(toScorecardEntity(reviewId, principal.userId, scorecard), "Replace");
+  await client.upsertEntity(toActionsEntity(reviewId, principal.userId, actions), "Replace");
   await client.upsertEntity(toFilesEntity(reviewId, principal.userId, []), "Replace");
   await client.upsertEntity(toExtractionEntity(reviewId, principal.userId, extraction), "Replace");
   await client.upsertEntity(toRequirementsEntity(reviewId, principal.userId, []), "Replace");
