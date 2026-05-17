@@ -16,11 +16,12 @@
     "@azure/functions": "^4.14.0",
     "@azure/identity": "^4.13.0",
     "@azure/storage-blob": "^12.28.0",
+    "docx": "^9.6.1",
     "durable-functions": "^3.0.0",
     "exceljs": "^4.4.0",
     "jszip": "^3.10.1",
-    "pdf-parse": "^1.1.1",
     "parse-multipart-data": "^1.5.0",
+    "pdf-parse": "^1.1.1",
     "pptxgenjs": "^4.0.1"
   },
   "devDependencies": {

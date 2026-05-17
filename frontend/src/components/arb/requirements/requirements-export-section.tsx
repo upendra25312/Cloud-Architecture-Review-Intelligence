@@ -8,9 +8,11 @@ export interface RequirementsExportSectionProps {
   onRegenerate: () => void;
   onDownload: (artifact: ArbExportArtifact) => void;
   onDownloadExcel: () => void;
+  onDownloadDocx: () => void;
   regenerating: boolean;
   downloadingId: string | null;
   downloadingExcel: boolean;
+  downloadingDocx: boolean;
   error: string | null;
 }
 
@@ -19,9 +21,11 @@ export function RequirementsExportSection({
   onRegenerate,
   onDownload,
   onDownloadExcel,
+  onDownloadDocx,
   regenerating,
   downloadingId,
   downloadingExcel,
+  downloadingDocx,
   error,
 }: RequirementsExportSectionProps) {
   return (
@@ -31,7 +35,7 @@ export function RequirementsExportSection({
       </p>
 
       <p style={{ margin: "0 0 8px", fontSize: "0.9rem", color: "var(--t2)" }}>
-        Formats: Markdown, CSV, HTML, Excel (XLSX)
+        Formats: Markdown, CSV, HTML, Excel (XLSX), Word (DOCX)
       </p>
 
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
@@ -48,6 +52,17 @@ export function RequirementsExportSection({
         >
           <span style={{ fontSize: "1rem" }}>📗</span>
           {downloadingExcel ? "Generating Excel…" : "Export as Excel"}
+        </button>
+
+        <button
+          className="secondary-button"
+          onClick={onDownloadDocx}
+          disabled={downloadingDocx}
+          title="Download a structured Word document with scorecard, findings, actions, and requirements"
+          style={{ display: "flex", alignItems: "center", gap: 6 }}
+        >
+          <span style={{ fontSize: "1rem" }}>📄</span>
+          {downloadingDocx ? "Generating Word…" : "Export as Word"}
         </button>
       </div>
 

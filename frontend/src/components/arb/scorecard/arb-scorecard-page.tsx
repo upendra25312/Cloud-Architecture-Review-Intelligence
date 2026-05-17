@@ -49,6 +49,7 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
   const [exportError, setExportError] = useState<string | null>(null);
   const [downloadingPptx, setDownloadingPptx] = useState(false);
   const [downloadingExcel, setDownloadingExcel] = useState(false);
+  const [downloadingDocx, setDownloadingDocx] = useState(false);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -176,6 +177,25 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
     }
   }
 
+  async function handleDownloadDocx() {
+    try {
+      setDownloadingDocx(true);
+      setExportError(null);
+      const artifact = await createArbExport({
+        reviewId,
+        format: "docx",
+        includeFindings: true,
+        includeScorecard: true,
+        includeActions: true,
+      });
+      await downloadArbExport(reviewId, artifact);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the Word export.");
+    } finally {
+      setDownloadingDocx(false);
+    }
+  }
+
   async function handleDownload(artifact: ArbExportArtifact) {
     try {
       setDownloadingId(artifact.exportId);
@@ -299,10 +319,12 @@ export function ArbScorecardPage({ reviewId }: { reviewId: string }) {
           onDownload={handleDownload}
           onDownloadPptx={handleDownloadPptx}
           onDownloadExcel={handleDownloadExcel}
+          onDownloadDocx={handleDownloadDocx}
           regenerating={regenerating}
           downloadingId={downloadingId}
           downloadingPptx={downloadingPptx}
           downloadingExcel={downloadingExcel}
+          downloadingDocx={downloadingDocx}
           error={exportError}
         />
       </>

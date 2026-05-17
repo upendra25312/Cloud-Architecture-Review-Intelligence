@@ -11,6 +11,19 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.0] — 2026-05-17
+
+### Added
+
+- **Word/DOCX export** — 6th export format; structured board-pack Word document
+  with Cover, Executive Summary, Scorecard, Findings (grouped by severity),
+  Actions Register, and Requirements sections; available on Evidence, Scorecard,
+  and Requirements pages alongside PPTX and Excel
+- `docx` npm package added to API dependencies
+- `ArbExportFormat` TypeScript type updated to include `"docx"`
+
+---
+
 ## [0.8.0] — 2026-05-17
 
 ### Added

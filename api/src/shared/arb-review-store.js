@@ -6,6 +6,7 @@ const JSZip = require("jszip");
 const { normalizeReviewForExport } = require("./arb-normalize-review");
 const { validateArbReviewOutputPack } = require("./arb-export-validator");
 const { generateArbExcel } = require("./arb-excel-export");
+const { generateArbDocx } = require("./arb-docx-export");
 const {
   ARB_INPUT_CONTAINER_NAME,
   ARB_OUTPUT_CONTAINER_NAME,
@@ -1593,12 +1594,17 @@ function normalizeExportFormat(value) {
     return normalized === "excel" ? "xlsx" : normalized;
   }
 
-  throw createHttpError(400, "Supported ARB export formats are markdown, csv, html, and xlsx.");
+  if (normalized === "docx" || normalized === "word") {
+    return "docx";
+  }
+
+  throw createHttpError(400, "Supported ARB export formats are markdown, csv, html, xlsx, and docx.");
 }
 
 function getExportExtension(format) {
   if (format === "markdown") return "md";
   if (format === "xlsx")     return "xlsx";
+  if (format === "docx")     return "docx";
   return format;
 }
 
@@ -2375,7 +2381,11 @@ async function writeArbOutputArtifact({
   const fileName = buildExportFileName(review.reviewId, format);
   const blobPath = buildExportBlobPath(principal.userId, review.reviewId, fileName);
 
-  if (format === "xlsx") {
+  if (format === "docx") {
+    const docxPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, decision, "docx");
+    const body = await generateArbDocx(docxPack);
+    await uploadBinaryBlob(outputContainer, blobPath, body, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+  } else if (format === "xlsx") {
     const xlsxPack = normalizeReviewForExport(review, files, requirements, evidence, findings, actions, scorecard, decision, "xlsx");
     const body = await generateArbExcel(xlsxPack);
     await uploadBinaryBlob(outputContainer, blobPath, body, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -2393,7 +2403,8 @@ async function writeArbOutputArtifact({
     await uploadTextBlob(outputContainer, blobPath, body, "text/markdown; charset=utf-8");
   }
 
-  const contentType = format === "xlsx" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  const contentType = format === "docx" ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    : format === "xlsx" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     : format === "csv"  ? "text/csv; charset=utf-8"
     : format === "html" ? "text/html; charset=utf-8"
     : "text/markdown; charset=utf-8";

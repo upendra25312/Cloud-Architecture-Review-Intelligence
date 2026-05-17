@@ -228,7 +228,7 @@ export interface ArbEvidenceFact {
   createdAt?: string;
 }
 
-export type ArbExportFormat = "markdown" | "csv" | "html" | "xlsx";
+export type ArbExportFormat = "markdown" | "csv" | "html" | "xlsx" | "docx";
 
 export interface ArbExportArtifact {
   exportId: string;

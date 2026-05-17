@@ -56,6 +56,7 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
   const [exportError, setExportError] = useState<string | null>(null);
   const [downloadingPptx, setDownloadingPptx] = useState(false);
   const [downloadingExcel, setDownloadingExcel] = useState(false);
+  const [downloadingDocx, setDownloadingDocx] = useState(false);
 
   const authRequired = error?.includes("Sign in is required") ?? false;
 
@@ -191,6 +192,25 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
     }
   }
 
+  async function handleDownloadDocx() {
+    try {
+      setDownloadingDocx(true);
+      setExportError(null);
+      const artifact = await createArbExport({
+        reviewId,
+        format: "docx",
+        includeFindings: true,
+        includeScorecard: true,
+        includeActions: true,
+      });
+      await downloadArbExport(reviewId, artifact);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Unable to generate the Word export.");
+    } finally {
+      setDownloadingDocx(false);
+    }
+  }
+
   // ── Shell fallback ─────────────────────────────────────────────────
   const shellReview: ArbReviewSummary = review ?? {
     reviewId,
@@ -290,10 +310,12 @@ export function ArbEvidencePage({ reviewId }: { reviewId: string }) {
           onDownload={handleDownload}
           onDownloadPptx={handleDownloadPptx}
           onDownloadExcel={handleDownloadExcel}
+          onDownloadDocx={handleDownloadDocx}
           regenerating={exportRegenerating}
           downloadingId={exportDownloadingId}
           downloadingPptx={downloadingPptx}
           downloadingExcel={downloadingExcel}
+          downloadingDocx={downloadingDocx}
           error={exportError}
         />
       </>
