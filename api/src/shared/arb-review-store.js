@@ -1479,7 +1479,10 @@ function isStaleTransientExtraction(extraction) {
   }
 
   const startedAt = extraction.lastStartedAt ? Date.parse(extraction.lastStartedAt) : NaN;
-  const staleAfterMs = Number(process.env.ARB_EXTRACTION_STALE_AFTER_MS || 30 * 60 * 1000);
+  // Queued → Running transition happens in seconds; anything still "Queued" after 3 min with no
+  // progress has no orchestration behind it. Running jobs get the full 30-min window.
+  const defaultStaleMs = extraction.state === "Queued" ? 3 * 60 * 1000 : 30 * 60 * 1000;
+  const staleAfterMs = Number(process.env.ARB_EXTRACTION_STALE_AFTER_MS || defaultStaleMs);
   const stale = !Number.isFinite(startedAt) || Date.now() - startedAt > staleAfterMs;
 
   if (!stale) {
