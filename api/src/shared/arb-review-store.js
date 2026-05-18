@@ -4819,11 +4819,13 @@ async function extractSingleFileContent(file, {
     }
   } else if (isDiagram) {
     try {
-      const buffer = await readBinaryBlob(inputContainer, file.blobPath);
-      if (!buffer || buffer.length === 0) {
-        fileResult = { ...file, extractionStatus: "Failed", extractionError: "Diagram file could not be read from storage." };
-        localExtractionErrors.push(`${file.fileName}: empty blob.`);
-      } else {
+      await withFileTimeout(async () => {
+        const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+        if (!buffer || buffer.length === 0) {
+          fileResult = { ...file, extractionStatus: "Failed", extractionError: "Diagram file could not be read from storage." };
+          localExtractionErrors.push(`${file.fileName}: empty blob.`);
+          return;
+        }
         const text = await extractDiagramText(buffer, file.fileName);
         if (!text || !text.trim()) {
           fileResult = { ...file, extractionStatus: "Failed", extractionError: "No readable labels or diagram metadata could be extracted." };
@@ -4841,7 +4843,7 @@ async function extractSingleFileContent(file, {
             indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
           }
         }
-      }
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown diagram extraction error.";
       fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
@@ -5013,30 +5015,32 @@ async function extractSingleFileContent(file, {
     };
   } else {
     try {
-      const text = await readTextBlob(inputContainer, file.blobPath);
-      if (!text || !text.trim()) {
-        fileResult = { ...file, extractionStatus: "Failed", extractionError: "No readable text could be extracted from the uploaded file." };
-        localExtractionErrors.push(`${file.fileName}: no readable text could be extracted.`);
-      } else {
-        extractedText = text;
-        fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
-        if (DIAGRAM_TEXT_EXTENSIONS.has(getFileExtension(file.fileName))) {
-          const ext = getFileExtension(file.fileName);
-          const diagramType =
-            ext === ".mmd" || ext === ".mermaid" ? "Mermaid" :
-            ext === ".puml" || ext === ".plantuml" ? "PlantUML" :
-            ext === ".excalidraw" ? "Excalidraw" : "Diagram";
-          addVisualEvidenceRecord({
-            sourceName: file.fileName,
-            summaryText: `[${diagramType} architecture diagram: ${file.fileName}]\n\nDiagram specification — describes architecture topology, components, and data flows:\n${text.slice(0, 5000)}`,
-            sourceExcerpt: `${diagramType} diagram specification extracted from ${file.fileName}.`,
-            extractionSource: `${diagramType} diagram specification analysis`
-          }).catch((err) => { console.warn(`[diagram-visual] Failed to create visual evidence for "${file.fileName}":`, err?.message ?? err); });
+      await withFileTimeout(async () => {
+        const text = await readTextBlob(inputContainer, file.blobPath);
+        if (!text || !text.trim()) {
+          fileResult = { ...file, extractionStatus: "Failed", extractionError: "No readable text could be extracted from the uploaded file." };
+          localExtractionErrors.push(`${file.fileName}: no readable text could be extracted.`);
+        } else {
+          extractedText = text;
+          fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+          if (DIAGRAM_TEXT_EXTENSIONS.has(getFileExtension(file.fileName))) {
+            const ext = getFileExtension(file.fileName);
+            const diagramType =
+              ext === ".mmd" || ext === ".mermaid" ? "Mermaid" :
+              ext === ".puml" || ext === ".plantuml" ? "PlantUML" :
+              ext === ".excalidraw" ? "Excalidraw" : "Diagram";
+            addVisualEvidenceRecord({
+              sourceName: file.fileName,
+              summaryText: `[${diagramType} architecture diagram: ${file.fileName}]\n\nDiagram specification — describes architecture topology, components, and data flows:\n${text.slice(0, 5000)}`,
+              sourceExcerpt: `${diagramType} diagram specification extracted from ${file.fileName}.`,
+              extractionSource: `${diagramType} diagram specification analysis`
+            }).catch((err) => { console.warn(`[diagram-visual] Failed to create visual evidence for "${file.fileName}":`, err?.message ?? err); });
+          }
+          if (searchIndexed) {
+            indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+          }
         }
-        if (searchIndexed) {
-          indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
-        }
-      }
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown extraction error.";
       fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
