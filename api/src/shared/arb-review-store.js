@@ -857,12 +857,23 @@ async function identifyPdfDiagramCandidatePages(buffer) {
  * so every page beyond the standard render range must be covered.
  * Stops when the renderer returns no images (end of document) or DOCUMENT_MAX_TOTAL_RENDER_PAGES is reached.
  * Applies to PDF, DOCX, PPTX, and XLSX.
+ *
+ * @param {number} initialRenderCount - Images returned by the first renderOfficeVisualArtifacts call.
+ *   If this is less than OFFICE_RENDERER_MAX_PAGES, all pages were captured in the first batch and
+ *   there is nothing left to render.
  */
-async function renderDocumentRemainingPages(buffer, fileName) {
+async function renderDocumentRemainingPages(buffer, fileName, initialRenderCount = 0) {
   const artifacts = [];
   const warnings = [];
 
   if (!OFFICE_RENDERER_ENDPOINT) return { artifacts, warnings };
+
+  // First batch was short — the document has fewer pages than OFFICE_RENDERER_MAX_PAGES.
+  // All pages were already captured; starting at page OFFICE_RENDERER_MAX_PAGES+1 would
+  // send an out-of-range request to pdftoppm and produce a "Wrong page range" error.
+  if (initialRenderCount > 0 && initialRenderCount < OFFICE_RENDERER_MAX_PAGES) {
+    return { artifacts, warnings };
+  }
 
   const ext = getFileExtension(fileName);
 
@@ -915,7 +926,7 @@ async function renderDocumentRemainingPages(buffer, fileName) {
       if (!res.ok) {
         // Renderer throws when startPage is beyond the document end — treat as clean stop.
         const errMsg = payload?.error || "";
-        if (/no PNG pages|no pages|beyond/i.test(errMsg)) break;
+        if (/no PNG pages|no pages|beyond|wrong page range|page range/i.test(errMsg)) break;
         warnings.push(`${fileName}: batch render pages ${startPage}-${endPage} failed: ${errMsg || `HTTP ${res.status}`}`);
         break;
       }
@@ -3781,7 +3792,7 @@ async function startArbExtraction(principal, reviewId) {
       if (rendered.artifacts.length > 0) {
         // Render all remaining slides/pages beyond the first batch — diagrams and
         // images can appear on any slide/page regardless of content type.
-        const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+        const extra = await renderDocumentRemainingPages(buffer, file.fileName, rendered.artifacts.length);
         for (const warning of extra.warnings) visualExtractionErrors.push(warning);
         if (extra.artifacts.length > 0) {
           await addVisualEvidenceRecords(file, extra.artifacts);
@@ -3833,7 +3844,7 @@ async function startArbExtraction(principal, reviewId) {
 
       // Render all remaining pages beyond the first batch — diagrams can appear
       // on any page regardless of text density or keyword presence.
-      const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+      const extra = await renderDocumentRemainingPages(buffer, file.fileName, rendered.artifacts.length);
       for (const warning of extra.warnings) visualExtractionErrors.push(warning);
       if (extra.artifacts.length > 0) {
         await addVisualEvidenceRecords(file, extra.artifacts);
@@ -4505,7 +4516,7 @@ async function extractSingleFileContent(file, {
       for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
       await addVisualEvidenceRecords(rendered.artifacts, 6);
       if (rendered.artifacts.length > 0) {
-        const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+        const extra = await renderDocumentRemainingPages(buffer, file.fileName, rendered.artifacts.length);
         for (const warning of extra.warnings) localVisualExtractionErrors.push(warning);
         if (extra.artifacts.length > 0) await addVisualEvidenceRecords(extra.artifacts, 6);
         return;
@@ -4541,7 +4552,7 @@ async function extractSingleFileContent(file, {
     for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
     if (rendered.artifacts.length > 0) {
       await addVisualEvidenceRecords(rendered.artifacts);
-      const extra = await renderDocumentRemainingPages(buffer, file.fileName);
+      const extra = await renderDocumentRemainingPages(buffer, file.fileName, rendered.artifacts.length);
       for (const warning of extra.warnings) localVisualExtractionErrors.push(warning);
       if (extra.artifacts.length > 0) await addVisualEvidenceRecords(extra.artifacts);
       return;
