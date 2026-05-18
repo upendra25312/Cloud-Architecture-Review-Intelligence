@@ -5,7 +5,7 @@
     "durableTask": {
       "hubName": "arbprodv1",
       "storageProvider": { "type": "azureStorage" },
-      "maxConcurrentActivityFunctions": 3,
+      "maxConcurrentActivityFunctions": 6,
       "maxConcurrentOrchestratorFunctions": 5
     },
     "queues": {
