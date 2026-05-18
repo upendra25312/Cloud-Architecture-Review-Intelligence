@@ -11,6 +11,76 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.0.0] — 2026-05-18
+
+### Added
+
+- **ARB Projects** — full project management layer on top of the review workflow;
+  create named projects with customer, description, and start date; project list with
+  cards on the ARB workspace; project detail page with header, metadata, and review
+  history; edit project in-place; "+ New review" shortcut pre-fills `projectId` so
+  reviews are automatically scoped to their project
+
+- **E2E smoke test suite** — 12-check Playwright smoke test covering the full Projects
+  lifecycle end-to-end against the live production site: login (passkey-rejector
+  pattern), project list load, create, card appearance, detail view, name/customer
+  display, edit pre-population, save, new-review link with `projectId`, and empty state;
+  runs via `npm --prefix frontend run test:e2e:projects`
+
+- **Node.js 22** — runtime upgraded from Node.js 20 to 22 across Azure Functions,
+  frontend build, and all CI/CD workflows; aligns with Node.js 20 EOL schedule
+
+### Changed
+
+- **Flex Consumption plan (FC1)** — Azure Functions migrated from Y1 Consumption plan
+  to Flex Consumption; `func-arb-review-api-flex` is the new production function app;
+  `functionTimeout` raised to 45 minutes to accommodate long-running Durable
+  extractions; old Y1 app and plan decommissioned
+
+- **Extraction concurrency** — parallel Office visual artifact activities raised from
+  3 → 6; per-file timeout cap raised from 8 min → 12 min; stale-`Queued` phantom
+  timeout tightened from 10 min → 3 min for faster recovery on re-run
+
+- **Office Renderer capacity** — Container App scaled to 3 replicas to serve 6-way
+  concurrency without queuing
+
+### Fixed
+
+- **Projects routing on Static Web Apps** — project detail (`/arb/projects/view?projectId=…`)
+  uses query-param routing instead of dynamic segments; fully compatible with Next.js
+  static export and Azure Static Web Apps `navigationFallback`; removed the
+  `/arb/projects/*` route rule that was breaking the projects list page
+
+- **LibreOffice XLSX Java warning** — "XLSX: No tables as lists allowed" Java log line
+  was causing the Office Renderer to reject valid Excel files; suppressed at source in
+  `server.js` so the renderer now processes all XLSX files cleanly
+
+- **Extraction: multi-page Consumption timeout** — extraction fan-out no longer hits the
+  10-minute hard cap on the old Y1 plan; combined with Flex migration, multi-page
+  document extraction now completes reliably within the 45-minute function timeout
+
+- **Extraction: phantom Queued state** — prevented `instanceId` conflict on re-run and
+  stale `Queued` status blocking subsequent extractions; `getStatus` 404 handled
+  gracefully in Durable orchestrator
+
+- **Office Renderer: over-batch prevention** — renderer no longer requests a page batch
+  that exceeds the actual document page count, eliminating "Wrong page range" errors on
+  short documents
+
+- **CI: broken E2E job removed** — `deploy-frontend.yml` `e2e` job was dead code
+  (wrong `working-directory`, no app server, masked by `continue-on-error`); removed
+  cleanly
+
+- **CI: action version hygiene** — `actions/setup-node@v4` → `@v6` in eval workflow;
+  `actions/download-artifact@v8` (invalid) removed with the dead e2e job; all workflows
+  now consistent on `@v6` for Node.js setup ahead of the June 2026 node20 deprecation
+
+- **CI: ACR name in office renderer deploy** — corrected `ACR_NAME` from
+  `acrcariofficerenderprod` (wrong) to `crarbrevrendererprod` (actual); workflow was
+  failing with `ResourceNotFound` on every run
+
+---
+
 ## [0.9.2] — 2026-05-17
 
 ### Fixed
