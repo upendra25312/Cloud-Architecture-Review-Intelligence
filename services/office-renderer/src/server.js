@@ -87,16 +87,30 @@ async function renderDocumentToImages({ fileName, fileBase64, maxPages, startPag
 
     let pdfPath = inputPath;
     if (extension !== ".pdf") {
-      await runCommand("libreoffice", [
-        "--headless",
-        "--nologo",
-        "--nofirststartwizard",
-        "--convert-to",
-        "pdf",
-        "--outdir",
-        outputDir,
-        inputPath
-      ]);
+      try {
+        await runCommand("libreoffice", [
+          "--headless",
+          "--nologo",
+          "--nofirststartwizard",
+          "--norestore",
+          "--convert-to",
+          "pdf",
+          "--outdir",
+          outputDir,
+          inputPath
+        ]);
+      } catch (libreErr) {
+        // LibreOffice sometimes exits non-zero when Java is unavailable (XLSX charts/macros)
+        // but still produces a valid PDF. Check for the output before failing.
+        pdfPath = path.join(outputDir, "input.pdf");
+        try {
+          await fs.stat(pdfPath);
+          // PDF exists — conversion succeeded despite the warning exit code; continue
+        } catch {
+          // No PDF produced — real conversion failure; re-throw original error
+          throw libreErr;
+        }
+      }
 
       pdfPath = path.join(outputDir, "input.pdf");
     }
