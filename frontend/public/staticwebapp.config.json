@@ -49,10 +49,6 @@
       "statusCode": 302
     },
     {
-      "route": "/arb/projects/*",
-      "rewrite": "/arb/projects/demo-project/index.html"
-    },
-    {
       "route": "/explorer",
       "redirect": "/services",
       "statusCode": 301
