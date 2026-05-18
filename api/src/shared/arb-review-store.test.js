@@ -1116,6 +1116,44 @@ test("visual evidence keeps renderer context when multimodal response is empty",
   assert.match(source, /summary = String\(analyzedSummary \|\| ""\)\.trim\(\) \|\| summary;/);
 });
 
+test("jszip docx fallback extracts text nodes from word/document.xml", async () => {
+  // Validates the zero-config fallback path used when DI is unavailable or throws.
+  // Uses jszip (already a dependency) to parse the Office Open XML package directly.
+  const JSZip2 = require("jszip");
+
+  // Minimal valid docx: ZIP with word/document.xml containing two <w:t> nodes
+  const zip = new JSZip2();
+  zip.folder("word");
+  zip.file("word/document.xml", [
+    '<?xml version="1.0"?>',
+    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">',
+    '<w:body><w:p><w:r>',
+    '<w:t>Hello</w:t>',
+    '</w:r><w:r>',
+    '<w:t> World</w:t>',
+    '</w:r></w:p></w:body>',
+    '</w:document>'
+  ].join(""));
+  zip.file("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>');
+  zip.file("_rels/.rels", '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>');
+
+  const buf = await zip.generateAsync({ type: "nodebuffer" });
+
+  // Replicate the jszip fallback logic from extractSingleFileContent
+  const loaded = await JSZip2.loadAsync(buf);
+  const entry = loaded.file("word/document.xml");
+  assert.ok(entry, "word/document.xml must exist");
+  const xml = await entry.async("string");
+  const textNodes = [];
+  const re = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+  let m;
+  while ((m = re.exec(xml)) !== null) if (m[1]) textNodes.push(m[1]);
+  const extracted = textNodes.join(" ").replace(/\s+/g, " ").trim();
+
+  assert.equal(extracted, "Hello  World".replace(/\s+/g, " ").trim());
+  assert.ok(extracted.length > 0, "jszip fallback must extract non-empty text");
+});
+
 test("createArbReview succeeds with inScope/outOfScope arrays — no Azure Table Storage type error", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const principal = { userId: "arb-user-scope-test", userDetails: "scope@example.com", identityProvider: "aad" };

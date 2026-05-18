@@ -3905,8 +3905,9 @@ async function startArbExtraction(principal, reviewId) {
     const isDiagram = supportsDiagramExtraction(file.fileName);
     const isImage = supportsImageExtraction(file.fileName);
 
-    // ── Spreadsheet extraction via SheetJS ──────────────────────────────────
+    // ── Spreadsheet extraction via ExcelJS (DI fallback when ExcelJS fails) ──
     if (isSpreadsheet) {
+      let diSpreadsheetFallback = false;
       try {
         const buffer = await readBinaryBlob(inputContainer, file.blobPath);
 
@@ -3942,10 +3943,18 @@ async function startArbExtraction(principal, reviewId) {
         }
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
-        nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
-        extractionErrors.push(`${file.fileName}: ${message}`);
+        const diCfg = getDocumentIntelligenceConfiguration();
+        if (!diCfg.configured) {
+          nextFiles.push({ ...file, extractionStatus: "Failed", extractionError: message });
+          extractionErrors.push(`${file.fileName}: ${message}`);
+        } else {
+          // ExcelJS failed but DI is available — fall through to DI path below.
+          extractionErrors.push(`${file.fileName}: ExcelJS parse error (${message}) — retrying with Document Intelligence.`);
+          diSpreadsheetFallback = true;
+        }
       }
-      continue;
+      if (!diSpreadsheetFallback) continue;
+      // diSpreadsheetFallback === true: fall through to supportsDocumentIntelligenceExtraction block
     }
 
     // ── Native diagram extraction (Draw.io / Visio VSDX) ───────────────────
@@ -4058,9 +4067,11 @@ async function startArbExtraction(principal, reviewId) {
       const canUseVisionFallback = visionConfig.configured && supportsVisionExtraction(file.fileName);
 
       const isPdf = getFileExtension(file.fileName) === ".pdf";
-      // PDFs always proceed — pdf-parse provides a zero-config fallback even without DI or Vision.
-      // Non-PDF DI formats (DOCX, PPTX, etc.) still need at least one configured service.
-      if (!isPdf && !diConfig.configured && !canUseVisionFallback) {
+      const isDocx = getFileExtension(file.fileName) === ".docx";
+      // PDFs always proceed — pdf-parse is a zero-config fallback.
+      // DOCX always proceeds — jszip XML extraction is a zero-config fallback.
+      // Other non-PDF DI formats still need at least one configured service.
+      if (!isPdf && !isDocx && !diConfig.configured && !canUseVisionFallback) {
         nextFiles.push({
           ...file,
           extractionStatus: "Limited Evidence",
@@ -4137,7 +4148,13 @@ async function startArbExtraction(principal, reviewId) {
               }
             }
           } else if (diConfig.configured) {
-            text = await extractDocumentText(buffer, file.contentType, file.fileName);
+            try {
+              text = await extractDocumentText(buffer, file.contentType, file.fileName);
+            } catch (diErr) {
+              const diMsg = diErr instanceof Error ? diErr.message : String(diErr);
+              extractionErrors.push(`${file.fileName}: Document Intelligence failed (${diMsg}) — trying fallback.`);
+              // text remains null; jszip fallback runs below for .docx
+            }
           }
 
           // Vision Service OCR fallback — used when DI is not configured or returned no text.
@@ -4145,6 +4162,32 @@ async function startArbExtraction(principal, reviewId) {
           if ((!text || !text.trim()) && canUseVisionFallback) {
             text = await extractTextWithVision(buffer, file.contentType, file.fileName);
             extractionSource = "Azure Vision Service (OCR fallback)";
+          }
+
+          // jszip text fallback for .docx — zero-config, no external service required.
+          // Reads word/document.xml directly from the Office Open XML ZIP package.
+          // Handles cases where DI is not configured, quota-exhausted, or returning no text.
+          if ((!text || !text.trim()) && isDocx) {
+            try {
+              const JSZip = require('jszip');
+              const zip = await JSZip.loadAsync(buffer);
+              const docXmlEntry = zip.file('word/document.xml');
+              if (docXmlEntry) {
+                const xml = await docXmlEntry.async('string');
+                const textNodes = [];
+                const re = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+                let m;
+                while ((m = re.exec(xml)) !== null) if (m[1]) textNodes.push(m[1]);
+                const extracted = textNodes.join(' ').replace(/\s+/g, ' ').trim();
+                if (extracted) {
+                  text = extracted;
+                  extractionSource = 'docx ZIP text extraction (jszip fallback)';
+                  console.log(`[docx-fallback] "${file.fileName}": extracted ${extracted.length} chars via jszip XML fallback.`);
+                }
+              }
+            } catch (zipErr) {
+              console.warn(`[docx-fallback] "${file.fileName}": jszip fallback failed:`, zipErr?.message ?? zipErr);
+            }
           }
 
           // pdf-parse text fallback — zero-config, no external services.
