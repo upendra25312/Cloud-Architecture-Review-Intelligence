@@ -10,7 +10,7 @@ permissions:
 env:
   NODE_VERSION: '22.x'
   RESOURCE_GROUP: 'rg-arb-review-prod'
-  ACR_NAME: 'acrcariofficerenderprod'
+  ACR_NAME: 'crarbrevrendererprod'
   CONTAINER_APP_NAME: 'ca-cari-office-renderer-prod'
   FUNCTION_APP_NAME: 'func-arb-review-api-flex'  # Flex Consumption (FC1)
   IMAGE_NAME: 'cari-office-renderer'
