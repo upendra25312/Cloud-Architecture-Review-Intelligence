@@ -4068,10 +4068,12 @@ async function startArbExtraction(principal, reviewId) {
 
       const isPdf = getFileExtension(file.fileName) === ".pdf";
       const isDocx = getFileExtension(file.fileName) === ".docx";
+      const isXlsx = [".xlsx", ".xls"].includes(getFileExtension(file.fileName));
       // PDFs always proceed — pdf-parse is a zero-config fallback.
       // DOCX always proceeds — jszip XML extraction is a zero-config fallback.
+      // XLSX proceeds when diSpreadsheetFallback is true (ExcelJS crashed — DI or jszip will try).
       // Other non-PDF DI formats still need at least one configured service.
-      if (!isPdf && !isDocx && !diConfig.configured && !canUseVisionFallback) {
+      if (!isPdf && !isDocx && !isXlsx && !diConfig.configured && !canUseVisionFallback) {
         nextFiles.push({
           ...file,
           extractionStatus: "Limited Evidence",
@@ -4187,6 +4189,54 @@ async function startArbExtraction(principal, reviewId) {
               }
             } catch (zipErr) {
               console.warn(`[docx-fallback] "${file.fileName}": jszip fallback failed:`, zipErr?.message ?? zipErr);
+            }
+          }
+
+          // jszip xlsx XML fallback — zero-config, no external service required.
+          // Reads xl/sharedStrings.xml and xl/worksheets/sheet*.xml from the Office Open XML ZIP.
+          // Handles xlsx files where ExcelJS crashes (e.g. threaded comments) AND DI rejects the file.
+          if ((!text || !text.trim()) && isXlsx) {
+            try {
+              const JSZip = require('jszip');
+              const zip = await JSZip.loadAsync(buffer);
+              const sharedStrings = [];
+              const ssEntry = zip.file('xl/sharedStrings.xml');
+              if (ssEntry) {
+                const ssXml = await ssEntry.async('string');
+                const re = /<t[^>]*>([^<]*)<\/t>/g;
+                let m;
+                while ((m = re.exec(ssXml)) !== null) sharedStrings.push(m[1]);
+              }
+              const rows = [];
+              const sheetFiles = Object.keys(zip.files).filter(n => /^xl\/worksheets\/sheet\d+\.xml$/i.test(n)).sort();
+              for (const sheetName of sheetFiles) {
+                const sheetXml = await zip.files[sheetName].async('string');
+                const cellRe = /<c\b[^>]*>.*?<\/c>/gs;
+                const tRe = /\bt="s"\b/;
+                const vRe = /<v>([^<]*)<\/v>/;
+                let cm;
+                const rowValues = [];
+                while ((cm = cellRe.exec(sheetXml)) !== null) {
+                  const cell = cm[0];
+                  const vm = vRe.exec(cell);
+                  if (!vm) continue;
+                  if (tRe.test(cell)) {
+                    const idx = parseInt(vm[1], 10);
+                    rowValues.push(isNaN(idx) ? vm[1] : (sharedStrings[idx] ?? vm[1]));
+                  } else {
+                    rowValues.push(vm[1]);
+                  }
+                }
+                if (rowValues.length > 0) rows.push(rowValues.join(', '));
+              }
+              const extracted = rows.join('\n').trim();
+              if (extracted) {
+                text = extracted;
+                extractionSource = 'xlsx ZIP text extraction (jszip fallback)';
+                console.log(`[xlsx-fallback] "${file.fileName}": extracted ${extracted.length} chars via jszip XML fallback.`);
+              }
+            } catch (zipErr) {
+              console.warn(`[xlsx-fallback] "${file.fileName}": jszip xlsx fallback failed:`, zipErr?.message ?? zipErr);
             }
           }
 
@@ -4686,7 +4736,7 @@ async function extractSingleFileContent(file, {
     if (!diSpreadsheetFallback) {
       // fileResult was set inside the try/catch above — return it.
     } else {
-      // Fall through: treat this xlsx as a DI-supported document for text extraction.
+      // Fall through: ExcelJS crashed and DI is configured — try DI first, then jszip xlsx fallback.
       try {
         await withFileTimeout(async () => {
           const buffer = await readBinaryBlob(inputContainer, file.blobPath);
@@ -4695,10 +4745,64 @@ async function extractSingleFileContent(file, {
             localExtractionErrors.push(`${file.fileName}: empty blob (DI fallback).`);
             return;
           }
-          const text = await extractDocumentText(buffer, file.contentType, file.fileName);
+          let text = null;
+          // Attempt 1: Document Intelligence
+          try {
+            text = await extractDocumentText(buffer, file.contentType, file.fileName);
+          } catch (diErr) {
+            const diMsg = diErr instanceof Error ? diErr.message : String(diErr);
+            localExtractionErrors.push(`${file.fileName}: DI fallback failed (${diMsg}) — trying jszip xlsx extraction.`);
+          }
+          // Attempt 2: jszip xlsx XML extraction (zero-config, no external service).
+          // Reads xl/sharedStrings.xml and xl/worksheets/sheet*.xml from the Office Open XML ZIP package.
           if (!text || !text.trim()) {
-            fileResult = { ...file, extractionStatus: "Failed", extractionError: "Document Intelligence returned no text from the spreadsheet." };
-            localExtractionErrors.push(`${file.fileName}: DI returned no text.`);
+            try {
+              const JSZip = require('jszip');
+              const zip = await JSZip.loadAsync(buffer);
+              // Extract shared strings table (maps string indices to values)
+              const sharedStrings = [];
+              const ssEntry = zip.file('xl/sharedStrings.xml');
+              if (ssEntry) {
+                const ssXml = await ssEntry.async('string');
+                const re = /<t[^>]*>([^<]*)<\/t>/g;
+                let m;
+                while ((m = re.exec(ssXml)) !== null) sharedStrings.push(m[1]);
+              }
+              // Extract cell values from all worksheets
+              const rows = [];
+              const sheetFiles = Object.keys(zip.files).filter(n => /^xl\/worksheets\/sheet\d+\.xml$/i.test(n)).sort();
+              for (const sheetName of sheetFiles) {
+                const sheetXml = await zip.files[sheetName].async('string');
+                const cellRe = /<c\b[^>]*>.*?<\/c>/gs;
+                const tRe = /\bt="s"\b/;
+                const vRe = /<v>([^<]*)<\/v>/;
+                let cm;
+                const rowValues = [];
+                while ((cm = cellRe.exec(sheetXml)) !== null) {
+                  const cell = cm[0];
+                  const vm = vRe.exec(cell);
+                  if (!vm) continue;
+                  if (tRe.test(cell)) {
+                    // Shared string reference
+                    const idx = parseInt(vm[1], 10);
+                    rowValues.push(isNaN(idx) ? vm[1] : (sharedStrings[idx] ?? vm[1]));
+                  } else {
+                    rowValues.push(vm[1]);
+                  }
+                }
+                if (rowValues.length > 0) rows.push(rowValues.join(', '));
+              }
+              const extracted = rows.join('\n').trim();
+              if (extracted) {
+                text = extracted;
+              }
+            } catch (zipErr) {
+              localExtractionErrors.push(`${file.fileName}: jszip xlsx fallback failed: ${zipErr?.message ?? zipErr}`);
+            }
+          }
+          if (!text || !text.trim()) {
+            fileResult = { ...file, extractionStatus: "Failed", extractionError: "All extraction methods failed for this spreadsheet (ExcelJS crash, DI rejected, jszip fallback empty)." };
+            localExtractionErrors.push(`${file.fileName}: all fallbacks exhausted.`);
           } else {
             extractedText = text;
             fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
@@ -4710,7 +4814,7 @@ async function extractSingleFileContent(file, {
       } catch (diError) {
         const diMsg = diError instanceof Error ? diError.message : "Unknown DI error.";
         fileResult = { ...file, extractionStatus: "Failed", extractionError: diMsg };
-        localExtractionErrors.push(`${file.fileName}: DI fallback failed: ${diMsg}`);
+        localExtractionErrors.push(`${file.fileName}: DI/xlsx fallback failed: ${diMsg}`);
       }
     }
   } else if (isDiagram) {
