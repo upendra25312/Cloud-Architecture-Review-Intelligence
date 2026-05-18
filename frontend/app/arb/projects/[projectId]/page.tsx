@@ -1,3 +1,4 @@
+import { use } from "react";
 import { ArbProjectDetailView } from "@/components/arb/projects/arb-project-detail-view";
 
 type PageProps = {
@@ -8,7 +9,9 @@ export function generateStaticParams() {
   return [{ projectId: "demo-project" }];
 }
 
-export default async function ArbProjectDetailPage({ params }: PageProps) {
-  const { projectId } = await params;
+// Non-async: use React.use(params) instead of await so client-side navigation
+// to un-pre-generated project IDs works in the Next.js static export.
+export default function ArbProjectDetailPage({ params }: PageProps) {
+  const { projectId } = use(params);
   return <ArbProjectDetailView projectId={projectId} />;
 }
