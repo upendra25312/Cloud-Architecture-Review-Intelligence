@@ -588,6 +588,57 @@ test("stale running extraction status is normalized back to not started", async 
   }
 });
 
+test("getArbExtractionStatus reflects SOW uploaded after extraction ran — no false missing-SOW error", async () => {
+  // Regression: extraction snapshot freezes missingRequiredItems at extraction-start time.
+  // A SOW uploaded after extraction begins stays Pending and is absent from the snapshot,
+  // producing "Missing required artifact: SOW" even though the file is present. The fix
+  // re-evaluates missingRequiredItems from the live file list on every status read.
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = {
+    userId: "arb-user-sow-late",
+    userDetails: "late-sow@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "late-sow",
+      projectName: "Late SOW Upload"
+    });
+
+    // Upload only the design doc — no SOW yet
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "design-doc.md",
+        logicalCategory: "design_doc",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Azure landing zone architecture with hub-spoke, security controls, and RBAC policy.")
+      }
+    ]);
+
+    // Run extraction without the SOW — snapshot will record missingRequiredItems = ["sow"]
+    const extractionResult = await store.startArbExtraction(principal, created.reviewId);
+    assert.deepEqual(extractionResult.missingRequiredItems, ["sow"], "extraction snapshot should record SOW as missing");
+
+    // Now upload the SOW (simulating "uploaded after extraction ran")
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "scope-sow.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Statement of Work: Trust Bank Azure Landing Zone UKSouth/UKWest v1. Scope approved.")
+      }
+    ]);
+
+    // Refresh status — must reflect the live file list, not the stale extraction snapshot
+    const status = await store.getArbExtractionStatus(principal, created.reviewId);
+    assert.deepEqual(status.missingRequiredItems, [], "SOW uploaded after extraction should not appear as missing in status");
+    assert.ok(!status.readinessNotes?.toLowerCase().includes("required upload category"), "readinessNotes should not claim a required category is missing");
+  } finally {
+    cleanup();
+  }
+});
+
 test("starting extraction produces requirements and evidence from text files", async () => {
   const { store, cleanup } = loadArbReviewStore();
   const principal = {

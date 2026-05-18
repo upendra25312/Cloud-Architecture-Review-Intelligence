@@ -1462,6 +1462,9 @@ function buildDefaultExtractionStatus(review) {
     completedSteps: [],
     failedSteps: [],
     evidenceReadinessState: review.evidenceReadinessState,
+    missingRequiredItems: review.missingRequiredItems ?? [],
+    missingRecommendedItems: review.missingRecommendedItems ?? [],
+    readinessNotes: review.readinessNotes ?? null,
     extractionErrors: [],
     lastStartedAt: null,
     lastCompletedAt: null,
@@ -5135,7 +5138,40 @@ async function getArbExtractionStatus(principal, reviewId) {
   const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
   const review = await getArbReview(principal, reviewId);
   const extractionEntity = await getEntity(client, reviewId, getRowKey(EXTRACTION_ROW_KEY, principal.userId));
-  return fromExtractionEntity(extractionEntity, review);
+  const status = fromExtractionEntity(extractionEntity, review);
+
+  // Re-evaluate upload-level readiness against the live file list on every read.
+  // The extraction snapshot is frozen at extraction-start time — files uploaded after
+  // extraction began (or files that stayed Pending from a previous failed run) will not
+  // be in the snapshot, producing a false "SOW missing" error even when the file is
+  // present. Override missingRequiredItems / readinessNotes from the current file list
+  // so "Refresh status" reflects actual uploaded state, not stale extraction metadata.
+  // Re-evaluate upload-level readiness against the live file list on every read.
+  // The extraction snapshot is frozen at extraction-start time — files uploaded after
+  // extraction began (or after extraction completed) will not be reflected in the stored
+  // missingRequiredItems, producing false "SOW missing" errors even when the file is
+  // present. When a new file is uploaded after extraction, the upload resets the
+  // extraction state to "Not Started" — but that Not Started entity is built from the
+  // current readiness snapshot, so it already carries the correct missingRequiredItems.
+  // The live re-evaluation here covers all remaining edge cases and ensures Refresh
+  // always reflects the actual uploaded file set.
+  const filesEntity = await getEntity(client, reviewId, getRowKey(FILES_ROW_KEY, principal.userId));
+  const currentFiles = fromFilesEntity(filesEntity);
+  if (currentFiles.length > 0) {
+    const liveReadiness = buildReadinessFromFiles(currentFiles);
+    const previousMissingCount = Array.isArray(status.missingRequiredItems)
+      ? status.missingRequiredItems.length
+      : Infinity;
+    status.missingRequiredItems = liveReadiness.missingRequiredItems;
+    status.missingRecommendedItems = liveReadiness.missingRecommendedItems;
+    // Only replace readinessNotes when required-item coverage improves — preserve
+    // contextual messages such as "stale extraction — click Start analysis".
+    if (liveReadiness.missingRequiredItems.length < previousMissingCount) {
+      status.readinessNotes = liveReadiness.readinessNotes;
+    }
+  }
+
+  return status;
 }
 
 async function getArbRequirements(principal, reviewId) {
