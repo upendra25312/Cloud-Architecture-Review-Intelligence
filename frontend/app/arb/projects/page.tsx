@@ -214,7 +214,7 @@ function ProjectCard({
 
       <div className="arb-review-links">
         <Link
-          href={`/arb/projects/${encodeURIComponent(project.projectId)}`}
+          href={`/arb/projects/view?projectId=${encodeURIComponent(project.projectId)}`}
           className="primary-button"
           style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
         >

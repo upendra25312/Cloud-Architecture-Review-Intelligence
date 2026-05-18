@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Route } from "next";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuthSession } from "@/components/auth-session-provider";
 import {
   listArbProjectReviews,
@@ -29,10 +29,8 @@ function workflowStateColor(state: string): string {
   return "#94a3b8";
 }
 
-export function ArbProjectDetailView() {
+export function ArbProjectDetailView({ projectId }: { projectId: string }) {
   const router = useRouter();
-  const rawParams = useParams();
-  const projectId = (rawParams?.projectId as string) ?? "";
   const { signedIn, resolved } = useAuthSession();
 
   const [data, setData] = useState<ArbProjectReviewsResponse | null>(null);

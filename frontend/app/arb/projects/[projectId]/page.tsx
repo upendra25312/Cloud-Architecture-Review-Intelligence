@@ -1,12 +1,17 @@
-import { ArbProjectDetailView } from "@/components/arb/projects/arb-project-detail-view";
+import { redirect } from "next/navigation";
+
+type PageProps = {
+  params: Promise<{ projectId: string }>;
+};
 
 export function generateStaticParams() {
   return [{ projectId: "demo-project" }];
 }
 
-// Page passes no props — ArbProjectDetailView reads projectId via useParams()
-// so it works for any project UUID at runtime without needing a server-rendered
-// RSC payload (which doesn't exist in the static export for un-pre-generated IDs).
-export default function ArbProjectDetailPage() {
-  return <ArbProjectDetailView />;
+// Redirect legacy /arb/projects/{id} paths to the query-param URL.
+// Next.js static export requires pre-generated paths for dynamic segments;
+// the real project detail is served via /arb/projects/view?projectId={id}.
+export default async function ArbProjectDetailPage({ params }: PageProps) {
+  const { projectId } = await params;
+  redirect(`/arb/projects/view?projectId=${encodeURIComponent(projectId)}`);
 }
