@@ -18,7 +18,7 @@ permissions:
 
 env:
   NODE_VERSION: '22.x'
-  FUNCTION_APP_NAME: 'func-arb-review-api'  # Matches Terraform: func-${prefix}-api
+  FUNCTION_APP_NAME: 'func-arb-review-api-flex'  # Flex Consumption (FC1) — migrated from Y1
 
 jobs:
   # ─── Build & Test ────────────────────────────────────────────────────────────

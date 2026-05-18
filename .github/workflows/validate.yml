@@ -87,7 +87,7 @@ jobs:
           azcliversion: latest
           inlineScript: |
             SETTINGS=$(az functionapp config appsettings list \
-              --name func-arb-review-api \
+              --name func-arb-review-api-flex \
               --resource-group rg-arb-review-prod \
               --query "[].name" -o tsv)
             echo "App settings: $SETTINGS"
