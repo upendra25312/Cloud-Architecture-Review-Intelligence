@@ -23,7 +23,8 @@
     "test:e2e:a11y": "playwright test tests/e2e/a11y-core.spec.ts --workers=1 --reporter=line",
     "test:e2e:visual": "playwright test tests/e2e/visual-core.spec.ts --workers=1 --reporter=line",
     "test:e2e:review-cloud": "playwright test tests/e2e/review-cloud.spec.ts --workers=1 --reporter=line",
-    "test:e2e:admin-copilot": "playwright test tests/e2e/admin-copilot.spec.ts --workers=1 --reporter=line"
+    "test:e2e:admin-copilot": "playwright test tests/e2e/admin-copilot.spec.ts --workers=1 --reporter=line",
+    "test:e2e:projects": "playwright test tests/e2e/projects-smoke-test.spec.js --workers=1 --reporter=line --timeout=360000"
   },
   "dependencies": {
     "@azure/ai-form-recognizer": "^5.1.0",
