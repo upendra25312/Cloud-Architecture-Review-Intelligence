@@ -2775,6 +2775,8 @@ function toSummaryEntity(review) {
   const {
     missingRequiredItems,
     missingRecommendedItems,
+    inScope,
+    outOfScope,
     ...persistableReview
   } = review;
 
@@ -2787,7 +2789,9 @@ function toSummaryEntity(review) {
     targetReviewDate: review.targetReviewDate ?? "",
     notes: review.notes ?? "",
     missingRequiredItemsJson: JSON.stringify(missingRequiredItems ?? []),
-    missingRecommendedItemsJson: JSON.stringify(missingRecommendedItems ?? [])
+    missingRecommendedItemsJson: JSON.stringify(missingRecommendedItems ?? []),
+    inScopeJson: JSON.stringify(inScope ?? []),
+    outOfScopeJson: JSON.stringify(outOfScope ?? [])
   };
 }
 
@@ -3027,7 +3031,9 @@ function fromSummaryEntity(entity) {
     documentCount: Number(entity.documentCount ?? 0),
     lastUpdated: entity.lastUpdated,
     projectId: entity.projectId || null,
-    projectCategory: entity.projectCategory || null
+    projectCategory: entity.projectCategory || null,
+    inScope: entity.inScopeJson ? JSON.parse(entity.inScopeJson) : [],
+    outOfScope: entity.outOfScopeJson ? JSON.parse(entity.outOfScopeJson) : []
   };
 }
 

@@ -1115,3 +1115,26 @@ test("visual evidence keeps renderer context when multimodal response is empty",
   assert.match(source, /const analyzedSummary = await describeImageForReview/);
   assert.match(source, /summary = String\(analyzedSummary \|\| ""\)\.trim\(\) \|\| summary;/);
 });
+
+test("createArbReview succeeds with inScope/outOfScope arrays — no Azure Table Storage type error", async () => {
+  const { store, cleanup } = loadArbReviewStore();
+  const principal = { userId: "arb-user-scope-test", userDetails: "scope@example.com", identityProvider: "aad" };
+  try {
+    // This was throwing "Unknown EDM type object" because inScope: [] and outOfScope: [] are
+    // arrays which Azure Table Storage cannot store as raw property values.
+    const created = await store.createArbReview(principal, {
+      projectName: "DuPoint Landing Zone",
+      customerName: "DuPoint",
+      projectId: "proj-abc123-test"
+    });
+    assert.ok(created.reviewId, "review should be created with a reviewId");
+    assert.equal(created.projectName, "DuPoint Landing Zone");
+
+    // inScope and outOfScope should round-trip through storage correctly
+    const review = await store.getArbReview(principal, created.reviewId);
+    assert.ok(Array.isArray(review.inScope), "inScope should be an array after round-trip");
+    assert.ok(Array.isArray(review.outOfScope), "outOfScope should be an array after round-trip");
+  } finally {
+    cleanup();
+  }
+});
