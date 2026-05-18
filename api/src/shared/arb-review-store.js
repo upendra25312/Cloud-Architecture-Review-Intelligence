@@ -4647,6 +4647,7 @@ async function extractSingleFileContent(file, {
   const isImage = supportsImageExtraction(file.fileName);
 
   if (isSpreadsheet) {
+    let diSpreadsheetFallback = false;
     try {
       await withFileTimeout(async () => {
         const buffer = await readBinaryBlob(inputContainer, file.blobPath);
@@ -4670,8 +4671,47 @@ async function extractSingleFileContent(file, {
       }, 720000);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown spreadsheet extraction error.";
-      fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
-      localExtractionErrors.push(`${file.fileName}: ${message}`);
+      const diCfg = getDocumentIntelligenceConfiguration();
+      if (!diCfg.configured) {
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: message };
+        localExtractionErrors.push(`${file.fileName}: ${message}`);
+      } else {
+        // ExcelJS failed but DI is available — fall through to DI extraction below.
+        localExtractionErrors.push(`${file.fileName}: ExcelJS parse error (${message}) — retrying with Document Intelligence.`);
+        diSpreadsheetFallback = true;
+      }
+    }
+    // Only continue to DI fallback when ExcelJS crashed and DI is configured.
+    // For all other spreadsheet outcomes (success, empty, no-DI-fail), return early.
+    if (!diSpreadsheetFallback) {
+      // fileResult was set inside the try/catch above — return it.
+    } else {
+      // Fall through: treat this xlsx as a DI-supported document for text extraction.
+      try {
+        await withFileTimeout(async () => {
+          const buffer = await readBinaryBlob(inputContainer, file.blobPath);
+          if (!buffer || buffer.length === 0) {
+            fileResult = { ...file, extractionStatus: "Failed", extractionError: "Spreadsheet file could not be read from storage (DI fallback)." };
+            localExtractionErrors.push(`${file.fileName}: empty blob (DI fallback).`);
+            return;
+          }
+          const text = await extractDocumentText(buffer, file.contentType, file.fileName);
+          if (!text || !text.trim()) {
+            fileResult = { ...file, extractionStatus: "Failed", extractionError: "Document Intelligence returned no text from the spreadsheet." };
+            localExtractionErrors.push(`${file.fileName}: DI returned no text.`);
+          } else {
+            extractedText = text;
+            fileResult = { ...file, extractionStatus: "Completed", extractionError: null };
+            if (searchIndexed) {
+              indexArbDocumentChunks(reviewId, file.fileId, file.fileName, file.logicalCategory, text).catch((err) => { console.warn(`[search-index] Failed to index "${file.fileName}":`, err?.message ?? err); });
+            }
+          }
+        }, 720000);
+      } catch (diError) {
+        const diMsg = diError instanceof Error ? diError.message : "Unknown DI error.";
+        fileResult = { ...file, extractionStatus: "Failed", extractionError: diMsg };
+        localExtractionErrors.push(`${file.fileName}: DI fallback failed: ${diMsg}`);
+      }
     }
   } else if (isDiagram) {
     try {
@@ -4743,7 +4783,11 @@ async function extractSingleFileContent(file, {
     const visionConfig = getVisionServiceConfiguration();
     const canUseVisionFallback = visionConfig.configured && supportsVisionExtraction(file.fileName);
     const isPdf = getFileExtension(file.fileName) === ".pdf";
-    if (!isPdf && !diConfig.configured && !canUseVisionFallback) {
+    const isDocx = getFileExtension(file.fileName) === ".docx";
+    // PDFs always proceed — pdf-parse is a zero-config fallback.
+    // DOCX always proceeds — jszip XML extraction is a zero-config fallback.
+    // Other non-PDF DI formats still need at least one configured service.
+    if (!isPdf && !isDocx && !diConfig.configured && !canUseVisionFallback) {
       fileResult = {
         ...file,
         extractionStatus: "Limited Evidence",
@@ -4786,11 +4830,41 @@ async function extractSingleFileContent(file, {
               }
             }
           } else if (diConfig.configured) {
-            text = await extractDocumentText(buffer, file.contentType, file.fileName);
+            try {
+              text = await extractDocumentText(buffer, file.contentType, file.fileName);
+            } catch (diErr) {
+              const diMsg = diErr instanceof Error ? diErr.message : String(diErr);
+              localExtractionErrors.push(`${file.fileName}: Document Intelligence failed (${diMsg}) — trying fallback.`);
+              // text remains null; jszip fallback runs below for .docx
+            }
           }
           if ((!text || !text.trim()) && canUseVisionFallback) {
             text = await extractTextWithVision(buffer, file.contentType, file.fileName);
             extractionSource = "Azure Vision Service (OCR fallback)";
+          }
+          // jszip text fallback for .docx — zero-config, no external service required.
+          // Reads word/document.xml directly from the Office Open XML ZIP package.
+          // Handles cases where DI is not configured, quota-exhausted, or returning no text.
+          if ((!text || !text.trim()) && isDocx) {
+            try {
+              const JSZip = require('jszip');
+              const zip = await JSZip.loadAsync(buffer);
+              const docXmlEntry = zip.file('word/document.xml');
+              if (docXmlEntry) {
+                const xml = await docXmlEntry.async('string');
+                const textNodes = [];
+                const re = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+                let m;
+                while ((m = re.exec(xml)) !== null) if (m[1]) textNodes.push(m[1]);
+                const extracted = textNodes.join(' ').replace(/\s+/g, ' ').trim();
+                if (extracted) {
+                  text = extracted;
+                  extractionSource = 'docx ZIP text extraction (jszip fallback)';
+                }
+              }
+            } catch (zipErr) {
+              localExtractionErrors.push(`${file.fileName}: jszip fallback failed: ${zipErr?.message ?? zipErr}`);
+            }
           }
           if (!text || !text.trim()) {
             try {
