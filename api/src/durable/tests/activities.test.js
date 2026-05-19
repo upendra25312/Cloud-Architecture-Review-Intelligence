@@ -123,6 +123,21 @@ describe('loadFilesForExtraction activity — registration side-effect', () => {
   it('module loads without throwing', () => {
     assert.doesNotThrow(() => require('../activities/loadFilesForExtraction'));
   });
+
+  it('selectFilesForExtraction includes previously completed files for explicit reruns', () => {
+    const { selectFilesForExtraction } = require('../activities/loadFilesForExtraction');
+    const files = [
+      { fileId: 'f1', extractionStatus: 'Completed' },
+      { fileId: 'f2', extractionStatus: 'Pending' },
+      { fileId: 'f3', extractionStatus: 'Failed' },
+      null
+    ];
+
+    assert.deepEqual(
+      selectFilesForExtraction(files).map((file) => file.fileId),
+      ['f1', 'f2', 'f3']
+    );
+  });
 });
 
 // ── persistExtractionResults — registration side-effect ──────────────────

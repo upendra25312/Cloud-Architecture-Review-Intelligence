@@ -3,6 +3,10 @@
 const df = require('durable-functions');
 const { getArbFiles, markArbExtractionRunning } = require('../../shared/arb-review-store');
 
+function selectFilesForExtraction(files) {
+  return Array.isArray(files) ? files.filter(Boolean) : [];
+}
+
 /**
  * Activity: loadFilesForExtraction
  *
@@ -33,8 +37,11 @@ async function loadFilesForExtractionHandler(input, context) {
     });
   }
 
-  // Files already marked Completed are skipped to avoid re-running extraction.
-  const pendingFiles = files.filter((f) => f && f.extractionStatus !== 'Completed');
+  // An explicit Start/Retry analysis request must rebuild extraction outputs
+  // from the current package. Do not skip files previously marked Completed:
+  // zombie or partial runs can leave all file rows Completed while evidence,
+  // requirements, or workflow state remain stale.
+  const filesForExtraction = selectFilesForExtraction(files);
 
   // Mark extraction as Running so the UI shows progress immediately
   await markArbExtractionRunning(principal, reviewId);
@@ -44,13 +51,13 @@ async function loadFilesForExtractionHandler(input, context) {
       activity: 'loadFilesForExtraction',
       reviewId,
       totalCount: files.length,
-      pendingCount: pendingFiles.length
+      pendingCount: filesForExtraction.length
     }));
   }
 
-  return { files: pendingFiles, totalCount: files.length };
+  return { files: filesForExtraction, totalCount: files.length };
 }
 
 df.app.activity('loadFilesForExtraction', { handler: loadFilesForExtractionHandler });
 
-module.exports = { loadFilesForExtractionHandler };
+module.exports = { loadFilesForExtractionHandler, selectFilesForExtraction };
