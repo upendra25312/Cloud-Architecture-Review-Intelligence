@@ -26,16 +26,16 @@ async function getFoundryProjectToken() {
   return token.token;
 }
 // Primary model for deep ARB analysis (findings, scorecard, domain scoring).
-// claude-sonnet-4-6: 44s/run, best structured JSON + gap analysis quality.
-// Falls back to FOUNDRY_AGENT_MODEL if not set.
-const FOUNDRY_ANALYSIS_MODEL = process.env.FOUNDRY_ANALYSIS_MODEL || process.env.FOUNDRY_AGENT_MODEL || "arb-claude-sonnet";
+// gpt-5.4: frontier reasoning, best CAF/WAF gap analysis quality, GlobalStandard deployment.
+// Falls back to FOUNDRY_AGENT_MODEL (gpt-4.1) if primary unavailable.
+const FOUNDRY_ANALYSIS_MODEL = process.env.FOUNDRY_ANALYSIS_MODEL || process.env.FOUNDRY_AGENT_MODEL || "gpt-5.4";
 
 // Model for per-image visual analysis (describeImageForReview).
-// claude-haiku-4-5: 120 tps, $0.003/image — 10× cheaper than Sonnet, sufficient for diagram labelling.
+// Defaults to gpt-4.1 — proven for diagram labelling, avoids consuming gpt-5.4 TPM on vision tasks.
 // Falls back to FOUNDRY_ANALYSIS_MODEL if not set.
-const FOUNDRY_VISION_MODEL = process.env.FOUNDRY_VISION_MODEL || FOUNDRY_ANALYSIS_MODEL;
+const FOUNDRY_VISION_MODEL = process.env.FOUNDRY_VISION_MODEL || "arb-gpt41";
 
-// Legacy single-model constant — kept for the Foundry Responses agent path and aiEnhanceRequirements.
+// Fallback / legacy single-model constant — used when primary fails and for aiEnhanceRequirements.
 const FOUNDRY_AGENT_MODEL = process.env.FOUNDRY_AGENT_MODEL || "arb-gpt41";
 const OPENAI_API_VERSION = "2025-01-01-preview";
 const MICROSOFT_LEARN_MCP_ENDPOINT = "https://learn.microsoft.com/api/mcp";
@@ -988,10 +988,10 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
   try {
     let responseText;
 
-    // Primary: Claude Sonnet (FOUNDRY_ANALYSIS_MODEL) — 44s, best structured JSON + gap analysis.
-    // Fallback 1: gpt-4.1 (FOUNDRY_AGENT_MODEL) — if Claude deployment unavailable.
-    // Foundry Responses agent path removed: it uses a different endpoint not compatible with
-    // Anthropic models, and was the source of the 37-minute body-read hang (fixed separately).
+    // Primary: gpt-5.4 (FOUNDRY_ANALYSIS_MODEL) — frontier reasoning, best CAF/WAF gap analysis.
+    // Fallback: gpt-4.1 (FOUNDRY_AGENT_MODEL) — if gpt-5.4 deployment unavailable or rate-limited.
+    // Foundry Responses agent path removed: it uses a different endpoint and was the source
+    // of the 37-minute body-read hang (fixed separately via fetchJsonWithTimeout).
     try {
       responseText = await chatCompletionsRequest([
         { role: "system", content: ARB_SYSTEM_PROMPT },
