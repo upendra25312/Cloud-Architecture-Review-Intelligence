@@ -25,7 +25,7 @@ async function getFoundryProjectToken() {
   const token = await getAiCredential().getToken("https://ai.azure.com/.default");
   return token.token;
 }
-const FOUNDRY_AGENT_MODEL = process.env.FOUNDRY_AGENT_MODEL || "model-router";
+const FOUNDRY_AGENT_MODEL = process.env.FOUNDRY_AGENT_MODEL || "arb-gpt41";
 const OPENAI_API_VERSION = "2025-01-01-preview";
 const MICROSOFT_LEARN_MCP_ENDPOINT = "https://learn.microsoft.com/api/mcp";
 const DEFAULT_HTTP_TIMEOUT_MS = 20000;
@@ -34,6 +34,8 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// fetchWithTimeout: guards connection + header receipt only.
+// For AI calls where the response BODY can be large and slow, use fetchJsonWithTimeout instead.
 async function fetchWithTimeout(url, options = {}, timeoutMs = DEFAULT_HTTP_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -50,6 +52,33 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = DEFAULT_HTTP_TIME
     throw error;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+// fetchJsonWithTimeout: enforces a hard wall-clock timeout across the FULL request lifecycle —
+// connection, headers, AND body read. Critical for AI calls where the model streams a large
+// response slowly. The AbortController is NOT cleared until json() completes or the timer fires.
+// Bug this fixes: fetchWithTimeout clears the timer when headers arrive (fetch() returns), so
+// res.json() on a 37-minute stream had zero timeout protection — the call simply never returned.
+async function fetchJsonWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    if (!res.ok) {
+      const text = await res.text().catch(() => `HTTP ${res.status}`);
+      clearTimeout(timer);
+      return { ok: false, status: res.status, text };
+    }
+    const data = await res.json(); // AbortController is still armed here
+    clearTimeout(timer);
+    return { ok: true, status: res.status, data };
+  } catch (err) {
+    clearTimeout(timer);
+    if (err?.name === "AbortError") {
+      throw new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`);
+    }
+    throw err;
   }
 }
 
@@ -106,7 +135,7 @@ async function chatCompletionsRequest(messages, options = {}) {
   let lastError = null;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const res = await fetchWithTimeout(url, {
+      const { ok, status, data, text } = await fetchJsonWithTimeout(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,13 +144,11 @@ async function chatCompletionsRequest(messages, options = {}) {
         body: JSON.stringify(body)
       }, timeoutMs);
 
-      if (res.ok) {
-        const data = await res.json();
+      if (ok) {
         return data?.choices?.[0]?.message?.content ?? "";
       }
 
-      const text = await res.text().catch(() => `HTTP ${res.status}`);
-      lastError = new Error(`Foundry chat completions failed ${res.status}: ${text}`);
+      lastError = new Error(`Foundry chat completions failed ${status}: ${text ?? status}`);
 
       if (![429, 500, 502, 503, 504].includes(res.status) || attempt === maxRetries) {
         throw lastError;
@@ -166,7 +193,7 @@ async function foundryResponsesAgentRequest(input) {
   };
   if (FOUNDRY_AGENT_VERSION) agentReference.version = FOUNDRY_AGENT_VERSION;
 
-  const res = await fetchWithTimeout(url, {
+  const { ok, status, data, text } = await fetchJsonWithTimeout(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -179,12 +206,11 @@ async function foundryResponsesAgentRequest(input) {
     })
   }, 120000);
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => `HTTP ${res.status}`);
-    throw new Error(`Foundry responses agent failed ${res.status}: ${text}`);
+  if (!ok) {
+    throw new Error(`Foundry responses agent failed ${status}: ${text ?? status}`);
   }
 
-  return extractResponsesText(await res.json());
+  return extractResponsesText(data);
 }
 
 const ARB_SYSTEM_PROMPT = `You are CARI ARB Agent for Rackspace Cloud Architecture Review Intelligence.
