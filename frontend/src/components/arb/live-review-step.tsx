@@ -904,7 +904,7 @@ export function ArbLiveReviewStep(props: {
       : elapsedMins < 8
         ? "Extracting evidence and requirements…"
         : elapsedMins < 20
-          ? "Running AI deep analysis…"
+          ? "Running CARI Engine deep analysis…"
           : elapsedMins < 32
             ? "Deep analysis — large packages can take 30–40 minutes…"
             : "Finalizing analysis — almost done…";
