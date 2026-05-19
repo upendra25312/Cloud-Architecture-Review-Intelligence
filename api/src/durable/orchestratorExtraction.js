@@ -9,6 +9,7 @@ require('./activities/loadFilesForExtraction');
 require('./activities/extractSingleFile');
 require('./activities/persistExtractionResults');
 require('./activities/writeArbJobStatus');
+require('./activities/markExtractionFailed');
 
 /**
  * Default retry policy applied to every activity in the extraction pipeline.
@@ -121,7 +122,7 @@ function* orchestratorExtraction(context) {
       const completedAtMs = context.df.currentUtcDateTime.getTime();
       const orchestrationDuration = completedAtMs - startedAtMs;
       const errorMessage = `Extraction timed out after ${ORCHESTRATION_TIMEOUT_MINUTES} minutes`;
-      
+
       yield context.df.callActivity('writeArbJobStatus', {
         reviewId,
         principal,
@@ -131,6 +132,18 @@ function* orchestratorExtraction(context) {
         completedAt,
         error: errorMessage
       });
+
+      // Update review entity so UI polling stops showing "Extraction Running".
+      // Wrapped in try/catch so a storage failure here does not mask the timeout.
+      try {
+        yield context.df.callActivity('markExtractionFailed', {
+          reviewId,
+          principal,
+          errorMessage
+        });
+      } catch (_markErr) {
+        // best-effort; original timeout error is still thrown below
+      }
 
       // Emit structured log with custom properties for Application Insights
       context.log(JSON.stringify({
@@ -214,6 +227,17 @@ function* orchestratorExtraction(context) {
         completedAt,
         error: errorMessage
       });
+
+      // Update review entity so UI polling stops showing "Extraction Running".
+      try {
+        yield context.df.callActivity('markExtractionFailed', {
+          reviewId,
+          principal,
+          errorMessage
+        });
+      } catch (_markErr) {
+        // best-effort; original error is still re-thrown below
+      }
 
       // Emit structured log with custom properties for Application Insights
       context.log(JSON.stringify({

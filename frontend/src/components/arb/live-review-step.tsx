@@ -513,7 +513,7 @@ export function ArbLiveReviewStep(props: {
           <button
             type="button"
             className="primary-button"
-            disabled={exportRegenerating}
+            disabled={exportRegenerating || extractionStatus?.state === "Running" || extractionStarting}
             onClick={() => void regenerateReviewedOutputs()}
           >
             {exportRegenerating ? "Regenerating outputs…" : "Regenerate reviewed outputs"}
@@ -521,7 +521,9 @@ export function ArbLiveReviewStep(props: {
         </div>
         {exportArtifacts.length === 0 ? (
           <p className="microcopy">
-            Downloadable reviewed outputs will appear after extraction completes for this review.
+            {extractionStatus?.state === "Running" || extractionStarting
+              ? "Analysis is running — reviewed outputs will be available once extraction completes."
+              : "Downloadable reviewed outputs will appear after extraction completes for this review."}
           </p>
         ) : (
           <div className="arb-upload-file-list">
@@ -1195,59 +1197,63 @@ export function ArbLiveReviewStep(props: {
 
         {/* Confidentiality confirmation + Start extraction CTA */}
         <section id="run-automated-analysis" className="surface-panel arb-action-panel">
-          <label className="arb-inline-check">
-            <input
-              aria-label="Confirm uploaded files can be used for review extraction"
-              type="checkbox"
-              checked={confidentialityConfirmed}
-              onChange={(event) => setConfidentialityConfirmed(event.target.checked)}
-            />
-            <span>I confirm the uploaded files can be used for review extraction</span>
-          </label>
-          <ul className="arb-checklist arb-checklist-compact">
-            {readinessChecks.map((check) => (
-              <li key={check.label} className={extractionIsRunning || check.complete ? "arb-check-done" : "arb-check-pending"}>
-                {extractionIsRunning || check.complete ? "✓" : "○"} {check.label}
-              </li>
-            ))}
-          </ul>
-          {/* AI agent health indicator — shown while on upload step */}
-          <div className="arb-agent-health-row">
-            <span className={`arb-agent-health-chip arb-agent-health-chip-${agentHealth?.status ?? "unknown"}`}>
-              <span className="arb-agent-health-dot" aria-hidden="true" />
-              {agentHealthLoading && !agentHealth ? "Checking CARI Engine…" :
-               agentHealth?.status === "healthy" ? "CARI Engine: Online" :
-               agentHealth?.status === "degraded" ? "CARI Engine: Degraded" :
-               agentHealth?.status === "unavailable" ? "CARI Engine: Offline" :
-               agentHealth?.status === "unconfigured" ? "CARI Engine: Not Configured" :
-               "CARI Engine: Unknown"}
-            </span>
-            {agentHealth && agentHealth.status !== "healthy" && agentHealth.status !== "unknown" && (
-              <button
-                type="button"
-                className="arb-agent-health-retry"
-                disabled={agentHealthLoading}
-                onClick={() => {
-                  setAgentHealthLoading(true);
-                  fetchArbAgentHealth()
-                    .then(h => setAgentHealth(h))
-                    .catch(() => setAgentHealth({ status: "unknown", message: "Unable to reach health endpoint.", checkedAt: new Date().toISOString(), latencyMs: 0 }))
-                    .finally(() => setAgentHealthLoading(false));
-                }}
-              >
-                {agentHealthLoading ? "Checking…" : "Retry"}
-              </button>
-            )}
-          </div>
-          {agentUnavailable && agentHealth && (
-            <div className="arb-agent-health-banner arb-agent-health-banner-error" role="alert">
-              <strong>CARI Engine unavailable</strong> — {agentHealth.message}
-            </div>
-          )}
-          {agentDegraded && agentHealth && (
-            <div className="arb-agent-health-banner arb-agent-health-banner-warning" role="status">
-              <strong>CARI Engine degraded</strong> — {agentHealth.message} Analysis will start but may be slower.
-            </div>
+          {!extractionIsRunning && (
+            <>
+              <label className="arb-inline-check">
+                <input
+                  aria-label="Confirm uploaded files can be used for review extraction"
+                  type="checkbox"
+                  checked={confidentialityConfirmed}
+                  onChange={(event) => setConfidentialityConfirmed(event.target.checked)}
+                />
+                <span>I confirm the uploaded files can be used for review extraction</span>
+              </label>
+              <ul className="arb-checklist arb-checklist-compact">
+                {readinessChecks.map((check) => (
+                  <li key={check.label} className={check.complete ? "arb-check-done" : "arb-check-pending"}>
+                    {check.complete ? "✓" : "○"} {check.label}
+                  </li>
+                ))}
+              </ul>
+              {/* AI agent health indicator — shown while on upload step */}
+              <div className="arb-agent-health-row">
+                <span className={`arb-agent-health-chip arb-agent-health-chip-${agentHealth?.status ?? "unknown"}`}>
+                  <span className="arb-agent-health-dot" aria-hidden="true" />
+                  {agentHealthLoading && !agentHealth ? "Checking CARI Engine…" :
+                   agentHealth?.status === "healthy" ? "CARI Engine: Online" :
+                   agentHealth?.status === "degraded" ? "CARI Engine: Degraded" :
+                   agentHealth?.status === "unavailable" ? "CARI Engine: Offline" :
+                   agentHealth?.status === "unconfigured" ? "CARI Engine: Not Configured" :
+                   "CARI Engine: Unknown"}
+                </span>
+                {agentHealth && agentHealth.status !== "healthy" && agentHealth.status !== "unknown" && (
+                  <button
+                    type="button"
+                    className="arb-agent-health-retry"
+                    disabled={agentHealthLoading}
+                    onClick={() => {
+                      setAgentHealthLoading(true);
+                      fetchArbAgentHealth()
+                        .then(h => setAgentHealth(h))
+                        .catch(() => setAgentHealth({ status: "unknown", message: "Unable to reach health endpoint.", checkedAt: new Date().toISOString(), latencyMs: 0 }))
+                        .finally(() => setAgentHealthLoading(false));
+                    }}
+                  >
+                    {agentHealthLoading ? "Checking…" : "Retry"}
+                  </button>
+                )}
+              </div>
+              {agentUnavailable && agentHealth && (
+                <div className="arb-agent-health-banner arb-agent-health-banner-error" role="alert">
+                  <strong>CARI Engine unavailable</strong> — {agentHealth.message}
+                </div>
+              )}
+              {agentDegraded && agentHealth && (
+                <div className="arb-agent-health-banner arb-agent-health-banner-warning" role="status">
+                  <strong>CARI Engine degraded</strong> — {agentHealth.message} Analysis will start but may be slower.
+                </div>
+              )}
+            </>
           )}
           <button
             type="button"
@@ -1387,6 +1393,39 @@ export function ArbLiveReviewStep(props: {
                   {elapsedMins >= 10 ? " · You can safely navigate away — analysis runs in the background." : ""}
                 </span>
               </div>
+              {/* Stuck detection — all files done but orchestrator hasn't completed after 5 min */}
+              {allFilesDone && elapsedMins >= 5 && (
+                <div className="arb-ep-stuck-banner" role="alert">
+                  <span>All files processed but status hasn&apos;t updated. The background job may have stalled.</span>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    disabled={extractionStatusRefreshing}
+                    onClick={() => void refreshExtractionStatus()}
+                  >
+                    {extractionStatusRefreshing ? "Checking…" : "Refresh status"}
+                  </button>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    disabled={extractionStarting}
+                    onClick={async () => {
+                      try {
+                        setExtractionStarting(true);
+                        setUploadError(null);
+                        const nextExtraction = await startArbExtraction(reviewId);
+                        setExtractionStatus(nextExtraction);
+                      } catch (retryErr) {
+                        setUploadError(retryErr instanceof Error ? retryErr.message : "Unable to retry.");
+                      } finally {
+                        setExtractionStarting(false);
+                      }
+                    }}
+                  >
+                    {extractionStarting ? "Starting…" : "Retry analysis"}
+                  </button>
+                </div>
+              )}
             </div>
           ) : extractionStatus?.state === "Failed" ? (
             <p className="arb-upload-error">
