@@ -22,6 +22,11 @@ const { computeInstanceId } = require("../durable/shared/instanceId");
 
 const ARBJOBS_TABLE_NAME = "arbjobs";
 const RECOMMENDED_APPROVAL_SCORE = 80;
+// A running job older than this is assumed dead (function host killed it without writing the
+// catch result). 35 min sits above the 30-min Durable timer (so Durable jobs are never
+// falsely evicted) but below the 45-min Flex Consumption function timeout (so legacy kills
+// are always caught).
+const STALE_JOB_THRESHOLD_MS = 35 * 60 * 1000;
 
 async function getJobsClient() {
   return getTableClient(ARBJOBS_TABLE_NAME);
@@ -425,14 +430,20 @@ async function handleArbRunAgentReview(request, context) {
   }
 
   // ─── Legacy path (USE_DURABLE_ORCHESTRATION=OFF or DRAIN) ───
-  // If a job is already running for this review, return its status (survives restarts + multi-instance)
+  // If a job is already running for this review, return its status (survives restarts + multi-instance).
+  // Exception: a job older than STALE_JOB_THRESHOLD_MS was killed by the runtime without
+  // writing its catch result — treat it as clearable so a fresh assessment can start.
   const existing = await readJob(reviewId, userId);
   if (existing && existing.status === "running") {
-    return jsonResponse(200, {
-      reviewId, traceId: existing.traceId, status: "running",
-      startedAt: existing.startedAt,
-      message: "Assessment is already in progress. Poll the status endpoint."
-    });
+    const existingElapsed = Date.now() - new Date(existing.startedAt).getTime();
+    if (existingElapsed < STALE_JOB_THRESHOLD_MS) {
+      return jsonResponse(200, {
+        reviewId, traceId: existing.traceId, status: "running",
+        startedAt: existing.startedAt,
+        message: "Assessment is already in progress. Poll the status endpoint."
+      });
+    }
+    // Stale — fall through and let a new assessment start (writeJob below will overwrite the row).
   }
 
   // Mark job as running in Table Storage before firing background task
@@ -480,6 +491,24 @@ async function handleArbAgentStatus(request, context) {
 
   if (job.status === "running") {
     const elapsed = Date.now() - new Date(job.startedAt).getTime();
+    if (elapsed >= STALE_JOB_THRESHOLD_MS) {
+      // The function host killed the background task without writing the catch result.
+      // Auto-clear the stuck row so the next POST can start a fresh assessment.
+      const completedAt = new Date().toISOString();
+      await writeJob(reviewId, auth.principal.userId, {
+        status: "failed",
+        traceId: job.traceId,
+        startedAt: job.startedAt,
+        completedAt,
+        resultJson: null,
+        error: "Assessment timed out — the analysis process was terminated by the runtime. Please retry."
+      });
+      return jsonResponse(200, {
+        reviewId, traceId: job.traceId, status: "failed",
+        startedAt: job.startedAt, completedAt,
+        error: "Assessment timed out — the analysis process was terminated by the runtime. Please retry."
+      });
+    }
     return jsonResponse(200, {
       reviewId, traceId: job.traceId, status: "running",
       startedAt: job.startedAt, elapsedMs: elapsed,

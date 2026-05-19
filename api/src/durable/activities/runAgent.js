@@ -7,6 +7,9 @@ const {
 } = require('../../shared/arb-foundry-agent');
 
 const RECOMMENDED_APPROVAL_SCORE = 80;
+// Must be below the 30-min Durable orchestration timer so the activity always resolves
+// (with a clean error) before the parent orchestrator's Task.any timeout fires.
+const AGENT_ACTIVITY_TIMEOUT_MS = 25 * 60 * 1000;
 
 const EVIDENCE_STOP_WORDS = new Set([
   'the', 'a', 'an', 'and', 'or', 'for', 'to', 'of', 'in', 'on', 'at',
@@ -188,15 +191,23 @@ async function runAgentHandler(input, context) {
     .filter((f) => f && f.criticalBlocker)
     .map((f) => f.title);
 
-  let agentResult = await runArbAgentReview({
-    review: reviewObj,
-    files: filesList,
-    requirements: requirementsList,
-    evidence: evidenceList,
-    searchChunks: searchChunks || [],
-    visualEvidence: visualEvidenceList,
-    existingRuleFindings
-  });
+  let agentResult = await Promise.race([
+    runArbAgentReview({
+      review: reviewObj,
+      files: filesList,
+      requirements: requirementsList,
+      evidence: evidenceList,
+      searchChunks: searchChunks || [],
+      visualEvidence: visualEvidenceList,
+      existingRuleFindings
+    }),
+    new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`runArbAgentReview timed out after ${AGENT_ACTIVITY_TIMEOUT_MS / 60000} minutes`)),
+        AGENT_ACTIVITY_TIMEOUT_MS
+      )
+    )
+  ]);
 
   if (!agentResult || agentResult.success === false) {
     const reason =
