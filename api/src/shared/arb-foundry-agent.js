@@ -25,18 +25,18 @@ async function getFoundryProjectToken() {
   const token = await getAiCredential().getToken("https://ai.azure.com/.default");
   return token.token;
 }
-// Primary model for deep ARB analysis (findings, scorecard, domain scoring).
-// gpt-5.4: frontier reasoning, best CAF/WAF gap analysis quality, GlobalStandard deployment.
-// Falls back to FOUNDRY_AGENT_MODEL (gpt-4.1) if primary unavailable.
-const FOUNDRY_ANALYSIS_MODEL = process.env.FOUNDRY_ANALYSIS_MODEL || process.env.FOUNDRY_AGENT_MODEL || "gpt-5.4";
+// Three-tier model routing for deep ARB analysis:
+//   Tier 1 — model-router: intelligent routing to best available model (fastest path when healthy)
+//   Tier 2 — gpt-5.4: frontier reasoning, best CAF/WAF gap analysis quality
+//   Tier 3 — gpt-4.1 (arb-gpt41): reliable ~58s fallback, always-on GlobalStandard
+// fetchJsonWithTimeout ensures each tier times out cleanly (120s) before cascading.
+const FOUNDRY_ANALYSIS_MODEL   = process.env.FOUNDRY_ANALYSIS_MODEL   || "model-router";
+const FOUNDRY_ANALYSIS_MODEL_2 = process.env.FOUNDRY_ANALYSIS_MODEL_2 || "gpt-5.4";
+const FOUNDRY_AGENT_MODEL      = process.env.FOUNDRY_AGENT_MODEL      || "arb-gpt41";
 
-// Model for per-image visual analysis (describeImageForReview).
-// Defaults to gpt-4.1 — proven for diagram labelling, avoids consuming gpt-5.4 TPM on vision tasks.
-// Falls back to FOUNDRY_ANALYSIS_MODEL if not set.
+// Vision model for per-image analysis (describeImageForReview).
+// gpt-4.1 by default — avoids consuming model-router/gpt-5.4 TPM on diagram labelling.
 const FOUNDRY_VISION_MODEL = process.env.FOUNDRY_VISION_MODEL || "arb-gpt41";
-
-// Fallback / legacy single-model constant — used when primary fails and for aiEnhanceRequirements.
-const FOUNDRY_AGENT_MODEL = process.env.FOUNDRY_AGENT_MODEL || "arb-gpt41";
 const OPENAI_API_VERSION = "2025-01-01-preview";
 const MICROSOFT_LEARN_MCP_ENDPOINT = "https://learn.microsoft.com/api/mcp";
 const DEFAULT_HTTP_TIMEOUT_MS = 20000;
@@ -988,21 +988,24 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
   try {
     let responseText;
 
-    // Primary: gpt-5.4 (FOUNDRY_ANALYSIS_MODEL) — frontier reasoning, best CAF/WAF gap analysis.
-    // Fallback: gpt-4.1 (FOUNDRY_AGENT_MODEL) — if gpt-5.4 deployment unavailable or rate-limited.
-    // Foundry Responses agent path removed: it uses a different endpoint and was the source
-    // of the 37-minute body-read hang (fixed separately via fetchJsonWithTimeout).
+    // Three-tier cascade — each tier has a 120s timeout via fetchJsonWithTimeout.
+    // Tier 1: model-router (intelligent routing, fastest when healthy)
+    // Tier 2: gpt-5.4 (frontier quality, direct deployment)
+    // Tier 3: gpt-4.1 arb-gpt41 (reliable always-on fallback)
+    const messages = [
+      { role: "system", content: ARB_SYSTEM_PROMPT },
+      { role: "user", content: userMessage }
+    ];
     try {
-      responseText = await chatCompletionsRequest([
-        { role: "system", content: ARB_SYSTEM_PROMPT },
-        { role: "user", content: userMessage }
-      ], { model: FOUNDRY_ANALYSIS_MODEL });
-    } catch (primaryError) {
-      console.warn(`[foundry] Primary model (${FOUNDRY_ANALYSIS_MODEL}) failed; falling back to ${FOUNDRY_AGENT_MODEL}:`, primaryError?.message ?? primaryError);
-      responseText = await chatCompletionsRequest([
-        { role: "system", content: ARB_SYSTEM_PROMPT },
-        { role: "user", content: userMessage }
-      ], { model: FOUNDRY_AGENT_MODEL });
+      responseText = await chatCompletionsRequest(messages, { model: FOUNDRY_ANALYSIS_MODEL });
+    } catch (tier1Error) {
+      console.warn(`[foundry] Tier-1 (${FOUNDRY_ANALYSIS_MODEL}) failed — trying Tier-2 (${FOUNDRY_ANALYSIS_MODEL_2}):`, tier1Error?.message ?? tier1Error);
+      try {
+        responseText = await chatCompletionsRequest(messages, { model: FOUNDRY_ANALYSIS_MODEL_2 });
+      } catch (tier2Error) {
+        console.warn(`[foundry] Tier-2 (${FOUNDRY_ANALYSIS_MODEL_2}) failed — falling back to Tier-3 (${FOUNDRY_AGENT_MODEL}):`, tier2Error?.message ?? tier2Error);
+        responseText = await chatCompletionsRequest(messages, { model: FOUNDRY_AGENT_MODEL });
+      }
     }
 
     if (!responseText) {
@@ -1024,20 +1027,20 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
         "No markdown fences, no prose, no comments."
       ].join(" ");
 
+      const correctionMessages = [
+        { role: "system", content: ARB_SYSTEM_PROMPT },
+        { role: "user", content: userMessage },
+        { role: "assistant", content: responseText },
+        { role: "user", content: correctionPrompt }
+      ];
       try {
-        responseText = await chatCompletionsRequest([
-          { role: "system", content: ARB_SYSTEM_PROMPT },
-          { role: "user", content: userMessage },
-          { role: "assistant", content: responseText },
-          { role: "user", content: correctionPrompt }
-        ], { model: FOUNDRY_ANALYSIS_MODEL });
+        responseText = await chatCompletionsRequest(correctionMessages, { model: FOUNDRY_ANALYSIS_MODEL });
       } catch {
-        responseText = await chatCompletionsRequest([
-          { role: "system", content: ARB_SYSTEM_PROMPT },
-          { role: "user", content: userMessage },
-          { role: "assistant", content: responseText },
-          { role: "user", content: correctionPrompt }
-        ], { model: FOUNDRY_AGENT_MODEL });
+        try {
+          responseText = await chatCompletionsRequest(correctionMessages, { model: FOUNDRY_ANALYSIS_MODEL_2 });
+        } catch {
+          responseText = await chatCompletionsRequest(correctionMessages, { model: FOUNDRY_AGENT_MODEL });
+        }
       }
 
       parsed = parseAgentResponse(responseText);
