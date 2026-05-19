@@ -841,7 +841,7 @@ export function ArbLiveReviewStep(props: {
             "Cost, support, and operational readiness signals"
           ]
         : Array.from(new Set(supportedUploads.map((item) => item.logicalCategory))).map(
-            (category) => `Assessment engine will analyze: ${formatCategory(category)}`
+            (category) => `CARI Engine will analyze: ${formatCategory(category)}`
           );
     const canStartExtraction = readinessChecks.every((check) => check.complete) && !uploadSaving;
     const agentUnavailable = agentHealth?.status === "unavailable" || agentHealth?.status === "unconfigured";
@@ -886,13 +886,16 @@ export function ArbLiveReviewStep(props: {
 
     // Early-phase crawl: covers orchestrator cold-start + pre-flight before any file begins.
     // Files stay "Queued" during loadFilesForExtraction + checkDiQuota activities (can be 1–4 min
-    // on Flex Consumption cold start). Crawls 1% per 20 s, caps at 8%, so the bar always moves.
+    // on Flex Consumption cold start). Two-speed crawl: fast (1%/20s) for first 160s → 8%, then
+    // slow (1%/60s) up to 30% so the bar never freezes even if pre-flight takes many minutes.
     const noFilesStartedYet = extractionIsRunning && (
       epFileStatuses.length === 0 ||
       epFileStatuses.every(f => f.extractionStatus === "Queued" || f.extractionStatus === "Pending")
     );
     const epPctEarlyPhase = noFilesStartedYet && elapsedSec > 0
-      ? Math.min(8, Math.ceil(elapsedSec / 20))
+      ? elapsedSec <= 160
+        ? Math.min(8, Math.ceil(elapsedSec / 20))
+        : Math.min(30, 8 + Math.ceil((elapsedSec - 160) / 60))
       : 0;
 
     // Time-aware phase labels calibrated to the 40-minute window.
@@ -1203,8 +1206,8 @@ export function ArbLiveReviewStep(props: {
           </label>
           <ul className="arb-checklist arb-checklist-compact">
             {readinessChecks.map((check) => (
-              <li key={check.label} className={check.complete ? "arb-check-done" : "arb-check-pending"}>
-                {check.complete ? "✓" : "○"} {check.label}
+              <li key={check.label} className={extractionIsRunning || check.complete ? "arb-check-done" : "arb-check-pending"}>
+                {extractionIsRunning || check.complete ? "✓" : "○"} {check.label}
               </li>
             ))}
           </ul>
