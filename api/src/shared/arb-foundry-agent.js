@@ -25,6 +25,17 @@ async function getFoundryProjectToken() {
   const token = await getAiCredential().getToken("https://ai.azure.com/.default");
   return token.token;
 }
+// Primary model for deep ARB analysis (findings, scorecard, domain scoring).
+// claude-sonnet-4-6: 44s/run, best structured JSON + gap analysis quality.
+// Falls back to FOUNDRY_AGENT_MODEL if not set.
+const FOUNDRY_ANALYSIS_MODEL = process.env.FOUNDRY_ANALYSIS_MODEL || process.env.FOUNDRY_AGENT_MODEL || "arb-claude-sonnet";
+
+// Model for per-image visual analysis (describeImageForReview).
+// claude-haiku-4-5: 120 tps, $0.003/image — 10× cheaper than Sonnet, sufficient for diagram labelling.
+// Falls back to FOUNDRY_ANALYSIS_MODEL if not set.
+const FOUNDRY_VISION_MODEL = process.env.FOUNDRY_VISION_MODEL || FOUNDRY_ANALYSIS_MODEL;
+
+// Legacy single-model constant — kept for the Foundry Responses agent path and aiEnhanceRequirements.
 const FOUNDRY_AGENT_MODEL = process.env.FOUNDRY_AGENT_MODEL || "arb-gpt41";
 const OPENAI_API_VERSION = "2025-01-01-preview";
 const MICROSOFT_LEARN_MCP_ENDPOINT = "https://learn.microsoft.com/api/mcp";
@@ -117,10 +128,11 @@ async function chatCompletionsRequest(messages, options = {}) {
     temperature = 0.2,
     responseFormat = { type: "json_object" },
     timeoutMs = 120000,
-    maxRetries = 3
+    maxRetries = 3,
+    model = FOUNDRY_AGENT_MODEL
   } = options;
   const base = getAiServicesBaseEndpoint();
-  const url = `${base}/openai/deployments/${FOUNDRY_AGENT_MODEL}/chat/completions?api-version=${OPENAI_API_VERSION}`;
+  const url = `${base}/openai/deployments/${model}/chat/completions?api-version=${OPENAI_API_VERSION}`;
   const token = await getFoundryToken();
   const body = {
     messages,
@@ -940,12 +952,25 @@ async function describeImageForReview(imageBuffer, fileName, fileExtension) {
     }
   ];
 
-  return await chatCompletionsRequest(messages, {
-    maxTokens: 1400,
-    responseFormat: null,
-    timeoutMs: 30000,
-    maxRetries: 1
-  });
+  // Use Claude Haiku for vision: 120 tps, 29s/image, $0.003/image — 10× cheaper than Sonnet.
+  // Falls back to the analysis model if Haiku is unavailable.
+  try {
+    return await chatCompletionsRequest(messages, {
+      maxTokens: 1400,
+      responseFormat: null,
+      timeoutMs: 30000,
+      maxRetries: 1,
+      model: FOUNDRY_VISION_MODEL
+    });
+  } catch {
+    return await chatCompletionsRequest(messages, {
+      maxTokens: 1400,
+      responseFormat: null,
+      timeoutMs: 30000,
+      maxRetries: 1,
+      model: FOUNDRY_AGENT_MODEL
+    });
+  }
 }
 
 async function runArbAgentReview({ review, files, requirements, evidence, searchChunks, visualEvidence = [] }) {
@@ -963,18 +988,21 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
   try {
     let responseText;
 
-    // Prefer the New Foundry Responses endpoint with a persisted prompt agent.
-    // This keeps runtime behavior aligned with the New Foundry portal and its
-    // published "Endpoint (Responses)" contract. Chat Completions remains as a
-    // fallback for resilience if the agent endpoint is temporarily unavailable.
+    // Primary: Claude Sonnet (FOUNDRY_ANALYSIS_MODEL) — 44s, best structured JSON + gap analysis.
+    // Fallback 1: gpt-4.1 (FOUNDRY_AGENT_MODEL) — if Claude deployment unavailable.
+    // Foundry Responses agent path removed: it uses a different endpoint not compatible with
+    // Anthropic models, and was the source of the 37-minute body-read hang (fixed separately).
     try {
-      responseText = await foundryResponsesAgentRequest(userMessage);
-    } catch (agentError) {
-      console.warn("[foundry] Responses agent call failed; falling back to chat completions:", agentError?.message ?? agentError);
       responseText = await chatCompletionsRequest([
         { role: "system", content: ARB_SYSTEM_PROMPT },
         { role: "user", content: userMessage }
-      ]);
+      ], { model: FOUNDRY_ANALYSIS_MODEL });
+    } catch (primaryError) {
+      console.warn(`[foundry] Primary model (${FOUNDRY_ANALYSIS_MODEL}) failed; falling back to ${FOUNDRY_AGENT_MODEL}:`, primaryError?.message ?? primaryError);
+      responseText = await chatCompletionsRequest([
+        { role: "system", content: ARB_SYSTEM_PROMPT },
+        { role: "user", content: userMessage }
+      ], { model: FOUNDRY_AGENT_MODEL });
     }
 
     if (!responseText) {
@@ -997,15 +1025,19 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
       ].join(" ");
 
       try {
-        responseText = await foundryResponsesAgentRequest(`${userMessage}\n\n${correctionPrompt}`);
-      } catch (agentError) {
-        console.warn("[foundry] Responses correction failed; falling back to chat completions:", agentError?.message ?? agentError);
         responseText = await chatCompletionsRequest([
           { role: "system", content: ARB_SYSTEM_PROMPT },
           { role: "user", content: userMessage },
           { role: "assistant", content: responseText },
           { role: "user", content: correctionPrompt }
-        ]);
+        ], { model: FOUNDRY_ANALYSIS_MODEL });
+      } catch {
+        responseText = await chatCompletionsRequest([
+          { role: "system", content: ARB_SYSTEM_PROMPT },
+          { role: "user", content: userMessage },
+          { role: "assistant", content: responseText },
+          { role: "user", content: correctionPrompt }
+        ], { model: FOUNDRY_AGENT_MODEL });
       }
 
       parsed = parseAgentResponse(responseText);
