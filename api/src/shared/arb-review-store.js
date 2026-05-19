@@ -10,9 +10,12 @@ const { generateArbDocx } = require("./arb-docx-export");
 const {
   ARB_INPUT_CONTAINER_NAME,
   ARB_OUTPUT_CONTAINER_NAME,
+  ARB_PROCESSING_CACHE_CONTAINER_NAME,
   getContainerClient,
   readBinaryBlob,
   readTextBlob,
+  readJsonBlob,
+  uploadJsonBlob,
   sanitizePathSegment,
   uploadBinaryBlob,
   uploadTextBlob
@@ -37,6 +40,11 @@ const {
   getTableClient
 } = require("./table-storage");
 const { checkAndReserveQuota } = require("./arb-extraction-quota");
+
+// Visual analysis results are cached by image content hash (SHA-256).
+// Same diagram uploaded to any review hits the same entry — no re-analysis needed.
+// TTL: 30 days. Stored in arb-processing-cache blob container.
+const VISUAL_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 const SUMMARY_ROW_KEY = "SUMMARY";
 const FINDINGS_ROW_KEY = "FINDINGS";
@@ -1091,12 +1099,34 @@ async function persistAndAnalyzeVisualArtifact({
   let summary = artifact.summaryText || "";
   let analysisError = null;
   if (artifact.buffer && canUseMultimodal && MULTIMODAL_IMAGE_EXTENSIONS.has(extension)) {
+    // Cache key = content hash of the image bytes — same diagram in any review hits the same entry.
+    const imageHash = crypto.createHash("sha256").update(artifact.buffer).digest("hex");
+    const visualCacheKey = `visual-analysis-cache/${imageHash}.json`;
+    let cacheHit = false;
+
     try {
-      const analyzedSummary = await describeImageForReview(artifact.buffer, artifact.sourceName || sourceFile.fileName, extension);
-      summary = String(analyzedSummary || "").trim() || summary;
-    } catch (error) {
-      analysisError = error instanceof Error ? error.message : String(error);
-      summary = artifact.summaryText || `Visual artifact ${artifact.sourceName || sourceFile.fileName} could not be analyzed by the multimodal model.`;
+      const cacheContainer = await getContainerClient(ARB_PROCESSING_CACHE_CONTAINER_NAME);
+      const cached = await readJsonBlob(cacheContainer, visualCacheKey);
+      if (cached?.summary && cached.cachedAt && Date.now() - new Date(cached.cachedAt).getTime() < VISUAL_CACHE_TTL_MS) {
+        summary = cached.summary;
+        cacheHit = true;
+      }
+    } catch {
+      // Cache read failure is non-fatal — fall through to live analysis
+    }
+
+    if (!cacheHit) {
+      try {
+        const analyzedSummary = await describeImageForReview(artifact.buffer, artifact.sourceName || sourceFile.fileName, extension);
+        summary = String(analyzedSummary || "").trim() || summary;
+        // Write result to cache best-effort — never block extraction on a cache write failure
+        getContainerClient(ARB_PROCESSING_CACHE_CONTAINER_NAME)
+          .then(c => uploadJsonBlob(c, visualCacheKey, { summary, cachedAt: new Date().toISOString() }))
+          .catch(err => console.warn(`[visual-cache] Write failed for ${imageHash.slice(0, 8)}: ${err?.message ?? err}`));
+      } catch (error) {
+        analysisError = error instanceof Error ? error.message : String(error);
+        summary = artifact.summaryText || `Visual artifact ${artifact.sourceName || sourceFile.fileName} could not be analyzed by the multimodal model.`;
+      }
     }
   }
 
