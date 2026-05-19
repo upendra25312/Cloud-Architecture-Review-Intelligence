@@ -21,7 +21,7 @@
     "exceljs": "^4.4.0",
     "jszip": "^3.10.1",
     "parse-multipart-data": "^1.5.0",
-    "pdf-parse": "^1.1.1",
+    "pdf-parse": "^2.4.5",
     "pptxgenjs": "^4.0.1"
   },
   "devDependencies": {
