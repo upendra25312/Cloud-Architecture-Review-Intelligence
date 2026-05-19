@@ -846,16 +846,34 @@ export function ArbLiveReviewStep(props: {
     const epPctFromStages = epDoneCount * 25 + epActiveCount * 12;
     const usingFileFallback = epPctFromStages === 0;
 
-    // Time-based crawl: once all files are done and stage statuses haven't advanced,
-    // slowly increment 1% per 12 seconds up to 88% so the bar visibly moves during the
-    // long analysis phase (8-20 min) rather than freezing.
+    // Time-based crawl — two phases so the bar never freezes during long deep analysis:
+    //   Phase 1 (fast):  1% per 12s from file-floor to 88% (covers ~first 8 min)
+    //   Phase 2 (slow):  1% per 60s from 88% up to 96%  (covers next 8 min, 25 min total)
+    // This keeps the bar visibly moving throughout the expected 8-20 min deep-analysis window.
     const elapsedSec = extractionStatus?.lastStartedAt
       ? Math.max(0, Math.floor((timerNow - new Date(extractionStatus.lastStartedAt).getTime()) / 1000))
       : 0;
     const allFilesDone = epTotalFiles > 0 && epDoneFiles === epTotalFiles;
-    const epPctTimeCrawl = usingFileFallback && allFilesDone
-      ? Math.min(88, epPctFromFiles + Math.floor(elapsedSec / 12))
-      : 0;
+    const epPctTimeCrawl = (() => {
+      if (!usingFileFallback || !allFilesDone) return 0;
+      const crossoverSec = Math.max(0, (88 - epPctFromFiles) * 12);
+      if (elapsedSec <= crossoverSec) {
+        return epPctFromFiles + Math.floor(elapsedSec / 12);
+      }
+      return Math.min(96, 88 + Math.floor((elapsedSec - crossoverSec) / 60));
+    })();
+
+    // Time-aware phase label so users get context instead of a static frozen message.
+    const elapsedMins = Math.floor(elapsedSec / 60);
+    const deepAnalysisPhaseLabel = !allFilesDone
+      ? "Analyzing documents…"
+      : elapsedMins < 5
+        ? "Extracting evidence and requirements…"
+        : elapsedMins < 12
+          ? "Running AI deep analysis…"
+          : elapsedMins < 20
+            ? "Deep analysis — large packages take 15–20 minutes…"
+            : "Finalizing analysis — almost done…";
 
     const epPctRaw = extractionStatus
       ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles, epPctTimeCrawl))
@@ -1187,15 +1205,11 @@ export function ArbLiveReviewStep(props: {
           {extractionIsRunning ? (
             <div className="arb-upload-status arb-upload-status-progress arb-ep-panel">
               <div className="arb-ep-header">
-                <span className="arb-ep-title">
-                  {usingFileFallback && epDoneFiles === epTotalFiles && epTotalFiles > 0
-                    ? "Preparing deep analysis…"
-                    : "Analyzing documents…"}
-                </span>
+                <span className="arb-ep-title">{deepAnalysisPhaseLabel}</span>
                 <span className="arb-ep-pct">{epPct}%</span>
               </div>
               <div className="arb-ep-bar-track" role="progressbar" aria-valuenow={epPct} aria-valuemin={0} aria-valuemax={100}>
-                <div className="arb-ep-bar-fill" style={{ width: `${epPct > 0 ? epPct : 2}%` }} />
+                <div className={`arb-ep-bar-fill${allFilesDone ? " arb-ep-bar-fill-active" : ""}`} style={{ width: `${epPct > 0 ? epPct : 2}%` }} />
               </div>
               <div className="arb-ep-steps">
                 {epSteps.map((st) => {
@@ -1213,11 +1227,10 @@ export function ArbLiveReviewStep(props: {
                 {epTotalFiles > 0 ? (
                   <span>{epDoneFiles} of {epTotalFiles} {epTotalFiles === 1 ? "file" : "files"} processed</span>
                 ) : null}
-                {epElapsedLabel ? (
-                  <span>Running for {epElapsedLabel}{epEtaLabel ? ` · ${epEtaLabel}` : ""}</span>
-                ) : (
-                  <span>Do not close this page — results will appear automatically.</span>
-                )}
+                <span>
+                  {epElapsedLabel ? `Running for ${epElapsedLabel}${epEtaLabel ? ` · ${epEtaLabel}` : ""}` : "Starting…"}
+                  {elapsedMins >= 10 ? " · You can safely navigate away — analysis runs in the background." : ""}
+                </span>
               </div>
             </div>
           ) : extractionStatus?.state === "Failed" ? (

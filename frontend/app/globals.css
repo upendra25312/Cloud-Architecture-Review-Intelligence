@@ -4586,6 +4586,24 @@ button.chip:disabled:hover {
   min-width: 8px;
 }
 
+/* Shimmer overlay shows when deep analysis is running — signals liveness even when % crawls slowly */
+@keyframes arb-ep-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.arb-ep-bar-fill-active {
+  background: linear-gradient(
+    90deg,
+    #0078D4 0%,
+    #0078D4 40%,
+    #60ABEC 50%,
+    #0078D4 60%,
+    #0078D4 100%
+  );
+  background-size: 200% 100%;
+  animation: arb-ep-shimmer 2.4s linear infinite;
+}
+
 .arb-ep-steps {
   display: flex;
   gap: 14px;
