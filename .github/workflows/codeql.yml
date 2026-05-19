@@ -7,12 +7,14 @@ on:
       - 'frontend/**'
       - 'api/**'
       - 'services/**'
+      - '.github/workflows/codeql.yml'
   pull_request:
     branches: [main]
     paths:
       - 'frontend/**'
       - 'api/**'
       - 'services/**'
+      - '.github/workflows/codeql.yml'
   schedule:
     - cron: '0 6 * * 1'  # Weekly Monday 06:00 UTC
 
