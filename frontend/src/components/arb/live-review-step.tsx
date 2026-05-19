@@ -849,7 +849,7 @@ export function ArbLiveReviewStep(props: {
     const agentUnavailable = agentHealth?.status === "unavailable" || agentHealth?.status === "unconfigured";
     const agentDegraded = agentHealth?.status === "degraded";
 
-    const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running";
+    const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running" || extractionStatus?.state === "Queued";
     // After clicking "Start analysis", the new extraction hasn't returned yet so extractionStatus
     // still holds prior-run data (stages fully done = 75%). Guard prevents bar from flashing 75%
     // then snapping back to ~40% when the new jobId arrives and the high-water mark resets.
