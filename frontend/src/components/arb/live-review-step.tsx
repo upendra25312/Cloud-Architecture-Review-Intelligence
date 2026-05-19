@@ -884,9 +884,22 @@ export function ArbLiveReviewStep(props: {
       ? Math.min(96, epPctFromFiles + Math.floor(elapsedSec / 47))
       : 0;
 
+    // Early-phase crawl: covers orchestrator cold-start + pre-flight before any file begins.
+    // Files stay "Queued" during loadFilesForExtraction + checkDiQuota activities (can be 1–4 min
+    // on Flex Consumption cold start). Crawls 1% per 20 s, caps at 8%, so the bar always moves.
+    const noFilesStartedYet = extractionIsRunning && (
+      epFileStatuses.length === 0 ||
+      epFileStatuses.every(f => f.extractionStatus === "Queued" || f.extractionStatus === "Pending")
+    );
+    const epPctEarlyPhase = noFilesStartedYet && elapsedSec > 0
+      ? Math.min(8, Math.ceil(elapsedSec / 20))
+      : 0;
+
     // Time-aware phase labels calibrated to the 40-minute window.
     const elapsedMins = Math.floor(elapsedSec / 60);
-    const deepAnalysisPhaseLabel = !allFilesDone
+    const deepAnalysisPhaseLabel = noFilesStartedYet
+      ? "Starting CARI Engine — warming up…"
+      : !allFilesDone
       ? "Analyzing documents…"
       : elapsedMins < 8
         ? "Extracting evidence and requirements…"
@@ -897,7 +910,7 @@ export function ArbLiveReviewStep(props: {
             : "Finalizing analysis — almost done…";
 
     const epPctRaw = extractionStatus
-      ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles, epPctTimeCrawl))
+      ? Math.min(99, Math.max(epPctFromStages, epPctFromFiles, epPctTimeCrawl, epPctEarlyPhase))
       : 0;
     // Apply high-water mark: bar never goes backwards across polls
     epPctHighWater.current = Math.max(epPctHighWater.current, epPctRaw);
