@@ -5286,19 +5286,34 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
     }))
   ];
 
-  const syncedOutputs = await syncArbReviewedOutputs({
-    principal,
-    review: nextReview,
-    files: nextFilesWithVisualEvidence,
-    requirements: derived.requirements,
-    evidence: evidenceForOutputs,
-    findings,
-    scorecard,
-    actions,
-    formats: ["markdown", "csv", "html"],
-    generatedAt: completedAt,
-    existingExports: fromExportsEntity(exportsEntity)
-  });
+  // Output generation (markdown/csv/html + AI summary) is best-effort.
+  // Cap at 90 s so a slow Copilot or Blob write cannot stall extraction.
+  const SYNC_TIMEOUT_MS = 90_000;
+  const syncTimeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('syncArbReviewedOutputs timed out after 90s')), SYNC_TIMEOUT_MS)
+  );
+  let syncedOutputs;
+  try {
+    syncedOutputs = await Promise.race([
+      syncArbReviewedOutputs({
+        principal,
+        review: nextReview,
+        files: nextFilesWithVisualEvidence,
+        requirements: derived.requirements,
+        evidence: evidenceForOutputs,
+        findings,
+        scorecard,
+        actions,
+        formats: ["markdown", "csv", "html"],
+        generatedAt: completedAt,
+        existingExports: fromExportsEntity(exportsEntity)
+      }),
+      syncTimeoutPromise
+    ]);
+  } catch (syncErr) {
+    console.warn('[persist] syncArbReviewedOutputs failed/timed-out — skipping export writes:', syncErr?.message ?? syncErr);
+    syncedOutputs = { exportsList: fromExportsEntity(exportsEntity) };
+  }
 
   await client.upsertEntity(
     toExportsEntity(reviewId, principal.userId, syncedOutputs.exportsList),

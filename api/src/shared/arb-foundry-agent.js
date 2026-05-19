@@ -1675,9 +1675,14 @@ async function aiEnhanceRequirements(review, files, fileTexts) {
     { role: "user", content: userPrompt }
   ];
 
+  // Best-effort enhancement — keyword extraction is the fallback.
+  // Cap at 30 s per attempt, 2 attempts max (60 s total) so a slow model
+  // cannot stall persistExtractionResults for 8+ minutes.
   const responseText = await chatCompletionsRequest(messages, {
     maxTokens: 3000,
-    temperature: 0.1
+    temperature: 0.1,
+    timeoutMs: 30000,
+    maxRetries: 1
   });
 
   let data;
