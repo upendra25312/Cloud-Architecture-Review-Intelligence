@@ -821,17 +821,21 @@ export function ArbLiveReviewStep(props: {
     const canStartExtraction = readinessChecks.every((check) => check.complete) && !uploadSaving;
 
     const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running";
+    // After clicking "Start analysis", the new extraction hasn't returned yet so extractionStatus
+    // still holds prior-run data (stages fully done = 75%). Guard prevents bar from flashing 75%
+    // then snapping back to ~40% when the new jobId arrives and the high-water mark resets.
+    const isNewExtractionPending = extractionStarting && extractionStatus?.state !== "Running";
     const epSteps = [
-      { label: "Text", value: extractionStatus?.textExtractionStatus },
-      { label: "Tables", value: extractionStatus?.tableExtractionStatus },
-      { label: "Figures", value: extractionStatus?.figureExtractionStatus },
-      { label: "Visual analysis", value: extractionStatus?.visualAnalysisStatus },
+      { label: "Text", value: isNewExtractionPending ? undefined : extractionStatus?.textExtractionStatus },
+      { label: "Tables", value: isNewExtractionPending ? undefined : extractionStatus?.tableExtractionStatus },
+      { label: "Figures", value: isNewExtractionPending ? undefined : extractionStatus?.figureExtractionStatus },
+      { label: "Visual analysis", value: isNewExtractionPending ? undefined : extractionStatus?.visualAnalysisStatus },
     ];
     const epIsDone = (v?: string) => v === "Completed" || v === "CompletedWithIssues";
     const epIsActive = (v?: string) => v === "Running";
     const epDoneCount = epSteps.filter((st) => epIsDone(st.value)).length;
     const epActiveCount = epSteps.filter((st) => epIsActive(st.value)).length;
-    const epFileStatuses = extractionStatus?.fileStatuses ?? [];
+    const epFileStatuses = isNewExtractionPending ? [] : (extractionStatus?.fileStatuses ?? []);
     const epTotalFiles = epFileStatuses.length;
     const epDoneFiles = epFileStatuses.filter(
       (f) => f.extractionStatus === "Completed" || f.extractionStatus === "CompletedWithIssues" || f.extractionStatus === "Failed"
