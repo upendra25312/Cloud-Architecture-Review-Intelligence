@@ -846,33 +846,27 @@ export function ArbLiveReviewStep(props: {
     const epPctFromStages = epDoneCount * 25 + epActiveCount * 12;
     const usingFileFallback = epPctFromStages === 0;
 
-    // Time-based crawl — two phases so the bar never freezes during long deep analysis:
-    //   Phase 1 (fast):  1% per 12s from file-floor to 88% (covers ~first 8 min)
-    //   Phase 2 (slow):  1% per 60s from 88% up to 96%  (covers next 8 min, 25 min total)
-    // This keeps the bar visibly moving throughout the expected 8-20 min deep-analysis window.
+    // Time-based crawl calibrated to a 40-minute average processing window.
+    // Formula: epPctFromFiles (≤45%) + elapsedSec/47 → reaches 96% at ~40 min from start.
+    // Single rate, no phase boundaries, so the bar moves continuously with no freeze point.
     const elapsedSec = extractionStatus?.lastStartedAt
       ? Math.max(0, Math.floor((timerNow - new Date(extractionStatus.lastStartedAt).getTime()) / 1000))
       : 0;
     const allFilesDone = epTotalFiles > 0 && epDoneFiles === epTotalFiles;
-    const epPctTimeCrawl = (() => {
-      if (!usingFileFallback || !allFilesDone) return 0;
-      const crossoverSec = Math.max(0, (88 - epPctFromFiles) * 12);
-      if (elapsedSec <= crossoverSec) {
-        return epPctFromFiles + Math.floor(elapsedSec / 12);
-      }
-      return Math.min(96, 88 + Math.floor((elapsedSec - crossoverSec) / 60));
-    })();
+    const epPctTimeCrawl = usingFileFallback && allFilesDone
+      ? Math.min(96, epPctFromFiles + Math.floor(elapsedSec / 47))
+      : 0;
 
-    // Time-aware phase label so users get context instead of a static frozen message.
+    // Time-aware phase labels calibrated to the 40-minute window.
     const elapsedMins = Math.floor(elapsedSec / 60);
     const deepAnalysisPhaseLabel = !allFilesDone
       ? "Analyzing documents…"
-      : elapsedMins < 5
+      : elapsedMins < 8
         ? "Extracting evidence and requirements…"
-        : elapsedMins < 12
+        : elapsedMins < 20
           ? "Running AI deep analysis…"
-          : elapsedMins < 20
-            ? "Deep analysis — large packages take 15–20 minutes…"
+          : elapsedMins < 32
+            ? "Deep analysis — large packages can take 30–40 minutes…"
             : "Finalizing analysis — almost done…";
 
     const epPctRaw = extractionStatus
@@ -1201,7 +1195,7 @@ export function ArbLiveReviewStep(props: {
               "Start analysis →"
             )}
           </button>
-          <p className="microcopy">Typical package: 25–35 page design doc, 10–12 page SOW, and a ZIP with 10–15 supporting files. Small uploads may finish sooner; full packages usually take 8–20 minutes.</p>
+          <p className="microcopy">Typical package: 25–35 page design doc, 10–12 page SOW, and a ZIP with 10–15 supporting files. Small uploads may finish sooner; full packages usually take 20–40 minutes.</p>
           {extractionIsRunning ? (
             <div className="arb-upload-status arb-upload-status-progress arb-ep-panel">
               <div className="arb-ep-header">
