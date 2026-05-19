@@ -3049,6 +3049,37 @@ function buildTransientExtractionStatus(review, state, input = {}) {
   };
 }
 
+function isRecoveredExtractionWarning(message) {
+  return /trying (fallback|Document Intelligence|jszip)|retrying with Document Intelligence/i.test(String(message ?? ""));
+}
+
+function blockingExtractionErrorsForFileResult(result) {
+  const errors = Array.isArray(result?.extractionErrors) ? result.extractionErrors : [];
+  const status = result?.fileResult?.extractionStatus;
+  if (status === "Completed" || status === "CompletedWithIssues") {
+    return errors.filter((error) => !isRecoveredExtractionWarning(error));
+  }
+  return errors;
+}
+
+function blockingExtractionErrorsForCompletedFiles(errors, files) {
+  if (!Array.isArray(errors) || errors.length === 0) return [];
+  const completedFileNames = new Set(
+    (files || [])
+      .filter((file) => file?.extractionStatus === "Completed" || file?.extractionStatus === "CompletedWithIssues")
+      .map((file) => file.fileName)
+      .filter(Boolean)
+  );
+
+  return errors.filter((error) => {
+    if (!isRecoveredExtractionWarning(error)) return true;
+    for (const fileName of completedFileNames) {
+      if (String(error).startsWith(`${fileName}:`)) return false;
+    }
+    return true;
+  });
+}
+
 function toExportsEntity(reviewId, userId, exportsList) {
   return {
     partitionKey: getPartitionKey(reviewId),
@@ -4521,13 +4552,14 @@ async function startArbExtraction(principal, reviewId) {
     contentReadiness.sufficient && !readiness.requiredEvidencePresent
       ? "A standalone SOW is not uploaded, but the extracted architecture pack contains enough design, visual, security, cost, HA/DR, and operations evidence to start review with gaps."
       : readiness.readinessNotes;
-  const extractionState = extractionErrors.length > 0 || visualExtractionErrors.length > 0 ? "Completed with Issues" : "Completed";
+  const blockingExtractionErrors = blockingExtractionErrorsForCompletedFiles(extractionErrors, nextFilesWithVisualEvidence);
+  const extractionState = blockingExtractionErrors.length > 0 || visualExtractionErrors.length > 0 ? "Completed with Issues" : "Completed";
   const extractionConfidencePercent = calculateExtractionConfidencePercent({
     files: nextFilesWithVisualEvidence,
     requirements: derived.requirements,
     evidence: derived.evidence,
     readiness,
-    extractionErrors: [...extractionErrors, ...visualExtractionErrors]
+    extractionErrors: [...blockingExtractionErrors, ...visualExtractionErrors]
   });
   const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
   const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
@@ -4564,10 +4596,10 @@ async function startArbExtraction(principal, reviewId) {
       ...(searchIndexed ? ["search-indexed"] : [])
     ],
     failedSteps: [
-      ...(extractionErrors.length > 0 ? ["text-extraction"] : []),
+      ...(blockingExtractionErrors.length > 0 ? ["text-extraction"] : []),
       ...(visualExtractionErrors.length > 0 ? ["visual-extraction"] : [])
     ],
-    textExtractionStatus: extractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    textExtractionStatus: blockingExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
     tableExtractionStatus: "CompletedOrNotApplicable",
     figureExtractionStatus: visualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
     visualAnalysisStatus: visualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
@@ -4577,7 +4609,7 @@ async function startArbExtraction(principal, reviewId) {
     missingRequiredItems: readiness.missingRequiredItems,
     missingRecommendedItems,
     readinessNotes,
-    extractionErrors,
+    extractionErrors: blockingExtractionErrors,
     lastStartedAt: startedAt,
     lastCompletedAt: completedAt,
     fileStatuses: nextFilesWithVisualEvidence.map((file) => ({
@@ -5263,8 +5295,9 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
     contentReadiness.sufficient && !readiness.requiredEvidencePresent
       ? "A standalone SOW is not uploaded, but the extracted architecture pack contains enough design, visual, security, cost, HA/DR, and operations evidence to start review with gaps."
       : readiness.readinessNotes;
+  const blockingExtractionErrors = fileResults.flatMap(blockingExtractionErrorsForFileResult);
   const extractionState =
-    allExtractionErrors.length > 0 || allVisualExtractionErrors.length > 0
+    blockingExtractionErrors.length > 0 || allVisualExtractionErrors.length > 0
       ? "Completed with Issues"
       : "Completed";
   const extractionConfidencePercent = calculateExtractionConfidencePercent({
@@ -5272,7 +5305,7 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
     requirements: derived.requirements,
     evidence: derived.evidence,
     readiness,
-    extractionErrors: [...allExtractionErrors, ...allVisualExtractionErrors]
+    extractionErrors: [...blockingExtractionErrors, ...allVisualExtractionErrors]
   });
 
   const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
@@ -5311,10 +5344,10 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
       ...(allVisualRecords.length > 0 ? ["visual-evidence-extracted"] : [])
     ],
     failedSteps: [
-      ...(allExtractionErrors.length > 0 ? ["text-extraction"] : []),
+      ...(blockingExtractionErrors.length > 0 ? ["text-extraction"] : []),
       ...(allVisualExtractionErrors.length > 0 ? ["visual-extraction"] : [])
     ],
-    textExtractionStatus: allExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
+    textExtractionStatus: blockingExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
     tableExtractionStatus: "CompletedOrNotApplicable",
     figureExtractionStatus: allVisualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
     visualAnalysisStatus: allVisualExtractionErrors.length > 0 ? "CompletedWithIssues" : "Completed",
@@ -5324,7 +5357,7 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
     missingRequiredItems: readiness.missingRequiredItems,
     missingRecommendedItems,
     readinessNotes,
-    extractionErrors: allExtractionErrors,
+    extractionErrors: blockingExtractionErrors,
     lastStartedAt: startedAt || completedAt,
     lastCompletedAt: completedAt,
     fileStatuses: nextFilesWithVisualEvidence.map((f) => ({

@@ -1129,6 +1129,18 @@ test("Office renderer warnings are suppressed when XML visual fallback succeeds"
   assert.match(source, singleFileOfficeFallback);
 });
 
+test("recovered fallback warnings are not counted as blocking extraction errors", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "arb-review-store.js"),
+    "utf8"
+  );
+
+  assert.match(source, /function isRecoveredExtractionWarning\(message\)/);
+  assert.match(source, /retrying with Document Intelligence/i);
+  assert.match(source, /const blockingExtractionErrors = fileResults\.flatMap\(blockingExtractionErrorsForFileResult\);/);
+  assert.match(source, /const blockingExtractionErrors = blockingExtractionErrorsForCompletedFiles\(extractionErrors, nextFilesWithVisualEvidence\);/);
+});
+
 test("table storage caps keep extraction evidence JSON below Azure property limit", () => {
   const { store, cleanup } = loadArbReviewStore();
   try {
