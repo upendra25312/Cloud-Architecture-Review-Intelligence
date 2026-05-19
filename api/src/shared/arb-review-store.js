@@ -4404,7 +4404,9 @@ async function startArbExtraction(principal, reviewId) {
   }));
   const derived = deriveRequirementsAndEvidence(review, nextFilesWithVisualEvidence, fileTexts);
 
-  // AI-powered requirement extraction and SOW-vs-design validation (best-effort)
+  // AI-powered requirement extraction and SOW-vs-design validation (best-effort).
+  // Cap at 30 s per attempt, 2 attempts max (60 s total) so a slow model
+  // cannot stall the entire extraction for 8+ minutes.
   if (getFoundryConfiguration().configured) {
     try {
       const aiResult = await aiEnhanceRequirements(review, nextFilesWithVisualEvidence, fileTexts);
@@ -4555,19 +4557,33 @@ async function startArbExtraction(principal, reviewId) {
     }))
   ];
 
-  const syncedOutputs = await syncArbReviewedOutputs({
-    principal,
-    review: nextReview,
-    files: nextFilesWithVisualEvidence,
-    requirements: derived.requirements,
-    evidence: evidenceForOutputs,
-    findings,
-    scorecard,
-    actions,
-    formats: ["markdown", "csv", "html"],
-    generatedAt: completedAt,
-    existingExports: fromExportsEntity(exportsEntity)
-  });
+  // Output generation is best-effort. Cap at 90 s so a slow Copilot or
+  // Blob write cannot stall extraction indefinitely.
+  const SYNC_TIMEOUT_MS_LEGACY = 90_000;
+  let syncedOutputs;
+  try {
+    syncedOutputs = await Promise.race([
+      syncArbReviewedOutputs({
+        principal,
+        review: nextReview,
+        files: nextFilesWithVisualEvidence,
+        requirements: derived.requirements,
+        evidence: evidenceForOutputs,
+        findings,
+        scorecard,
+        actions,
+        formats: ["markdown", "csv", "html"],
+        generatedAt: completedAt,
+        existingExports: fromExportsEntity(exportsEntity)
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('syncArbReviewedOutputs timed out after 90s')), SYNC_TIMEOUT_MS_LEGACY)
+      )
+    ]);
+  } catch (syncErr) {
+    console.warn('[startArbExtraction] syncArbReviewedOutputs failed/timed-out — skipping export writes:', syncErr?.message ?? syncErr);
+    syncedOutputs = { exportsList: fromExportsEntity(exportsEntity) };
+  }
 
   await client.upsertEntity(
     toExportsEntity(reviewId, principal.userId, syncedOutputs.exportsList),
