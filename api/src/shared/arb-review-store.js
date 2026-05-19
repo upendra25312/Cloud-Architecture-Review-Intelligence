@@ -3906,9 +3906,6 @@ async function startArbExtraction(principal, reviewId) {
     const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
     if (shouldRunFallback) {
       const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
-      for (const warning of rendered.warnings) {
-        visualExtractionErrors.push(warning);
-      }
       await addVisualEvidenceRecords(file, rendered.artifacts);
 
       if (rendered.artifacts.length > 0) {
@@ -3923,10 +3920,15 @@ async function startArbExtraction(principal, reviewId) {
       }
 
       const fallback = await extractOfficeRenderFallbackEvidence(buffer, file.fileName);
-      for (const warning of fallback.warnings) {
-        visualExtractionErrors.push(warning);
-      }
       await addVisualEvidenceRecords(file, fallback.artifacts);
+      if (fallback.artifacts.length === 0) {
+        for (const warning of rendered.warnings) {
+          visualExtractionErrors.push(warning);
+        }
+        for (const warning of fallback.warnings) {
+          visualExtractionErrors.push(warning);
+        }
+      }
     }
   }
 
@@ -4744,7 +4746,6 @@ async function extractSingleFileContent(file, {
     const shouldRunFallback = artifacts.length === 0 || extension === ".pptx";
     if (shouldRunFallback) {
       const rendered = await renderOfficeVisualArtifacts(buffer, file.fileName);
-      for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
       await addVisualEvidenceRecords(rendered.artifacts, 6);
       if (rendered.artifacts.length > 0) {
         const extra = await renderDocumentRemainingPages(buffer, file.fileName, rendered.artifacts.length);
@@ -4753,8 +4754,11 @@ async function extractSingleFileContent(file, {
         return;
       }
       const fallback = await extractOfficeRenderFallbackEvidence(buffer, file.fileName);
-      for (const warning of fallback.warnings) localVisualExtractionErrors.push(warning);
       await addVisualEvidenceRecords(fallback.artifacts, 6);
+      if (fallback.artifacts.length === 0) {
+        for (const warning of rendered.warnings) localVisualExtractionErrors.push(warning);
+        for (const warning of fallback.warnings) localVisualExtractionErrors.push(warning);
+      }
     }
   }
 

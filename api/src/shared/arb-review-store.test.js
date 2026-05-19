@@ -1116,6 +1116,19 @@ test("visual evidence keeps renderer context when multimodal response is empty",
   assert.match(source, /summary = String\(analyzedSummary \|\| ""\)\.trim\(\) \|\| summary;/);
 });
 
+test("Office renderer warnings are suppressed when XML visual fallback succeeds", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "arb-review-store.js"),
+    "utf8"
+  );
+
+  const durableOfficeFallback = /const fallback = await extractOfficeRenderFallbackEvidence\(buffer, file\.fileName\);[\s\S]*?await addVisualEvidenceRecords\(file, fallback\.artifacts\);[\s\S]*?if \(fallback\.artifacts\.length === 0\) \{[\s\S]*?for \(const warning of rendered\.warnings\)[\s\S]*?visualExtractionErrors\.push\(warning\);/;
+  const singleFileOfficeFallback = /const fallback = await extractOfficeRenderFallbackEvidence\(buffer, file\.fileName\);[\s\S]*?await addVisualEvidenceRecords\(fallback\.artifacts, 6\);[\s\S]*?if \(fallback\.artifacts\.length === 0\) \{[\s\S]*?for \(const warning of rendered\.warnings\)[\s\S]*?localVisualExtractionErrors\.push\(warning\);/;
+
+  assert.match(source, durableOfficeFallback);
+  assert.match(source, singleFileOfficeFallback);
+});
+
 test("table storage caps keep extraction evidence JSON below Azure property limit", () => {
   const { store, cleanup } = loadArbReviewStore();
   try {
