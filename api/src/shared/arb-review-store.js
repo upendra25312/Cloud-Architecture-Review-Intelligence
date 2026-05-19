@@ -2846,23 +2846,37 @@ function toFilesEntity(reviewId, userId, files) {
 }
 
 function toExtractionEntity(reviewId, userId, extraction) {
+  const safeExtraction = {
+    ...extraction,
+    visualExtractionErrors: trimStringArray(extraction.visualExtractionErrors, 25, 500),
+    extractionErrors: trimStringArray(extraction.extractionErrors, 25, 500),
+    fileStatuses: Array.isArray(extraction.fileStatuses)
+      ? extraction.fileStatuses.map((file) => ({
+          ...file,
+          fileName: trimString(file.fileName, 240),
+          extractionError: trimString(file.extractionError, 500)
+        }))
+      : extraction.fileStatuses
+  };
+
   return {
     partitionKey: getPartitionKey(reviewId),
     rowKey: getRowKey(EXTRACTION_ROW_KEY, userId),
     reviewId,
     createdByUserId: userId,
-    extractionJson: JSON.stringify(extraction),
+    extractionJson: JSON.stringify(safeExtraction),
     lastUpdated: new Date().toISOString()
   };
 }
 
 function toRequirementsEntity(reviewId, userId, requirements) {
+  const safeRequirements = capRequirementsForTableStorage(requirements);
   return {
     partitionKey: getPartitionKey(reviewId),
     rowKey: getRowKey(REQUIREMENTS_ROW_KEY, userId),
     reviewId,
     createdByUserId: userId,
-    requirementsJson: JSON.stringify(requirements),
+    requirementsJson: JSON.stringify(safeRequirements),
     lastUpdated: new Date().toISOString()
   };
 }
@@ -2873,20 +2887,79 @@ function toRequirementsEntity(reviewId, userId, requirements) {
 // persisted in blob storage at each record's imageUri.
 const TABLE_STORAGE_PROPERTY_CHAR_LIMIT = 28_000;
 
-function capVisualEvidenceForTableStorage(visualEvidence) {
-  if (!Array.isArray(visualEvidence) || visualEvidence.length === 0) return [];
-  // Shorten the two large fields on every record first.
-  const capped = visualEvidence.map((ve) => ({
-    ...ve,
-    summary: typeof ve.summary === "string" ? ve.summary.slice(0, 1500) : ve.summary,
-    sourceExcerpt: typeof ve.sourceExcerpt === "string" ? ve.sourceExcerpt.slice(0, 300) : ve.sourceExcerpt
-  }));
-  // If still over the limit, drop trailing records until it fits.
-  let subset = capped;
+function trimString(value, maxChars) {
+  return typeof value === "string" ? value.slice(0, maxChars) : value;
+}
+
+function trimStringArray(value, maxItems, maxChars) {
+  return Array.isArray(value)
+    ? value.slice(0, maxItems).map((item) => trimString(item, maxChars))
+    : value;
+}
+
+function capArrayJsonForTableStorage(items, mapItem) {
+  if (!Array.isArray(items) || items.length === 0) return [];
+
+  let subset = items.map(mapItem);
   while (subset.length > 0 && JSON.stringify(subset).length > TABLE_STORAGE_PROPERTY_CHAR_LIMIT) {
-    subset = subset.slice(0, Math.max(1, Math.floor(subset.length * 0.8)));
+    const nextLength = Math.floor(subset.length * 0.8);
+    subset = nextLength >= subset.length
+      ? subset.slice(0, subset.length - 1)
+      : subset.slice(0, Math.max(0, nextLength));
   }
   return subset;
+}
+
+function capRequirementsForTableStorage(requirements) {
+  return capArrayJsonForTableStorage(requirements, (req) => ({
+    requirementId: req.requirementId,
+    reviewId: req.reviewId,
+    sourceFileId: req.sourceFileId,
+    sourceFileName: trimString(req.sourceFileName, 240),
+    normalizedText: trimString(req.normalizedText, 900),
+    category: trimString(req.category, 120),
+    criticality: req.criticality,
+    reviewerStatus: req.reviewerStatus,
+    cariStatus: req.cariStatus,
+    cariValidationNote: trimString(req.cariValidationNote, 300),
+    isGap: req.isGap === true
+  }));
+}
+
+function capEvidenceForTableStorage(evidence) {
+  return capArrayJsonForTableStorage(evidence, (ev) => ({
+    evidenceId: ev.evidenceId,
+    reviewId: ev.reviewId,
+    sourceFileId: ev.sourceFileId,
+    sourceFileName: trimString(ev.sourceFileName, 240),
+    factType: trimString(ev.factType, 120),
+    category: trimString(ev.category, 120),
+    summary: trimString(ev.summary, 900),
+    sourceExcerpt: trimString(ev.sourceExcerpt, 500),
+    confidence: ev.confidence,
+    linkedRequirementIds: Array.isArray(ev.linkedRequirementIds) ? ev.linkedRequirementIds.slice(0, 8) : ev.linkedRequirementIds
+  }));
+}
+
+function capVisualEvidenceForTableStorage(visualEvidence) {
+  return capArrayJsonForTableStorage(visualEvidence, (ve) => ({
+    visualEvidenceId: ve.visualEvidenceId,
+    reviewId: ve.reviewId,
+    sourceFileId: ve.sourceFileId,
+    sourceFileName: trimString(ve.sourceFileName, 240),
+    sourcePage: ve.sourcePage,
+    visualIndex: ve.visualIndex,
+    factType: trimString(ve.factType, 120),
+    summary: trimString(ve.summary, 900),
+    sourceExcerpt: trimString(ve.sourceExcerpt, 400),
+    confidence: ve.confidence,
+    imageUri: trimString(ve.imageUri, 1000),
+    extractionSource: trimString(ve.extractionSource, 240),
+    promptInjectionRisk: ve.promptInjectionRisk,
+    analysisError: trimString(ve.analysisError, 500),
+    servicesDetected: trimStringArray(ve.servicesDetected, 20, 80),
+    architecturalPatterns: trimStringArray(ve.architecturalPatterns, 12, 120)
+  }));
 }
 
 function capFindingsForTableStorage(findings) {
@@ -2937,13 +3010,14 @@ function capScorecardForTableStorage(scorecard) {
 }
 
 function toEvidenceEntity(reviewId, userId, evidence, visualEvidence = []) {
+  const safeEvidence = capEvidenceForTableStorage(evidence);
   const safeVisualEvidence = capVisualEvidenceForTableStorage(visualEvidence);
   return {
     partitionKey: getPartitionKey(reviewId),
     rowKey: getRowKey(EVIDENCE_ROW_KEY, userId),
     reviewId,
     createdByUserId: userId,
-    evidenceJson: JSON.stringify(evidence),
+    evidenceJson: JSON.stringify(safeEvidence),
     visualEvidenceJson: JSON.stringify(safeVisualEvidence),
     lastUpdated: new Date().toISOString()
   };
@@ -6099,5 +6173,11 @@ module.exports = {
   syncArbReviewedOutputs,
   uploadArbFiles,
   updateArbAction,
-  updateArbFinding
+  updateArbFinding,
+  _tableStorageInternals: {
+    TABLE_STORAGE_PROPERTY_CHAR_LIMIT,
+    capRequirementsForTableStorage,
+    capEvidenceForTableStorage,
+    capVisualEvidenceForTableStorage
+  }
 };

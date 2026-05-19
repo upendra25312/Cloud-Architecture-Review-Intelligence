@@ -1116,6 +1116,67 @@ test("visual evidence keeps renderer context when multimodal response is empty",
   assert.match(source, /summary = String\(analyzedSummary \|\| ""\)\.trim\(\) \|\| summary;/);
 });
 
+test("table storage caps keep extraction evidence JSON below Azure property limit", () => {
+  const { store, cleanup } = loadArbReviewStore();
+  try {
+    const {
+      TABLE_STORAGE_PROPERTY_CHAR_LIMIT,
+      capRequirementsForTableStorage,
+      capEvidenceForTableStorage,
+      capVisualEvidenceForTableStorage
+    } = store._tableStorageInternals;
+
+    const long = "Azure landing zone control evidence ".repeat(500);
+    const requirements = Array.from({ length: 80 }, (_, i) => ({
+      requirementId: `req-${i}`,
+      reviewId: "review-large",
+      sourceFileId: `file-${i % 4}`,
+      sourceFileName: `source-${i}.docx`,
+      normalizedText: long,
+      category: "Architecture",
+      criticality: "High",
+      reviewerStatus: "Pending",
+      cariValidationNote: long
+    }));
+    const evidence = Array.from({ length: 120 }, (_, i) => ({
+      evidenceId: `ev-${i}`,
+      reviewId: "review-large",
+      sourceFileId: `file-${i % 4}`,
+      sourceFileName: `source-${i}.docx`,
+      factType: "Architecture",
+      summary: long,
+      sourceExcerpt: long,
+      confidence: "High"
+    }));
+    const visualEvidence = Array.from({ length: 60 }, (_, i) => ({
+      visualEvidenceId: `vis-${i}`,
+      reviewId: "review-large",
+      sourceFileId: `file-${i % 4}`,
+      sourceFileName: `diagram-${i}.drawio`,
+      factType: "VisualArchitecture",
+      summary: long,
+      sourceExcerpt: long,
+      confidence: "Medium",
+      imageUri: `https://storage.example/images/${i}?${"s".repeat(2000)}`,
+      servicesDetected: Array.from({ length: 80 }, (_, j) => `service-${j}-${long}`),
+      architecturalPatterns: Array.from({ length: 40 }, (_, j) => `pattern-${j}-${long}`)
+    }));
+
+    const cappedRequirements = capRequirementsForTableStorage(requirements);
+    const cappedEvidence = capEvidenceForTableStorage(evidence);
+    const cappedVisualEvidence = capVisualEvidenceForTableStorage(visualEvidence);
+
+    assert.ok(JSON.stringify(cappedRequirements).length <= TABLE_STORAGE_PROPERTY_CHAR_LIMIT);
+    assert.ok(JSON.stringify(cappedEvidence).length <= TABLE_STORAGE_PROPERTY_CHAR_LIMIT);
+    assert.ok(JSON.stringify(cappedVisualEvidence).length <= TABLE_STORAGE_PROPERTY_CHAR_LIMIT);
+    assert.ok(cappedEvidence.length > 0, "must retain a useful evidence slice");
+    assert.ok(cappedVisualEvidence.length > 0, "must retain a useful visual evidence slice");
+    assert.equal(cappedVisualEvidence[0].factType, "VisualArchitecture");
+  } finally {
+    cleanup();
+  }
+});
+
 test("jszip docx fallback extracts text nodes from word/document.xml", async () => {
   // Validates the zero-config fallback path used when DI is unavailable or throws.
   // Uses jszip (already a dependency) to parse the Office Open XML package directly.
