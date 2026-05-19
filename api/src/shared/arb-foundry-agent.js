@@ -1145,7 +1145,7 @@ async function checkFoundryAgentHealth() {
   if (!config.configured) {
     return {
       status: 'unconfigured',
-      message: 'AI agent endpoint is not configured on this deployment. Set FOUNDRY_PROJECT_ENDPOINT in Azure Function App settings.',
+      message: 'CARI Engine endpoint is not configured on this deployment. Set FOUNDRY_PROJECT_ENDPOINT in Azure Function App settings.',
       checkedAt,
       latencyMs: 0
     };
@@ -1167,7 +1167,7 @@ async function checkFoundryAgentHealth() {
     if (resp.status === 200) {
       return {
         status: 'healthy',
-        message: 'AI agent is available and responding normally.',
+        message: 'CARI Engine is available and responding normally.',
         checkedAt,
         latencyMs
       };
@@ -1175,7 +1175,7 @@ async function checkFoundryAgentHealth() {
     if (resp.status === 429) {
       return {
         status: 'degraded',
-        message: 'AI service is currently rate-limited. Analysis may start slowly or be queued — try again in a few minutes.',
+        message: 'CARI Engine is currently under high load. Analysis may start slowly or be queued — try again in a few minutes.',
         checkedAt,
         latencyMs
       };
@@ -1183,7 +1183,7 @@ async function checkFoundryAgentHealth() {
     if (resp.status === 401 || resp.status === 403) {
       return {
         status: 'unavailable',
-        message: `AI service authentication failed (HTTP ${resp.status}). Check that the Function App Managed Identity has "Cognitive Services User" role on the Azure AI resource.`,
+        message: `CARI Engine authentication failed (HTTP ${resp.status}). Check that the Function App Managed Identity has "Cognitive Services User" role on the Azure AI resource.`,
         checkedAt,
         latencyMs
       };
@@ -1191,14 +1191,14 @@ async function checkFoundryAgentHealth() {
     if (resp.status >= 500) {
       return {
         status: 'unavailable',
-        message: `AI service returned HTTP ${resp.status}. The service may be temporarily down — please wait a few minutes and retry.`,
+        message: `CARI Engine returned HTTP ${resp.status}. The service may be temporarily down — please wait a few minutes and retry.`,
         checkedAt,
         latencyMs
       };
     }
     return {
       status: 'degraded',
-      message: `AI service returned an unexpected status (HTTP ${resp.status}). Analysis may still work.`,
+      message: `CARI Engine returned an unexpected status (HTTP ${resp.status}). Analysis may still work.`,
       checkedAt,
       latencyMs
     };
@@ -1208,8 +1208,8 @@ async function checkFoundryAgentHealth() {
     return {
       status: 'unavailable',
       message: isTimeout
-        ? 'AI service health check timed out after 8 s. The service may be under load — please wait a few minutes and retry.'
-        : `AI service is unreachable: ${err && err.message ? err.message : 'Unknown network error'}.`,
+        ? 'CARI Engine health check timed out after 8 s. The service may be under load — please wait a few minutes and retry.'
+        : `CARI Engine is unreachable: ${err && err.message ? err.message : 'Unknown network error'}.`,
       checkedAt,
       latencyMs
     };

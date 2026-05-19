@@ -685,7 +685,7 @@ export function ArbLiveReviewStep(props: {
         const h = await fetchArbAgentHealth();
         if (!cancelled) setAgentHealth(h);
       } catch {
-        if (!cancelled) setAgentHealth({ status: "unknown", message: "Unable to reach the AI agent health endpoint.", checkedAt: new Date().toISOString(), latencyMs: 0 });
+        if (!cancelled) setAgentHealth({ status: "unknown", message: "Unable to reach the CARI Engine health endpoint.", checkedAt: new Date().toISOString(), latencyMs: 0 });
       } finally {
         if (!cancelled) setAgentHealthLoading(false);
       }
@@ -1199,12 +1199,12 @@ export function ArbLiveReviewStep(props: {
           <div className="arb-agent-health-row">
             <span className={`arb-agent-health-chip arb-agent-health-chip-${agentHealth?.status ?? "unknown"}`}>
               <span className="arb-agent-health-dot" aria-hidden="true" />
-              {agentHealthLoading && !agentHealth ? "Checking AI service…" :
-               agentHealth?.status === "healthy" ? "AI Service: Online" :
-               agentHealth?.status === "degraded" ? "AI Service: Degraded" :
-               agentHealth?.status === "unavailable" ? "AI Service: Offline" :
-               agentHealth?.status === "unconfigured" ? "AI Service: Not Configured" :
-               "AI Service: Unknown"}
+              {agentHealthLoading && !agentHealth ? "Checking CARI Engine…" :
+               agentHealth?.status === "healthy" ? "CARI Engine: Online" :
+               agentHealth?.status === "degraded" ? "CARI Engine: Degraded" :
+               agentHealth?.status === "unavailable" ? "CARI Engine: Offline" :
+               agentHealth?.status === "unconfigured" ? "CARI Engine: Not Configured" :
+               "CARI Engine: Unknown"}
             </span>
             {agentHealth && agentHealth.status !== "healthy" && agentHealth.status !== "unknown" && (
               <button
@@ -1225,12 +1225,12 @@ export function ArbLiveReviewStep(props: {
           </div>
           {agentUnavailable && agentHealth && (
             <div className="arb-agent-health-banner arb-agent-health-banner-error" role="alert">
-              <strong>AI service unavailable</strong> — {agentHealth.message}
+              <strong>CARI Engine unavailable</strong> — {agentHealth.message}
             </div>
           )}
           {agentDegraded && agentHealth && (
             <div className="arb-agent-health-banner arb-agent-health-banner-warning" role="status">
-              <strong>AI service degraded</strong> — {agentHealth.message} Analysis will start but may be slower.
+              <strong>CARI Engine degraded</strong> — {agentHealth.message} Analysis will start but may be slower.
             </div>
           )}
           <button
