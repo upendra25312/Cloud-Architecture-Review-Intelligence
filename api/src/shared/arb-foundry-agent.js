@@ -37,6 +37,71 @@ const FOUNDRY_AGENT_MODEL      = process.env.FOUNDRY_AGENT_MODEL      || "arb-gp
 // Vision model for per-image analysis (describeImageForReview).
 // gpt-4.1 by default — avoids consuming model-router/gpt-5.4 TPM on diagram labelling.
 const FOUNDRY_VISION_MODEL = process.env.FOUNDRY_VISION_MODEL || "arb-gpt41";
+
+// Domain fan-out: 7 parallel per-domain LLM calls instead of 1 monolithic call.
+// Each domain gets a focused evidence slice and domain-scoped instructions.
+// Expected: ~30-35s wall-clock vs ~60-120s monolithic (3-4× speed improvement).
+// Set FOUNDRY_FANOUT_ENABLED=false to disable and always use the monolithic path.
+const FANOUT_ENABLED = process.env.FOUNDRY_FANOUT_ENABLED !== "false";
+
+const DOMAIN_CONFIGS = [
+  {
+    id: "networking",
+    domain: "Networking",
+    scorecardDimension: "Networking and Connectivity",
+    weight: 0.10,
+    instruction: "Network Topology & Connectivity [domain: Networking]: hub-spoke or Virtual WAN, ExpressRoute/VPN, Azure Firewall, NSGs, UDRs, DNS private resolver, private endpoints, subnet design, hybrid connectivity, Bastion. Evaluate every networking gap against ALZ Network Topology & Connectivity design area.",
+    evidenceKeywords: ["network", "vnet", "subnet", "expressroute", "vpn", "firewall", "dns", "nsg", "udr", "bastion", "private endpoint", "hub", "spoke", "connectivity", "routing", "peering", "virtual wan", "gateway", "waf", "application gateway", "front door"]
+  },
+  {
+    id: "security",
+    domain: "Security",
+    scorecardDimension: "Security and Compliance",
+    weight: 0.15,
+    instruction: "Identity & Access Management and Security & Compliance [domain: Security]: management group hierarchy, RBAC model, Entra ID, Privileged Identity Management, managed identities, service principals, break-glass accounts, Defender for Cloud, Microsoft Sentinel, Key Vault/HSM, encryption at rest and in transit, WAF policies, secrets management, threat detection, certificate lifecycle, zero trust posture.",
+    evidenceKeywords: ["security", "identity", "iam", "rbac", "entra", "aad", "pim", "managed identity", "key vault", "hsm", "defender", "sentinel", "encryption", "certificate", "secret", "compliance", "zero trust", "mfa", "conditional access", "privileged", "service principal"]
+  },
+  {
+    id: "governance",
+    domain: "Governance",
+    scorecardDimension: "Governance and Platform Alignment",
+    weight: 0.10,
+    instruction: "Governance & Policy [domain: Governance]: Azure Policy assignments and initiative compliance, tagging strategy, subscription vending model, management group hierarchy (Tenant Root → Platform → Landing Zones), cost governance guardrails, regulatory compliance, landing zone design area alignment.",
+    evidenceKeywords: ["governance", "policy", "management group", "subscription", "tag", "compliance", "initiative", "blueprint", "azure policy", "vending", "guardrail", "regulatory", "landing zone", "caf"]
+  },
+  {
+    id: "operations",
+    domain: "Operations",
+    scorecardDimension: "Operational Excellence",
+    weight: 0.10,
+    instruction: "Management & Monitoring [domain: Operations]: Log Analytics workspaces, Azure Monitor alerts and dashboards, diagnostic settings, automation accounts, patch management, operational runbooks, ITSM integration, change management, incident response, production readiness. Evaluate operational maturity.",
+    evidenceKeywords: ["monitor", "log analytics", "alert", "diagnostic", "automation", "patch", "runbook", "operations", "itsm", "itil", "change management", "incident", "observability", "logging", "workspace", "dashboard", "metrics"]
+  },
+  {
+    id: "reliability",
+    domain: "Reliability",
+    scorecardDimension: "Reliability and Resilience",
+    weight: 0.15,
+    instruction: "Reliability & Business Continuity [domain: Reliability]: Availability Zones and zone-redundant design, Azure Backup, Azure Site Recovery, DR strategy, RTO/RPO definitions, tier classification (Tier 0/1/2/3), multi-region design, failover testing, SLA alignment. Assess whether the design meets enterprise reliability standards.",
+    evidenceKeywords: ["reliab", "backup", "recovery", "disaster", "rto", "rpo", "availability zone", "failover", "bcdr", "site recovery", "tier 0", "tier 1", "tier 2", "tier 3", "ha ", "high availability", "resilience", "redundan", "zone"]
+  },
+  {
+    id: "cost",
+    domain: "Cost",
+    scorecardDimension: "Cost Optimization",
+    weight: 0.10,
+    instruction: "Cost Optimization [domain: Cost]: resource SKU justification, reserved instances and savings plans, tagging for cost allocation, FinOps practices, budget alerts, licensing optimization, right-sizing recommendations, cost governance mechanisms.",
+    evidenceKeywords: ["cost", "budget", "reservation", "saving", "sku", "finops", "license", "pricing", "spend", "billing", "tco", "right-siz", "consumption", "commercial"]
+  },
+  {
+    id: "performance",
+    domain: "Performance",
+    scorecardDimension: "Performance Efficiency",
+    weight: 0.10,
+    instruction: "Performance Efficiency [domain: Performance]: scaling strategy (auto-scale, VMSS, AKS node pools), load balancing (Application Gateway, Azure Load Balancer, Traffic Manager, Front Door), CDN, database performance tiers, caching (Redis), response time SLAs, throughput requirements, compute right-sizing.",
+    evidenceKeywords: ["performance", "scal", "load balanc", "cdn", "cache", "redis", "throughput", "latency", "sla", "auto-scal", "vmss", "performance tier", "compute size", "capacity", "iops", "tps"]
+  }
+];
 const OPENAI_API_VERSION = "2025-01-01-preview";
 const MICROSOFT_LEARN_MCP_ENDPOINT = "https://learn.microsoft.com/api/mcp";
 const DEFAULT_HTTP_TIMEOUT_MS = 20000;
@@ -685,6 +750,464 @@ function buildUserMessage(review, files, requirements, evidence, searchChunks, l
   return parts.join("\n");
 }
 
+// ─── DOMAIN FAN-OUT FUNCTIONS ──────────────────────────────────────────────
+
+function buildDomainSystemPrompt(config) {
+  const criticalBlockerNote = config.id === "security"
+    ? `Named critical blockers for this domain:
+- Internet-facing design with no WAF, NSG, APIM, Application Gateway, Azure Firewall, or equivalent boundary control.
+- No identity model for a production workload: no Entra ID, managed identity, RBAC, or privileged-access model.
+- Secrets in configuration or plaintext with no Key Vault or equivalent secret store.
+- Regulated data with no encryption-at-rest design.\n`
+    : config.id === "reliability"
+    ? `Named critical blockers for this domain:
+- Tier-1 or production workload with no backup, DR, or recovery strategy.\n`
+    : "";
+
+  return `You are CARI ARB Agent for Rackspace Cloud Architecture Review Intelligence, performing a focused domain analysis.
+
+You are analyzing ONLY the ${config.domain} domain (${config.scorecardDimension}).
+
+Evidence rules:
+- Ground every finding in the uploaded evidence, extracted facts, or Microsoft Learn references supplied.
+- Do not invent facts. If evidence is absent, record the gap in missingEvidence.
+- Use evidenceIds exactly as shown in the Extracted Evidence Facts section.
+- Use visualEvidenceIds exactly as shown in the Visual Evidence Facts section.
+- High confidence = direct evidence from uploaded content.
+- Medium confidence = partial evidence plus clear architectural inference.
+- Low confidence = gap based mainly on absence — put in missingEvidence unless a directly evidenced blocker.
+
+${criticalBlockerNote}Critical blocker rule: Set criticalBlocker: true only when the gap would cause an ARB to reject or defer approval, is directly evidenced (not merely absent), and is not normally waivable by policy exception.
+
+Scoring model for ${config.scorecardDimension}:
+Score 0-100: 80-100 = well-architected, 60-79 = gaps present, 40-59 = significant gaps, below 40 = critical issues.
+
+Finding volume: Produce a finding for EVERY gap you identify in this domain — do NOT artificially cap the count. Every finding must be evidence-grounded. Omit speculative findings; put unevidenced gaps in missingEvidence instead.
+
+Return ONLY valid JSON — no markdown fences, no prose, no comments. Return only the JSON object.`;
+}
+
+// Filter evidence to domain-relevant facts plus a context window of general facts.
+// Each domain call gets its own evidence slice so the LLM focuses on what matters.
+function filterEvidenceForDomain(evidence, config) {
+  if (!config.evidenceKeywords.length) return evidence.slice(0, 60);
+
+  const keywords = config.evidenceKeywords;
+  const dominated = evidence.filter((e) => {
+    const text = ((e.summary || "") + " " + (e.factType || "")).toLowerCase();
+    return keywords.some((k) => text.includes(k));
+  });
+
+  // Add up to 8 "general" facts as cross-domain context so the model isn't blind to the overall design
+  const dominated_set = new Set(dominated.map((e) => e.evidenceId));
+  const context = evidence.filter((e) => !dominated_set.has(e.evidenceId)).slice(0, 8);
+
+  return [...dominated, ...context].slice(0, 30);
+}
+
+function buildDomainMessage(config, review, files, requirements, evidence, visualEvidence, learnDocs) {
+  const domainEvidence = filterEvidenceForDomain(evidence, config);
+
+  const parts = [
+    `## Review Request`,
+    `Review ID: ${review.reviewId}`,
+    `Project: ${review.projectName || "Unnamed Project"}`,
+    `Customer: ${review.customerName || "Unknown"}`,
+    `Target Regions: ${(review.targetRegions || []).join(", ") || "Not specified"}`,
+    `Workflow State: ${review.workflowState}`,
+    `Evidence Readiness: ${review.evidenceReadinessState}`,
+    ``,
+    `## Document Inventory (${files.length} files)`,
+    buildDocumentInventory(files, evidence),
+    ``
+  ];
+
+  if (requirements.length > 0) {
+    parts.push(`## Extracted Requirements (${Math.min(requirements.length, 40)} shown)`);
+    for (const r of requirements.slice(0, 40)) {
+      parts.push(`- [${r.category ?? "General"}/${r.criticality ?? "Normal"}] ${r.normalizedText}`);
+    }
+    parts.push(``);
+  }
+
+  parts.push(`## Extracted Evidence Facts (${domainEvidence.length} domain-relevant facts)`);
+  parts.push(`Each fact has an evidenceId. Cite these exact IDs in evidenceIds for any finding grounded in this evidence.`);
+  const byDomain = new Map();
+  for (const e of domainEvidence) {
+    const d = e.factType ?? "General";
+    const list = byDomain.get(d) ?? [];
+    list.push(e);
+    byDomain.set(d, list);
+  }
+  for (const [domain, facts] of byDomain) {
+    parts.push(`### ${domain}`);
+    for (const e of facts) {
+      parts.push(`- [ID:${e.evidenceId}] ${e.summary} (source: ${e.sourceFileName || "Document"})`);
+    }
+  }
+  parts.push(``);
+
+  if (visualEvidence.length > 0) {
+    const visSlice = visualEvidence.slice(0, 25);
+    parts.push(`## Visual Evidence Facts (${visSlice.length} diagrams/images)`);
+    parts.push(`Cite visualEvidenceIds for any finding derived from visual/diagram content.`);
+    for (const e of visSlice) {
+      const services = Array.isArray(e.detectedAzureServices) && e.detectedAzureServices.length
+        ? ` services: ${e.detectedAzureServices.join(", ")};` : "";
+      parts.push(`- [visualEvidenceId:${e.visualEvidenceId}] ${e.summary} (source: ${e.sourceFileName || "Diagram"}; confidence: ${e.confidence || "Medium"};${services})`);
+    }
+    parts.push(``);
+  }
+
+  if (learnDocs.length > 0) {
+    // Serve only the most domain-relevant docs (first 3 are foundational, rest are service-specific)
+    const domainDocs = learnDocs.slice(0, 4);
+    parts.push(`## Microsoft Learn Reference Documentation`);
+    for (const doc of domainDocs) {
+      parts.push(`### ${doc.title ?? "Microsoft Learn"} — ${doc.url ?? ""}`);
+      if (doc.content) parts.push(doc.content.slice(0, 1200));
+      parts.push(``);
+    }
+  }
+
+  parts.push(`## Domain Analysis Instructions`);
+  parts.push(`Analyze this submission for the following domain only:`);
+  parts.push(config.instruction);
+  parts.push(``);
+  parts.push(`For each finding: explain WHY it matters for the customer context, cite specific evidence or evidence absence, and provide an actionable fix with a learn.microsoft.com URL.`);
+  parts.push(`Return ONLY the JSON object below (no other text):`);
+  parts.push(`{`);
+  parts.push(`  "findings": [{ "severity": "Critical|High|Medium|Low", "domain": "${config.domain}", "framework": "WAF|CAF|ALZ|MicrosoftLearn", "frameworkPillar": "string", "title": "string", "findingStatement": "string", "whyItMatters": "string", "evidenceBasis": "string", "evidenceIds": ["string"], "visualEvidenceIds": ["string"], "evidenceReferences": [{"type": "evidence|visualEvidence", "id": "string"}], "recommendation": "string with learn.microsoft.com URL", "learnMoreUrl": "string", "confidence": "High|Medium|Low", "criticalBlocker": false, "suggestedOwner": "string", "source": "agent" }],`);
+  parts.push(`  "scorecardDimension": { "name": "${config.scorecardDimension}", "score": 0, "rationale": "string", "blockers": ["string"] },`);
+  parts.push(`  "missingEvidence": ["string — specific missing artifact that would change this domain assessment"],`);
+  parts.push(`  "criticalBlockers": ["string — only directly evidenced non-waivable blockers"]`);
+  parts.push(`}`);
+
+  return parts.join("\n");
+}
+
+function parseDomainResponse(responseText, config) {
+  if (!responseText) return null;
+
+  let parsed;
+  try {
+    let jsonText = responseText.trim();
+    const fenceMatch = jsonText.match(/```(?:json)?\s*([\s\S]+?)```/);
+    if (fenceMatch) jsonText = fenceMatch[1].trim();
+    try {
+      parsed = JSON.parse(jsonText);
+    } catch {
+      const firstBrace = jsonText.indexOf("{");
+      const lastBrace = jsonText.lastIndexOf("}");
+      if (firstBrace >= 0 && lastBrace > firstBrace) {
+        try { parsed = JSON.parse(jsonText.slice(firstBrace, lastBrace + 1)); }
+        catch { return null; }
+      } else { return null; }
+    }
+  } catch { return null; }
+
+  const findings = (Array.isArray(parsed.findings) ? parsed.findings : []).map((f, i) => {
+    const evidenceReferences = Array.isArray(f.evidenceReferences)
+      ? f.evidenceReferences.map((r) => ({ type: String(r?.type ?? "evidence"), id: String(r?.id ?? "") })).filter((r) => r.id)
+      : [];
+    const evidenceIds = [
+      ...(Array.isArray(f.evidenceIds) ? f.evidenceIds.map(String) : []),
+      ...evidenceReferences.filter((r) => r.type === "evidence").map((r) => r.id)
+    ].filter((id, idx, all) => id && all.indexOf(id) === idx);
+    const visualEvidenceIds = [
+      ...(Array.isArray(f.visualEvidenceIds) ? f.visualEvidenceIds.map(String) : []),
+      ...evidenceReferences.filter((r) => r.type === "visualEvidence").map((r) => r.id)
+    ].filter((id, idx, all) => id && all.indexOf(id) === idx);
+
+    return {
+      findingId: `agent-${config.id}-${i + 1}`,
+      reviewId: "",
+      severity: parseSeverity(f.severity),
+      domain: String(f.domain ?? config.domain),
+      findingType: String(f.findingType ?? f.framework ?? "WAF"),
+      framework: String(f.framework ?? "WAF"),
+      frameworkPillar: String(f.frameworkPillar ?? ""),
+      title: String(f.title ?? "Finding"),
+      findingStatement: String(f.findingStatement ?? ""),
+      whyItMatters: String(f.whyItMatters ?? ""),
+      evidenceBasis: String(f.evidenceBasis ?? ""),
+      evidenceIds,
+      visualEvidenceIds,
+      evidenceReferences,
+      recommendation: String(f.recommendation ?? ""),
+      learnMoreUrl: String(f.learnMoreUrl ?? ""),
+      references: f.learnMoreUrl ? [{ title: String(f.title ?? "Learn more"), url: String(f.learnMoreUrl) }] : [],
+      confidence: String(f.confidence ?? "Medium"),
+      criticalBlocker: Boolean(f.criticalBlocker ?? false),
+      suggestedOwner: String(f.suggestedOwner ?? ""),
+      suggestedDueDate: null,
+      owner: null,
+      dueDate: null,
+      reviewerNote: null,
+      missingEvidence: [],
+      evidenceFound: [],
+      status: "Open",
+      source: "agent"
+    };
+  });
+
+  const dim = parsed.scorecardDimension ?? {};
+  const scorecardDimension = {
+    name: String(dim.name ?? config.scorecardDimension),
+    score: Math.max(0, Math.min(100, Number(dim.score ?? 50))),
+    rationale: String(dim.rationale ?? ""),
+    blockers: Array.isArray(dim.blockers) ? dim.blockers.map(String) : []
+  };
+
+  return {
+    domain: config.domain,
+    findings,
+    scorecardDimension,
+    missingEvidence: Array.isArray(parsed.missingEvidence) ? parsed.missingEvidence.map(String) : [],
+    criticalBlockers: Array.isArray(parsed.criticalBlockers) ? parsed.criticalBlockers.map(String) : []
+  };
+}
+
+// ─── SYNTHESIS ─────────────────────────────────────────────────────────────
+// After 7 parallel domain calls, a lightweight synthesis call reads the merged
+// domain scores + finding titles and produces the holistic review output:
+// reviewSummary, strengths, recommendation, nextActions, and the two remaining
+// scorecard dimensions (Requirements Coverage + Documentation Completeness).
+
+const SYNTHESIS_SYSTEM_PROMPT = `You are CARI ARB Agent synthesizing 7 domain analysis results into a complete ARB assessment summary.
+
+You receive domain scores, finding counts, and critical blocker lists. Your role is to:
+1. Write a coherent reviewSummary (2-3 paragraphs covering WAF/CAF/ALZ strengths, cross-domain risks, evidence confidence, and ARB readiness).
+2. Identify 3-6 evidence-grounded strengths visible across the domain results.
+3. Determine the overall recommendation from domain scores and finding severity.
+4. Produce 5-8 specific nextActions with framework references and owner types.
+5. Score Requirements Coverage (weight 15%) and Documentation Completeness (weight 5%).
+
+Decision bands:
+- Recommended for Approval: weighted score ≥80 AND no Critical or High findings AND SOW evidence present.
+- Ready with Gaps: weighted score 70-79 OR ≥80 with High findings or missing SOW.
+- Needs Remediation: weighted score <70 OR any unresolved Critical finding.
+- Rejected: architecture should not move forward in current form, or evidence too thin.
+
+Never output "Approved" — that is a human reviewer decision only.
+
+Return ONLY valid JSON, no markdown fences:
+{
+  "reviewSummary": "string",
+  "strengths": ["string"],
+  "recommendation": "Recommended for Approval|Ready with Gaps|Needs Remediation|Rejected",
+  "nextActions": ["string with framework reference and owner type"],
+  "requirementsCoverage": { "score": 0, "rationale": "string", "blockers": [] },
+  "documentationCompleteness": { "score": 0, "rationale": "string", "blockers": [] }
+}`;
+
+function buildSynthesisMessage(domainResults, review, requirements, files) {
+  const parts = [
+    `## Project Context`,
+    `Project: ${review.projectName || "Unnamed"}`,
+    `Customer: ${review.customerName || "Unknown"}`,
+    `Evidence Readiness: ${review.evidenceReadinessState}`,
+    `Documents submitted: ${files.length} (${files.map((f) => f.logicalCategory).join(", ")})`,
+    `Requirements extracted: ${requirements.length}`,
+    ``
+  ];
+
+  parts.push(`## Domain Analysis Results`);
+  for (const r of domainResults) {
+    if (!r) continue;
+    const dim = r.scorecardDimension;
+    const critCount = (r.findings || []).filter((f) => f.criticalBlocker).length;
+    const highCount = (r.findings || []).filter((f) => f.severity === "High").length;
+    const criticalCount = (r.findings || []).filter((f) => f.severity === "Critical").length;
+    parts.push(`### ${dim.name} — Score: ${dim.score}/100`);
+    parts.push(`Rationale: ${dim.rationale}`);
+    if (dim.blockers.length) parts.push(`Blockers: ${dim.blockers.join("; ")}`);
+    parts.push(`Findings: ${(r.findings || []).length} total | ${criticalCount} Critical | ${highCount} High | ${critCount} critical blockers`);
+    const topFindings = (r.findings || []).slice(0, 5).map((f) => `  - [${f.severity}] ${f.title}`).join("\n");
+    if (topFindings) parts.push(topFindings);
+    if (r.missingEvidence.length) parts.push(`Missing: ${r.missingEvidence.slice(0, 3).join("; ")}`);
+    parts.push(``);
+  }
+
+  const allBlockers = domainResults.filter(Boolean).flatMap((r) => r.criticalBlockers);
+  if (allBlockers.length) {
+    parts.push(`## Critical Blockers Across All Domains`);
+    for (const b of allBlockers) parts.push(`- ${b}`);
+    parts.push(``);
+  }
+
+  const hasSow = files.some((f) => f.logicalCategory === "sow");
+  parts.push(`SOW evidence present: ${hasSow ? "Yes" : "No"}`);
+  parts.push(`Requirements validated: ${requirements.filter((r) => r.cariStatus === "Validated").length} of ${requirements.length}`);
+  parts.push(``);
+  parts.push(`Synthesize the above into the required JSON output. Ensure the recommendation accurately reflects the domain scores and finding severity.`);
+
+  return parts.join("\n");
+}
+
+function parseSynthesisResponse(responseText) {
+  if (!responseText) return null;
+  let parsed;
+  try {
+    let jsonText = responseText.trim();
+    const fenceMatch = jsonText.match(/```(?:json)?\s*([\s\S]+?)```/);
+    if (fenceMatch) jsonText = fenceMatch[1].trim();
+    try { parsed = JSON.parse(jsonText); }
+    catch {
+      const firstBrace = jsonText.indexOf("{");
+      const lastBrace = jsonText.lastIndexOf("}");
+      if (firstBrace >= 0 && lastBrace > firstBrace) {
+        try { parsed = JSON.parse(jsonText.slice(firstBrace, lastBrace + 1)); }
+        catch { return null; }
+      } else { return null; }
+    }
+  } catch { return null; }
+
+  const parseDim = (d) => d ? {
+    score: Math.max(0, Math.min(100, Number(d.score ?? 60))),
+    rationale: String(d.rationale ?? ""),
+    blockers: Array.isArray(d.blockers) ? d.blockers.map(String) : []
+  } : null;
+
+  return {
+    reviewSummary: String(parsed.reviewSummary ?? ""),
+    strengths: Array.isArray(parsed.strengths) ? parsed.strengths.map(String) : [],
+    recommendation: String(parsed.recommendation ?? ""),
+    nextActions: Array.isArray(parsed.nextActions) ? parsed.nextActions.map(String) : [],
+    requirementsCoverage: parseDim(parsed.requirementsCoverage),
+    documentationCompleteness: parseDim(parsed.documentationCompleteness)
+  };
+}
+
+async function runArbAgentReviewFanOut({ review, files, requirements, evidence, searchChunks, visualEvidence = [] }) {
+  const t0 = Date.now();
+
+  // Fetch MS Learn grounding once — shared across all domain calls
+  const learnDocsPromise = fetchMicrosoftLearnGrounding(review, requirements, evidence).catch(() => []);
+  const learnTimeout = new Promise((resolve) => setTimeout(() => resolve([]), 5000));
+  const learnDocs = await Promise.race([learnDocsPromise, learnTimeout]);
+
+  // Fire all 7 domain calls in parallel — each with a 90s timeout and 1 retry
+  const domainCallPromises = DOMAIN_CONFIGS.map(async (cfg) => {
+    const sysPrompt = buildDomainSystemPrompt(cfg);
+    const userMsg = buildDomainMessage(cfg, review, files, requirements, evidence, visualEvidence, learnDocs);
+    const messages = [
+      { role: "system", content: sysPrompt },
+      { role: "user", content: userMsg }
+    ];
+    const opts = { maxTokens: 4096, timeoutMs: 90000, maxRetries: 1 };
+
+    let responseText;
+    try {
+      responseText = await chatCompletionsRequest(messages, { ...opts, model: FOUNDRY_ANALYSIS_MODEL });
+    } catch {
+      try {
+        responseText = await chatCompletionsRequest(messages, { ...opts, model: FOUNDRY_ANALYSIS_MODEL_2 });
+      } catch {
+        responseText = await chatCompletionsRequest(messages, { ...opts, model: FOUNDRY_AGENT_MODEL });
+      }
+    }
+    return parseDomainResponse(responseText, cfg);
+  });
+
+  const domainResults = await Promise.all(domainCallPromises);
+
+  // If more than 2 out of 7 domains failed to parse, fall back to monolithic
+  const failedCount = domainResults.filter((r) => r === null).length;
+  if (failedCount > 2) {
+    console.warn(`[foundry] Fan-out: ${failedCount}/7 domains failed to parse — falling back to monolithic`);
+    return null;
+  }
+
+  const validResults = domainResults.filter(Boolean);
+  const allFindings = validResults.flatMap((r) => r.findings);
+  const allMissingEvidence = [...new Set(validResults.flatMap((r) => r.missingEvidence))];
+  const allCriticalBlockers = [...new Set(validResults.flatMap((r) => r.criticalBlockers))];
+
+  // Build 7 scorecard dimensions from domain results
+  const scorecardDimensions = validResults.map((r) => {
+    const cfg = DOMAIN_CONFIGS.find((d) => d.domain === r.domain);
+    return {
+      name: r.scorecardDimension.name,
+      score: r.scorecardDimension.score,
+      weight: cfg?.weight ?? 0.10,
+      rationale: r.scorecardDimension.rationale,
+      blockers: r.scorecardDimension.blockers
+    };
+  });
+
+  // Synthesis call: lightweight — sees only domain summaries, produces global fields
+  let synthesisResult = null;
+  try {
+    const synthText = await chatCompletionsRequest([
+      { role: "system", content: SYNTHESIS_SYSTEM_PROMPT },
+      { role: "user", content: buildSynthesisMessage(domainResults, review, requirements, files) }
+    ], { model: FOUNDRY_ANALYSIS_MODEL, maxTokens: 2000, timeoutMs: 60000, maxRetries: 1 });
+    synthesisResult = parseSynthesisResponse(synthText);
+  } catch (err) {
+    console.warn("[foundry] Fan-out synthesis call failed:", err?.message ?? err);
+  }
+
+  // Add Requirements Coverage (15%) and Documentation Completeness (5%)
+  if (synthesisResult?.requirementsCoverage) {
+    scorecardDimensions.push({ name: "Requirements Coverage", score: synthesisResult.requirementsCoverage.score, weight: 0.15, rationale: synthesisResult.requirementsCoverage.rationale, blockers: synthesisResult.requirementsCoverage.blockers });
+  } else {
+    const validated = requirements.filter((r) => r.cariStatus === "Validated").length;
+    const total = requirements.length || 1;
+    scorecardDimensions.push({ name: "Requirements Coverage", score: Math.round((validated / total) * 100), weight: 0.15, rationale: `${validated} of ${total} requirements validated against architecture evidence.`, blockers: [] });
+  }
+
+  if (synthesisResult?.documentationCompleteness) {
+    scorecardDimensions.push({ name: "Documentation Completeness", score: synthesisResult.documentationCompleteness.score, weight: 0.05, rationale: synthesisResult.documentationCompleteness.rationale, blockers: synthesisResult.documentationCompleteness.blockers });
+  } else {
+    scorecardDimensions.push({ name: "Documentation Completeness", score: files.length >= 3 ? 65 : 45, weight: 0.05, rationale: `${files.length} document(s) uploaded.`, blockers: [] });
+  }
+
+  // Compute weighted overall score
+  const totalWeight = scorecardDimensions.reduce((s, d) => s + d.weight, 0);
+  const overallScore = Math.round(scorecardDimensions.reduce((s, d) => s + d.score * d.weight, 0) / totalWeight);
+
+  // Determine recommendation (synthesis result preferred, deterministic fallback)
+  const hasCritical = allFindings.some((f) => f.criticalBlocker || f.severity === "Critical");
+  const hasHigh = allFindings.some((f) => f.severity === "High");
+  let recommendation = parseRecommendation(synthesisResult?.recommendation ?? "");
+  if (!synthesisResult?.recommendation) {
+    if (overallScore >= 80 && !hasCritical && !hasHigh) recommendation = "Recommended for Approval";
+    else if (overallScore >= 70 || (!hasCritical && overallScore >= 60)) recommendation = "Ready with Gaps";
+    else recommendation = "Needs Remediation";
+  }
+
+  // Re-number findings sequentially and stamp reviewId
+  const findings = allFindings.map((f, i) => ({
+    ...f,
+    findingId: `agent-finding-${i + 1}`,
+    reviewId: review.reviewId ?? ""
+  }));
+
+  const elapsedMs = Date.now() - t0;
+  console.log(`[foundry] Fan-out complete in ${Math.round(elapsedMs / 1000)}s: ${findings.length} findings across ${validResults.length}/7 domains, score ${overallScore}`);
+
+  const scorecard = {
+    overallScore,
+    recommendation,
+    criticalBlockerCount: findings.filter((f) => f.criticalBlocker).length,
+    missingEvidenceCount: allMissingEvidence.length,
+    confidenceLevel: hasCritical ? "Low" : hasHigh ? "Medium" : "High",
+    dimensionScores: scorecardDimensions,
+    reviewSummary: synthesisResult?.reviewSummary || `ARB review completed via domain fan-out analysis across ${validResults.length} domains with ${findings.length} total findings.`,
+    strengths: synthesisResult?.strengths ?? [],
+    missingEvidence: allMissingEvidence,
+    criticalBlockers: allCriticalBlockers,
+    nextActions: synthesisResult?.nextActions ?? [],
+    source: "agent",
+    generatedAt: new Date().toISOString()
+  };
+
+  return { findings, scorecard, recommendation };
+}
+
+// ─── END DOMAIN FAN-OUT ────────────────────────────────────────────────────
+
 function parseSeverity(value) {
   const v = String(value ?? "").trim();
   if (v === "Critical") return "Critical";
@@ -979,6 +1502,22 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
     return { success: false, reason: "Foundry not configured — FOUNDRY_PROJECT_ENDPOINT missing" };
   }
 
+  // ── Fan-out path (primary) ─────────────────────────────────────────────
+  // 7 parallel per-domain calls + 1 synthesis = ~30-35s vs monolithic ~60-120s.
+  // Falls back to monolithic if >2 domains fail to parse.
+  if (FANOUT_ENABLED) {
+    try {
+      const fanoutResult = await runArbAgentReviewFanOut({ review, files, requirements, evidence, searchChunks, visualEvidence });
+      if (fanoutResult) {
+        return { success: true, ...fanoutResult };
+      }
+      console.warn("[foundry] Fan-out returned null — falling through to monolithic path");
+    } catch (fanoutError) {
+      console.warn("[foundry] Fan-out threw — falling through to monolithic path:", fanoutError?.message ?? fanoutError);
+    }
+  }
+
+  // ── Monolithic path (fallback) ─────────────────────────────────────────
   // Fetch real-time Microsoft Learn documentation — best-effort, 5s max so it doesn't eat the pipeline budget
   const learnDocsPromise = fetchMicrosoftLearnGrounding(review, requirements, evidence).catch(() => []);
   const learnTimeout = new Promise((resolve) => setTimeout(() => resolve([]), 5000));
