@@ -1497,10 +1497,19 @@ function isStaleTransientExtraction(extraction) {
   // progress has no orchestration behind it. Running jobs get the full 30-min window.
   const defaultStaleMs = extraction.state === "Queued" ? 3 * 60 * 1000 : 30 * 60 * 1000;
   const staleAfterMs = Number(process.env.ARB_EXTRACTION_STALE_AFTER_MS || defaultStaleMs);
-  const stale = !Number.isFinite(startedAt) || Date.now() - startedAt > staleAfterMs;
+  const elapsed = !Number.isFinite(startedAt) ? Infinity : Date.now() - startedAt;
+  const stale = elapsed > staleAfterMs;
 
   if (!stale) {
     return false;
+  }
+
+  // Absolute cap: if the job is older than 2× the normal window (e.g. 60 min for Running),
+  // always treat it as stale regardless of progress indicators. This handles re-extraction
+  // attempts where prior-run file "Completed" statuses exist and would otherwise falsely
+  // suppress the stale guard on a new stuck orchestration.
+  if (elapsed > 2 * staleAfterMs) {
+    return true;
   }
 
   const statuses = [
