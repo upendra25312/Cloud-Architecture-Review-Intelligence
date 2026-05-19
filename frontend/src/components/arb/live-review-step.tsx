@@ -891,6 +891,35 @@ export function ArbLiveReviewStep(props: {
       }
     }
 
+    // Build enriched file display list. During extraction use live fileStatuses (joined with
+    // uploadedFiles for metadata). When extraction just started and statuses aren't back yet,
+    // fall back to uploadedFiles so all files show as Queued immediately.
+    const uploadedFilesById = new Map(uploadedFiles.map(u => [u.fileId, u]));
+    const displayFileList: Array<{
+      fileId: string;
+      fileName: string;
+      extractionStatus: string;
+      extractionError: string | null;
+      visualEvidenceCount?: number;
+    }> = epFileStatuses.length > 0
+      ? epFileStatuses
+      : isNewExtractionPending
+        ? uploadedFiles.map(u => ({ fileId: u.fileId, fileName: u.fileName, extractionStatus: "Queued", extractionError: null, visualEvidenceCount: undefined }))
+        : [];
+
+    // "Currently working on" banner text — from active stage → active file → phase label
+    const activeStageLabel = epSteps.find(s => epIsActive(s.value))?.label;
+    const activeFileName = epFileStatuses.find(f => f.extractionStatus === "Running")?.fileName;
+    const currentTaskLabel = activeStageLabel
+      ? `${activeStageLabel} extraction in progress`
+      : activeFileName
+        ? `Processing: ${activeFileName}`
+        : allFilesDone
+          ? deepAnalysisPhaseLabel
+          : isNewExtractionPending
+            ? "Starting analysis…"
+            : "Processing files…";
+
     return (
       <div className="arb-page-stack">
         <div className="arb-summary-grid">
@@ -1205,18 +1234,69 @@ export function ArbLiveReviewStep(props: {
               <div className="arb-ep-bar-track" role="progressbar" aria-valuenow={epPct} aria-valuemin={0} aria-valuemax={100}>
                 <div className={`arb-ep-bar-fill${allFilesDone ? " arb-ep-bar-fill-active" : ""}`} style={{ width: `${epPct > 0 ? epPct : 2}%` }} />
               </div>
-              <div className="arb-ep-steps">
+              {/* Pipeline stage strip */}
+              <div className="arb-ep-stages">
                 {epSteps.map((st) => {
                   const done = epIsDone(st.value);
                   const active = epIsActive(st.value);
                   return (
-                    <span key={st.label} className={`arb-ep-step${done ? " arb-ep-step-done" : active ? " arb-ep-step-active" : ""}`}>
-                      <span className="arb-ep-step-icon" aria-hidden="true">{done ? "✓" : active ? "⟳" : "○"}</span>
+                    <span key={st.label} className={`arb-ep-stage${done ? " arb-ep-stage-done" : active ? " arb-ep-stage-active" : ""}`}>
+                      <span className="arb-ep-stage-icon" aria-hidden="true">{done ? "✓" : active ? "⟳" : "○"}</span>
                       {st.label}
                     </span>
                   );
                 })}
               </div>
+              {/* File-by-file live status */}
+              {displayFileList.length > 0 && (
+                <div className="arb-ep-file-list">
+                  {displayFileList.map((fs) => {
+                    const st = fs.extractionStatus ?? "Queued";
+                    const isDone = st === "Completed" || st === "CompletedWithIssues";
+                    const isActive = st === "Running";
+                    const isFailed = st === "Failed";
+                    const isPartial = st === "CompletedWithIssues";
+                    const ext = (fs.fileName ?? "").split(".").pop()?.toLowerCase() ?? "";
+                    const typeBadge =
+                      ["pdf", "doc", "docx"].includes(ext) ? "DOC" :
+                      ["xlsx", "xls", "csv"].includes(ext) ? "XLS" :
+                      ["drawio", "vsdx"].includes(ext) ? "DGM" :
+                      ["zip", "tar", "gz"].includes(ext) ? "ZIP" :
+                      ["png", "jpg", "jpeg", "svg", "gif", "webp"].includes(ext) ? "IMG" :
+                      ["md", "txt", "rst"].includes(ext) ? "TXT" : "FILE";
+                    const visCount = fs.visualEvidenceCount;
+                    const visPart = visCount ? ` · ${visCount} image${visCount !== 1 ? "s" : ""} analysed` : "";
+                    const detail = isFailed
+                      ? (fs.extractionError ? fs.extractionError.slice(0, 72) : "Extraction failed")
+                      : isPartial
+                        ? `Extracted with issues${visPart}`
+                        : isDone
+                          ? `Text extracted${visPart}`
+                          : isActive
+                            ? "Reading and extracting content…"
+                            : "Queued";
+                    const badgeCls = isDone && !isPartial ? "done" : isPartial ? "warning" : isFailed ? "error" : isActive ? "active" : "queued";
+                    const badgeText = isDone && !isPartial ? "✓ Done" : isPartial ? "⚠ Partial" : isFailed ? "✗ Failed" : isActive ? "⟳ Processing" : "○ Queued";
+                    void uploadedFilesById; // joined metadata available for future use (category, size)
+                    return (
+                      <div key={fs.fileId} className={`arb-ep-file-row${isActive ? " arb-ep-file-row-active" : ""}`}>
+                        <span className="arb-ep-file-type">{typeBadge}</span>
+                        <span className="arb-ep-file-info">
+                          <span className="arb-ep-file-name" title={fs.fileName}>{fs.fileName}</span>
+                          <span className="arb-ep-file-detail">{detail}</span>
+                        </span>
+                        <span className={`arb-ep-file-badge arb-ep-file-badge-${badgeCls}`}>{badgeText}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {/* Currently active task banner */}
+              <div className="arb-ep-active-banner">
+                <span className="arb-spinner" aria-hidden="true" />
+                <span>{currentTaskLabel}</span>
+              </div>
+              {/* Footer */}
               <div className="arb-ep-footer">
                 {epTotalFiles > 0 ? (
                   <span>{epDoneFiles} of {epTotalFiles} {epTotalFiles === 1 ? "file" : "files"} processed</span>
