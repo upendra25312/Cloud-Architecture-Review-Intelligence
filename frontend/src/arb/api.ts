@@ -4,6 +4,7 @@ import type {
   ArbEvidenceFact,
   ArbAgentStatus,
   ArbExportArtifact,
+  ArbAgentHealth,
   ArbExportFormat,
   ArbFinding,
   ArbExtractionStatus,
@@ -415,6 +416,15 @@ export async function startArbExtraction(reviewId: string): Promise<ArbExtractio
   }
 
   throw new Error("Analysis is still running in the background. Refresh this page and check the extraction status.");
+}
+
+export async function fetchArbAgentHealth(): Promise<ArbAgentHealth> {
+  const response = await apiFetch("/api/arb/agent/health", {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store"
+  });
+  return readJsonResponse<ArbAgentHealth>(response, `Unable to check AI agent health (${response.status}).`);
 }
 
 export async function fetchArbExtractionStatus(reviewId: string): Promise<ArbExtractionStatus> {

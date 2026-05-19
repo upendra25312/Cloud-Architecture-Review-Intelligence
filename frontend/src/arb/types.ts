@@ -200,6 +200,14 @@ export interface ArbExtractionStatus {
   fileStatuses: ArbExtractionFileStatus[];
 }
 
+export interface ArbAgentHealth {
+  status: "healthy" | "degraded" | "unavailable" | "unconfigured" | "unknown";
+  message: string;
+  checkedAt: string;
+  latencyMs: number;
+  cached?: boolean;
+}
+
 export interface ArbAgentStatus {
   reviewId: string;
   traceId?: string;

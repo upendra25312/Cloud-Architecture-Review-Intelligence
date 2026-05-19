@@ -4734,6 +4734,85 @@ button.chip:disabled:hover {
   opacity: 0.8;
 }
 
+/* ── AI Agent health indicator ── */
+.arb-agent-health-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.arb-agent-health-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+}
+
+.arb-agent-health-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.arb-agent-health-chip-healthy   { background: #DCFCE7; color: #166534; border-color: #BBF7D0; }
+.arb-agent-health-chip-healthy .arb-agent-health-dot { background: #16A34A; }
+
+.arb-agent-health-chip-degraded  { background: #FEF9C3; color: #854D0E; border-color: #FDE68A; }
+.arb-agent-health-chip-degraded .arb-agent-health-dot { background: #D97706; animation: arb-health-pulse 1.4s ease-in-out infinite; }
+
+.arb-agent-health-chip-unavailable { background: #FEE2E2; color: #991B1B; border-color: #FECACA; }
+.arb-agent-health-chip-unavailable .arb-agent-health-dot { background: #DC2626; }
+
+.arb-agent-health-chip-unconfigured { background: #F3F4F6; color: #374151; border-color: #E5E7EB; }
+.arb-agent-health-chip-unconfigured .arb-agent-health-dot { background: #9CA3AF; }
+
+.arb-agent-health-chip-unknown  { background: #F3F4F6; color: #6B7280; border-color: #E5E7EB; }
+.arb-agent-health-chip-unknown .arb-agent-health-dot { background: #9CA3AF; }
+
+@keyframes arb-health-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.arb-agent-health-retry {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0078D4;
+  background: none;
+  border: 1px solid #93C5FD;
+  border-radius: 4px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.arb-agent-health-retry:hover { background: #EFF6FF; }
+.arb-agent-health-retry:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.arb-agent-health-banner {
+  font-size: 0.82rem;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.arb-agent-health-banner-error {
+  background: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.arb-agent-health-banner-warning {
+  background: #FFFBEB;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
 /* ── Partial-run notice (rules-only, AI unavailable) ── */
 .arb-partial-run-notice {
   display: flex;

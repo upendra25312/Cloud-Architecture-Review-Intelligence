@@ -6,6 +6,7 @@ import {
   createArbAction,
   deleteArbFile,
   downloadArbExport,
+  fetchArbAgentHealth,
   fetchArbAgentStatus,
   fetchArbEvidence,
   fetchArbActions,
@@ -30,6 +31,7 @@ import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
 import { trackArbEvent } from "@/lib/telemetry";
 import type {
   ArbAction,
+  ArbAgentHealth,
   ArbDecision,
   ArbDomainScore,
   ArbEvidenceFact,
@@ -299,6 +301,8 @@ export function ArbLiveReviewStep(props: {
   const [agentError, setAgentError] = useState<string | null>(null);
   const [agentCompleted, setAgentCompleted] = useState(false);
   const [agentStatusMessage, setAgentStatusMessage] = useState<string | null>(null);
+  const [agentHealth, setAgentHealth] = useState<ArbAgentHealth | null>(null);
+  const [agentHealthLoading, setAgentHealthLoading] = useState(false);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [deleteFileError, setDeleteFileError] = useState<string | null>(null);
   const [timerNow, setTimerNow] = useState(() => Date.now());
@@ -670,6 +674,27 @@ export function ArbLiveReviewStep(props: {
     };
   }, [activeStep, agentRunning, reviewId]);
 
+  // AI agent health — check on mount (upload step) and re-poll every 5 minutes.
+  // Also re-checks when the user returns to the upload step after navigating away.
+  useEffect(() => {
+    if (activeStep !== "upload") return;
+    let cancelled = false;
+    async function checkHealth() {
+      setAgentHealthLoading(true);
+      try {
+        const h = await fetchArbAgentHealth();
+        if (!cancelled) setAgentHealth(h);
+      } catch {
+        if (!cancelled) setAgentHealth({ status: "unknown", message: "Unable to reach the AI agent health endpoint.", checkedAt: new Date().toISOString(), latencyMs: 0 });
+      } finally {
+        if (!cancelled) setAgentHealthLoading(false);
+      }
+    }
+    void checkHealth();
+    const id = window.setInterval(() => void checkHealth(), 5 * 60 * 1000);
+    return () => { cancelled = true; window.clearInterval(id); };
+  }, [activeStep]);
+
   // Tick every second while extraction or agent is running so the elapsed timer updates smoothly
   useEffect(() => {
     const extractionRunning = extractionStatus?.state === "Running" || extractionStarting;
@@ -819,6 +844,8 @@ export function ArbLiveReviewStep(props: {
             (category) => `Assessment engine will analyze: ${formatCategory(category)}`
           );
     const canStartExtraction = readinessChecks.every((check) => check.complete) && !uploadSaving;
+    const agentUnavailable = agentHealth?.status === "unavailable" || agentHealth?.status === "unconfigured";
+    const agentDegraded = agentHealth?.status === "degraded";
 
     const extractionIsRunning = extractionStarting || extractionStatus?.state === "Running";
     // After clicking "Start analysis", the new extraction hasn't returned yet so extractionStatus
@@ -1168,10 +1195,48 @@ export function ArbLiveReviewStep(props: {
               </li>
             ))}
           </ul>
+          {/* AI agent health indicator — shown while on upload step */}
+          <div className="arb-agent-health-row">
+            <span className={`arb-agent-health-chip arb-agent-health-chip-${agentHealth?.status ?? "unknown"}`}>
+              <span className="arb-agent-health-dot" aria-hidden="true" />
+              {agentHealthLoading && !agentHealth ? "Checking AI service…" :
+               agentHealth?.status === "healthy" ? "AI Service: Online" :
+               agentHealth?.status === "degraded" ? "AI Service: Degraded" :
+               agentHealth?.status === "unavailable" ? "AI Service: Offline" :
+               agentHealth?.status === "unconfigured" ? "AI Service: Not Configured" :
+               "AI Service: Unknown"}
+            </span>
+            {agentHealth && agentHealth.status !== "healthy" && agentHealth.status !== "unknown" && (
+              <button
+                type="button"
+                className="arb-agent-health-retry"
+                disabled={agentHealthLoading}
+                onClick={() => {
+                  setAgentHealthLoading(true);
+                  fetchArbAgentHealth()
+                    .then(h => setAgentHealth(h))
+                    .catch(() => setAgentHealth({ status: "unknown", message: "Unable to reach health endpoint.", checkedAt: new Date().toISOString(), latencyMs: 0 }))
+                    .finally(() => setAgentHealthLoading(false));
+                }}
+              >
+                {agentHealthLoading ? "Checking…" : "Retry"}
+              </button>
+            )}
+          </div>
+          {agentUnavailable && agentHealth && (
+            <div className="arb-agent-health-banner arb-agent-health-banner-error" role="alert">
+              <strong>AI service unavailable</strong> — {agentHealth.message}
+            </div>
+          )}
+          {agentDegraded && agentHealth && (
+            <div className="arb-agent-health-banner arb-agent-health-banner-warning" role="status">
+              <strong>AI service degraded</strong> — {agentHealth.message} Analysis will start but may be slower.
+            </div>
+          )}
           <button
             type="button"
             className="arb-cta-btn"
-            disabled={!canStartExtraction || extractionStarting || extractionStatus?.state === "Running"}
+            disabled={!canStartExtraction || extractionStarting || extractionStatus?.state === "Running" || agentUnavailable}
             onClick={async () => {
               try {
                 setExtractionStarting(true);
