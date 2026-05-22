@@ -4551,7 +4551,9 @@ async function startArbExtraction(principal, reviewId) {
   const readinessNotes =
     contentReadiness.sufficient && !readiness.requiredEvidencePresent
       ? "A standalone SOW is not uploaded, but the extracted architecture pack contains enough design, visual, security, cost, HA/DR, and operations evidence to start review with gaps."
-      : readiness.readinessNotes;
+      : missingRecommendedItems.length === 0
+        ? "Required and recommended evidence categories are present."
+        : readiness.readinessNotes;
   const blockingExtractionErrors = blockingExtractionErrorsForCompletedFiles(extractionErrors, nextFilesWithVisualEvidence);
   const extractionState = blockingExtractionErrors.length > 0 || visualExtractionErrors.length > 0 ? "Completed with Issues" : "Completed";
   const extractionConfidencePercent = calculateExtractionConfidencePercent({
@@ -5294,7 +5296,9 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
   const readinessNotes =
     contentReadiness.sufficient && !readiness.requiredEvidencePresent
       ? "A standalone SOW is not uploaded, but the extracted architecture pack contains enough design, visual, security, cost, HA/DR, and operations evidence to start review with gaps."
-      : readiness.readinessNotes;
+      : missingRecommendedItems.length === 0
+        ? "Required and recommended evidence categories are present."
+        : readiness.readinessNotes;
   const blockingExtractionErrors = fileResults.flatMap(blockingExtractionErrorsForFileResult);
   const extractionState =
     blockingExtractionErrors.length > 0 || allVisualExtractionErrors.length > 0
@@ -5575,10 +5579,31 @@ async function getArbExtractionStatus(principal, reviewId) {
       ? status.missingRequiredItems.length
       : Infinity;
     status.missingRequiredItems = liveReadiness.missingRequiredItems;
-    status.missingRecommendedItems = liveReadiness.missingRecommendedItems;
-    // Only replace readinessNotes when required-item coverage improves — preserve
-    // contextual messages such as "stale extraction — click Start analysis".
-    if (liveReadiness.missingRequiredItems.length < previousMissingCount) {
+    // For completed extractions, preserve the content-aware missingRecommendedItems that
+    // was computed by assessExtractedContentReadiness (keyword-scanning actual document text).
+    // File-category inference assigns one label per filename and cannot detect embedded topics
+    // (e.g. an HLD that contains security, cost, HA/DR, and ops content). Overwriting the
+    // content-aware result here would always report all 5 recommended categories as missing
+    // for multi-topic design docs regardless of what was actually extracted.
+    const extractionCompleted = status.state === "Completed" || status.state === "Completed with Issues";
+    if (!extractionCompleted) {
+      status.missingRecommendedItems = liveReadiness.missingRecommendedItems;
+    }
+    // For completed extractions, derive readinessNotes from the effective (post-content-scan)
+    // missing items so the displayed message stays coherent with the chip and badge state.
+    // Stored readinessNotes may have been computed from file-category inference before the
+    // content scan ran, producing a stale "still incomplete" note even when content coverage
+    // is complete. Pre-extraction states keep their contextual messages unchanged unless
+    // required-item coverage improves (e.g. a SOW is uploaded after extraction started).
+    if (extractionCompleted) {
+      if (!status.missingRequiredItems.length && !status.missingRecommendedItems?.length) {
+        status.readinessNotes = "Required and recommended evidence categories are present.";
+      } else if (!status.missingRequiredItems.length) {
+        status.readinessNotes = "The package can proceed, but recommended evidence is still incomplete.";
+      } else {
+        status.readinessNotes = "At least one required upload category is still missing.";
+      }
+    } else if (liveReadiness.missingRequiredItems.length < previousMissingCount) {
       status.readinessNotes = liveReadiness.readinessNotes;
     }
   }

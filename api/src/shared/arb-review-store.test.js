@@ -227,6 +227,7 @@ function loadArbReviewStore() {
 
   return {
     store,
+    mockTableStorage,
     cleanup() {
       delete require.cache[tableStoragePath];
       delete require.cache[storagePath];
@@ -634,6 +635,94 @@ test("getArbExtractionStatus reflects SOW uploaded after extraction ran — no f
     const status = await store.getArbExtractionStatus(principal, created.reviewId);
     assert.deepEqual(status.missingRequiredItems, [], "SOW uploaded after extraction should not appear as missing in status");
     assert.ok(!status.readinessNotes?.toLowerCase().includes("required upload category"), "readinessNotes should not claim a required category is missing");
+  } finally {
+    cleanup();
+  }
+});
+
+test("getArbExtractionStatus preserves content-aware missingRecommendedItems for completed extractions — no false multi-topic-doc warning", async () => {
+  // Regression: getArbExtractionStatus was overwriting the content-aware missingRecommendedItems
+  // (computed during extraction by keyword-scanning document text) with a file-category-only
+  // check on every Refresh. Multi-topic HLD/LLD docs (security + cost + HA/DR + ops) are all
+  // classified as "design_doc" by filename — they have no filename keyword for "security_note",
+  // "cost_assumptions", etc. — so the file-category check always returned all 5 recommended
+  // items as missing even though extraction confirmed the content was present.
+  //
+  // The fix: for Completed / Completed-with-Issues states, preserve the stored content-aware
+  // missingRecommendedItems and derive readinessNotes from the effective missing set.
+  const { store, mockTableStorage, cleanup } = loadArbReviewStore();
+  const userId = "arb-user-multitopic";
+  const principal = {
+    userId,
+    userDetails: "multitopic@example.com",
+    identityProvider: "aad"
+  };
+
+  try {
+    const created = await store.createArbReview(principal, {
+      projectCode: "multitopic-hld",
+      projectName: "Multi-Topic HLD"
+    });
+
+    // Upload an HLD (design_doc) and a SOW — no separate security/cost/ha-dr/ops files.
+    // Filename-only inference assigns "design_doc" to the HLD; no file gets classified as
+    // "security_note", "cost_assumptions", "dr_ha_note", "diagram", or "ops_monitoring_note".
+    await store.uploadArbFiles(principal, created.reviewId, [
+      {
+        fileName: "Trust_Bank_Azure_Landing_Zone_HLD_v5.docx",
+        logicalCategory: "design_doc",
+        contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        contentBuffer: Buffer.from("Azure Landing Zone architecture with hub-spoke topology, security policy and RBAC, cost budget SKU, HA availability backup recovery, monitor log analytics operations.")
+      },
+      {
+        fileName: "Trust_Bank_Azure_Landing_Zone_SOW_v1.md",
+        logicalCategory: "sow",
+        contentType: "text/markdown",
+        contentBuffer: Buffer.from("Statement of Work: Trust Bank Azure Landing Zone UKSouth/UKWest. In scope: connectivity, identity.")
+      }
+    ]);
+
+    // Simulate a completed extraction entity with content-aware missingRecommendedItems = []
+    // (what extraction correctly computes after keyword-scanning the document body).
+    // Keys must match the store's encodeTableKey encoding so getEntity finds the record.
+    const encodeKey = (v) => Buffer.from(String(v ?? ""), "utf8").toString("base64url");
+    const partitionKey = encodeKey(created.reviewId);
+    const rowKey = `EXTRACTION|${encodeKey(userId)}`;
+
+    const client = await mockTableStorage.getTableClient("arbreviews");
+    await client.upsertEntity({
+      partitionKey,
+      rowKey,
+      extractionJson: JSON.stringify({
+        reviewId: created.reviewId,
+        jobId: `${created.reviewId}-extract-001`,
+        state: "Completed",
+        extractionConfidencePercent: 100,
+        completedSteps: ["files-registered", "text-extraction", "requirements-normalized", "evidence-normalized"],
+        failedSteps: [],
+        textExtractionStatus: "Completed",
+        tableExtractionStatus: "CompletedOrNotApplicable",
+        figureExtractionStatus: "Completed",
+        visualAnalysisStatus: "Completed",
+        visualEvidenceCount: 0,
+        visualExtractionErrors: [],
+        evidenceReadinessState: "Ready for Review",
+        missingRequiredItems: [],
+        missingRecommendedItems: [],
+        readinessNotes: "The package can proceed, but recommended evidence is still incomplete.",
+        extractionErrors: [],
+        lastStartedAt: new Date().toISOString(),
+        lastCompletedAt: new Date().toISOString(),
+        fileStatuses: []
+      }),
+      lastUpdated: new Date().toISOString()
+    }, "Replace");
+
+    // Refresh status — must preserve missingRecommendedItems=[] and fix readinessNotes
+    const status = await store.getArbExtractionStatus(principal, created.reviewId);
+    assert.equal(status.state, "Completed", "state should remain Completed");
+    assert.deepEqual(status.missingRecommendedItems, [], "content-aware missingRecommendedItems=[] must not be overwritten by file-category inference");
+    assert.equal(status.readinessNotes, "Required and recommended evidence categories are present.", "readinessNotes must reflect the effective (post-content-scan) missing items, not the stale stored message");
   } finally {
     cleanup();
   }
