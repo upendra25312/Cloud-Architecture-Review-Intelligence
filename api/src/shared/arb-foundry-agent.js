@@ -575,6 +575,14 @@ function buildMcpCacheKey(queries) {
 
 async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
   const queries = buildLearnQueries(review, requirements, evidence);
+  const queryHash = crypto.createHash("sha256").update(queries.slice().sort().join("|")).digest("hex").slice(0, 16);
+  const cacheTtlSeconds = Math.round(MCP_CACHE_TTL_MS / 1000);
+
+  const makeMeta = (mcpStatus, resultCount, extra = {}) => ({
+    queryHash, queryCount: queries.length, resultCount, mcpStatus,
+    fallbackUsed: mcpStatus !== "success" && mcpStatus !== "cache-hit",
+    cacheTtlSeconds, retrievedAt: new Date().toISOString(), ...extra
+  });
 
   // Try blob cache first
   try {
@@ -583,7 +591,8 @@ async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
     const cached = await readJsonBlob(container, cacheKey);
 
     if (cached && cached.cachedAt && Date.now() - new Date(cached.cachedAt).getTime() < MCP_CACHE_TTL_MS) {
-      return cached.docs ?? [];
+      const docs = cached.docs ?? [];
+      return { docs, mcpMetadata: makeMeta("cache-hit", docs.length, { retrievedAt: cached.cachedAt, fallbackUsed: false }) };
     }
 
     // Cache miss or stale — fetch live
@@ -596,20 +605,28 @@ async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
       return true;
     });
 
-    // Write back to cache (best-effort)
-    uploadJsonBlob(container, cacheKey, { cachedAt: new Date().toISOString(), docs }).catch((err) => { console.warn(`[cache] Failed to write Learn docs cache (${cacheKey}):`, err?.message ?? err); });
+    const mcpMetadata = makeMeta("success", docs.length, { fallbackUsed: false });
 
-    return docs;
+    // Write back to cache with audit fields (best-effort)
+    uploadJsonBlob(container, cacheKey, { cachedAt: mcpMetadata.retrievedAt, queryHash, queryCount: queries.length, resultCount: docs.length, docs })
+      .catch((err) => { console.warn(`[cache] Failed to write Learn docs cache (${cacheKey}):`, err?.message ?? err); });
+
+    return { docs, mcpMetadata };
   } catch {
-    // Storage unavailable — fall back to live call with no caching
-    const results = await Promise.all(queries.map((q) => searchMicrosoftLearnDocs(q, 5)));
-    const allDocs = results.flat().filter(Boolean);
-    const seen = new Set();
-    return allDocs.filter((doc) => {
-      if (!doc.url || seen.has(doc.url)) return false;
-      seen.add(doc.url);
-      return true;
-    });
+    // Storage unavailable — attempt live call without caching
+    try {
+      const results = await Promise.all(queries.map((q) => searchMicrosoftLearnDocs(q, 5)));
+      const allDocs = results.flat().filter(Boolean);
+      const seen = new Set();
+      const docs = allDocs.filter((doc) => {
+        if (!doc.url || seen.has(doc.url)) return false;
+        seen.add(doc.url);
+        return true;
+      });
+      return { docs, mcpMetadata: makeMeta("success-no-cache", docs.length) };
+    } catch {
+      return { docs: [], mcpMetadata: makeMeta("failed", 0) };
+    }
   }
 }
 
@@ -1083,9 +1100,10 @@ async function runArbAgentReviewFanOut({ review, files, requirements, evidence, 
   const t0 = Date.now();
 
   // Fetch MS Learn grounding once — shared across all domain calls
-  const learnDocsPromise = fetchMicrosoftLearnGrounding(review, requirements, evidence).catch(() => []);
-  const learnTimeout = new Promise((resolve) => setTimeout(() => resolve([]), 5000));
-  const learnDocs = await Promise.race([learnDocsPromise, learnTimeout]);
+  const learnDocsPromise = fetchMicrosoftLearnGrounding(review, requirements, evidence)
+    .catch(() => ({ docs: [], mcpMetadata: { mcpStatus: "failed", fallbackUsed: true, resultCount: 0 } }));
+  const learnTimeout = new Promise((resolve) => setTimeout(() => resolve({ docs: [], mcpMetadata: { mcpStatus: "timeout", fallbackUsed: true, resultCount: 0 } }), 5000));
+  const { docs: learnDocs, mcpMetadata: learnMcpMeta } = await Promise.race([learnDocsPromise, learnTimeout]);
 
   // Fire all 7 domain calls in parallel — each with a 90s timeout and 1 retry
   const domainCallPromises = DOMAIN_CONFIGS.map(async (cfg) => {
@@ -1203,7 +1221,7 @@ async function runArbAgentReviewFanOut({ review, files, requirements, evidence, 
     generatedAt: new Date().toISOString()
   };
 
-  return { findings, scorecard, recommendation };
+  return { findings, scorecard, recommendation, learnMcpMeta };
 }
 
 // ─── END DOMAIN FAN-OUT ────────────────────────────────────────────────────
@@ -1519,9 +1537,10 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
 
   // ── Monolithic path (fallback) ─────────────────────────────────────────
   // Fetch real-time Microsoft Learn documentation — best-effort, 5s max so it doesn't eat the pipeline budget
-  const learnDocsPromise = fetchMicrosoftLearnGrounding(review, requirements, evidence).catch(() => []);
-  const learnTimeout = new Promise((resolve) => setTimeout(() => resolve([]), 5000));
-  const learnDocs = await Promise.race([learnDocsPromise, learnTimeout]);
+  const learnDocsPromise = fetchMicrosoftLearnGrounding(review, requirements, evidence)
+    .catch(() => ({ docs: [], mcpMetadata: { mcpStatus: "failed", fallbackUsed: true, resultCount: 0 } }));
+  const learnTimeout = new Promise((resolve) => setTimeout(() => resolve({ docs: [], mcpMetadata: { mcpStatus: "timeout", fallbackUsed: true, resultCount: 0 } }), 5000));
+  const { docs: learnDocs, mcpMetadata: learnMcpMeta } = await Promise.race([learnDocsPromise, learnTimeout]);
   const userMessage = buildUserMessage(review, files, requirements, evidence, searchChunks, learnDocs, visualEvidence);
 
   try {
@@ -1595,7 +1614,7 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
       return { success: true, ...fallback, fallbackUsed: true, rawResponse: responseText };
     }
 
-    return { success: true, ...parsed };
+    return { success: true, ...parsed, learnMcpMeta };
   } catch (error) {
     return {
       success: false,

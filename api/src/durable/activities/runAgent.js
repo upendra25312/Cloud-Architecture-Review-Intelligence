@@ -404,7 +404,8 @@ async function runAgentHandler(input, context) {
         recommendation: agentResult.recommendation,
         fallback: agentResult.fallbackUsed === true,
         validationIssues: validation.issues.length,
-        learnUrlMissing: validation.learnUrlMissing
+        learnUrlMissing: validation.learnUrlMissing,
+        mcp: agentResult.learnMcpMeta ?? null
       })
     );
   }
