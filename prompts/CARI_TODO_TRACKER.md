@@ -44,7 +44,7 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | C3 | EvidenceId cross-validation — `stripOrphanEvidenceIds` in `runAgent.js` | P1 | ✅ **DONE** | `49334f8` | combined with C2 |
 | C4 | MCP guidance metadata persistence — `fetchMicrosoftLearnGrounding` returns `{docs, mcpMetadata}` | P1 | ✅ **DONE** | `d62343d` | 208→208 pass |
 | C5 | Structured telemetry with correlationId threaded upload→extract→agent→export | P2 | ✅ **DONE** | `264f258` | 219 pass (no new tests) |
-| C6 | 'Why CARI says this' reviewer UI panel (evidence basis + confidence + guidance) | P2 | ⏳ Pending |  | |
+| C6 | 'Why CARI says this' reviewer UI panel (evidence basis + confidence + guidance) | P2 | ✅ **DONE** | `4bda306` | Build pass, 229 API tests pass |
 | C7 | Playwright E2E — upload → extract → review → export golden path | P2 | ⏳ Pending |  | |
 | C8 | Durable Functions idempotency test suite | P2 | ⏳ Pending |  | |
 | C9 | Prompt injection eval cases (10 minimum per master prompt) | P1 | ✅ **DONE** | `436d006` | +9 cases → 36 total |
@@ -62,6 +62,8 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | 2026-05-25 C1 | 219 | 219 | 0 | +11 detectExecutableMagicBytes |
 | 2026-05-25 C5 | 219 | 219 | 0 | traceId threading — no new tests |
 | 2026-05-25 C9 | 219 | 219 | 0 | eval dataset only — no unit tests |
+| 2026-05-25 C10 | 229 | 229 | 0 | +10 RBAC cross-user isolation tests |
+| 2026-05-25 C6 | 229 | 229 | 0 | frontend only — no new API tests |
 
 ---
 
@@ -96,7 +98,7 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 1. Read this file first
 2. Run `npm --prefix api test` — expect **219 pass, 0 fail**
 3. Check `git log --oneline -8` — last commit should be `436d006`
-4. Continue with **C10** (RBAC cross-user access test, P1) or ask user which slice to tackle
+4. Continue with **C7** (Playwright E2E golden path, P2) or ask user which slice to tackle
 5. Prompt path: `c:\cari-repo\prompts\CARI_Claude_Code_Skills_Master_Prompt_V6.md`
 
 ---
