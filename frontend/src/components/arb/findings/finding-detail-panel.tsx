@@ -5,6 +5,7 @@ import type { ArbFinding, ArbAction } from "@/arb/types";
 import { FindingEditor } from "./finding-editor";
 import { FindingActionEditor } from "./finding-action-editor";
 import { SeverityBadge } from "@/components/severity-badge";
+import { WhyCariSaysThis } from "./why-cari-says-this";
 import styles from "./arb-findings-page.module.css";
 
 export interface FindingDetailPanelProps {
@@ -27,12 +28,6 @@ function toSeverityLevel(value: string | undefined): "High" | "Medium" | "Low" |
   }
   return undefined;
 }
-
-const CONFIDENCE_CLASS: Record<string, string> = {
-  High: styles.confidenceHigh,
-  Medium: styles.confidenceMedium,
-  Low: styles.confidenceLow,
-};
 
 function isLowCoverage(finding: ArbFinding): boolean {
   const thinEvidence =
@@ -73,11 +68,6 @@ export function FindingDetailPanel({
           <SeverityBadge severity={toSeverityLevel(finding.severity)} />
           <span className={styles.domainTag}>{finding.domain}</span>
           <span className={styles.referenceRelevance}>{finding.findingType}</span>
-          {finding.confidence && (
-            <span className={`${styles.confidenceBadge} ${CONFIDENCE_CLASS[finding.confidence] ?? ""}`}>
-              {finding.confidence} confidence
-            </span>
-          )}
         </div>
       </div>
 
@@ -106,77 +96,8 @@ export function FindingDetailPanel({
         <p className={styles.sectionBody}>{finding.recommendation}</p>
       </section>
 
-      {/* Evidence Basis */}
-      <section className={styles.detailSection}>
-        <h3 className={styles.sectionHeading}>Evidence Basis</h3>
-        <p className={styles.sectionBody}>{finding.evidenceBasis}</p>
-      </section>
-
-      {/* Microsoft Learn Guidance */}
-      {finding.learnMoreUrl && (
-        <section className={styles.detailSection}>
-          <a
-            href={finding.learnMoreUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.learnMoreLink}
-          >
-            Microsoft Learn Guidance ↗
-          </a>
-        </section>
-      )}
-
-      {/* Missing Evidence */}
-      {finding.missingEvidence && finding.missingEvidence.length > 0 && (
-        <section className={styles.detailSection}>
-          <h3 className={styles.sectionHeadingDanger}>Missing Evidence</h3>
-          <ul className={styles.sectionList}>
-            {finding.missingEvidence.map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Grounding References */}
-      {finding.references && finding.references.length > 0 && (
-        <section className={styles.detailSection}>
-          <h3 className={styles.sectionHeading}>Grounding References</h3>
-          <ul className={styles.sectionList}>
-            {finding.references.map((ref, i) => (
-              <li key={i}>
-                {ref.url ? (
-                  <a href={ref.url} target="_blank" rel="noopener noreferrer" className={styles.learnMoreLink}>
-                    {ref.title}
-                  </a>
-                ) : (
-                  <span>{ref.title}</span>
-                )}
-                {ref.relevance && (
-                  <span className={styles.referenceRelevance}> — {ref.relevance}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Linked Evidence */}
-      {finding.evidenceFound && finding.evidenceFound.length > 0 && (
-        <section className={styles.detailSection}>
-          <h3 className={styles.sectionHeading}>Linked Evidence</h3>
-          <ul className={styles.sectionList}>
-            {finding.evidenceFound.map((ev, i) => (
-              <li key={i}>
-                {ev.summary}
-                {ev.sourceFileName && (
-                  <span className={styles.evidenceSource}> — {ev.sourceFileName}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {/* Why CARI says this — collapsible evidence + guidance panel */}
+      <WhyCariSaysThis finding={finding} />
 
       {/* Review Action section */}
       <hr className={styles.sectionDivider} />

@@ -296,6 +296,80 @@
   line-height: 1.5;
 }
 
+/* ── "Why CARI says this" collapsible section ────────────────────── */
+.whySection {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.whyToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surf-hover);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.whyToggle:hover {
+  background: var(--border);
+}
+
+.whyToggleLabel {
+  font-weight: 700;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex: 1;
+}
+
+.whyChevron {
+  font-size: 0.7rem;
+  color: var(--t3);
+}
+
+.whyBody {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.whySubsection {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.whySubsection:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.whySubheading {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--t3);
+  margin: 0 0 6px;
+}
+
+.whySubheadingDanger {
+  color: var(--high);
+}
+
+.evidenceFactType {
+  font-size: 0.8rem;
+  color: var(--brand);
+  font-weight: 600;
+}
+
 /* ── Full-width shell override ───────────────────────────────────── */
 .fullWidthShell {
   grid-template-columns: 1fr;
