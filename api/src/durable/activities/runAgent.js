@@ -156,12 +156,109 @@ function resolveEvidenceTraceability(agentResult, evidenceList, visualEvidenceLi
   }
 }
 
+const VALID_SEVERITIES = new Set(['Critical', 'High', 'Medium', 'Low']);
+const VALID_RECOMMENDATIONS = new Set([
+  'Recommended for Approval', 'Ready with Gaps', 'Needs Remediation', 'Rejected'
+]);
+
+/**
+ * Validates the structural integrity of an assembled agent result before storage.
+ * Returns { valid, issues, learnUrlMissing, titleMissing } — never throws.
+ * Logs a structured warning when issues are found so they appear in App Insights.
+ */
+function validateArbOutput(result, context, reviewId) {
+  const issues = [];
+  const findings = Array.isArray(result && result.findings) ? result.findings : [];
+
+  if (!Array.isArray(result && result.findings)) issues.push('findings is not an array');
+
+  let learnUrlMissing = 0;
+  let titleMissing = 0;
+  for (const f of findings) {
+    if (!f.title || !String(f.title).trim()) titleMissing++;
+    if (!f.learnMoreUrl || !String(f.learnMoreUrl).includes('learn.microsoft.com')) learnUrlMissing++;
+    if (!VALID_SEVERITIES.has(f.severity)) issues.push(`finding has invalid severity: "${f.severity}"`);
+  }
+
+  const sc = result && result.scorecard;
+  if (!sc) {
+    issues.push('scorecard missing');
+  } else {
+    const score = Number(sc.overallScore);
+    if (!Number.isFinite(score) || score < 0 || score > 100) {
+      issues.push(`overallScore out of range: ${sc.overallScore}`);
+    }
+    const actualCritical = findings.filter((f) => f.criticalBlocker).length;
+    const reportedCritical = Number(sc.criticalBlockerCount);
+    if (Number.isFinite(reportedCritical) && reportedCritical !== actualCritical) {
+      issues.push(`criticalBlockerCount mismatch: scorecard=${reportedCritical}, actual=${actualCritical}`);
+    }
+  }
+
+  if (result && result.recommendation && !VALID_RECOMMENDATIONS.has(result.recommendation)) {
+    issues.push(`invalid recommendation enum: "${result.recommendation}"`);
+  }
+
+  if (context && typeof context.log === 'function') {
+    context.log(JSON.stringify({
+      activity: 'validateArbOutput',
+      reviewId,
+      issueCount: issues.length,
+      learnUrlMissing,
+      titleMissing,
+      findingCount: findings.length,
+      ...(issues.length > 0 ? { issues } : {})
+    }));
+  }
+
+  return { valid: issues.length === 0, issues, learnUrlMissing, titleMissing };
+}
+
+/**
+ * Strips evidenceIds and visualEvidenceIds from each finding that do not
+ * match a known extracted fact. Orphan IDs are logged so the gap is visible
+ * without silently inflating evidence confidence.
+ */
+function stripOrphanEvidenceIds(findings, evidenceList, visualEvidenceList, context, reviewId) {
+  const knownEvidenceIds = new Set(evidenceList.map((e) => e.evidenceId).filter(Boolean));
+  const knownVisualIds = new Set(visualEvidenceList.map((e) => e.visualEvidenceId).filter(Boolean));
+
+  let totalOrphans = 0;
+  for (const finding of findings) {
+    if (Array.isArray(finding.evidenceIds)) {
+      const before = finding.evidenceIds.length;
+      finding.evidenceIds = finding.evidenceIds.filter((id) => knownEvidenceIds.has(id));
+      totalOrphans += before - finding.evidenceIds.length;
+    }
+    if (Array.isArray(finding.visualEvidenceIds)) {
+      const before = finding.visualEvidenceIds.length;
+      finding.visualEvidenceIds = finding.visualEvidenceIds.filter((id) => knownVisualIds.has(id));
+      totalOrphans += before - finding.visualEvidenceIds.length;
+    }
+    if (Array.isArray(finding.evidenceReferences)) {
+      finding.evidenceReferences = finding.evidenceReferences.filter((r) => {
+        if (r.type === 'visualEvidence') return knownVisualIds.has(r.id);
+        return knownEvidenceIds.has(r.id);
+      });
+    }
+  }
+
+  if (totalOrphans > 0 && context && typeof context.log === 'function') {
+    context.log(JSON.stringify({
+      activity: 'stripOrphanEvidenceIds',
+      reviewId,
+      orphanIdsRemoved: totalOrphans
+    }));
+  }
+}
+
 /**
  * Activity: runAgent
  *
  * Invokes the Foundry agent review, merges rule findings (authoritative)
- * with AI findings, applies the governed recommendation, and resolves
- * evidence traceability on each finding.
+ * with AI findings, applies the governed recommendation, validates the
+ * output structure, strips orphan evidenceIds, and resolves evidence
+ * traceability on each finding.
  *
  * NOTE: No retry policy should be applied by the orchestrator — the Foundry
  * client already implements a 3-retry with exponential backoff internally.
@@ -269,6 +366,31 @@ async function runAgentHandler(input, context) {
     agentResult.recommendation = governedRecommendation;
   }
 
+  // C2: schema validation gate — logs issues before storage, triggers fallback on critical failures
+  const validation = validateArbOutput(agentResult, context, reviewObj.reviewId);
+  if (!validation.valid && !Array.isArray(agentResult.findings)) {
+    agentResult = {
+      ...buildFallbackAgentReview({
+        review: reviewObj,
+        requirements: requirementsList,
+        evidence: evidenceList,
+        reason: `Schema validation failed: ${validation.issues.join('; ')}`
+      }),
+      success: true,
+      fallbackUsed: true,
+      validationFailed: true
+    };
+  }
+
+  // C3: evidenceId cross-validation — strip IDs not present in extracted facts
+  stripOrphanEvidenceIds(
+    agentResult.findings || [],
+    evidenceList,
+    visualEvidenceList,
+    context,
+    reviewObj.reviewId
+  );
+
   resolveEvidenceTraceability(agentResult, evidenceList, visualEvidenceList);
 
   if (context && typeof context.log === 'function') {
@@ -280,7 +402,9 @@ async function runAgentHandler(input, context) {
         ruleFindings: existingRuleFindings.length,
         score: (agentResult.scorecard && agentResult.scorecard.overallScore) ?? null,
         recommendation: agentResult.recommendation,
-        fallback: agentResult.fallbackUsed === true
+        fallback: agentResult.fallbackUsed === true,
+        validationIssues: validation.issues.length,
+        learnUrlMissing: validation.learnUrlMissing
       })
     );
   }
@@ -293,5 +417,7 @@ df.app.activity('runAgent', { handler: runAgentHandler });
 module.exports = {
   runAgentHandler,
   deriveGovernedRecommendation,
-  resolveEvidenceTraceability
+  resolveEvidenceTraceability,
+  validateArbOutput,
+  stripOrphanEvidenceIds
 };
