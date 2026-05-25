@@ -41,6 +41,34 @@ const BLOCKED_EXTENSIONS = new Set([
   ".exe", ".dll", ".so", ".bat", ".cmd", ".msi", ".scr", ".vbs", ".com", ".pif",
 ]);
 
+// Magic-byte signatures for binary formats that must not be spoofed via MIME.
+// Each entry: { magic: Buffer, offset, detectedAs } — detectedAs is informational only.
+// The check is additive: a browser MIME that passes the allowlist is then confirmed
+// against the file header. Mismatches for known-dangerous executables are rejected.
+const EXEC_MAGIC_SIGNATURES = [
+  { magic: Buffer.from([0x4D, 0x5A]), offset: 0, detectedAs: "Windows PE/MZ executable" }, // MZ header
+  { magic: Buffer.from([0x7F, 0x45, 0x4C, 0x46]), offset: 0, detectedAs: "ELF executable" }, // ELF
+  { magic: Buffer.from([0xCE, 0xFA, 0xED, 0xFE]), offset: 0, detectedAs: "Mach-O binary (32-bit)" },
+  { magic: Buffer.from([0xCF, 0xFA, 0xED, 0xFE]), offset: 0, detectedAs: "Mach-O binary (64-bit)" },
+  { magic: Buffer.from([0xCA, 0xFE, 0xBA, 0xBE]), offset: 0, detectedAs: "Java class / fat Mach-O" },
+];
+
+/**
+ * Returns the detected executable type if the buffer starts with a known
+ * executable magic-byte signature, or null if the file appears safe.
+ * Only checks the first 8 bytes — no full-file scan needed.
+ */
+function detectExecutableMagicBytes(buf) {
+  if (!buf || buf.byteLength < 4) return null;
+  for (const sig of EXEC_MAGIC_SIGNATURES) {
+    const slice = buf.slice(sig.offset, sig.offset + sig.magic.length);
+    if (slice.length === sig.magic.length && slice.every((b, i) => b === sig.magic[i])) {
+      return sig.detectedAs;
+    }
+  }
+  return null;
+}
+
 async function parseMultipartFiles(request, context) {
   const contentType = request.headers.get("content-type") || "";
 
@@ -113,6 +141,16 @@ async function parseMultipartFiles(request, context) {
 
     if (mime && !ALLOWED_MIME_TYPES.has(mime)) {
       const err = new Error(`File "${part.filename}" has an unsupported type (${mime}). Accepted types: PDF, Office documents, images, text, JSON, YAML, and ZIP evidence packages.`);
+      err.statusCode = 415;
+      throw err;
+    }
+
+    // Magic-bytes check: reject files whose content header matches a known executable
+    // format regardless of what MIME type the browser declared. Catches .exe renamed
+    // to .pdf or sent as application/octet-stream.
+    const execType = detectExecutableMagicBytes(part.data);
+    if (execType) {
+      const err = new Error(`File "${part.filename}" was rejected because its content was identified as a ${execType}. Executable content is not accepted.`);
       err.statusCode = 415;
       throw err;
     }
