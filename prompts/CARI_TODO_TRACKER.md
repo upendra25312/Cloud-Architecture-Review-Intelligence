@@ -1,6 +1,6 @@
 # CARI Todo Tracker
 
-_Maintained by Claude Code per Master Prompt V6. Updated each session. Last updated: 2026-05-25._
+_Maintained by Claude Code per Master Prompt V6. Updated each session. Last updated: 2026-05-25 (C9 complete)._
 
 ---
 
@@ -43,11 +43,11 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | C2 | ARB JSON schema validation gate — `validateArbOutput` in `runAgent.js` | P1 | ✅ **DONE** | `49334f8` | +11 tests |
 | C3 | EvidenceId cross-validation — `stripOrphanEvidenceIds` in `runAgent.js` | P1 | ✅ **DONE** | `49334f8` | combined with C2 |
 | C4 | MCP guidance metadata persistence — `fetchMicrosoftLearnGrounding` returns `{docs, mcpMetadata}` | P1 | ✅ **DONE** | `d62343d` | 208→208 pass |
-| C5 | Structured telemetry with correlationId threaded upload→extract→agent→export | P2 | ⏳ Next |  | |
+| C5 | Structured telemetry with correlationId threaded upload→extract→agent→export | P2 | ✅ **DONE** | `264f258` | 219 pass (no new tests) |
 | C6 | 'Why CARI says this' reviewer UI panel (evidence basis + confidence + guidance) | P2 | ⏳ Pending |  | |
 | C7 | Playwright E2E — upload → extract → review → export golden path | P2 | ⏳ Pending |  | |
 | C8 | Durable Functions idempotency test suite | P2 | ⏳ Pending |  | |
-| C9 | Prompt injection eval cases (10 minimum per master prompt) | P1 | ⏳ Pending |  | |
+| C9 | Prompt injection eval cases (10 minimum per master prompt) | P1 | ✅ **DONE** | `436d006` | +9 cases → 36 total |
 | C10 | API-level project isolation / RBAC cross-user access test | P1 | ⏳ Pending |  | |
 
 ---
@@ -60,6 +60,8 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | 2026-05-25 C2+C3 | 208 | 208 | 0 | +11 validateArbOutput + stripOrphanEvidenceIds |
 | 2026-05-25 C4 | 208 | 208 | 0 | MCP metadata — no new tests (behavior tested by callers) |
 | 2026-05-25 C1 | 219 | 219 | 0 | +11 detectExecutableMagicBytes |
+| 2026-05-25 C5 | 219 | 219 | 0 | traceId threading — no new tests |
+| 2026-05-25 C9 | 219 | 219 | 0 | eval dataset only — no unit tests |
 
 ---
 
@@ -72,6 +74,8 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | `49334f8` | fix(agent): C2/C3 — ARB JSON schema validation gate + evidenceId cross-validation |
 | `d62343d` | fix(mcp): C4 — MCP guidance metadata persistence for audit trail |
 | `b245244` | fix(security): C1 — upload magic-bytes sniffing to prevent content-type spoofing |
+| `264f258` | fix(telemetry): C5 — thread traceId through both orchestrators to all core activities |
+| `436d006` | test(evals): C9 — 9 prompt injection red-team cases added to baseline eval dataset |
 
 ---
 
@@ -82,7 +86,7 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | No correlationId threaded across upload→extract→agent→export | `review-telemetry.js`, `runAgent.js`, `persistExtractionResults.js` | P2 — C5 |
 | No 'Why CARI says this' reviewer UI | `frontend/src/components/` | P2 — C6 |
 | No Playwright E2E golden path in CI | `.github/`, `evals/` | P2 — C7 |
-| No prompt injection eval cases | `evals/datasets/` | P1 — C9 |
+| ~~No prompt injection eval cases~~ | ~~`evals/datasets/`~~ | ~~P1 — C9~~ — **DONE** |
 | No API-level RBAC cross-user test | `api/src/functions/` | P1 — C10 |
 
 ---
@@ -91,8 +95,8 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 
 1. Read this file first
 2. Run `npm --prefix api test` — expect **219 pass, 0 fail**
-3. Check `git log --oneline -6` — last commit should be `b245244`
-4. Continue with **C5** (correlationId telemetry) or ask user which slice to tackle
+3. Check `git log --oneline -8` — last commit should be `436d006`
+4. Continue with **C10** (RBAC cross-user access test, P1) or ask user which slice to tackle
 5. Prompt path: `c:\cari-repo\prompts\CARI_Claude_Code_Skills_Master_Prompt_V6.md`
 
 ---
