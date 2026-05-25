@@ -2749,6 +2749,47 @@ function buildDefaultFindings(review) {
   ];
 }
 
+// Suppress scaffold findings that are directly rebutted by extracted evidence.
+// Called once after evidence is derived, before scorecard and findings are persisted.
+// Returns a new findings array — never mutates in place.
+function suppressScaffoldFindings(findings, evidence, visualRecords) {
+  const texts = [
+    ...(evidence || []).map(e => `${e.summary || ""} ${e.sourceExcerpt || ""}`.toLowerCase()),
+    ...(visualRecords || []).map(v => (v.summary || v.analysisText || "").toLowerCase()),
+  ].join(" ");
+
+  return findings.map(f => {
+    if (f.source !== "scaffold" || f.status !== "Open") return f;
+
+    // find-001: boundary control — rebutted when any network boundary control is evidenced
+    if (f.findingId.endsWith("-find-001")) {
+      const keywords = ["azure firewall", "application gateway", "waf", "nsg baseline", "apim", "idps", "tls inspection", "boundary control"];
+      if (keywords.some(kw => texts.includes(kw))) {
+        return {
+          ...f,
+          status: "Closed",
+          reviewerNote: "Auto-closed: boundary control pattern is explicitly evidenced in the extracted design documents."
+        };
+      }
+    }
+
+    // find-002: runbook ownership — rebutted when RACI + runbook names are both evidenced
+    if (f.findingId.endsWith("-find-002")) {
+      const hasOwnership = texts.includes("raci") || texts.includes("accountable") || (texts.includes("responsible") && texts.includes("runbook"));
+      const hasRunbooks  = texts.includes("runbook");
+      if (hasOwnership && hasRunbooks) {
+        return {
+          ...f,
+          status: "Closed",
+          reviewerNote: "Auto-closed: runbook list and ownership assignment are evidenced in the extracted design documents."
+        };
+      }
+    }
+
+    return f;
+  });
+}
+
 function isActiveFinding(finding) {
   return finding.status !== "Closed" && finding.status !== "Not Applicable";
 }
@@ -4349,9 +4390,18 @@ async function startArbExtraction(principal, reviewId) {
               const ssEntry = zip.file('xl/sharedStrings.xml');
               if (ssEntry) {
                 const ssXml = await ssEntry.async('string');
-                const re = /<t[^>]*>([^<]*)<\/t>/g;
-                let m;
-                while ((m = re.exec(ssXml)) !== null) sharedStrings.push(m[1]);
+                // Group by <si> so rich-text entries (multiple <t> children) stay
+                // as one indexed string — prevents index drift on formatted cells.
+                const siRe = /<si>([\s\S]*?)<\/si>/g;
+                const tRe  = /<t[^>]*>([^<]*)<\/t>/g;
+                let siM;
+                while ((siM = siRe.exec(ssXml)) !== null) {
+                  const parts = [];
+                  tRe.lastIndex = 0;
+                  let tM;
+                  while ((tM = tRe.exec(siM[1])) !== null) parts.push(tM[1]);
+                  sharedStrings.push(parts.join(''));
+                }
               }
               const rows = [];
               const sheetFiles = Object.keys(zip.files).filter(n => /^xl\/worksheets\/sheet\d+\.xml$/i.test(n)).sort();
@@ -4931,9 +4981,18 @@ async function extractSingleFileContent(file, {
               const ssEntry = zip.file('xl/sharedStrings.xml');
               if (ssEntry) {
                 const ssXml = await ssEntry.async('string');
-                const re = /<t[^>]*>([^<]*)<\/t>/g;
-                let m;
-                while ((m = re.exec(ssXml)) !== null) sharedStrings.push(m[1]);
+                // Group by <si> so rich-text entries (multiple <t> children) stay
+                // as one indexed string — prevents index drift on formatted cells.
+                const siRe = /<si>([\s\S]*?)<\/si>/g;
+                const tRe  = /<t[^>]*>([^<]*)<\/t>/g;
+                let siM;
+                while ((siM = siRe.exec(ssXml)) !== null) {
+                  const parts = [];
+                  tRe.lastIndex = 0;
+                  let tM;
+                  while ((tM = tRe.exec(siM[1])) !== null) parts.push(tM[1]);
+                  sharedStrings.push(parts.join(''));
+                }
               }
               // Extract cell values from all worksheets
               const rows = [];
@@ -5315,7 +5374,8 @@ async function persistAggregatedExtractionResults({ reviewId, principal, fileRes
   const findingsEntity = await getEntity(client, reviewId, getRowKey(FINDINGS_ROW_KEY, principal.userId));
   const actionsEntity = await getEntity(client, reviewId, getRowKey(ACTIONS_ROW_KEY, principal.userId));
   const exportsEntity = await getEntity(client, reviewId, getRowKey(EXPORTS_ROW_KEY, principal.userId));
-  const findings = fromFindingsEntity(findingsEntity, reviewId);
+  const rawFindings = fromFindingsEntity(findingsEntity, reviewId);
+  const findings = suppressScaffoldFindings(rawFindings, derived.evidence, allVisualRecords);
   const actions = fromActionsEntity(actionsEntity);
 
   const nextReview = {
@@ -6203,6 +6263,7 @@ module.exports = {
   capScorecardForTableStorage,
   buildDefaultExports,
   buildDefaultFindings,
+  suppressScaffoldFindings,
   buildDefaultExtractionStatus,
   buildDefaultRequirements,
   buildDefaultReview,

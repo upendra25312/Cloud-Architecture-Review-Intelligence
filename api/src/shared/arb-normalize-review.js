@@ -566,12 +566,19 @@ function collectExportWarnings(pack) {
     warn("Low", `${unowned.length} action(s) have no assigned owner.`, ["Remediation Plan"]);
   }
 
-  // SOW-only evidence — no implemented control evidence
+  // SOW-only evidence — only warn for operational reviews, not design-stage packages.
+  // A design-stage package (SOW + HLD/LLD/diagrams) legitimately has zero deployment proof;
+  // flagging it as "scope statements only" is factually wrong and penalises correct artefacts.
   const implEvidence = (pack.evidence || []).filter((e) => e.provesImplementation === true);
   if ((pack.evidence || []).length > 0 && implEvidence.length === 0) {
-    warn("Medium",
-      "All evidence appears to be scope statements or SOW references. No implemented technical control evidence was detected. Design evidence should confirm what is built, not only what is planned.",
-      ["Evidence Register", "Executive Summary"]);
+    const uploadedTypes = (pack.uploadedInputs || []).map(u => (u.documentType || "").toLowerCase());
+    const isDesignStage = uploadedTypes.some(t => t.includes("sow")) &&
+                          uploadedTypes.some(t => t.includes("design"));
+    if (!isDesignStage) {
+      warn("Medium",
+        "All evidence appears to be scope statements or SOW references. No implemented technical control evidence was detected. Design evidence should confirm what is built, not only what is planned.",
+        ["Evidence Register", "Executive Summary"]);
+    }
   }
 
   // Failed extraction
@@ -615,7 +622,15 @@ function classifyEvidenceType(factType) {
 
 function isImplementationEvidence(factType) {
   const t = String(factType || "").toLowerCase();
-  return t.includes("implemented") || t.includes("control") || t.includes("operational");
+  // Explicit implementation/operational proof
+  if (t.includes("implemented") || t.includes("control") || t.includes("operational")) return true;
+  // Visual evidence from diagrams is valid design-stage proof
+  if (t.includes("visual") || t.includes("diagram")) return true;
+  // Design Claims from HLD/LLD/topology are valid design-stage proof;
+  // pure scope statements (SOW requirements) are plans, not design proof.
+  if (t.includes("scope") || t.includes("sow")) return false;
+  // Everything else (design claim, architecture, decision, etc.) counts as design evidence
+  return true;
 }
 
 function normalizeRecommendation(raw, governancePosture) {

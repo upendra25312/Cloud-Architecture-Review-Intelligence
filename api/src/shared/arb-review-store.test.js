@@ -1351,3 +1351,118 @@ test("createArbReview succeeds with inScope/outOfScope arrays — no Azure Table
     cleanup();
   }
 });
+
+// ─── Fix 1: XLSX shared string <si> grouping ────────────────────────────────
+test("jszip xlsx fallback resolves rich-text shared strings correctly via <si> grouping", async () => {
+  // Validates that formatted cells (multiple <t> children per <si>) don't shift
+  // subsequent shared-string indices — the root cause of ev-23..ev-28 corruption.
+  const JSZip2 = require("jszip");
+  const zip = new JSZip2();
+
+  // sharedStrings.xml: entry 0 has two <t> children (bold + plain), entry 1 is plain
+  zip.file("xl/sharedStrings.xml", [
+    '<?xml version="1.0"?>',
+    '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">',
+    '<si><r><rPr><b/></rPr><t>Azure </t></r><r><t>Firewall</t></r></si>',
+    '<si><t>WAF Policy</t></si>',
+    '</sst>'
+  ].join(""));
+
+  // sheet1.xml: cell A1 → string index 0, cell B1 → string index 1
+  zip.file("xl/worksheets/sheet1.xml", [
+    '<?xml version="1.0"?>',
+    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">',
+    '<sheetData><row>',
+    '<c r="A1" t="s"><v>0</v></c>',
+    '<c r="B1" t="s"><v>1</v></c>',
+    '</row></sheetData>',
+    '</worksheet>'
+  ].join(""));
+
+  zip.file("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>');
+  zip.file("_rels/.rels", '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>');
+
+  const buf = await zip.generateAsync({ type: "nodebuffer" });
+  const loaded = await JSZip2.loadAsync(buf);
+
+  // Replicate the fixed <si>-level shared string parsing
+  const sharedStrings = [];
+  const ssEntry = loaded.file("xl/sharedStrings.xml");
+  const ssXml = await ssEntry.async("string");
+  const siRe = /<si>([\s\S]*?)<\/si>/g;
+  const tRe  = /<t[^>]*>([^<]*)<\/t>/g;
+  let siM;
+  while ((siM = siRe.exec(ssXml)) !== null) {
+    const parts = [];
+    tRe.lastIndex = 0;
+    let tM;
+    while ((tM = tRe.exec(siM[1])) !== null) parts.push(tM[1]);
+    sharedStrings.push(parts.join(""));
+  }
+
+  assert.equal(sharedStrings.length, 2, "must have exactly 2 shared string entries");
+  assert.equal(sharedStrings[0], "Azure Firewall", "rich-text <si> must be concatenated into one entry");
+  assert.equal(sharedStrings[1], "WAF Policy", "second entry index must not be shifted by rich-text in first");
+});
+
+// ─── Fix 2: Scaffold finding rebuttal ────────────────────────────────────────
+test("suppressScaffoldFindings closes boundary-control finding when evidence contains WAF/Firewall", () => {
+  const { suppressScaffoldFindings } = require("./arb-review-store");
+  const findings = [
+    { findingId: "rev-find-001", source: "scaffold", status: "Open", severity: "High" },
+    { findingId: "rev-find-002", source: "scaffold", status: "Open", severity: "Medium" },
+  ];
+  const evidence = [
+    { summary: "Azure Firewall Premium fw-hub-uks-prod Zone-Redundant AZ1/AZ2/AZ3 + IDPS + TLS Inspection" },
+    { summary: "Application Gateway v2 + WAF Policy (Zone-Redundant AZ1/2/3)" },
+    { summary: "DR Failover Runbook (UK South → UK West)", sourceExcerpt: "RACI: Accountable = Client Arch Lead" },
+  ];
+  const result = suppressScaffoldFindings(findings, evidence, []);
+  assert.equal(result[0].status, "Closed", "find-001 must be closed when boundary control keywords are present");
+  assert.ok(result[0].reviewerNote, "closed finding must carry a reviewer note explaining why");
+  assert.equal(result[1].status, "Closed", "find-002 must be closed when runbook + RACI keywords are present");
+});
+
+test("suppressScaffoldFindings leaves findings open when evidence does not rebut them", () => {
+  const { suppressScaffoldFindings } = require("./arb-review-store");
+  const findings = [
+    { findingId: "rev-find-001", source: "scaffold", status: "Open", severity: "High" },
+  ];
+  const evidence = [
+    { summary: "Log Analytics workspace configuration" },
+  ];
+  const result = suppressScaffoldFindings(findings, evidence, []);
+  assert.equal(result[0].status, "Open", "find-001 must stay open when no boundary control evidence exists");
+});
+
+test("suppressScaffoldFindings does not touch non-scaffold or already-closed findings", () => {
+  const { suppressScaffoldFindings } = require("./arb-review-store");
+  const findings = [
+    { findingId: "rev-find-001", source: "agent",   status: "Open",   severity: "High" },
+    { findingId: "rev-find-002", source: "scaffold", status: "Closed", severity: "Medium" },
+  ];
+  const evidence = [{ summary: "Azure Firewall Premium with WAF and IDPS" }];
+  const result = suppressScaffoldFindings(findings, evidence, []);
+  assert.equal(result[0].status, "Open",   "agent findings must not be touched");
+  assert.equal(result[1].status, "Closed", "already-closed scaffold findings must not be modified");
+});
+
+// ─── Fix 3 + Fix 4: W002 + isImplementationEvidence ─────────────────────────
+test("isImplementationEvidence returns true for Design Claim and Visual Evidence factTypes", () => {
+  const { normalizeReviewForExport } = require("./arb-normalize-review");
+  // Test the downstream effect: provesImplementation on the normalised evidence pack.
+  const review    = { reviewId: "r1", projectName: "P", recommendation: "Approved with Conditions", overallScore: 80 };
+  const files     = [{ fileId: "f1", fileName: "hld.docx", logicalCategory: "design_doc", extractionStatus: "Completed" }];
+  const evidence  = [
+    { evidenceId: "e1", factType: "Design Claim", summary: "Hub-spoke topology with Azure Firewall" },
+    { evidenceId: "e2", factType: "Visual Evidence", summary: "Application Gateway v2 WAF diagram" },
+    { evidenceId: "e3", factType: "Scope Statement", summary: "Firewall must be deployed" },
+  ];
+  const pack = normalizeReviewForExport(review, files, [], evidence, [], [], {}, {}, "xlsx");
+  const e1 = pack.evidence.find(e => e.evidenceId === "e1");
+  const e2 = pack.evidence.find(e => e.evidenceId === "e2");
+  const e3 = pack.evidence.find(e => e.evidenceId === "e3");
+  assert.equal(e1.provesImplementation, true,  "Design Claim must prove implementation for design-stage review");
+  assert.equal(e2.provesImplementation, true,  "Visual Evidence must prove implementation for design-stage review");
+  assert.equal(e3.provesImplementation, false, "Scope Statement must NOT prove implementation");
+});
