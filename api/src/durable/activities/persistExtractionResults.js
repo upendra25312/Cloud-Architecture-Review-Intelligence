@@ -15,7 +15,7 @@ const { persistAggregatedExtractionResults } = require('../../shared/arb-review-
  * Output: { persisted: true, indexedChunks, successCount, errorCount }
  */
 async function persistExtractionResultsHandler(input, context) {
-  const { reviewId, principal, results, jobId, startedAt } = input || {};
+  const { reviewId, principal, results, jobId, startedAt, traceId } = input || {};
 
   if (!reviewId) {
     throw Object.assign(new Error('reviewId is required.'), { statusCode: 400 });
@@ -62,6 +62,7 @@ async function persistExtractionResultsHandler(input, context) {
     context.log(JSON.stringify({
       activity: 'persistExtractionResults',
       reviewId,
+      traceId: traceId ?? null,
       extractionState: extraction.state,
       fileCount: results.length,
       successCount,

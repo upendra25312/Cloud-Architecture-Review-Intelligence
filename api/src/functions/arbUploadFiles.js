@@ -1,3 +1,4 @@
+const { randomUUID } = require("node:crypto");
 const { app } = require("@azure/functions");
 const { getBoundary, parse } = require("parse-multipart-data");
 const { jsonResponse, requireAuthenticated, safeErrorResponse } = require("../shared/auth");
@@ -182,17 +183,20 @@ async function handleArbUploadFiles(request, context) {
   const limited = rateLimitResponse(request, auth.principal, UPLOAD_LIMIT);
   if (limited) return limited;
 
+  const traceId = randomUUID();
+  const reviewId = request.params?.reviewId || "demo-review";
+
   // Emit a synchronous entry trace so App Insights has proof we reached user
   // code even if a subsequent await exhausts worker memory and kills the process.
   context.log(JSON.stringify({
     msg: "arbUploadFiles invoked",
-    reviewId: request.params?.reviewId,
+    reviewId,
+    traceId,
     contentLength: request.headers.get("content-length"),
     contentType: (request.headers.get("content-type") ?? "").slice(0, 80)
   }));
 
   try {
-    const reviewId = request.params?.reviewId || "demo-review";
     const files = await parseMultipartFiles(request, context);
 
     const result = await uploadArbFiles(auth.principal, reviewId, files);
@@ -200,6 +204,7 @@ async function handleArbUploadFiles(request, context) {
     context.log(JSON.stringify({
       msg: "arbUploadFiles success",
       reviewId,
+      traceId,
       filesAdded: result.addedCount,
       totalFiles: result.files.length
     }));
@@ -214,6 +219,8 @@ async function handleArbUploadFiles(request, context) {
   } catch (error) {
     context.log(JSON.stringify({
       msg: "arbUploadFiles error",
+      reviewId,
+      traceId,
       status: error?.statusCode ?? 500,
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? (error.stack ?? "").split("\n").slice(0, 6).join(" | ") : undefined

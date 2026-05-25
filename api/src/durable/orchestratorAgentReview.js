@@ -44,12 +44,12 @@ const ORCHESTRATION_TIMEOUT_MINUTES = 30;
  */
 function* orchestratorAgentReviewWorkflow(context) {
   const input = context.df.getInput() || {};
-  const { reviewId, principal } = input;
+  const { reviewId, principal, traceId } = input;
 
   const reviewData = yield context.df.callActivityWithRetry(
     'loadReviewData',
     DEFAULT_RETRY_OPTIONS,
-    { reviewId, principal }
+    { reviewId, principal, traceId }
   );
 
   const searchResult = yield context.df.callActivityWithRetry(
@@ -59,7 +59,8 @@ function* orchestratorAgentReviewWorkflow(context) {
       review: reviewData.review,
       requirements: reviewData.requirements,
       evidence: reviewData.evidence,
-      reviewId
+      reviewId,
+      traceId
     }
   );
 
@@ -70,7 +71,8 @@ function* orchestratorAgentReviewWorkflow(context) {
       review: reviewData.review,
       requirements: reviewData.requirements,
       evidence: reviewData.evidence,
-      files: reviewData.files
+      files: reviewData.files,
+      traceId
     }
   );
 
@@ -82,7 +84,8 @@ function* orchestratorAgentReviewWorkflow(context) {
     evidence: reviewData.evidence,
     searchChunks: searchResult.searchChunks,
     visualEvidence: reviewData.visualEvidence,
-    ruleFindings: rulesResult.ruleFindings
+    ruleFindings: rulesResult.ruleFindings,
+    traceId
   });
 
   const persistResult = yield context.df.callActivityWithRetry(
@@ -92,7 +95,8 @@ function* orchestratorAgentReviewWorkflow(context) {
       reviewId,
       principal,
       agentResult: agentResultWrapper.agentResult,
-      review: reviewData.review
+      review: reviewData.review,
+      traceId
     }
   );
 
@@ -108,7 +112,8 @@ function* orchestratorAgentReviewWorkflow(context) {
       requirements: reviewData.requirements,
       evidence: reviewData.evidence,
       visualEvidence: reviewData.visualEvidence,
-      actions: reviewData.actions
+      actions: reviewData.actions,
+      traceId
     }
   );
 

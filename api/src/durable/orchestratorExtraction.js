@@ -37,18 +37,18 @@ const ORCHESTRATION_TIMEOUT_MINUTES = 40;
  */
 function* orchestratorExtractionWorkflow(context) {
   const input = context.df.getInput() || {};
-  const { reviewId, principal } = input;
+  const { reviewId, principal, traceId } = input;
 
   const fileList = yield context.df.callActivityWithRetry(
     'loadFilesForExtraction',
     DEFAULT_RETRY_OPTIONS,
-    { reviewId, principal }
+    { reviewId, principal, traceId }
   );
 
   yield context.df.callActivityWithRetry(
     'checkDiQuota',
     DEFAULT_RETRY_OPTIONS,
-    { principal, files: fileList.files }
+    { principal, files: fileList.files, traceId }
   );
 
   // Fan-out: one extractSingleFile activity per file. Concurrency is bounded
@@ -59,7 +59,7 @@ function* orchestratorExtractionWorkflow(context) {
     context.df.callActivityWithRetry(
       'extractSingleFile',
       DEFAULT_RETRY_OPTIONS,
-      { reviewId, principal, file }
+      { reviewId, principal, file, traceId }
     )
   );
 
@@ -68,7 +68,7 @@ function* orchestratorExtractionWorkflow(context) {
   const persistResult = yield context.df.callActivityWithRetry(
     'persistExtractionResults',
     DEFAULT_RETRY_OPTIONS,
-    { reviewId, principal, results }
+    { reviewId, principal, results, traceId }
   );
 
   const successCount = results.filter(

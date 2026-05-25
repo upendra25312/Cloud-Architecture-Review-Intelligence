@@ -27,7 +27,7 @@ function getRowKey(baseKey, userId) {
  * Output: { persisted: true, findingsCount, overallScore, recommendation }
  */
 async function persistResultsHandler(input, context) {
-  const { reviewId, principal, agentResult, review } = input || {};
+  const { reviewId, principal, agentResult, review, traceId } = input || {};
 
   if (!reviewId) {
     throw Object.assign(new Error('reviewId is required.'), { statusCode: 400 });
@@ -87,6 +87,7 @@ async function persistResultsHandler(input, context) {
       JSON.stringify({
         activity: 'persistResults',
         reviewId,
+        traceId: traceId ?? null,
         findingsCount: findings.length,
         overallScore: scorecard && scorecard.overallScore,
         recommendation: scorecard && scorecard.recommendation

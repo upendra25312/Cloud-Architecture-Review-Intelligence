@@ -274,7 +274,8 @@ async function runAgentHandler(input, context) {
     evidence,
     searchChunks,
     visualEvidence,
-    ruleFindings
+    ruleFindings,
+    traceId
   } = input || {};
 
   const reviewObj = review || {};
@@ -398,6 +399,7 @@ async function runAgentHandler(input, context) {
       JSON.stringify({
         activity: 'runAgent',
         reviewId: reviewObj.reviewId,
+        traceId: traceId ?? null,
         findings: (agentResult.findings || []).length,
         ruleFindings: existingRuleFindings.length,
         score: (agentResult.scorecard && agentResult.scorecard.overallScore) ?? null,
