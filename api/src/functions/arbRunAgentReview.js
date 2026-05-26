@@ -9,9 +9,13 @@ const {
   getArbEvidence,
   getArbVisualEvidence,
   getArbActions,
+  getArbFindings,
+  getArbScorecard,
   syncArbReviewedOutputs,
   capFindingsForTableStorage,
-  capScorecardForTableStorage
+  capScorecardForTableStorage,
+  getRunsList,
+  saveRunSnapshot
 } = require("../shared/arb-review-store");
 const { searchArbDocuments, ensureArbSearchIndex } = require("../shared/arb-search");
 const { runArbAgentReview, getFoundryConfiguration, buildFallbackAgentReview } = require("../shared/arb-foundry-agent");
@@ -109,6 +113,66 @@ function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
   });
 }
 
+// ── Revision History helpers ────────────────────────────────────────────────
+
+const SEVERITY_RANK = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+
+function normalizeTitle(title) {
+  return String(title ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+function computeRunDelta(previousFindings, newFindings) {
+  const prev = Array.isArray(previousFindings) ? previousFindings : [];
+  const next = Array.isArray(newFindings) ? newFindings : [];
+
+  const matchFinding = (target, pool) => {
+    // Exact ruleId match first
+    if (target.ruleId) {
+      const exact = pool.find(f => f.ruleId === target.ruleId);
+      if (exact) return exact;
+    }
+    // Fuzzy: same domain + similar title
+    const targetKey = `${target.domain ?? ""}:${normalizeTitle(target.title)}`;
+    return pool.find(f => `${f.domain ?? ""}:${normalizeTitle(f.title)}` === targetKey) ?? null;
+  };
+
+  const matched = new Set();
+  const findingDiffs = [];
+
+  for (const n of next) {
+    const p = matchFinding(n, prev);
+    if (p) {
+      matched.add(p.findingId ?? p.ruleId ?? normalizeTitle(p.title));
+      const prevRank = SEVERITY_RANK[p.severity] ?? 0;
+      const newRank = SEVERITY_RANK[n.severity] ?? 0;
+      const change = newRank > prevRank ? "escalated" : newRank < prevRank ? "improved" : "unchanged";
+      findingDiffs.push({ findingId: n.findingId, title: n.title, change, previousSeverity: p.severity, newSeverity: n.severity });
+    } else {
+      findingDiffs.push({ findingId: n.findingId, title: n.title, change: "new", previousSeverity: null, newSeverity: n.severity });
+    }
+  }
+
+  for (const p of prev) {
+    const key = p.findingId ?? p.ruleId ?? normalizeTitle(p.title);
+    if (!matched.has(key) && !matchFinding(p, next)) {
+      findingDiffs.push({ findingId: p.findingId, title: p.title, change: "resolved", previousSeverity: p.severity, newSeverity: null });
+    }
+  }
+
+  return {
+    newCount: findingDiffs.filter(d => d.change === "new").length,
+    resolvedCount: findingDiffs.filter(d => d.change === "resolved").length,
+    escalatedCount: findingDiffs.filter(d => d.change === "escalated").length,
+    improvedCount: findingDiffs.filter(d => d.change === "improved").length,
+    findingDiffs
+  };
+}
+
 function hasSowArtifact(files, review) {
   const uploadedSow = files.some((file) => String(file.logicalCategory ?? "").toLowerCase() === "sow");
   if (uploadedSow) return true;
@@ -192,9 +256,12 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
   const searchChunks = await searchArbDocuments(reviewId, searchQuery, 20);
   log("Search complete", { query: searchQuery.slice(0, 80), chunks: searchChunks.length });
 
-  // Run deterministic rules first — these are authoritative and cost-free
+  // Run deterministic rules first — these are authoritative and cost-free.
+  // Visual evidence (diagram labels, image descriptions) is included so topology
+  // diagrams showing hub-spoke, Azure Firewall, etc. prevent false-positive rule firings.
   const { ruleFindings, ruleBlockers, criticalBlockerCount: ruleCriticalCount } = runDeterministicRules({
-    review, requirements: requirementsList, evidence: evidenceList, files
+    review, requirements: requirementsList, evidence: evidenceList, files,
+    visualEvidence: visualEvidenceList
   });
   log("Rules engine completed", { ruleFindings: ruleFindings.length, blockers: ruleCriticalCount });
 
@@ -315,6 +382,18 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
     }
   }
 
+  // ── Revision history: load previous state + determine run number ───────────
+  const [previousFindings, previousScorecard, existingRuns] = await Promise.all([
+    getArbFindings(principal, reviewId).catch(() => []),
+    getArbScorecard(principal, reviewId).catch(() => null),
+    getRunsList(principal, reviewId).catch(() => [])
+  ]);
+  const runNumber = (existingRuns.length > 0 ? Math.max(...existingRuns.map(r => r.runNumber)) : 0) + 1;
+  const runDelta = runNumber > 1
+    ? computeRunDelta(previousFindings, agentResult.findings ?? [])
+    : null; // first run has no delta
+  log("Revision history", { runNumber, previousFindingCount: previousFindings.length, newFindingCount: agentResult.findings?.length ?? 0 });
+
   // Persist findings + scorecard + exports
   const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
   const now = new Date().toISOString();
@@ -369,9 +448,17 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
   });
 
   await client.upsertEntity({ partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("EXPORTS", userId), exportsJson: JSON.stringify(syncedOutputs.exportsList) }, "Replace");
-  await client.upsertEntity({ partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("SUMMARY", userId), workflowState: "Review In Progress", agentRecommendation: agentResult.recommendation ?? null, agentReviewedAt: now, lastUpdated: now }, "Merge");
+  await client.upsertEntity({ partitionKey: getPartitionKey(reviewId), rowKey: getRowKey("SUMMARY", userId), workflowState: "Review In Progress", agentRecommendation: agentResult.recommendation ?? null, agentReviewedAt: now, lastUpdated: now, currentRunNumber: runNumber }, "Merge");
 
-  log("Persisted results", { durationMs: Date.now() - t0 });
+  // Save the run snapshot — non-blocking, failure here never breaks the review result
+  saveRunSnapshot(principal, reviewId, {
+    runNumber,
+    findings: findingsToWrite ?? [],
+    scorecard: agentResult.scorecard ?? null,
+    delta: runDelta
+  }).catch(err => log("Run snapshot save failed (non-fatal)", { error: err?.message ?? String(err) }));
+
+  log("Persisted results", { durationMs: Date.now() - t0, runNumber });
 
   return {
     agentReviewCompleted: true,
@@ -381,7 +468,9 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
     overallScore: agentResult.scorecard?.overallScore ?? null,
     confidenceLevel: agentResult.scorecard?.confidenceLevel ?? null,
     generatedAt: now,
-    artifactsGenerated: syncedOutputs.artifacts.length
+    artifactsGenerated: syncedOutputs.artifacts.length,
+    runNumber,
+    delta: runDelta
   };
 }
 

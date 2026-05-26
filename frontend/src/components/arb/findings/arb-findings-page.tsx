@@ -8,6 +8,7 @@ import {
   fetchArbActions,
   fetchArbFindings,
   fetchArbReview,
+  fetchArbRuns,
   fetchArbScorecard,
   updateArbAction,
   updateArbFinding,
@@ -17,6 +18,7 @@ import { getArbStepHref } from "@/arb/routes";
 import { ENABLED_AUTH_PROVIDERS, buildLoginUrl } from "@/lib/review-cloud";
 import type {
   ArbAction,
+  ArbAssessmentRunMeta,
   ArbFinding,
   ArbReviewSummary,
   ArbScorecard,
@@ -25,9 +27,10 @@ import { filterFindings, type FindingsFilterState } from "./findings-utils";
 import { ArbPlaceholderPage } from "@/components/arb/placeholder-page";
 import { ArbReviewShell } from "@/components/arb/review-shell";
 import { FindingsStatusBar } from "./findings-status-bar";
-import { FindingsListPanel } from "./findings-list-panel";
+import { FindingsListPanel, type FindingChangeType } from "./findings-list-panel";
 import { FindingDetailPanel } from "./finding-detail-panel";
 import { FindingsBulkActionBar } from "./findings-bulk-action-bar";
+import { RunHistoryBanner } from "./run-history-banner";
 import styles from "./arb-findings-page.module.css";
 
 export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
@@ -37,6 +40,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
   const [findings, setFindings] = useState<ArbFinding[]>([]);
   const [actions, setActions] = useState<ArbAction[]>([]);
   const [scorecard, setScorecard] = useState<ArbScorecard | null>(null);
+  const [runs, setRuns] = useState<ArbAssessmentRunMeta[]>([]);
   const [selectedFindingId, setSelectedFindingId] = useState<string | null>(null);
   const [filters, setFilters] = useState<FindingsFilterState>(() => {
     // Initialize with domain from URL if present (runs only on first render)
@@ -72,11 +76,12 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
         setLoading(true);
         setError(null);
 
-        const [reviewRes, findingsRes, actionsRes, scorecardRes] = await Promise.all([
+        const [reviewRes, findingsRes, actionsRes, scorecardRes, runsRes] = await Promise.all([
           fetchArbReview(reviewId),
           fetchArbFindings(reviewId),
           fetchArbActions(reviewId),
           fetchArbScorecard(reviewId),
+          fetchArbRuns(reviewId).catch(() => [] as ArbAssessmentRunMeta[]),
         ]);
 
         if (!cancelled) {
@@ -84,6 +89,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
           setFindings(findingsRes);
           setActions(actionsRes);
           setScorecard(scorecardRes);
+          setRuns(runsRes);
         }
       } catch (loadError) {
         if (!cancelled) {
@@ -105,6 +111,20 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
     () => findings.filter((f) => !f.findingId.startsWith("fallback-")),
     [findings],
   );
+
+  // Build a map of findingId → change type from the latest run delta (if any)
+  const deltaMap = useMemo((): Map<string, FindingChangeType> => {
+    const map = new Map<string, FindingChangeType>();
+    if (runs.length < 2) return map;
+    const latestDelta = runs[runs.length - 1]?.delta;
+    if (!latestDelta) return map;
+    for (const diff of latestDelta.findingDiffs) {
+      if (diff.change !== "resolved" && diff.change !== "unchanged") {
+        map.set(diff.findingId, diff.change as FindingChangeType);
+      }
+    }
+    return map;
+  }, [runs]);
   const filteredNonFallbackFindings = useMemo(
     () => filterFindings(nonFallbackFindings, filters),
     [nonFallbackFindings, filters],
@@ -357,6 +377,8 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
           </div>
         )}
 
+        <RunHistoryBanner runs={runs} reviewId={reviewId} />
+
         <FindingsStatusBar
           findings={nonFallbackFindings}
           actions={actions}
@@ -394,6 +416,7 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
             checkedIds={checkedIds}
             onToggleCheck={handleToggleCheck}
             onToggleAll={handleToggleAll}
+            deltaMap={deltaMap}
           />
 
           {selectedFinding ? (

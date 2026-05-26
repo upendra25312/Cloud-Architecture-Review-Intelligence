@@ -6,6 +6,16 @@ import { sortFindings, filterFindings } from "./findings-utils";
 import { FindingFilterChips } from "./finding-filter-chips";
 import styles from "./arb-findings-page.module.css";
 
+export type FindingChangeType = "new" | "escalated" | "improved" | "unchanged" | "resolved";
+
+const CHANGE_BADGE: Record<FindingChangeType, { label: string; bg: string; color: string } | undefined> = {
+  new:       { label: "NEW",       bg: "#DCFCE7", color: "#166534" },
+  escalated: { label: "ESCALATED", bg: "#FEE2E2", color: "#991B1B" },
+  improved:  { label: "IMPROVED",  bg: "#DBEAFE", color: "#1E40AF" },
+  resolved:  undefined,
+  unchanged: undefined,
+};
+
 export interface FindingsListPanelProps {
   findings: ArbFinding[];
   selectedFindingId: string | null;
@@ -15,6 +25,7 @@ export interface FindingsListPanelProps {
   checkedIds?: Set<string>;
   onToggleCheck?: (findingId: string) => void;
   onToggleAll?: (select: boolean, ids: string[]) => void;
+  deltaMap?: Map<string, FindingChangeType>;
 }
 
 const SEVERITY_CLASS: Record<string, string> = {
@@ -38,6 +49,7 @@ export function FindingsListPanel({
   checkedIds,
   onToggleCheck,
   onToggleAll,
+  deltaMap,
 }: FindingsListPanelProps) {
   const sorted = sortFindings(findings);
   const filtered = filterFindings(sorted, filters);
@@ -117,6 +129,9 @@ export function FindingsListPanel({
             .filter(Boolean)
             .join(" ");
 
+          const changeType = deltaMap?.get(finding.findingId);
+          const changeBadge = changeType ? CHANGE_BADGE[changeType] : undefined;
+
           return (
             <div
               key={finding.findingId}
@@ -137,10 +152,19 @@ export function FindingsListPanel({
                 />
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                   <span className={styles.findingItemTitle}>{finding.title}</span>
                   {finding.criticalBlocker && (
                     <span className={styles.blockerTag}>Blocker</span>
+                  )}
+                  {changeBadge && (
+                    <span style={{
+                      fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.04em",
+                      padding: "1px 5px", borderRadius: 3,
+                      background: changeBadge.bg, color: changeBadge.color,
+                    }}>
+                      {changeBadge.label}
+                    </span>
                   )}
                 </div>
                 <div className={styles.findingItemMeta}>

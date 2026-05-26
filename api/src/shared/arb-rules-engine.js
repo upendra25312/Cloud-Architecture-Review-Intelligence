@@ -102,16 +102,19 @@ function evaluateDocRule(rule, files, requirements, evidence) {
  * Runs all deterministic ARB rules against extracted review data.
  * Returns an array of findings shaped identically to AI-generated findings.
  *
- * @param {{ review: object, requirements: object[], evidence: object[], files: object[] }} input
+ * @param {{ review: object, requirements: object[], evidence: object[], files: object[], visualEvidence: object[] }} input
  * @returns {{ ruleFindings: object[], ruleBlockers: string[], criticalBlockerCount: number }}
  */
-function runDeterministicRules({ review, requirements, evidence, files }) {
+function runDeterministicRules({ review, requirements, evidence, files, visualEvidence }) {
   const rules = loadArbRules();
   const reviewId = review?.reviewId ?? "unknown";
 
   const reqText = textFrom(requirements ?? [], "normalizedText", "category", "sourceText");
   const evidText = textFrom(evidence ?? [], "summary", "sourceExcerpt", "category");
-  const allText = `${reqText} ${evidText}`;
+  // Include visual evidence (diagram labels, image descriptions) so diagram-based controls
+  // like hub-spoke topology and Azure Firewall aren't missed by deterministic rules.
+  const visualText = textFrom(visualEvidence ?? [], "summary", "sourceExcerpt");
+  const allText = `${reqText} ${evidText} ${visualText}`;
 
   const ruleFindings = [];
 

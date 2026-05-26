@@ -15,7 +15,9 @@ import type {
   ArbReviewLibraryResponse,
   ArbReviewSummary,
   ArbScorecard,
-  ArbUploadedFile
+  ArbUploadedFile,
+  ArbAssessmentRunMeta,
+  ArbAssessmentRunSnapshot
 } from "@/arb/types";
 import { apiFetch } from "@/lib/api-fetch";
 
@@ -722,6 +724,30 @@ export async function listArbProjectReviews(projectId: string): Promise<ArbProje
     response,
     `Unable to load project reviews (${response.status}).`
   );
+}
+
+export async function fetchArbRuns(reviewId: string): Promise<ArbAssessmentRunMeta[]> {
+  const response = await apiFetch(`/api/arb/reviews/${encodeURIComponent(reviewId)}/runs`, {
+    method: "GET",
+    cache: "no-store",
+    credentials: "same-origin",
+  });
+  const payload = await readJsonResponse<{ runs: ArbAssessmentRunMeta[] }>(
+    response,
+    "Unable to load assessment runs."
+  );
+  return payload.runs ?? [];
+}
+
+export async function fetchArbRunSnapshot(
+  reviewId: string,
+  runNumber: number
+): Promise<ArbAssessmentRunSnapshot> {
+  const response = await apiFetch(
+    `/api/arb/reviews/${encodeURIComponent(reviewId)}/runs/${runNumber}`,
+    { method: "GET", cache: "no-store", credentials: "same-origin" }
+  );
+  return readJsonResponse<ArbAssessmentRunSnapshot>(response, "Unable to load run snapshot.");
 }
 
 export async function downloadArbPptxExport(reviewId: string): Promise<void> {

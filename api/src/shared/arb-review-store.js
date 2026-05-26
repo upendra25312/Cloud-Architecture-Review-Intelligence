@@ -1178,10 +1178,14 @@ async function extractSpreadsheetText(buffer) {
     const rows = [];
     worksheet.eachRow((row) => {
       const cells = [];
-      row.eachCell({ includeEmpty: true }, (cell) => {
-        const val = cell.text ?? "";
-        cells.push(val.includes(",") ? `"${val.replace(/"/g, '""')}"` : val);
+      row.eachCell({ includeEmpty: false }, (cell) => {
+        const val = (cell.text ?? "").trim();
+        if (val) cells.push(val.includes(",") ? `"${val.replace(/"/g, '""')}"` : val);
       });
+      if (cells.length === 0) return;
+      // Skip rows that are entirely numeric — they carry no semantic meaning as evidence.
+      const textCells = cells.filter(v => isNaN(Number(v.replace(/["%]/g, ""))) && /[a-zA-Z]{2,}/.test(v));
+      if (textCells.length === 0) return;
       rows.push(cells.join(","));
     });
 
@@ -2553,7 +2557,7 @@ function deriveRequirementsAndEvidence(review, files, fileTexts) {
       /^\[(Architecture diagram|Diagram file):/i.test(text.trim());
 
     if (["sow", "design_doc", "cost_assumptions", "dr_ha_note", "ops_monitoring_note"].includes(file.logicalCategory)) {
-      for (const line of lines.slice(0, 10)) {
+      for (const line of lines.slice(0, 20)) {
         requirements.push({
           requirementId: `${review.reviewId}-req-${requirements.length + 1}`,
           reviewId: review.reviewId,
@@ -2573,8 +2577,10 @@ function deriveRequirementsAndEvidence(review, files, fileTexts) {
       ? false
       : !HIGH_CONFIDENCE_CATEGORIES.includes(file.logicalCategory);
 
-    for (const line of lines.slice(0, 20)) {
-      if (requiresKeywordFilter && !/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service/i.test(line)) {
+    // No per-file line cap here — extractMeaningfulLines already limits to 60 lines and
+    // capArrayJsonForTableStorage enforces the storage limit across all files.
+    for (const line of lines) {
+      if (requiresKeywordFilter && !/azure|security|network|identity|monitor|backup|recovery|cost|pricing|service|firewall|waf|nsg|vnet|subnet|boundary|perimeter|topology|dmz|hub-spoke|hub spoke|entra|rbac|pim|keyvault|key vault|terraform|bicep|pipeline|runbook|rto|rpo|sla|slo|disaster|encryption|tls|https|certificate|defender/i.test(line)) {
         continue;
       }
 
@@ -4407,24 +4413,35 @@ async function startArbExtraction(principal, reviewId) {
               const rows = [];
               const sheetFiles = Object.keys(zip.files).filter(n => /^xl\/worksheets\/sheet\d+\.xml$/i.test(n)).sort();
               for (const sheetName of sheetFiles) {
+                const sheetLabel = sheetName.replace(/^xl\/worksheets\//i, '').replace(/\.xml$/i, '');
                 const sheetXml = await zip.files[sheetName].async('string');
                 const cellRe = /<c\b[^>]*>.*?<\/c>/gs;
                 const tRe = /\bt="s"\b/;
                 const vRe = /<v>([^<]*)<\/v>/;
-                let cm;
-                const rowValues = [];
-                while ((cm = cellRe.exec(sheetXml)) !== null) {
-                  const cell = cm[0];
-                  const vm = vRe.exec(cell);
-                  if (!vm) continue;
-                  if (tRe.test(cell)) {
-                    const idx = parseInt(vm[1], 10);
-                    rowValues.push(isNaN(idx) ? vm[1] : (sharedStrings[idx] ?? vm[1]));
-                  } else {
-                    rowValues.push(vm[1]);
+                const rowRe = /<row\b[^>]*>([\s\S]*?)<\/row>/g;
+                let rm;
+                while ((rm = rowRe.exec(sheetXml)) !== null) {
+                  const rowXml = rm[1];
+                  cellRe.lastIndex = 0;
+                  let cm;
+                  const rowValues = [];
+                  while ((cm = cellRe.exec(rowXml)) !== null) {
+                    const cell = cm[0];
+                    const vm = vRe.exec(cell);
+                    if (!vm) continue;
+                    if (tRe.test(cell)) {
+                      const idx = parseInt(vm[1], 10);
+                      rowValues.push(isNaN(idx) ? vm[1] : (sharedStrings[idx] ?? vm[1]));
+                    } else {
+                      rowValues.push(vm[1]);
+                    }
                   }
+                  if (rowValues.length === 0) continue;
+                  // Skip rows that are entirely numeric — they carry no semantic meaning as evidence.
+                  const textCells = rowValues.filter(v => isNaN(Number(v)) && v.trim().length > 0);
+                  if (textCells.length === 0) continue;
+                  rows.push(`[${sheetLabel}] ${rowValues.join(', ')}`);
                 }
-                if (rowValues.length > 0) rows.push(rowValues.join(', '));
               }
               const extracted = rows.join('\n').trim();
               if (extracted) {
@@ -6257,6 +6274,88 @@ async function recordArbDecision(principal, reviewId, input = {}) {
   return decision;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Revision History
+//
+// Each time the agent runs a fresh assessment the previous findings+scorecard
+// are snapshotted into Blob Storage and a lightweight metadata row is written
+// into the RUNS entity in Table Storage.  The live FINDINGS/SCORECARD rows are
+// still overwritten as before — revision history is append-only.
+//
+// Storage layout:
+//   Table Storage  → RUNS row  → { runs: [ { runNumber, completedAt, score, findingCount, delta } ] }
+//   Blob Storage   → reviews/{reviewId}/runs/{runNumber}.json  → { findings, scorecard }
+// ─────────────────────────────────────────────────────────────────────────────
+
+const RUNS_ROW_KEY = "RUNS";
+const MAX_RUN_SNAPSHOTS = 20; // keep last 20 runs per review
+
+function toRunsEntity(reviewId, userId, runs) {
+  const trimmed = (Array.isArray(runs) ? runs : []).slice(-MAX_RUN_SNAPSHOTS);
+  let json = JSON.stringify(trimmed);
+  // Hard-cap at table storage property limit
+  while (json.length > TABLE_STORAGE_PROPERTY_CHAR_LIMIT && trimmed.length > 1) {
+    trimmed.shift();
+    json = JSON.stringify(trimmed);
+  }
+  return {
+    partitionKey: getPartitionKey(reviewId),
+    rowKey: getRowKey(RUNS_ROW_KEY, userId),
+    reviewId,
+    createdByUserId: userId,
+    runsJson: json,
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+function fromRunsEntity(entity) {
+  try {
+    return JSON.parse(entity?.runsJson ?? "[]");
+  } catch {
+    return [];
+  }
+}
+
+async function getRunsList(principal, reviewId) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const entity = await getEntity(client, reviewId, getRowKey(RUNS_ROW_KEY, principal.userId));
+  return fromRunsEntity(entity);
+}
+
+async function saveRunSnapshot(principal, reviewId, { runNumber, findings, scorecard, delta }) {
+  const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
+  const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
+
+  // Write the full snapshot to Blob Storage
+  const blobPath = `${sanitizePathSegment(principal.userId)}/reviews/${sanitizePathSegment(reviewId)}/runs/${runNumber}.json`;
+  await uploadJsonBlob(outputContainer, blobPath, { runNumber, findings: findings ?? [], scorecard: scorecard ?? null, savedAt: new Date().toISOString() });
+
+  // Append a lightweight metadata record to the RUNS table entity
+  const existing = await getRunsList(principal, reviewId);
+  const meta = {
+    runNumber,
+    completedAt: new Date().toISOString(),
+    overallScore: scorecard?.overallScore ?? null,
+    findingCount: Array.isArray(findings) ? findings.filter(f => f.status !== "Closed" && f.status !== "Not Applicable").length : 0,
+    delta: delta ?? null
+  };
+  const updated = [...existing.filter(r => r.runNumber !== runNumber), meta]
+    .sort((a, b) => a.runNumber - b.runNumber);
+
+  await client.upsertEntity(toRunsEntity(reviewId, principal.userId, updated), "Replace");
+  return meta;
+}
+
+async function getRunSnapshot(principal, reviewId, runNumber) {
+  const outputContainer = await getContainerClient(ARB_OUTPUT_CONTAINER_NAME);
+  const blobPath = `${sanitizePathSegment(principal.userId)}/reviews/${sanitizePathSegment(reviewId)}/runs/${runNumber}.json`;
+  try {
+    return await readJsonBlob(outputContainer, blobPath);
+  } catch {
+    return null;
+  }
+}
+
 module.exports = {
   buildDefaultActions,
   buildDefaultEvidence,
@@ -6298,6 +6397,9 @@ module.exports = {
   uploadArbFiles,
   updateArbAction,
   updateArbFinding,
+  getRunsList,
+  saveRunSnapshot,
+  getRunSnapshot,
   _tableStorageInternals: {
     TABLE_STORAGE_PROPERTY_CHAR_LIMIT,
     capRequirementsForTableStorage,

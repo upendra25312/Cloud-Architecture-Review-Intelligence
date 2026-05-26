@@ -55,6 +55,7 @@ export interface ArbReviewSummary {
   documentCount?: number;
   projectId?: string | null;
   projectCategory?: string | null;
+  currentRunNumber?: number | null;
 }
 
 export interface ArbProject {
@@ -355,4 +356,37 @@ export interface ArbReviewComparison {
   criticalBlockersDelta: number | null;
   newFindingsCount: number;
   resolvedFindingsCount: number;
+}
+
+// ─── Revision History (Assessment Runs) ───────────────────────────────────────
+
+export interface ArbRunFindingDiff {
+  findingId: string;
+  title: string;
+  change: "new" | "resolved" | "escalated" | "improved" | "unchanged";
+  previousSeverity: string | null;
+  newSeverity: string | null;
+}
+
+export interface ArbRunDelta {
+  newCount: number;
+  resolvedCount: number;
+  escalatedCount: number;
+  improvedCount: number;
+  findingDiffs: ArbRunFindingDiff[];
+}
+
+export interface ArbAssessmentRunMeta {
+  runNumber: number;
+  completedAt: string;
+  overallScore: number | null;
+  findingCount: number;
+  delta: ArbRunDelta | null;
+}
+
+export interface ArbAssessmentRunSnapshot {
+  runNumber: number;
+  findings: ArbFinding[];
+  scorecard: ArbScorecard | null;
+  savedAt: string;
 }
