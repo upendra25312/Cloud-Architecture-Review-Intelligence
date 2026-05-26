@@ -152,12 +152,92 @@
       "severity": "Medium",
       "title": "Infrastructure-as-code and CI/CD are not evidenced",
       "failureMessage": "The design does not evidence Terraform, Bicep, ARM, CI/CD, deployment automation, or runbooks.",
-      "recommendation": "Document IaC, CI/CD, release controls, and runbooks. See https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code.",
-      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code",
+      "recommendation": "Document IaC, CI/CD, release controls, and runbooks. See https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code-design.",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code-design",
       "blockerFlag": false,
       "triggerPatterns": {
         "requiresEvidencePresence": [],
         "requiresEvidenceAbsence": ["terraform", "bicep", "arm template", "ci/cd", "pipeline", "runbook"]
+      }
+    },
+    {
+      "ruleId": "SEC-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "High",
+      "title": "Encryption at rest and in transit is not evidenced",
+      "failureMessage": "The submission does not evidence encryption at rest (storage service encryption, disk encryption, transparent data encryption) or encryption in transit (TLS 1.2+, HTTPS-only). WAF Security 'Protect Confidentiality' requires encryption across all data states.",
+      "recommendation": "Document encryption strategy: encryption at rest using platform-managed or customer-managed keys (Azure Key Vault), TLS 1.2+ enforcement, HTTPS-only App Service/API configurations, and encrypted backup storage. See https://learn.microsoft.com/azure/well-architected/security/encryption",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/encryption",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["encrypt", "tls", "ssl", "https", "cmk", "customer managed key", "disk encryption", "transparent data encryption", "data protection", "kek"]
+      }
+    },
+    {
+      "ruleId": "SEC-002",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "High",
+      "title": "Secrets and key management is not evidenced",
+      "failureMessage": "The submission does not evidence Azure Key Vault, HSM, or equivalent secrets management. Storing secrets, API keys, connection strings, or certificates outside a managed vault violates WAF Security 'Protect Confidentiality' — guard application secrets.",
+      "recommendation": "Document Azure Key Vault usage for all secrets, certificates, and cryptographic keys. Ensure no plaintext credentials in configuration or IaC. Use managed identities to eliminate credential use entirely where possible. See https://learn.microsoft.com/azure/well-architected/security/application-secrets",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/application-secrets",
+      "blockerFlag": true,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["key vault", "azure key vault", "hsm", "managed hsm", "secret management", "certificate management", "secrets store", "keyvault"]
+      }
+    },
+    {
+      "ruleId": "SEC-003",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:Security",
+      "domain": "Security",
+      "severity": "Medium",
+      "title": "Security posture management is not evidenced",
+      "failureMessage": "The submission does not evidence Microsoft Defender for Cloud, CSPM tooling, threat detection, or a security posture management strategy. WAF Security principle 'Sustain and evolve your security posture' requires continuous monitoring, threat detection, and vulnerability management.",
+      "recommendation": "Enable Microsoft Defender for Cloud (minimum CSPM free tier). Document threat detection strategy, vulnerability assessment, security alert triage, and Defender for Cloud recommendations remediation. Consider Microsoft Sentinel for SIEM/SOAR. See https://learn.microsoft.com/azure/well-architected/security/monitor-threats",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/security/monitor-threats",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["defender for cloud", "microsoft defender", "security center", "cspm", "security posture", "vulnerability assessment", "threat detection", "sentinel", "threat intelligence"]
+      }
+    },
+    {
+      "ruleId": "COST-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:CostOptimization",
+      "domain": "Cost",
+      "severity": "Low",
+      "title": "Cost model and FinOps governance are not evidenced",
+      "failureMessage": "The submission does not evidence a cost model, budget allocation, FinOps practices, or cost governance mechanisms. WAF Cost Optimization 'Develop cost-management discipline' requires a cost model, accountability model, and budget to enable financial responsibility and prevent uncontrolled spend.",
+      "recommendation": "Document a cost model covering TCO estimates, budget with Azure Cost Management alerts, tagging strategy for cost allocation and showback, and FinOps practices. Consider reservations/savings plans for predictable workloads. See https://learn.microsoft.com/azure/well-architected/cost-optimization/cost-model",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/cost-optimization/cost-model",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["cost", "budget", "finops", "reservation", "savings plan", "tco", "pricing", "billing", "cost management", "spend", "commercial"]
+      }
+    },
+    {
+      "ruleId": "PERF-001",
+      "framework": "WAF",
+      "frameworkPillar": "WAF:PerformanceEfficiency",
+      "domain": "Performance",
+      "severity": "Medium",
+      "title": "Performance targets and scaling strategy are not evidenced",
+      "failureMessage": "The submission does not evidence performance targets (SLOs, response time, throughput), capacity planning, or an auto-scaling strategy. WAF Performance Efficiency 'Negotiate realistic performance targets' and 'Design to meet capacity requirements' require defined targets and scalable design.",
+      "recommendation": "Document user-facing SLOs per critical flow, auto-scaling configuration (VMSS, AKS, App Service scale rules), capacity planning assumptions, and a performance testing strategy. See https://learn.microsoft.com/azure/well-architected/performance-efficiency/performance-targets",
+      "learnMoreUrl": "https://learn.microsoft.com/azure/well-architected/performance-efficiency/performance-targets",
+      "blockerFlag": false,
+      "triggerPatterns": {
+        "requiresEvidencePresence": [],
+        "requiresEvidenceAbsence": ["sla", "slo", "performance target", "throughput", "latency", "response time", "auto-scal", "autoscal", "capacity plan", "performance test", "load test", "scal"]
       }
     }
   ]

@@ -50,7 +50,7 @@ const DOMAIN_CONFIGS = [
     domain: "Networking",
     scorecardDimension: "Networking and Connectivity",
     weight: 0.10,
-    instruction: "Network Topology & Connectivity [domain: Networking]: hub-spoke or Virtual WAN, ExpressRoute/VPN, Azure Firewall, NSGs, UDRs, DNS private resolver, private endpoints, subnet design, hybrid connectivity, Bastion. Evaluate every networking gap against ALZ Network Topology & Connectivity design area.",
+    instruction: "Network Topology & Connectivity [domain: Networking] — ALZ design area + WAF Security networking principle: hub-spoke vs Virtual WAN topology, ExpressRoute/VPN Gateway with redundancy, Azure Firewall (Premium preferred for regulated workloads) with IDPS, NSGs on all subnets, UDRs for forced tunnelling, DNS Private Resolver, private endpoints for all PaaS services, Bastion for secure remote access (zero-trust, no public jump boxes), subnet sizing and CIDR planning, hybrid connectivity design. Assess WAF Security 'Protect the network' — segmentation, least-privilege access paths, lateral movement prevention. Check WAF Reliability 'Design for resilience' — redundant gateways, zone-redundant Firewall. See https://learn.microsoft.com/azure/well-architected/security/networking",
     evidenceKeywords: ["network", "vnet", "subnet", "expressroute", "vpn", "firewall", "dns", "nsg", "udr", "bastion", "private endpoint", "hub", "spoke", "connectivity", "routing", "peering", "virtual wan", "gateway", "waf", "application gateway", "front door"]
   },
   {
@@ -58,7 +58,7 @@ const DOMAIN_CONFIGS = [
     domain: "Security",
     scorecardDimension: "Security and Compliance",
     weight: 0.15,
-    instruction: "Identity & Access Management and Security & Compliance [domain: Security]: management group hierarchy, RBAC model, Entra ID, Privileged Identity Management, managed identities, service principals, break-glass accounts, Defender for Cloud, Microsoft Sentinel, Key Vault/HSM, encryption at rest and in transit, WAF policies, secrets management, threat detection, certificate lifecycle, zero trust posture.",
+    instruction: "Identity, Security & Compliance [domain: Security] — evaluate against all WAF Security design principles: (1) Plan readiness: zero-trust (verify explicitly, least privilege, assume breach), segmentation strategy, security baseline, compliance requirements, incident response plan. (2) Protect confidentiality: data classification, encryption at rest AND in transit (TLS 1.2+, HTTPS-only), access controls, audit trail, exfiltration prevention, Key Vault/HSM for all secrets and certificates. (3) Protect integrity: supply chain security, vulnerability scanning in pipelines, immutable backups, code signing. (4) Protect availability: DDoS protection, attack surface reduction, equal security in DR environments. (5) Sustain posture: Defender for Cloud CSPM, Microsoft Sentinel SIEM/SOAR, threat modeling, penetration testing. Azure services: Entra ID, PIM, RBAC, managed identities, Conditional Access, WAF policies, certificate lifecycle management. See https://learn.microsoft.com/azure/well-architected/security/principles",
     evidenceKeywords: ["security", "identity", "iam", "rbac", "entra", "aad", "pim", "managed identity", "key vault", "hsm", "defender", "sentinel", "encryption", "certificate", "secret", "compliance", "zero trust", "mfa", "conditional access", "privileged", "service principal", "waf", "nsg", "firewall", "application gateway", "front door", "ddos", "boundary", "ingress", "access control"]
   },
   {
@@ -74,7 +74,7 @@ const DOMAIN_CONFIGS = [
     domain: "Operations",
     scorecardDimension: "Operational Excellence",
     weight: 0.10,
-    instruction: "Management & Monitoring [domain: Operations]: Log Analytics workspaces, Azure Monitor alerts and dashboards, diagnostic settings, automation accounts, patch management, operational runbooks, ITSM integration, change management, incident response, production readiness. Evaluate operational maturity.",
+    instruction: "Operational Excellence [domain: Operations] — evaluate against all WAF Operational Excellence design principles: (1) Embrace DevOps: CI/CD pipelines, shared responsibility, blameless culture. (2) Development standards: IaC (Terraform/Bicep), source control, quality gates, branching strategy, documented functional and non-functional requirements. (3) Evolve with observability: telemetry correlation (logs/metrics/traces), health modeling, dashboards for operators and stakeholders, actionable alerts with owner and severity, distributed tracing for end-to-end flow visibility, Log Analytics workspaces, Azure Monitor, Application Insights. (4) Automate for efficiency: deployment automation, operational task automation, patch management, no manual repetitive work. (5) Safe deployment practices: canary/blue-green/ring rollout, incremental updates, rollback capability, pre-approved emergency patching. Azure services: Azure Monitor, Log Analytics, Application Insights, automation accounts, diagnostic settings, ITSM integration. See https://learn.microsoft.com/azure/well-architected/operational-excellence/principles",
     evidenceKeywords: ["monitor", "log analytics", "alert", "diagnostic", "automation", "patch", "runbook", "operations", "itsm", "itil", "change management", "incident", "observability", "logging", "workspace", "dashboard", "metrics"]
   },
   {
@@ -82,7 +82,7 @@ const DOMAIN_CONFIGS = [
     domain: "Reliability",
     scorecardDimension: "Reliability and Resilience",
     weight: 0.15,
-    instruction: "Reliability & Business Continuity [domain: Reliability]: Availability Zones and zone-redundant design, Azure Backup, Azure Site Recovery, DR strategy, RTO/RPO definitions, tier classification (Tier 0/1/2/3), multi-region design, failover testing, SLA alignment. Assess whether the design meets enterprise reliability standards.",
+    instruction: "Reliability & Business Continuity [domain: Reliability] — evaluate against all WAF Reliability design principles: (1) Design for business requirements: SLO/SLA defined per critical user flow, RTO/RPO defined and agreed, dependency mapping, failure modes documented. (2) Design for resilience: AZ/multi-region redundancy, fault tolerance, graceful degradation, self-preservation patterns (circuit breakers, retries, bulkheads), horizontal scaling strategy. (3) Design for recovery: tested DR plan with documented runbook, immutable backups, self-healing automation, immutable deployment units, tested failover procedures. (4) Design for operations: observable systems with health modeling, failure simulation/chaos engineering, shared dependency status visibility across teams. (5) Keep it simple: lean critical path, standards-based redundancy, avoid overengineering that creates hidden SPOFs. Azure services: Availability Zones, Azure Backup, Site Recovery, tier classification (Tier 0/1/2/3), Traffic Manager, Front Door for geo-failover. See https://learn.microsoft.com/azure/well-architected/reliability/principles",
     evidenceKeywords: ["reliab", "backup", "recovery", "disaster", "rto", "rpo", "availability zone", "failover", "bcdr", "site recovery", "tier 0", "tier 1", "tier 2", "tier 3", "ha ", "high availability", "resilience", "redundan", "zone"]
   },
   {
@@ -90,7 +90,7 @@ const DOMAIN_CONFIGS = [
     domain: "Cost",
     scorecardDimension: "Cost Optimization",
     weight: 0.10,
-    instruction: "Cost Optimization [domain: Cost]: resource SKU justification, reserved instances and savings plans, tagging for cost allocation, FinOps practices, budget alerts, licensing optimization, right-sizing recommendations, cost governance mechanisms.",
+    instruction: "Cost Optimization [domain: Cost] — evaluate against all WAF Cost Optimization design principles: (1) Cost-management discipline: cost model/TCO analysis, FinOps culture, budget with alerts, tagging strategy for cost allocation and showback/chargeback, clear accountability model. (2) Cost-efficiency mindset: right-sizing SKUs with documented justification, cost baseline, environment strategy (non-production environments do not need production SKU parity). (3) Usage optimization: dynamic auto-scaling (scale-in as important as scale-out), commitment discounts (reservations/savings plans) for predictable workloads, active-active preferred over active-passive for paid resources. (4) Rate optimization: Azure Hybrid Benefit for Windows Server/SQL, consumption vs fixed-price billing selection based on utilization, co-location with shared platform services. (5) Monitor and optimize: cost alerts at defined budget thresholds, decommission unused/orphaned resources, regular cost review cadence with Azure Advisor. Azure services: Azure Cost Management, budgets, reservations, savings plans, Advisor cost recommendations. See https://learn.microsoft.com/azure/well-architected/cost-optimization/principles",
     evidenceKeywords: ["cost", "budget", "reservation", "saving", "sku", "finops", "license", "pricing", "spend", "billing", "tco", "right-siz", "consumption", "commercial"]
   },
   {
@@ -98,7 +98,7 @@ const DOMAIN_CONFIGS = [
     domain: "Performance",
     scorecardDimension: "Performance Efficiency",
     weight: 0.10,
-    instruction: "Performance Efficiency [domain: Performance]: scaling strategy (auto-scale, VMSS, AKS node pools), load balancing (Application Gateway, Azure Load Balancer, Traffic Manager, Front Door), CDN, database performance tiers, caching (Redis), response time SLAs, throughput requirements, compute right-sizing.",
+    instruction: "Performance Efficiency [domain: Performance] — evaluate against all WAF Performance Efficiency design principles: (1) Negotiate performance targets: user-facing SLOs defined per critical user flow (not just generic uptime), performance model covering capacity and growth forecast, negotiated with business stakeholders. (2) Meet capacity requirements: right-sizing with auto-scaling design (VMSS, AKS HPA/Cluster Autoscaler, App Service plans), capacity planning with predictive modeling, load testing proof of concept before production. (3) Achieve and sustain performance: performance testing strategy (load/stress/soak/spike tests), quality gates in pipelines blocking release on performance regressions, end-to-end latency and throughput monitoring with alerts. (4) Optimize long-term: caching strategy (Azure Cache for Redis, CDN for static assets), database performance tiers with read replicas/elastic pools, continuous improvement cadence based on production telemetry, Application Insights for performance profiling. Azure services: VMSS, AKS, App Service scale rules, Application Gateway, Load Balancer, Traffic Manager, Front Door, Azure CDN, Redis Cache, Azure Load Testing, Application Insights. See https://learn.microsoft.com/azure/well-architected/performance-efficiency/principles",
     evidenceKeywords: ["performance", "scal", "load balanc", "cdn", "cache", "redis", "throughput", "latency", "sla", "auto-scal", "vmss", "performance tier", "compute size", "capacity", "iops", "tps"]
   }
 ];
@@ -306,7 +306,12 @@ Primary operating principles:
 
 Review framework:
 Assess each submission through these lenses in one pass:
-- Azure Well-Architected Framework (WAF): Reliability, Security, Cost Optimization, Operational Excellence, Performance Efficiency.
+- Azure Well-Architected Framework (WAF) — evaluate every submission through all five pillars and their official design principles:
+  WAF:Security: (1) Plan security readiness — zero-trust model (verify explicitly, least privilege, assume breach), segmentation strategy, security baseline, compliance requirements (PCI-DSS/DORA/ISO27001), incident response plan. (2) Protect confidentiality — data classification, encryption at rest AND in transit (TLS 1.2+), access controls, audit trail, data exfiltration prevention. (3) Protect integrity — supply chain security, vulnerability scanning in pipelines, immutable backups, code signing. (4) Protect availability — DDoS protection, attack surface reduction, equal security rigor in DR/recovery environments. (5) Sustain and evolve security posture — Defender for Cloud CSPM, Microsoft Sentinel SIEM/SOAR, Key Vault secrets management, threat modeling, penetration testing, vulnerability management.
+  WAF:Reliability: (1) Design for business requirements — SLO/SLA defined per critical user flow, RTO/RPO defined and agreed, dependency mapping. (2) Design for resilience — AZ/multi-region redundancy, fault tolerance, graceful degradation, self-preservation patterns (circuit breakers, retries, bulkheads), horizontal scaling. (3) Design for recovery — tested DR plan with documented recovery procedures, immutable backups, self-healing automation, immutable deployment units. (4) Design for operations — observable systems with health modeling, failure simulation/chaos engineering, shared visibility of dependency status. (5) Keep it simple — lean critical path, standards-based design, avoid unnecessary complexity that creates hidden single points of failure.
+  WAF:OperationalExcellence: (1) Embrace DevOps culture — CI/CD pipelines, shared responsibility model, blameless postmortems, knowledge sharing across teams. (2) Establish development standards — IaC (Terraform/Bicep), source control, quality gates, branching strategy, code style guides, functional and non-functional requirements documented. (3) Evolve with observability — telemetry correlation (logs, metrics, traces), health modeling, dashboards tailored to audience, actionable alerts with severity and owner, distributed tracing. (4) Automate for efficiency — deployment automation, operational task automation, eliminate manual repetitive work. (5) Adopt safe deployment practices — canary/blue-green/ring deployment rings, incremental updates, rollback capability, progressive rollout, pre-approved emergency patching process.
+  WAF:CostOptimization: (1) Cost-management discipline — cost model/TCO analysis, FinOps culture, budget with alerts, clear accountability model with tagging strategy. (2) Cost-efficiency mindset — right-sizing SKUs, cost baseline, environment strategy (non-production environments do not need production parity for SKU or redundancy). (3) Usage optimization — dynamic auto-scaling, commitment discounts (reservations/savings plans) for predictable workloads, active-active preferred over active-passive for paid resources. (4) Rate optimization — Azure Hybrid Benefit, consumption vs fixed-price billing selection, co-location with shared platform services. (5) Monitor and optimize — cost alerts at budget thresholds, decommission unused/orphaned resources, regular cost reviews and right-sizing exercises.
+  WAF:PerformanceEfficiency: (1) Negotiate performance targets — user-facing SLOs defined per critical user flow, performance model covering capacity and growth, negotiated with business stakeholders. (2) Meet capacity requirements — right-sizing with auto-scaling design (VMSS, AKS HPA/CA, App Service scale rules), capacity planning based on growth forecast, load testing proof of concept. (3) Achieve and sustain performance — performance testing strategy (load/stress/soak), quality gates blocking release on regressions, end-to-end latency monitoring with alerts. (4) Optimize long-term — caching (Redis, CDN), database performance tiers, continuous improvement cadence informed by production telemetry.
 - Microsoft Cloud Adoption Framework (CAF): Strategy, Plan, Ready, Adopt, Govern, Manage.
 - Azure Landing Zone (ALZ) design areas — evaluate each one explicitly:
   1. Network Topology & Connectivity: hub-spoke vs Virtual WAN, ExpressRoute/VPN, Azure Firewall, NSG/UDR, DNS Private Resolver, private endpoints, Bastion, subnet sizing.
@@ -376,11 +381,43 @@ Microsoft Learn reference rules:
 - Every finding must have a non-empty learnMoreUrl on learn.microsoft.com.
 - Prefer the most specific Microsoft Learn article available in the supplied Learn grounding.
 - If no specific service article is supplied, use the relevant fallback URL:
-  - WAF Security: https://learn.microsoft.com/azure/well-architected/security/
-  - WAF Reliability: https://learn.microsoft.com/azure/well-architected/reliability/
-  - WAF Cost Optimization: https://learn.microsoft.com/azure/well-architected/cost-optimization/
-  - WAF Operational Excellence: https://learn.microsoft.com/azure/well-architected/operational-excellence/
-  - WAF Performance Efficiency: https://learn.microsoft.com/azure/well-architected/performance-efficiency/
+  - WAF Security (pillar): https://learn.microsoft.com/azure/well-architected/security/
+  - WAF Security Principles: https://learn.microsoft.com/azure/well-architected/security/principles
+  - WAF Security Checklist: https://learn.microsoft.com/azure/well-architected/security/checklist
+  - WAF Security Networking: https://learn.microsoft.com/azure/well-architected/security/networking
+  - WAF Security Identity & Access: https://learn.microsoft.com/azure/well-architected/security/identity-access
+  - WAF Security Encryption: https://learn.microsoft.com/azure/well-architected/security/encryption
+  - WAF Security Secrets: https://learn.microsoft.com/azure/well-architected/security/application-secrets
+  - WAF Security Threat Monitoring: https://learn.microsoft.com/azure/well-architected/security/monitor-threats
+  - WAF Security Incident Response: https://learn.microsoft.com/azure/well-architected/security/incident-response
+  - WAF Security Segmentation: https://learn.microsoft.com/azure/well-architected/security/segmentation
+  - WAF Reliability (pillar): https://learn.microsoft.com/azure/well-architected/reliability/
+  - WAF Reliability Principles: https://learn.microsoft.com/azure/well-architected/reliability/principles
+  - WAF Reliability Checklist: https://learn.microsoft.com/azure/well-architected/reliability/checklist
+  - WAF Reliability Redundancy: https://learn.microsoft.com/azure/well-architected/reliability/redundancy
+  - WAF Reliability Disaster Recovery: https://learn.microsoft.com/azure/well-architected/reliability/disaster-recovery
+  - WAF Reliability Failure Mode Analysis: https://learn.microsoft.com/azure/well-architected/reliability/failure-mode-analysis
+  - WAF Reliability Testing: https://learn.microsoft.com/azure/well-architected/reliability/testing-strategy
+  - WAF Reliability Monitoring: https://learn.microsoft.com/azure/well-architected/reliability/monitoring
+  - WAF Cost Optimization (pillar): https://learn.microsoft.com/azure/well-architected/cost-optimization/
+  - WAF Cost Principles: https://learn.microsoft.com/azure/well-architected/cost-optimization/principles
+  - WAF Cost Checklist: https://learn.microsoft.com/azure/well-architected/cost-optimization/checklist
+  - WAF Cost Model: https://learn.microsoft.com/azure/well-architected/cost-optimization/cost-model
+  - WAF Cost Rate Optimization: https://learn.microsoft.com/azure/well-architected/cost-optimization/get-best-rates
+  - WAF Operational Excellence (pillar): https://learn.microsoft.com/azure/well-architected/operational-excellence/
+  - WAF OE Principles: https://learn.microsoft.com/azure/well-architected/operational-excellence/principles
+  - WAF OE Checklist: https://learn.microsoft.com/azure/well-architected/operational-excellence/checklist
+  - WAF OE Safe Deployments: https://learn.microsoft.com/azure/well-architected/operational-excellence/safe-deployments
+  - WAF OE Observability: https://learn.microsoft.com/azure/well-architected/operational-excellence/observability
+  - WAF OE IaC: https://learn.microsoft.com/azure/well-architected/operational-excellence/infrastructure-as-code-design
+  - WAF OE Incident Response: https://learn.microsoft.com/azure/well-architected/operational-excellence/incident-response
+  - WAF OE Automation: https://learn.microsoft.com/azure/well-architected/operational-excellence/enable-automation
+  - WAF Performance Efficiency (pillar): https://learn.microsoft.com/azure/well-architected/performance-efficiency/
+  - WAF PE Principles: https://learn.microsoft.com/azure/well-architected/performance-efficiency/principles
+  - WAF PE Checklist: https://learn.microsoft.com/azure/well-architected/performance-efficiency/checklist
+  - WAF PE Performance Targets: https://learn.microsoft.com/azure/well-architected/performance-efficiency/performance-targets
+  - WAF PE Scaling: https://learn.microsoft.com/azure/well-architected/performance-efficiency/scale-partition
+  - WAF PE Testing: https://learn.microsoft.com/azure/well-architected/performance-efficiency/performance-test
   - ALZ Networking: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/define-an-azure-network-topology
   - CAF: https://learn.microsoft.com/azure/cloud-adoption-framework/
   - ALZ: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/
