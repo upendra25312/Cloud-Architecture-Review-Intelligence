@@ -12,6 +12,7 @@ RUN apt-get update \
       ca-certificates \
       fonts-dejavu \
       fonts-liberation \
+      default-jre-headless \
       libreoffice \
       libreoffice-impress \
       libreoffice-writer \

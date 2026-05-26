@@ -773,7 +773,7 @@ function extractOfficeRenderFallbackEvidence(buffer, fileName) {
       if (!name.endsWith(".xml")) return false;
       if (ext === ".pptx") return name.startsWith("ppt/slides/");
       if (ext === ".docx") return name.startsWith("word/document");
-      if (ext === ".xlsx") return name.startsWith("xl/worksheets/") || name.startsWith("xl/charts/");
+      if (ext === ".xlsx") return name.startsWith("xl/worksheets/") || name.startsWith("xl/charts/") || name === "xl/sharedstrings.xml";
       return false;
     });
 
