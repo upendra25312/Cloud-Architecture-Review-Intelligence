@@ -77,7 +77,7 @@
       "blockerFlag": true,
       "triggerPatterns": {
         "requiresEvidencePresence": ["public", "internet", "web", "app service", "front end", "frontend"],
-        "requiresEvidenceAbsence": ["waf", "firewall", "application gateway", "front door", "apim", "nsg"]
+        "requiresEvidenceAbsence": ["waf", "firewall", "azure firewall", "application gateway", "front door", "apim", "nsg", "network security group", "hub-spoke", "hub spoke", "forced tunnel", "egress control", "boundary control", "perimeter"]
       }
     },
     {
