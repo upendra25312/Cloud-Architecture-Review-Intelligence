@@ -15,7 +15,7 @@ const {
 } = require("../shared/arb-review-store");
 const { searchArbDocuments, ensureArbSearchIndex } = require("../shared/arb-search");
 const { runArbAgentReview, getFoundryConfiguration, buildFallbackAgentReview } = require("../shared/arb-foundry-agent");
-const { runDeterministicRules } = require("../shared/arb-rules-engine");
+const { runDeterministicRules, loadArbRules } = require("../shared/arb-rules-engine");
 const { getTableClient, ARB_REVIEW_TABLE_NAME, encodeTableKey } = require("../shared/table-storage");
 const { shouldUseDurable } = require("../durable/shared/featureFlag");
 const { computeInstanceId } = require("../durable/shared/instanceId");
@@ -80,6 +80,33 @@ function getPartitionKey(reviewId) {
 
 function isActiveFinding(finding) {
   return finding?.status !== "Closed" && finding?.status !== "Not Applicable";
+}
+
+// Remove LLM findings that are contradicted by evidence already present in the corpus.
+// For each WAF/CAF rule whose requiresEvidenceAbsence terms ARE found in the evidence,
+// the rule "passed" — any LLM finding covering the same topic is a false positive.
+function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
+  if (!evidenceCorpus || !findings?.length) return findings;
+  const rules = loadArbRules();
+  const corpus = evidenceCorpus.toLowerCase();
+  const hasKeyword = (terms) => terms.some((t) => corpus.includes(t.toLowerCase()));
+
+  return findings.filter((finding) => {
+    // Never suppress deterministic rule findings
+    if (finding.source === "rules-engine" || finding.ruleId) return true;
+
+    const findingText = `${finding.title ?? ""} ${finding.findingStatement ?? ""} ${finding.evidenceBasis ?? ""}`.toLowerCase();
+
+    for (const rule of rules) {
+      const absenceTerms = rule.triggerPatterns?.requiresEvidenceAbsence ?? [];
+      if (absenceTerms.length === 0) continue;
+      // Does this LLM finding mention the same control gap as the rule?
+      if (!absenceTerms.some((t) => findingText.includes(t.toLowerCase()))) continue;
+      // Is the evidence already present (rule passed)?
+      if (hasKeyword(absenceTerms)) return false; // suppress false positive
+    }
+    return true;
+  });
 }
 
 function hasSowArtifact(files, review) {
@@ -199,6 +226,26 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
         ...(agentResult.scorecard.criticalBlockers ?? []),
         ...ruleBlockers
       ].filter((v, i, a) => a.indexOf(v) === i);
+    }
+  }
+
+  // Evidence-aware suppression: remove LLM findings that are contradicted by extracted evidence.
+  // Builds a corpus from all text evidence + visual summaries + requirements, then removes any
+  // AI finding whose topic is already satisfied in the evidence (same logic as the rules engine).
+  if (!agentResult.fallbackUsed && agentResult.findings?.length > 0) {
+    const evidenceCorpus = [
+      ...evidenceList.map((e) => `${e.summary ?? ""} ${e.sourceExcerpt ?? ""}`),
+      ...visualEvidenceList.map((e) => `${e.summary ?? ""} ${e.sourceExcerpt ?? ""}`),
+      ...requirementsList.map((r) => r.normalizedText ?? "")
+    ].join(" ");
+    const before = agentResult.findings.length;
+    agentResult = {
+      ...agentResult,
+      findings: suppressContraindicatedLlmFindings(agentResult.findings, evidenceCorpus)
+    };
+    const suppressed = before - agentResult.findings.length;
+    if (suppressed > 0) {
+      log("Suppressed contradicted LLM findings", { suppressed, remaining: agentResult.findings.length });
     }
   }
 
