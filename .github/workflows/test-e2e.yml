@@ -1,0 +1,70 @@
+name: E2E — Golden Path Smoke Test
+
+# Runs after the frontend deploy succeeds on main.
+# NOT triggered on PRs — the test creates real resources on the live site
+# and requires live credentials; it is a post-deploy acceptance gate only.
+on:
+  workflow_run:
+    workflows: ["Deploy — Next.js Frontend"]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Override target URL (defaults to live site)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22.x'
+
+jobs:
+  golden-path:
+    name: ARB Golden Path
+    runs-on: ubuntu-latest
+    # Only run when triggered by a successful deploy (skip if deploy failed)
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        working-directory: frontend
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Golden Path E2E
+        working-directory: frontend
+        run: npm run test:e2e:golden-path
+        env:
+          CI: 'true'
+          E2E_BASE_URL: ${{ inputs.base_url || 'https://thankful-pond-04383960f.7.azurestaticapps.net' }}
+          E2E_LOGIN_EMAIL: ${{ secrets.E2E_LOGIN_EMAIL }}
+          E2E_LOGIN_PASSWORD: ${{ secrets.E2E_LOGIN_PASSWORD }}
+          E2E_SCREENSHOTS_DIR: /tmp/e2e-screenshots/golden-path
+
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-path-screenshots-${{ github.run_id }}
+          path: /tmp/e2e-screenshots/
+          retention-days: 7
+          if-no-files-found: ignore

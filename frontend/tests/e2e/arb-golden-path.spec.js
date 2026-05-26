@@ -21,10 +21,10 @@ const fs = require('node:fs');
 
 // ── constants ──────────────────────────────────────────────────────────────
 
-const BASE_URL = 'https://thankful-pond-04383960f.7.azurestaticapps.net';
-const LOGIN_EMAIL = 'cari.pilot@outlook.com';
-const LOGIN_PASSWORD = 'Welcome@2026';
-const SCREENSHOTS_DIR = 'c:\\tmp\\playwright-qa\\screenshots\\golden-path';
+const BASE_URL = process.env.E2E_BASE_URL || 'https://thankful-pond-04383960f.7.azurestaticapps.net';
+const LOGIN_EMAIL = process.env.E2E_LOGIN_EMAIL || 'cari.pilot@outlook.com';
+const LOGIN_PASSWORD = process.env.E2E_LOGIN_PASSWORD || '';
+const SCREENSHOTS_DIR = process.env.E2E_SCREENSHOTS_DIR || 'c:\\tmp\\playwright-qa\\screenshots\\golden-path';
 
 // Small plaintext architecture document — enough for the agent to produce findings
 // without triggering a lengthy multi-document extraction run.
@@ -231,9 +231,10 @@ async function runGoldenPath() {
   console.log(' C7 — ARB Golden Path E2E');
   console.log('═══════════════════════════════════════════════════════\n');
 
+  const isCI = process.env.CI === 'true' || process.env.CI === '1';
   const browser = await chromium.launch({
-    headless: false,
-    slowMo: 80,
+    headless: isCI,
+    slowMo: isCI ? 0 : 80,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
