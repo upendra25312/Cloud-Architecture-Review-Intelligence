@@ -1817,7 +1817,7 @@ async function checkFoundryAgentHealth() {
     const resp = await fetchWithTimeout(
       probeUrl,
       { headers: { Authorization: `Bearer ${token}` } },
-      8000
+      15000
     );
     const latencyMs = Date.now() - t0;
 
@@ -1865,7 +1865,7 @@ async function checkFoundryAgentHealth() {
     return {
       status: 'unavailable',
       message: isTimeout
-        ? 'CARI Engine health check timed out after 8 s. The service may be under load — please wait a few minutes and retry.'
+        ? 'CARI Engine health check timed out after 15 s. The service may be under load — please wait a few minutes and retry.'
         : `CARI Engine is unreachable: ${err && err.message ? err.message : 'Unknown network error'}.`,
       checkedAt,
       latencyMs
