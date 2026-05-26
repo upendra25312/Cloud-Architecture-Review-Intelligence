@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Route } from "next";
 import type { ReactNode } from "react";
 import type { ArbReviewStep, ArbReviewSummary } from "@/arb/types";
@@ -110,6 +113,7 @@ export function ArbReviewShell(props: {
   children: ReactNode;
 }) {
   const { review, steps, activeStep, title, description, reviewSummary, children } = props;
+  const router = useRouter();
   const activeStepIndex = steps.findIndex((step) => step.key === activeStep);
   const guidance = getStepGuidance(activeStep);
   const activeStepLabel = steps.find((step) => step.key === activeStep)?.label ?? "Overview";
@@ -159,12 +163,12 @@ export function ArbReviewShell(props: {
               <span className="pill">Review ID: {review.reviewId}</span>
             </div>
             <div className="button-row">
-              <Link href="/arb" className="secondary-button">
+              <button type="button" className="secondary-button" onClick={() => router.push('/arb')}>
                 Back to reviews
-              </Link>
-              <Link href="/decision-center" className="ghost-button">
+              </button>
+              <button type="button" className="ghost-button" onClick={() => router.push('/decision-center')}>
                 Open Decision Center
-              </Link>
+              </button>
               {/* Persistent Upload Documents button, hidden on upload step */}
               {activeStep !== "upload" && (
                 <Link
