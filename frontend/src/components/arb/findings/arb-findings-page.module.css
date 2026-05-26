@@ -265,6 +265,12 @@
   font-size: 0.85rem;
 }
 
+.visualEvidenceBadge {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  cursor: default;
+}
+
 /* ── Confidence badge (in list + detail header) ──────────────────── */
 .confidenceBadge {
   display: inline-flex;

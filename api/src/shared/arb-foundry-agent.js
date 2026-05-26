@@ -566,6 +566,11 @@ function buildLearnQueries(review, requirements, evidence) {
   return queries.slice(0, 6);
 }
 
+// Versioning constants allow audit consumers to correlate findings to the exact
+// prompt and rules that produced them — critical for reproducibility reviews.
+const ARB_PROMPT_VERSION = "2.0";
+const ARB_RULES_VERSION = "1.2";
+
 const MCP_CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
 
 function buildMcpCacheKey(queries) {
@@ -581,7 +586,9 @@ async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
   const makeMeta = (mcpStatus, resultCount, extra = {}) => ({
     queryHash, queryCount: queries.length, resultCount, mcpStatus,
     fallbackUsed: mcpStatus !== "success" && mcpStatus !== "cache-hit",
-    cacheTtlSeconds, retrievedAt: new Date().toISOString(), ...extra
+    cacheTtlSeconds, retrievedAt: new Date().toISOString(),
+    promptVersion: ARB_PROMPT_VERSION, rulesVersion: ARB_RULES_VERSION,
+    ...extra
   });
 
   // Try blob cache first
@@ -601,11 +608,13 @@ async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
     const seen = new Set();
     const docs = allDocs.filter((doc) => {
       if (!doc.url || seen.has(doc.url)) return false;
+      if (typeof doc.score === "number" && doc.score < 0.5) return false; // Gap 3: drop low-relevance results
       seen.add(doc.url);
       return true;
     });
 
-    const mcpMetadata = makeMeta("success", docs.length, { fallbackUsed: false });
+    const topResults = docs.slice(0, 3).map((d) => ({ title: d.title ?? "", url: d.url ?? "" }));
+    const mcpMetadata = makeMeta("success", docs.length, { fallbackUsed: false, topResults });
 
     // Write back to cache with audit fields (best-effort)
     uploadJsonBlob(container, cacheKey, { cachedAt: mcpMetadata.retrievedAt, queryHash, queryCount: queries.length, resultCount: docs.length, docs })
@@ -620,10 +629,12 @@ async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
       const seen = new Set();
       const docs = allDocs.filter((doc) => {
         if (!doc.url || seen.has(doc.url)) return false;
+        if (typeof doc.score === "number" && doc.score < 0.5) return false;
         seen.add(doc.url);
         return true;
       });
-      return { docs, mcpMetadata: makeMeta("success-no-cache", docs.length) };
+      const topResults = docs.slice(0, 3).map((d) => ({ title: d.title ?? "", url: d.url ?? "" }));
+      return { docs, mcpMetadata: makeMeta("success-no-cache", docs.length, { topResults }) };
     } catch {
       return { docs: [], mcpMetadata: makeMeta("failed", 0) };
     }

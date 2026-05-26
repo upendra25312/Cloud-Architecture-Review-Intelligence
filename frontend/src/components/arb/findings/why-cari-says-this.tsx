@@ -22,6 +22,10 @@ export function WhyCariSaysThis({ finding }: Props) {
     (finding.missingEvidence?.length ?? 0) > 0 ||
     (finding.references?.length ?? 0) > 0;
 
+  const visualEvidenceCount = finding.evidenceFound?.filter(
+    (ev) => ev.visualEvidenceId || ev.imageUri
+  ).length ?? 0;
+
   // Auto-expand when confidence is Low so reviewers immediately see thin evidence
   const [expanded, setExpanded] = useState(finding.confidence === "Low");
 
@@ -58,11 +62,17 @@ export function WhyCariSaysThis({ finding }: Props) {
           {(finding.evidenceFound?.length ?? 0) > 0 && (
             <div className={styles.whySubsection}>
               <h4 className={styles.whySubheading}>
-                Linked Evidence ({finding.evidenceFound!.length})
+                Linked Evidence ({finding.evidenceFound!.length}
+                {visualEvidenceCount > 0 && ` · ${visualEvidenceCount} visual`})
               </h4>
               <ul className={styles.sectionList}>
                 {finding.evidenceFound!.map((ev, i) => (
                   <li key={i}>
+                    {(ev.visualEvidenceId || ev.imageUri) && (
+                      <span className={styles.visualEvidenceBadge} title="Visual evidence (diagram/image)">
+                        &#128444;&#xFE0F;{" "}
+                      </span>
+                    )}
                     <span>{ev.summary}</span>
                     {ev.factType && (
                       <span className={styles.evidenceFactType}> [{ev.factType}]</span>

@@ -19,18 +19,19 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 
 ---
 
-## Mode B — Planning Docs (Awaiting User Approval)
+## Mode B — Planning Docs
 
 | # | Task | Status |
 |---|------|--------|
-| B1 | Create `docs/CARI_REPO_DISCOVERY_REPORT.md` | ⏳ Pending approval |
-| B2 | Create `docs/CARI_IMPLEMENTATION_BACKLOG.md` | ⏳ Pending approval |
-| B3 | Create `docs/CARI_SKILL_FIT_ASSESSMENT.md` | ⏳ Pending approval |
-| B4 | Create `docs/CARI_TEST_STRATEGY.md` | ⏳ Pending approval |
-| B5 | Create `docs/CARI_SECURITY_REVIEW_PLAN.md` | ⏳ Pending approval |
-| B6 | Create `docs/skills/cari-evidence-grounding-skill.md` | ⏳ Pending approval |
-| B7 | Create `docs/skills/cari-microsoft-learn-mcp-grounding-skill.md` | ⏳ Pending approval |
-| B8 | Create `docs/skills/cari-waf-caf-alz-review-skill.md` | ⏳ Pending approval |
+| B1 | Create `docs/CARI_REPO_DISCOVERY_REPORT.md` | ✅ Done |
+| B2 | Create `docs/CARI_IMPLEMENTATION_BACKLOG.md` | ✅ Done |
+| B3 | Create `docs/CARI_SKILL_FIT_ASSESSMENT.md` | ✅ Done |
+| B4 | Create `docs/CARI_TEST_STRATEGY.md` | ✅ Done |
+| B5 | Create `docs/CARI_SECURITY_REVIEW_PLAN.md` | ✅ Done |
+| B6 | Create `docs/skills/cari-evidence-grounding-skill.md` | ✅ Done |
+| B7 | Create `docs/skills/cari-microsoft-learn-mcp-grounding-skill.md` | ✅ Done |
+| B8 | Create `docs/skills/cari-waf-caf-alz-review-skill.md` | ✅ Done |
+| B9 | Create `.claude/skills/` — 8 Claude Code SKILL.md files | ✅ Done (2026-05-26) |
 
 ---
 
@@ -48,7 +49,11 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | C7 | Playwright E2E — upload → extract → review → export golden path | P2 | ✅ **DONE** | `ed73967` | Live-site smoke test; run with test:e2e:golden-path |
 | C8 | Durable Functions idempotency test suite | P2 | ✅ **DONE** | `e7254e9` | +24 tests → 253 pass |
 | C9 | Prompt injection eval cases (10 minimum per master prompt) | P1 | ✅ **DONE** | `436d006` | +9 cases → 36 total |
-| C10 | API-level project isolation / RBAC cross-user access test | P1 | ⏳ Pending |  | |
+| C10 | API-level project isolation / RBAC cross-user access test | P1 | ✅ **DONE** | (prev session) | 253 pass |
+| G1 | Rubric doc v1.2 — align decision bands + domain weights + Networking domain to live agent | P1 | ✅ **DONE** | TBD | docs only |
+| G2 | mcpMetadata enrichment — add `promptVersion`, `rulesVersion`, `topResults` to `makeMeta` | P1 | ✅ **DONE** | TBD | 253 pass |
+| G3 | MCP relevance filter — drop results with `score < 0.5` in dedup step | P2 | ✅ **DONE** | TBD | 253 pass |
+| G4 | Visual evidence in `WhyCariSaysThis` — badge + count; update `cari-evidence-grounding` SKILL.md | P2 | ✅ **DONE** | TBD | Build pass |
 
 ---
 
@@ -99,7 +104,7 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 1. Read this file first
 2. Run `npm --prefix api test` — expect **219 pass, 0 fail**
 3. Check `git log --oneline -8` — last commit should be `436d006`
-4. Continue with **C7** (Playwright E2E golden path, P2) or ask user which slice to tackle
+4. All Mode C slices (C0–C10) complete. All Mode B docs (B1–B9) complete. Next: commit Mode B output or address N1 (Playwright in CI)
 5. Prompt path: `c:\cari-repo\prompts\CARI_Claude_Code_Skills_Master_Prompt_V6.md`
 
 ---

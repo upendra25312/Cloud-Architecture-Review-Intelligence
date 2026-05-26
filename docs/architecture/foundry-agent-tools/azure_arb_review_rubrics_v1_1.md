@@ -10,13 +10,14 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 | Domain | Weight | Primary Framework Mapping |
 |---|---:|---|
-| Requirements Coverage | 20% | WAF: All pillars |
-| Security | 20% | WAF: Security, ALZ: Security baseline |
+| Requirements Coverage | 15% | WAF: All pillars |
+| Security and Compliance | 15% | WAF: Security, ALZ: Security baseline |
+| Networking and Connectivity | 10% | WAF: Networking, ALZ: Network Topology & Connectivity |
 | Reliability and Resilience | 15% | WAF: Reliability, ALZ: Management |
 | Operational Excellence | 10% | WAF: Operational Excellence, CAF: Manage |
 | Cost Optimization | 10% | WAF: Cost Optimization, CAF: Plan |
 | Performance Efficiency | 10% | WAF: Performance Efficiency |
-| Governance / Platform Alignment | 10% | CAF: Govern, ALZ: Policy, CAF: Ready |
+| Governance and Platform Alignment | 10% | CAF: Govern, ALZ: Policy, CAF: Ready |
 | Documentation Completeness | 5% | Internal |
 
 **Total weight: 100%. Overall score = weighted sum of domain scores (0-100 per domain).**
@@ -27,12 +28,12 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 | Overall Score | Recommendation |
 |---|---|
-| 90 - 100 | ARB Approved |
-| 75 - 89 | Approved with Conditions |
-| 50 - 74 | Needs Improvement |
-| Below 50 | Not Ready For Review |
+| 80 - 100 | Recommended for Approval (requires SOW/scope evidence, no unresolved High or Critical findings) |
+| 70 - 79 | Ready with Gaps |
+| 80 - 100 with missing SOW/scope or evidence gaps | Ready with Gaps |
+| Below 70 | Needs Remediation |
 
-**Critical blocker override:** Any unresolved critical blocker forces the recommendation to `Needs Revision` or `Rejected` regardless of numeric score.
+**Critical blocker override:** Any unresolved High or Critical finding forces the recommendation to `Needs Remediation` regardless of numeric score.
 
 ---
 
@@ -77,7 +78,25 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 ---
 
-### 3. Reliability and Resilience (15%)
+### 3. Networking and Connectivity (10%)
+
+**What it measures:** Hub-spoke or Virtual WAN topology, ExpressRoute/VPN connectivity, Azure Firewall, NSGs, UDRs, DNS private resolver, private endpoints, subnet design, and hybrid connectivity alignment with ALZ Network Topology & Connectivity design area.
+
+| Score Band | Criteria |
+|---|---|
+| 90-100 | Hub-spoke or Virtual WAN topology defined. Private endpoints for PaaS services. Azure Firewall or NVA at hub. DNS private resolver configured. NSGs on all workload subnets. |
+| 70-89 | Network topology present. Minor gaps (e.g. no Bastion, missing UDRs, public PaaS endpoints). |
+| 50-69 | Partial network design. Missing boundary controls or private endpoint strategy. |
+| Below 50 | No network design. Internet-facing PaaS services. No segmentation. |
+
+**Critical blockers:**
+- Internet-facing design with no WAF, NSG, APIM, Application Gateway, Azure Firewall, or equivalent boundary control
+
+**ALZ reference:** https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/network-topology-and-connectivity
+
+---
+
+### 4. Reliability and Resilience (15%)
 
 **What it measures:** HA design, DR strategy, backup, RTO/RPO commitments, and recovery patterns.
 
@@ -96,7 +115,7 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 ---
 
-### 4. Operational Excellence (10%)
+### 5. Operational Excellence (10%)
 
 **What it measures:** Monitoring, alerting, runbooks, IaC, CI/CD, observability, and supportability.
 
@@ -111,7 +130,7 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 ---
 
-### 5. Cost Optimization (10%)
+### 6. Cost Optimization (10%)
 
 **What it measures:** Sizing rationale, FinOps controls, cost assumptions, reserved capacity, and cost guardrails.
 
@@ -126,7 +145,7 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 ---
 
-### 6. Performance Efficiency (10%)
+### 7. Performance Efficiency (10%)
 
 **What it measures:** Service SKU fit, scaling model, caching, load distribution, bottleneck awareness.
 
@@ -141,7 +160,7 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 ---
 
-### 7. Governance / Platform Alignment (10%)
+### 8. Governance and Platform Alignment (10%)
 
 **What it measures:** Landing zone alignment, management group hierarchy, Azure Policy assignments, subscription vending, compliance framework mapping.
 
@@ -156,7 +175,7 @@ This document defines the scoring rubric used by the Azure Architecture Review B
 
 ---
 
-### 8. Documentation Completeness (5%)
+### 9. Documentation Completeness (5%)
 
 **What it measures:** Evidence package completeness — whether enough artefacts are present for a fair review.
 
@@ -188,3 +207,4 @@ All overrides must include a written rationale and are stored separately from th
 |---|---|---|
 | 1.0 | 2026-04-10 | Initial scoring model |
 | 1.1 | 2026-05-08 | Aligned to deterministic rules catalog; added domain rubric bands |
+| 1.2 | 2026-05-26 | Aligned decision bands (80-100/70-79/<70) and domain weights to live ARB_SYSTEM_PROMPT; added Networking and Connectivity domain (10%) |
