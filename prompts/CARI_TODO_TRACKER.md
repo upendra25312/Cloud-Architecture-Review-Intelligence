@@ -46,7 +46,7 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | C5 | Structured telemetry with correlationId threaded upload→extract→agent→export | P2 | ✅ **DONE** | `264f258` | 219 pass (no new tests) |
 | C6 | 'Why CARI says this' reviewer UI panel (evidence basis + confidence + guidance) | P2 | ✅ **DONE** | `4bda306` | Build pass, 229 API tests pass |
 | C7 | Playwright E2E — upload → extract → review → export golden path | P2 | ✅ **DONE** | `ed73967` | Live-site smoke test; run with test:e2e:golden-path |
-| C8 | Durable Functions idempotency test suite | P2 | ⏳ Pending |  | |
+| C8 | Durable Functions idempotency test suite | P2 | ✅ **DONE** | `e7254e9` | +24 tests → 253 pass |
 | C9 | Prompt injection eval cases (10 minimum per master prompt) | P1 | ✅ **DONE** | `436d006` | +9 cases → 36 total |
 | C10 | API-level project isolation / RBAC cross-user access test | P1 | ⏳ Pending |  | |
 
@@ -64,6 +64,7 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | 2026-05-25 C9 | 219 | 219 | 0 | eval dataset only — no unit tests |
 | 2026-05-25 C10 | 229 | 229 | 0 | +10 RBAC cross-user isolation tests |
 | 2026-05-25 C6 | 229 | 229 | 0 | frontend only — no new API tests |
+| 2026-05-26 C8 | 253 | 253 | 0 | +24 durable idempotency tests |
 
 ---
 
