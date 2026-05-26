@@ -1680,9 +1680,9 @@ async function aiEnhanceRequirements(review, files, fileTexts) {
 
   const designText = designFiles.length > 0
     ? designFiles
-        .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 4000)}`)
+        .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 20000)}`)
         .join("\n\n")
-        .slice(0, 15000)
+        .slice(0, 60000)
     : "(No architecture or design documents uploaded yet)";
 
   const sowSourceFileId = sowFiles[0]?.fileId ?? null;
