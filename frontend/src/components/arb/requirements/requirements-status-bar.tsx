@@ -25,7 +25,11 @@ export function RequirementsStatusBar({
 
   const metrics = computeRequirementsMetrics(requirements);
   const categories = getDistinctCategories(requirements);
-  const summary = `${metrics.total} requirement${metrics.total !== 1 ? "s" : ""} across ${categories.length} categor${categories.length !== 1 ? "ies" : "y"}. ${metrics.pendingCount} pending review.`;
+  const sowTotal = metrics.total - metrics.gapCount;
+  const coverageSuffix = sowTotal > 0 && (metrics.validatedCount > 0 || metrics.partialCount > 0 || metrics.notFoundCount > 0)
+    ? ` CARI coverage: ${metrics.coverageRate}% (${metrics.validatedCount} validated, ${metrics.notFoundCount} not found).`
+    : "";
+  const summary = `${metrics.total} requirement${metrics.total !== 1 ? "s" : ""} across ${categories.length} categor${categories.length !== 1 ? "ies" : "y"}. ${metrics.pendingCount} pending review.${coverageSuffix}`;
 
   return (
     <div className={styles.statusBar}>

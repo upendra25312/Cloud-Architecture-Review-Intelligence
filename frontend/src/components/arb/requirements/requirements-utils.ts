@@ -19,8 +19,14 @@ export interface RequirementsMetrics {
   acceptanceRate: number;
   /** Number of SOW requirements CARI validated against design docs */
   validatedCount: number;
+  /** Number of SOW requirements partially addressed */
+  partialCount: number;
+  /** Number of SOW requirements with no design-doc coverage */
+  notFoundCount: number;
   /** Number of design-doc items with no matching SOW requirement */
   gapCount: number;
+  /** Percentage of SOW requirements addressed (Validated + Partial) / total SOW reqs */
+  coverageRate: number;
 }
 
 // ── Pure utility functions ────────────────────────────────────────────
@@ -33,6 +39,8 @@ export function computeRequirementsMetrics(requirements: ArbRequirement[]): Requ
   const acceptedCount = requirements.filter((r) => r.reviewerStatus === "Accepted").length;
   const rejectedCount = requirements.filter((r) => r.reviewerStatus === "Rejected").length;
   const validatedCount = requirements.filter((r) => r.cariStatus === "Validated").length;
+  const partialCount = requirements.filter((r) => r.cariStatus === "Partial").length;
+  const notFoundCount = requirements.filter((r) => r.cariStatus === "Not Found").length;
   const gapCount = requirements.filter((r) => r.isGap === true).length;
 
   const categorySet = new Set<string>();
@@ -44,7 +52,11 @@ export function computeRequirementsMetrics(requirements: ArbRequirement[]): Requ
   const reviewed = acceptedCount + rejectedCount;
   const acceptanceRate = reviewed > 0 ? Math.round((acceptedCount / reviewed) * 100) : 0;
 
-  return { total, highCount, mediumCount, pendingCount, acceptedCount, rejectedCount, categoryCount, acceptanceRate, validatedCount, gapCount };
+  // Coverage = (Validated + Partial) / SOW requirements (excludes gap items which are design-only)
+  const sowReqTotal = requirements.filter((r) => !r.isGap).length;
+  const coverageRate = sowReqTotal > 0 ? Math.round(((validatedCount + partialCount) / sowReqTotal) * 100) : 0;
+
+  return { total, highCount, mediumCount, pendingCount, acceptedCount, rejectedCount, categoryCount, acceptanceRate, validatedCount, partialCount, notFoundCount, gapCount, coverageRate };
 }
 
 export function groupRequirementsByCategory(

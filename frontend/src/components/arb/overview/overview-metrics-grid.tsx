@@ -9,6 +9,7 @@ import type {
 } from "@/arb/types";
 import { getSeverityDistribution } from "./overview-utils";
 import { computeEvidenceMetrics } from "@/components/arb/evidence/evidence-utils";
+import { computeRequirementsMetrics } from "@/components/arb/requirements/requirements-utils";
 import styles from "./arb-overview-page.module.css";
 
 export interface OverviewMetricsGridProps {
@@ -30,18 +31,8 @@ export function OverviewMetricsGrid({
   const evidenceMetrics = computeEvidenceMetrics(evidence);
   const openActions = actions.filter((a) => a.status !== "Closed");
   const criticalBlockers = findings.filter((f) => f.criticalBlocker);
-
-  const criticalReqs = requirements.filter(
-    (r) => r.criticality?.toLowerCase() === "critical" || r.criticality?.toLowerCase() === "high",
-  );
-  const standardReqs = requirements.filter(
-    (r) => r.criticality?.toLowerCase() === "medium" || r.criticality?.toLowerCase() === "standard",
-  );
-  const lowReqs = requirements.filter(
-    (r) =>
-      r.criticality?.toLowerCase() === "low" ||
-      (!["critical", "high", "medium", "standard"].includes(r.criticality?.toLowerCase() ?? "")),
-  );
+  const reqMetrics = computeRequirementsMetrics(requirements);
+  const hasCariCoverage = reqMetrics.validatedCount > 0 || reqMetrics.partialCount > 0 || reqMetrics.notFoundCount > 0;
 
   return (
     <div className={styles.metricsGrid}>
@@ -69,13 +60,20 @@ export function OverviewMetricsGrid({
 
       {/* Requirements */}
       <div className={`${styles.metricCard} ${styles.metricAccentGreen}`}>
-        <span className={styles.metricCardLabel}>Requirements</span>
+        <span className={styles.metricCardLabel}>SOW Requirements</span>
         <span className={styles.metricCardValue}>{requirements.length}</span>
-        <div className={styles.metricCardBreakdown}>
-          <span>{criticalReqs.length} Critical</span>
-          <span>{standardReqs.length} Standard</span>
-          <span>{lowReqs.length} Other</span>
-        </div>
+        {hasCariCoverage ? (
+          <div className={styles.metricCardBreakdown}>
+            <span style={{ color: "#15803D", fontWeight: 600 }}>{reqMetrics.coverageRate}% covered</span>
+            <span style={{ color: "#B45309" }}>{reqMetrics.partialCount} partial</span>
+            <span style={{ color: "#DC2626" }}>{reqMetrics.notFoundCount} not found</span>
+          </div>
+        ) : (
+          <div className={styles.metricCardBreakdown}>
+            <span>{reqMetrics.highCount} High</span>
+            <span>{reqMetrics.mediumCount} Medium</span>
+          </div>
+        )}
       </div>
 
       {/* Open Actions */}
