@@ -111,7 +111,8 @@ async function persistResultsHandler(input, context) {
     persisted: true,
     findingsCount: findings.length,
     overallScore: scorecard ? scorecard.overallScore ?? null : null,
-    recommendation: scorecard ? scorecard.recommendation ?? null : null
+    recommendation: scorecard ? scorecard.recommendation ?? null : null,
+    generatedAt: now
   };
 }
 

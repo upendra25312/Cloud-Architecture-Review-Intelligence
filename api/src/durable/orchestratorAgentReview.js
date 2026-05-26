@@ -130,7 +130,7 @@ function* orchestratorAgentReviewWorkflow(context) {
     confidenceLevel: agentResult.scorecard
       ? agentResult.scorecard.confidenceLevel ?? null
       : null,
-    generatedAt: new Date().toISOString(),
+    generatedAt: persistResult.generatedAt ?? new Date().toISOString(),
     artifactsGenerated: syncResult.artifactsGenerated ?? 0
   };
 }

@@ -15,7 +15,7 @@
  *   npm --prefix frontend run test:e2e:golden-path
  */
 
-const { chromium } = require('@playwright/test');
+const { chromium, test } = require('@playwright/test');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -548,9 +548,11 @@ async function runGoldenPath() {
   if (R.warn.length) console.log('\nWarnings:\n' + R.warn.map(w => `  ⚠ ${w.key}: ${w.detail}`).join('\n'));
   if (R.fail.length) console.log('\nFailures:\n' + R.fail.map(f => `  ✗ ${f.key}: ${f.detail}`).join('\n'));
   console.log('═══════════════════════════════════════════════════════\n');
+  if (R.fail.length > 0) {
+    throw new Error(`${R.fail.length} golden-path check(s) failed: ${R.fail.map(f => f.key).join(', ')}`);
+  }
 }
 
-runGoldenPath().catch((err) => {
-  console.error('Unhandled error:', err);
-  process.exit(1);
-});
+test('C7 — ARB Golden Path E2E', async () => {
+  await runGoldenPath();
+}, 720000);
