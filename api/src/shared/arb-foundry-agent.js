@@ -227,7 +227,7 @@ async function chatCompletionsRequest(messages, options = {}) {
 
       lastError = new Error(`Foundry chat completions failed ${status}: ${text ?? status}`);
 
-      if (![429, 500, 502, 503, 504].includes(res.status) || attempt === maxRetries) {
+      if (![429, 500, 502, 503, 504].includes(status) || attempt === maxRetries) {
         throw lastError;
       }
     } catch (error) {
@@ -578,8 +578,22 @@ function buildMcpCacheKey(queries) {
   return `mcp-learn-cache/${hash}.json`;
 }
 
+// Strip patterns that could carry customer-sensitive data: IP ranges, GUIDs,
+// internal hostnames, project-name fragments. Queries must only contain
+// Microsoft Learn-safe terminology before being sent to the MCP endpoint or
+// persisted as a cache key.
+function sanitizeMcpQuery(query) {
+  return query
+    .replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:\/\d+)?\b/g, "") // IPv4 + CIDR
+    .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "") // GUIDs
+    .replace(/\b[a-z0-9-]+\.(internal|corp|local|lan)\b/gi, "") // internal hostnames
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 async function fetchMicrosoftLearnGrounding(review, requirements, evidence) {
-  const queries = buildLearnQueries(review, requirements, evidence);
+  const rawQueries = buildLearnQueries(review, requirements, evidence);
+  const queries = rawQueries.map(sanitizeMcpQuery).filter(Boolean);
   const queryHash = crypto.createHash("sha256").update(queries.slice().sort().join("|")).digest("hex").slice(0, 16);
   const cacheTtlSeconds = Math.round(MCP_CACHE_TTL_MS / 1000);
 
@@ -1244,6 +1258,13 @@ function parseSeverity(value) {
   return "Medium";
 }
 
+function parseConfidence(value) {
+  const v = String(value ?? "").trim();
+  const normalised = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
+  if (normalised === "High" || normalised === "Medium" || normalised === "Low") return normalised;
+  return "Medium";
+}
+
 function parseRecommendation(value) {
   const v = String(value ?? "").trim();
   const legacyMap = {
@@ -1281,10 +1302,11 @@ function parseAgentResponse(responseText) {
   }
 
   const findings = (Array.isArray(parsed.findings) ? parsed.findings : []).map((f, i) => {
+    const ALLOWED_REF_TYPES = new Set(["evidence", "visualEvidence"]);
     const evidenceReferences = Array.isArray(f.evidenceReferences)
       ? f.evidenceReferences
         .map((r) => ({ type: String(r?.type ?? "evidence"), id: String(r?.id ?? "") }))
-        .filter((r) => r.id)
+        .filter((r) => r.id && ALLOWED_REF_TYPES.has(r.type))
       : [];
     const evidenceIds = [
       ...(Array.isArray(f.evidenceIds) ? f.evidenceIds.map(String) : []),
@@ -1315,7 +1337,7 @@ function parseAgentResponse(responseText) {
       references: Array.isArray(f.references)
         ? f.references.map((r) => ({ title: String(r.title ?? ""), url: r.url ?? undefined, relevance: r.relevance ?? undefined }))
         : (f.learnMoreUrl ? [{ title: String(f.title ?? "Learn more"), url: String(f.learnMoreUrl) }] : []),
-      confidence: String(f.confidence ?? "Medium"),
+      confidence: parseConfidence(f.confidence),
       criticalBlocker: Boolean(f.criticalBlocker ?? false),
       suggestedOwner: String(f.suggestedOwner ?? ""),
       suggestedDueDate: f.suggestedDueDate ? String(f.suggestedDueDate) : null,

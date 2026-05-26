@@ -1,4 +1,4 @@
-const { randomUUID } = require("node:crypto");
+const { randomUUID, createHash } = require("node:crypto");
 const { hasRole } = require("./admin-auth");
 const { getTableClient } = require("./table-storage");
 
@@ -129,7 +129,9 @@ function buildTelemetryEntity(event, principal) {
     reviewId: event.reviewId ?? "",
     actor: resolveActor(principal),
     userId: normalizeString(principal?.userId, 120),
-    userDetails: normalizeString(principal?.userDetails, 200),
+    userDetails: principal?.userDetails
+      ? createHash("sha256").update(String(principal.userDetails)).digest("hex").slice(0, 16)
+      : "",
     propertiesJson: JSON.stringify(event.properties)
   };
 }
