@@ -109,62 +109,96 @@ async function authenticate(page) {
   if (await isAuthenticated(page)) { pass('auth', 'already authenticated'); return; }
 
   await page.goto(`${BASE_URL}/.auth/login/aad?post_login_redirect_uri=/arb`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.waitForTimeout(3000);
   await shot(page, 'auth-start');
 
-  // Wait for Microsoft login page
-  await page.waitForURL(/login\.microsoftonline\.com|login\.microsoft\.com/, { timeout: 20000 });
-
-  // Fill email
-  const emailInput = await findVisible(page, ['input[type="email"]', 'input[name="loginfmt"]', '#i0116']);
-  if (!emailInput) { fail('auth-email-input', 'email field not found'); return; }
-  await emailInput.fill(LOGIN_EMAIL);
-  await tryClick(page, ['input[type="submit"]', '#idSIButton9', 'button[type="submit"]'], 'auth-email-next');
-  await page.waitForTimeout(2000);
-  await shot(page, 'auth-after-email');
-
-  // Handle FIDO/passkey page — fall through to password
-  for (let i = 0; i < 3; i++) {
-    const url = page.url();
-    if (url.includes('fido') || url.includes('passkey')) {
-      await tryClick(page, ['a:has-text("Sign in another way")', '#signInAnotherWay', 'a:has-text("other ways")'], 'auth-fido-other-way');
-      await page.waitForTimeout(1500);
-      await tryClick(page, ['div:has-text("Password")', 'button:has-text("Password")', '[data-value="Password"]'], 'auth-choose-password');
-      await page.waitForTimeout(1500);
-      await shot(page, `auth-fido-bypass-${i}`);
-    } else {
-      break;
+  // Wait for Microsoft login page — wrap in try/catch so already-authed sessions don't throw
+  try {
+    await page.waitForURL(/login\.(microsoftonline|microsoft|live)\.com/, { timeout: 15000 });
+  } catch (_) {
+    if (page.url().includes('thankful-pond')) {
+      pass('auth', 'already authenticated (redirected back to app)');
+      return;
     }
   }
 
-  // Fill password
-  const pwInput = await findVisible(page, [
-    'input[type="password"]', 'input[name="passwd"]', '#i0118',
-    'input[autocomplete="current-password"]',
-  ]);
-  if (!pwInput) { fail('auth-password-input', 'password field not found'); return; }
-  await pwInput.fill(LOGIN_PASSWORD);
-  await tryClick(page, ['input[type="submit"]', '#idSIButton9', 'button[type="submit"]'], 'auth-pw-submit');
-  await page.waitForTimeout(2000);
-  await shot(page, 'auth-after-password');
+  // Only proceed if we're actually on the MS login page
+  if (page.url().includes('login.')) {
+    await shot(page, 'auth-ms-login');
 
-  // Handle post-login prompts
-  for (let i = 0; i < 5; i++) {
-    await page.waitForTimeout(2000);
-    const url = page.url();
+    // Fill email
+    const emailInput = await findVisible(page, ['input[type="email"]', 'input[name="loginfmt"]', '#i0116']);
+    if (emailInput) {
+      await emailInput.fill(LOGIN_EMAIL);
+      await tryClick(page, ['input[type="submit"]', '#idSIButton9', 'button[type="submit"]'], 'auth-email-next');
+      await page.waitForTimeout(5000);
+      await shot(page, 'auth-after-email');
+    }
 
-    if (url.includes('kmsi')) {
-      await tryClick(page, ['#idBtn_Back', 'button:has-text("No")', 'input[value="No"]'], 'auth-stay-signed-in-no');
-      continue;
+    // Handle FIDO/passkey page — wait for WebAuthn rejection then navigate to password
+    if (page.url().includes('fido')) {
+      console.log('  On FIDO page — waiting for WebAuthn rejection...');
+      try {
+        await page.waitForFunction(() => {
+          const b = document.body?.innerText || '';
+          return b.includes("couldn't sign you in") || b.includes("Sign in another way");
+        }, { timeout: 15000 });
+      } catch (_) {
+        await page.waitForTimeout(5000);
+      }
+      await shot(page, 'auth-fido-after-rejection');
+      const clicked = await tryClick(page, ['#signInAnotherWay', 'a:has-text("Sign in another way")', 'text=Sign in another way'], 'auth-fido-other-way');
+      if (clicked) {
+        await page.waitForTimeout(3000);
+        await tryClick(page, ['text=Password', 'text=Use your password', '[data-value="Password"]'], 'auth-choose-password');
+        await page.waitForTimeout(2000);
+      }
     }
-    if (url.includes('consent') || url.includes('permissions')) {
-      await tryClick(page, ['button:has-text("Accept")', '#idSIButton9'], 'auth-consent-accept');
-      continue;
+
+    // Try "Use your password" fallback in case FIDO was skipped
+    await tryClick(page, ['text=Use your password', 'text=Use password instead', '#signInOptions'], 'auth-use-password');
+    await page.waitForTimeout(1000);
+
+    // Fill password
+    const pwInput = await findVisible(page, [
+      'input[type="password"]', 'input[name="passwd"]', '#i0118',
+      'input[autocomplete="current-password"]',
+    ]);
+    if (pwInput) {
+      await pwInput.fill(LOGIN_PASSWORD);
+      await tryClick(page, ['input[type="submit"]', '#idSIButton9', 'button[type="submit"]'], 'auth-pw-submit');
+      await page.waitForTimeout(6000);
+      await shot(page, 'auth-after-password');
+    } else {
+      fail('auth-password-input', 'password field not found');
     }
-    if (url.includes('fido')) {
-      await tryClick(page, ['a:has-text("Sign in another way")', '#signInAnotherWay', '#back'], 'auth-post-fido');
-      continue;
+
+    // Handle post-login prompts (Stay signed in, Consent, FIDO)
+    for (let i = 0; i < 5; i++) {
+      await page.waitForTimeout(2000);
+      const url = page.url();
+      const body = await page.locator('body').innerText().catch(() => '');
+
+      if (url.includes('thankful-pond')) break;
+      if (body.includes('Stay signed in') || url.includes('kmsi')) {
+        await tryClick(page, ['#idBtn_Back', 'button:has-text("No")', 'input[value="No"]'], 'auth-stay-signed-in-no');
+        continue;
+      }
+      if (body.includes('Permissions requested') || url.includes('consent')) {
+        await tryClick(page, ['button:has-text("Accept")', '#idSIButton9'], 'auth-consent-accept');
+        continue;
+      }
+      if (url.includes('fido')) {
+        await page.waitForTimeout(3000);
+        const ok = await tryClick(page, ['#signInAnotherWay', 'text=Sign in another way'], 'auth-post-fido');
+        if (!ok) await tryClick(page, ['#idBtn_Back'], 'auth-back-from-fido');
+        continue;
+      }
     }
-    if (url.includes(BASE_URL)) break;
+
+    try {
+      await page.waitForURL(/thankful-pond-04383960f/, { timeout: 20000 });
+    } catch (_) {}
   }
 
   await shot(page, 'auth-done');

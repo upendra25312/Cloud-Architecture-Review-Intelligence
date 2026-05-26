@@ -5,6 +5,7 @@ const {
   runArbAgentReview,
   buildFallbackAgentReview
 } = require('../../shared/arb-foundry-agent');
+const { loadArbRules } = require('../../shared/arb-rules-engine');
 
 const RECOMMENDED_APPROVAL_SCORE = 80;
 // Must be below the 30-min Durable orchestration timer so the activity always resolves
@@ -20,6 +21,65 @@ const EVIDENCE_STOP_WORDS = new Set([
 
 function isActiveFinding(finding) {
   return finding && finding.status !== 'Closed' && finding.status !== 'Not Applicable';
+}
+
+// Landing-zone design-phase patterns that are always out of scope for the PS delivery team.
+// OPS operational ownership (runbook owners, incident owners, day-2 accountability) belongs to
+// the Managed Services / Operations team, not the architecture design package.
+const OPS_OWNERSHIP_PATTERNS = [
+  /runbook\s+ownership/i,
+  /runbook\s+accountab/i,
+  /runbook\s+owner/i,
+  /operational\s+ownership/i,
+  /incident\s+ownership/i,
+  /incident\s+owner/i,
+  /deployment\s+ownership/i,
+  /day.?2\s+owner/i,
+  /managed\s+services\s+owner/i,
+  /ownership\s+needs\s+clarif/i,
+  /ownership\s+not\s+(clear|defined|explicit|document)/i,
+];
+
+// ALZ boundary-control: hub-spoke + Azure Firewall IS the boundary control pattern.
+// Any of these terms in the evidence means the control is evidenced.
+const BOUNDARY_CONTROL_EVIDENCE_TERMS = [
+  'hub-spoke', 'hub spoke', 'hub and spoke', 'azure firewall', 'azfw', 'az fw',
+  'application gateway', 'front door', 'waf', 'nsg', 'network security group',
+  'forced tunnel', 'forced tunneling', 'forced tunnelling', 'egress control',
+  'boundary control', 'perimeter', 'dmz', 'connectivity hub', 'hub subscription',
+  'hub vnet', 'hub virtual network', 'firewall', 'apim',
+];
+
+function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
+  if (!evidenceCorpus || !Array.isArray(findings) || findings.length === 0) return findings;
+  const rules = loadArbRules();
+  const corpus = evidenceCorpus.toLowerCase();
+  const hasKeyword = (terms) => terms.some((t) => corpus.includes(t.toLowerCase()));
+
+  return findings.filter((finding) => {
+    if (finding.source === 'rules-engine') return true;
+    const findingText = `${finding.title ?? ''} ${finding.findingStatement ?? ''} ${finding.evidenceBasis ?? ''}`.toLowerCase();
+
+    // 1. OPS operational ownership findings are out of scope for design-phase PS reviews.
+    //    Managed Services / Operations team owns these, not the landing zone design package.
+    if (OPS_OWNERSHIP_PATTERNS.some((re) => re.test(findingText))) return false;
+
+    // 2. ALZ boundary-control: if any boundary evidence term is present, suppress the finding.
+    //    Hub-spoke + Azure Firewall IS the boundary control pattern for landing zones.
+    if (/boundary.control|boundary control|not yet explicit/i.test(findingText)) {
+      if (BOUNDARY_CONTROL_EVIDENCE_TERMS.some((t) => corpus.includes(t))) return false;
+    }
+
+    // 3. General rule-based suppression: if a rule's absence terms appear in the finding AND
+    //    are also present in the evidence corpus, the control is evidenced — suppress the gap.
+    for (const rule of rules) {
+      const absenceTerms = rule.triggerPatterns?.requiresEvidenceAbsence ?? [];
+      if (absenceTerms.length === 0) continue;
+      if (!absenceTerms.some((t) => findingText.includes(t.toLowerCase()))) continue;
+      if (hasKeyword(absenceTerms)) return false;
+    }
+    return true;
+  });
 }
 
 function hasSowArtifact(files, review) {
@@ -352,6 +412,27 @@ async function runAgentHandler(input, context) {
         ...((agentResult.scorecard.criticalBlockers) || []),
         ...ruleBlockers
       ].filter((v, i, a) => a.indexOf(v) === i);
+    }
+  }
+
+  // Evidence-aware suppression: remove LLM findings contradicted by extracted evidence.
+  // Build corpus from evidence summaries + excerpts + visual + requirements so literal
+  // keywords from uploaded documents (e.g. "hub-spoke", "azure firewall", "runbook") can
+  // override LLM hallucinations about those controls being absent.
+  if (!agentResult.fallbackUsed && Array.isArray(agentResult.findings) && agentResult.findings.length > 0) {
+    const evidenceCorpus = [
+      ...evidenceList.map((e) => `${e.summary ?? ''} ${e.sourceExcerpt ?? ''}`),
+      ...visualEvidenceList.map((e) => `${e.summary ?? ''} ${e.sourceExcerpt ?? ''}`),
+      ...requirementsList.map((r) => r.normalizedText ?? '')
+    ].join(' ');
+    const before = agentResult.findings.length;
+    agentResult = {
+      ...agentResult,
+      findings: suppressContraindicatedLlmFindings(agentResult.findings, evidenceCorpus)
+    };
+    const suppressed = before - agentResult.findings.length;
+    if (suppressed > 0 && context && typeof context.log === 'function') {
+      context.log(JSON.stringify({ activity: 'runAgent', reviewId: reviewObj.reviewId, suppressed, message: 'Suppressed contradicted LLM findings' }));
     }
   }
 

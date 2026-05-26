@@ -86,9 +86,33 @@ function isActiveFinding(finding) {
   return finding?.status !== "Closed" && finding?.status !== "Not Applicable";
 }
 
+// Landing-zone design-phase patterns that are always out of scope for the PS delivery team.
+// OPS operational ownership (runbook owners, incident owners, day-2 accountability) belongs to
+// the Managed Services / Operations team, not the architecture design package.
+const OPS_OWNERSHIP_PATTERNS = [
+  /runbook\s+ownership/i,
+  /runbook\s+accountab/i,
+  /runbook\s+owner/i,
+  /operational\s+ownership/i,
+  /incident\s+ownership/i,
+  /incident\s+owner/i,
+  /deployment\s+ownership/i,
+  /day.?2\s+owner/i,
+  /managed\s+services\s+owner/i,
+  /ownership\s+needs\s+clarif/i,
+  /ownership\s+not\s+(clear|defined|explicit|document)/i,
+];
+
+// ALZ boundary-control: hub-spoke + Azure Firewall IS the boundary control pattern.
+const BOUNDARY_CONTROL_EVIDENCE_TERMS = [
+  "hub-spoke", "hub spoke", "hub and spoke", "azure firewall", "azfw", "az fw",
+  "application gateway", "front door", "waf", "nsg", "network security group",
+  "forced tunnel", "forced tunneling", "forced tunnelling", "egress control",
+  "boundary control", "perimeter", "dmz", "connectivity hub", "hub subscription",
+  "hub vnet", "hub virtual network", "firewall", "apim",
+];
+
 // Remove LLM findings that are contradicted by evidence already present in the corpus.
-// For each WAF/CAF rule whose requiresEvidenceAbsence terms ARE found in the evidence,
-// the rule "passed" — any LLM finding covering the same topic is a false positive.
 function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
   if (!evidenceCorpus || !findings?.length) return findings;
   const rules = loadArbRules();
@@ -97,17 +121,24 @@ function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
 
   return findings.filter((finding) => {
     // Never suppress deterministic rule findings
-    if (finding.source === "rules-engine" || finding.ruleId) return true;
+    if (finding.source === "rules-engine") return true;
 
     const findingText = `${finding.title ?? ""} ${finding.findingStatement ?? ""} ${finding.evidenceBasis ?? ""}`.toLowerCase();
 
+    // 1. OPS operational ownership findings are out of scope for design-phase PS reviews.
+    if (OPS_OWNERSHIP_PATTERNS.some((re) => re.test(findingText))) return false;
+
+    // 2. ALZ boundary-control: hub-spoke + Azure Firewall IS the boundary control pattern.
+    if (/boundary.control|boundary control|not yet explicit/i.test(findingText)) {
+      if (BOUNDARY_CONTROL_EVIDENCE_TERMS.some((t) => corpus.includes(t))) return false;
+    }
+
+    // 3. General rule-based suppression using evidence corpus.
     for (const rule of rules) {
       const absenceTerms = rule.triggerPatterns?.requiresEvidenceAbsence ?? [];
       if (absenceTerms.length === 0) continue;
-      // Does this LLM finding mention the same control gap as the rule?
       if (!absenceTerms.some((t) => findingText.includes(t.toLowerCase()))) continue;
-      // Is the evidence already present (rule passed)?
-      if (hasKeyword(absenceTerms)) return false; // suppress false positive
+      if (hasKeyword(absenceTerms)) return false;
     }
     return true;
   });
