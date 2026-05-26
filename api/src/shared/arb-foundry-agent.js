@@ -59,7 +59,7 @@ const DOMAIN_CONFIGS = [
     scorecardDimension: "Security and Compliance",
     weight: 0.15,
     instruction: "Identity & Access Management and Security & Compliance [domain: Security]: management group hierarchy, RBAC model, Entra ID, Privileged Identity Management, managed identities, service principals, break-glass accounts, Defender for Cloud, Microsoft Sentinel, Key Vault/HSM, encryption at rest and in transit, WAF policies, secrets management, threat detection, certificate lifecycle, zero trust posture.",
-    evidenceKeywords: ["security", "identity", "iam", "rbac", "entra", "aad", "pim", "managed identity", "key vault", "hsm", "defender", "sentinel", "encryption", "certificate", "secret", "compliance", "zero trust", "mfa", "conditional access", "privileged", "service principal"]
+    evidenceKeywords: ["security", "identity", "iam", "rbac", "entra", "aad", "pim", "managed identity", "key vault", "hsm", "defender", "sentinel", "encryption", "certificate", "secret", "compliance", "zero trust", "mfa", "conditional access", "privileged", "service principal", "waf", "nsg", "firewall", "application gateway", "front door", "ddos", "boundary", "ingress", "access control"]
   },
   {
     id: "governance",
@@ -800,7 +800,10 @@ function buildDomainSystemPrompt(config) {
 - Internet-facing design with no WAF, NSG, APIM, Application Gateway, Azure Firewall, or equivalent boundary control.
 - No identity model for a production workload: no Entra ID, managed identity, RBAC, or privileged-access model.
 - Secrets in configuration or plaintext with no Key Vault or equivalent secret store.
-- Regulated data with no encryption-at-rest design.\n`
+- Regulated data with no encryption-at-rest design.
+
+Boundary control suppression rule (CRITICAL — follow exactly):
+If the evidence contains ANY of: WAF, Azure Firewall, Application Gateway, Front Door, NSG, DDoS, IDPS, or equivalent boundary protection — do NOT generate a finding about missing boundary control or missing ingress protection pattern. Instead, record the boundary control presence as a strength. Only generate a boundary control finding if these components are genuinely absent AND internet-facing services are present.\n`
     : config.id === "reliability"
     ? `Named critical blockers for this domain:
 - Tier-1 or production workload with no backup, DR, or recovery strategy.\n`

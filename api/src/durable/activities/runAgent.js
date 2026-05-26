@@ -392,6 +392,49 @@ async function runAgentHandler(input, context) {
     reviewObj.reviewId
   );
 
+  // C3b: Severity gate — downgrade High AI findings that have no grounded evidence after
+  // orphan-ID stripping. A High finding with zero evidenceIds + zero visualEvidenceIds and
+  // non-High confidence must not drive "Needs Remediation" on its own. Rule-engine findings
+  // (which carry a ruleId) are never touched here; they are authoritative by design.
+  let thinEvidenceDowngrades = 0;
+  for (const finding of (agentResult.findings || [])) {
+    if (
+      finding.severity === 'High' &&
+      finding.source === 'agent' &&
+      !finding.ruleId &&
+      finding.confidence !== 'High' &&
+      (!Array.isArray(finding.evidenceIds) || finding.evidenceIds.length === 0) &&
+      (!Array.isArray(finding.visualEvidenceIds) || finding.visualEvidenceIds.length === 0)
+    ) {
+      finding.severity = 'Medium';
+      finding.findingStatement = `[Evidence not grounded in submitted documents — verify before acting] ${finding.findingStatement || ''}`.trim();
+      thinEvidenceDowngrades += 1;
+    }
+  }
+
+  if (thinEvidenceDowngrades > 0) {
+    // Re-derive recommendation after downgrade since severity totals changed
+    if (agentResult.scorecard) {
+      const governedRecommendation = deriveGovernedRecommendation({
+        review: reviewObj,
+        files: filesList,
+        findings: agentResult.findings || [],
+        scorecard: agentResult.scorecard,
+        visualEvidence: visualEvidenceList
+      });
+      agentResult.scorecard.recommendation = governedRecommendation;
+      agentResult.recommendation = governedRecommendation;
+    }
+    if (context && typeof context.log === 'function') {
+      context.log(JSON.stringify({
+        activity: 'runAgent',
+        reviewId: reviewObj.reviewId,
+        thinEvidenceDowngrades,
+        message: 'High findings downgraded to Medium due to no grounded evidence IDs after orphan strip'
+      }));
+    }
+  }
+
   resolveEvidenceTraceability(agentResult, evidenceList, visualEvidenceList);
 
   if (context && typeof context.log === 'function') {
