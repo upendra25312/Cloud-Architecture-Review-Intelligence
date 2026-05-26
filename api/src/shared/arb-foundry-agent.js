@@ -1674,15 +1674,15 @@ async function aiEnhanceRequirements(review, files, fileTexts) {
   const designFiles = files.filter(f => designCategories.includes(f.logicalCategory));
 
   const sowText = sowFiles
-    .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 4000)}`)
+    .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 80000)}`)
     .join("\n\n")
-    .slice(0, 6000);
+    .slice(0, 80000);
 
   const designText = designFiles.length > 0
     ? designFiles
-        .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 2000)}`)
+        .map(f => `=== ${f.fileName} ===\n${(fileTexts.get(f.fileId) || "").slice(0, 4000)}`)
         .join("\n\n")
-        .slice(0, 6000)
+        .slice(0, 15000)
     : "(No architecture or design documents uploaded yet)";
 
   const sowSourceFileId = sowFiles[0]?.fileId ?? null;
@@ -1717,9 +1717,9 @@ async function aiEnhanceRequirements(review, files, fileTexts) {
     `  ]\n` +
     `}\n\n` +
     `Rules:\n` +
-    `- Extract up to 20 requirements. Requirements are statements the system MUST, SHALL, or SHOULD satisfy.\n` +
+    `- Extract ALL requirements present in the SOW — every statement the system MUST, SHALL, or SHOULD satisfy.\n` +
     `- "Validated" = design docs clearly address this. "Partial" = partially addressed with gaps. "Not Found" = not addressed.\n` +
-    `- Return up to 10 gaps — items in design docs NOT traceable to any SOW requirement. Empty array if none.\n` +
+    `- Return ALL gaps — items in design docs NOT traceable to any SOW requirement. Empty array if none.\n` +
     `- Criticality "High" for security, compliance, availability, or business-critical requirements; "Medium" otherwise.`;
 
   const messages = [
@@ -1731,9 +1731,9 @@ async function aiEnhanceRequirements(review, files, fileTexts) {
   // Cap at 30 s per attempt, 2 attempts max (60 s total) so a slow model
   // cannot stall persistExtractionResults for 8+ minutes.
   const responseText = await chatCompletionsRequest(messages, {
-    maxTokens: 3000,
+    maxTokens: 8000,
     temperature: 0.1,
-    timeoutMs: 30000,
+    timeoutMs: 60000,
     maxRetries: 1
   });
 
