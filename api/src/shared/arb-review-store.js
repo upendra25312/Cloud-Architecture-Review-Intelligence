@@ -3218,7 +3218,8 @@ function fromSummaryEntity(entity) {
     projectId: entity.projectId || null,
     projectCategory: entity.projectCategory || null,
     inScope: entity.inScopeJson ? JSON.parse(entity.inScopeJson) : [],
-    outOfScope: entity.outOfScopeJson ? JSON.parse(entity.outOfScopeJson) : []
+    outOfScope: entity.outOfScopeJson ? JSON.parse(entity.outOfScopeJson) : [],
+    mcpTopResults: entity.mcpTopResultsJson ? JSON.parse(entity.mcpTopResultsJson) : []
   };
 }
 

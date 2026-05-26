@@ -684,6 +684,51 @@ function buildNextStepsSlide(p, data, slideNum) {
   });
 }
 
+const STATIC_MCP_REFERENCES = [
+  { title: "Azure Well-Architected Framework",   url: "https://learn.microsoft.com/azure/well-architected/" },
+  { title: "Microsoft Cloud Adoption Framework", url: "https://learn.microsoft.com/azure/cloud-adoption-framework/" },
+  { title: "Azure Landing Zones Reference",      url: "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/" },
+];
+
+function buildReferencesSlide(p, data, slideNum) {
+  const s = p.addSlide();
+  addHeader(s, "Reference Architecture & Guidance", "Microsoft Learn sources used during assessment");
+  addFooter(s, data.reviewId, slideNum);
+
+  const refs = (Array.isArray(data.mcpReferences) && data.mcpReferences.length > 0)
+    ? data.mcpReferences.slice(0, 5)
+    : STATIC_MCP_REFERENCES;
+
+  const sourceLabel = (Array.isArray(data.mcpReferences) && data.mcpReferences.length > 0)
+    ? "The following Microsoft Learn documents were retrieved by CARI during assessment and informed findings, recommendations, and scoring:"
+    : "CARI references authoritative Microsoft guidance during assessment. Key sources for this review category include:";
+
+  s.addText(sourceLabel, {
+    x: M, y: BODY_Y, w: CW, h: 0.4,
+    fontSize: 10, color: BRAND.midGrey, fontFace: BRAND.font, wrap: true,
+  });
+
+  refs.forEach((ref, i) => {
+    const rowY = BODY_Y + 0.55 + i * 0.9;
+    s.addShape(p.ShapeType.rect, {
+      x: M, y: rowY, w: CW, h: 0.72,
+      fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey },
+    });
+    s.addShape(p.ShapeType.rect, {
+      x: M, y: rowY, w: 0.07, h: 0.72,
+      fill: { color: BRAND.blue }, line: { color: BRAND.blue },
+    });
+    s.addText(ref.title || "Microsoft Learn", {
+      x: M + 0.22, y: rowY + 0.04, w: CW - 0.3, h: 0.3,
+      fontSize: 11, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true,
+    });
+    s.addText(ref.url || "", {
+      x: M + 0.22, y: rowY + 0.36, w: CW - 0.3, h: 0.28,
+      fontSize: 9, color: BRAND.blue, fontFace: BRAND.font, wrap: true,
+    });
+  });
+}
+
 // ─── Main export function ─────────────────────────────────────────────────────
 
 /**
@@ -732,6 +777,7 @@ async function generateArbPptx(packOrReviewData) {
   buildDecisionSlide(pptx, reviewData, sn++);
   buildSowTraceabilitySlide(pptx, reviewData, sn++);
   buildNextStepsSlide(pptx, reviewData, sn++);
+  buildReferencesSlide(pptx, reviewData, sn++);
 
   const result = await pptx.write({ outputType: "nodebuffer" });
   return Buffer.isBuffer(result) ? result : Buffer.from(result);

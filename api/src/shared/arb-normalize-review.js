@@ -1020,6 +1020,7 @@ function normalizeReviewForExport(
         .filter((r) => r.category === "assumption")
         .map((r) => r.normalizedText ?? r.sourceText ?? ""),
       nextSteps:     buildStateAwareNextSteps(canonicalDecision, canonicalFindings, files),
+      mcpReferences: Array.isArray(review?.mcpTopResults) ? review.mcpTopResults : [],
     },
   };
 

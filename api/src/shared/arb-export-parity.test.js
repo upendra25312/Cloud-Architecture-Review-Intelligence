@@ -460,3 +460,54 @@ test("canonical actions never expose actionSummary at top level", () => {
       `canonical action ${a.actionId} must not expose legacy actionSummary field`);
   }
 });
+
+// ─── N2: References slide — mcpReferences in _pptx ───────────────────────────
+
+test("pptx _pptx mcpReferences defaults to empty array when review has none", () => {
+  const pack = buildPack("pptx");
+  assert.ok(Array.isArray(pack._pptx.mcpReferences), "mcpReferences must be an array");
+});
+
+test("pptx _pptx mcpReferences reflects review.mcpTopResults when present", () => {
+  const reviewWithMcp = {
+    ...REVIEW,
+    mcpTopResults: [
+      { title: "Azure WAF Pillar: Reliability", url: "https://learn.microsoft.com/azure/well-architected/reliability/" },
+      { title: "Azure Landing Zones",           url: "https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/" },
+    ]
+  };
+  const pack = normalizeReviewForExport(
+    reviewWithMcp, FILES, REQUIREMENTS, EVIDENCE, FINDINGS, ACTIONS, SCORECARD, DECISION, "pptx"
+  );
+  assert.equal(pack._pptx.mcpReferences.length, 2, "mcpReferences must have 2 entries");
+  assert.equal(pack._pptx.mcpReferences[0].title, "Azure WAF Pillar: Reliability");
+  assert.equal(pack._pptx.mcpReferences[0].url, "https://learn.microsoft.com/azure/well-architected/reliability/");
+});
+
+test("pptx _pptx mcpReferences is empty array when review.mcpTopResults is missing", () => {
+  const reviewNoMcp = { ...REVIEW };
+  delete reviewNoMcp.mcpTopResults;
+  const pack = normalizeReviewForExport(
+    reviewNoMcp, FILES, REQUIREMENTS, EVIDENCE, FINDINGS, ACTIONS, SCORECARD, DECISION, "pptx"
+  );
+  assert.deepEqual(pack._pptx.mcpReferences, []);
+});
+
+test("generateArbPptx produces a buffer when mcpReferences is populated", async () => {
+  const { generateArbPptx } = require("./arb-pptx-export");
+  const reviewWithMcp = { ...REVIEW, mcpTopResults: [{ title: "WAF", url: "https://learn.microsoft.com/azure/well-architected/" }] };
+  const pack = normalizeReviewForExport(
+    reviewWithMcp, FILES, REQUIREMENTS, EVIDENCE, FINDINGS, ACTIONS, SCORECARD, DECISION, "pptx"
+  );
+  const buf = await generateArbPptx(pack);
+  assert.ok(Buffer.isBuffer(buf), "generateArbPptx must return a Buffer");
+  assert.ok(buf.length > 1000, "pptx buffer must have meaningful size");
+});
+
+test("generateArbPptx produces a buffer when mcpReferences is empty (uses static fallback)", async () => {
+  const { generateArbPptx } = require("./arb-pptx-export");
+  const pack = buildPack("pptx");
+  const buf = await generateArbPptx(pack);
+  assert.ok(Buffer.isBuffer(buf), "generateArbPptx must return a Buffer with static fallback refs");
+  assert.ok(buf.length > 1000, "pptx buffer must have meaningful size");
+});

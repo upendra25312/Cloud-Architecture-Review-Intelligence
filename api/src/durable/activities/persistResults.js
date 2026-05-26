@@ -82,6 +82,18 @@ async function persistResultsHandler(input, context) {
     );
   }
 
+  const topResults = agentResult.learnMcpMeta?.topResults;
+  if (Array.isArray(topResults) && topResults.length > 0) {
+    await client.upsertEntity(
+      {
+        partitionKey,
+        rowKey: getRowKey('SUMMARY', userId),
+        mcpTopResultsJson: JSON.stringify(topResults)
+      },
+      'Merge'
+    );
+  }
+
   if (context && typeof context.log === 'function') {
     context.log(
       JSON.stringify({
