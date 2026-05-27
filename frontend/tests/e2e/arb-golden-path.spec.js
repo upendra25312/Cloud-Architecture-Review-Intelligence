@@ -496,10 +496,15 @@ async function runGoldenPath() {
       pass('upload', 'review started and document submitted');
     }
 
-    // Extract reviewId from the resulting URL
+    // Extract reviewId from the resulting URL.
+    // The app uses two URL formats:
+    //   /arb/{reviewId}/upload  (path-based — legacy)
+    //   /arb?reviewId={reviewId}&step=upload  (query-param-based — current)
     const reviewUrl = page.url();
-    const reviewIdMatch = reviewUrl.match(/\/arb\/([^/?#]+)/);
-    if (reviewIdMatch && reviewIdMatch[1] !== 'projects' && reviewIdMatch[1].length > 8) {
+    const reviewIdMatch =
+      reviewUrl.match(/\/arb\/([^/?#]{10,})/) ||
+      reviewUrl.match(/[?&]reviewId=([^&#]+)/);
+    if (reviewIdMatch && reviewIdMatch[1] !== 'projects') {
       reviewId = reviewIdMatch[1];
       pass('review-id', reviewId);
     } else {
