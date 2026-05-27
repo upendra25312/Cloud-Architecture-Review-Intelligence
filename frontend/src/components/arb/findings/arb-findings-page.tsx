@@ -326,8 +326,26 @@ export function ArbFindingsPage({ reviewId }: { reviewId: string }) {
 
   // ── Render ─────────────────────────────────────────────────────────
   function renderContent() {
-    // Empty state
+    // Empty state — distinguish "never ran" from "ran but zero findings"
     if (nonFallbackFindings.length === 0 && !allFallback) {
+      const assessmentHasRun = runs.length > 0 || scorecard !== null;
+      if (assessmentHasRun) {
+        return (
+          <ArbPlaceholderPage
+            intro="Assessment complete — no findings require attention for this review."
+            bullets={[
+              "All automated checks passed or were not applicable to this evidence package",
+              "Re-run the assessment from the Upload step if you have added new documents",
+              "Rules-engine findings (CAF, WAF, ALZ) are shown above if any were triggered",
+            ]}
+            footer={
+              <a href={getArbStepHref(reviewId, "upload", "upload-documents")} className="primary-button">
+                Go to Upload — Re-run assessment →
+              </a>
+            }
+          />
+        );
+      }
       return (
         <ArbPlaceholderPage
           intro="No findings yet — the automated assessment hasn't run for this review."

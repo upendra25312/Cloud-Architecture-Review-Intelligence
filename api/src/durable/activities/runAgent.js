@@ -52,10 +52,7 @@ const BOUNDARY_CONTROL_EVIDENCE_TERMS = [
 
 function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
   if (!Array.isArray(findings) || findings.length === 0) return findings;
-  // Build corpus defensively — empty corpus is valid; OPS_OWNERSHIP_PATTERNS don't need it.
   const corpus = (evidenceCorpus || '').toLowerCase();
-  const rules = loadArbRules();
-  const hasKeyword = (terms) => corpus.length > 0 && terms.some((t) => corpus.includes(t.toLowerCase()));
 
   return findings.filter((finding) => {
     if (finding.source === 'rules-engine') return true;
@@ -71,14 +68,6 @@ function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
       if (BOUNDARY_CONTROL_EVIDENCE_TERMS.some((t) => corpus.includes(t))) return false;
     }
 
-    // 3. General rule-based suppression: if a rule's absence terms appear in the finding AND
-    //    are also present in the evidence corpus, the control is evidenced — suppress the gap.
-    for (const rule of rules) {
-      const absenceTerms = rule.triggerPatterns?.requiresEvidenceAbsence ?? [];
-      if (absenceTerms.length === 0) continue;
-      if (!absenceTerms.some((t) => findingText.includes(t.toLowerCase()))) continue;
-      if (hasKeyword(absenceTerms)) return false;
-    }
     return true;
   });
 }
