@@ -139,12 +139,22 @@ async function authenticate(page) {
     if (needsAnotherWay) {
       console.log(`  Detected intermediate auth page — navigating to password method`);
       if (isPasskeyOrFido) {
-        try {
-          await page.waitForFunction(() => {
-            const b = document.body?.innerText || '';
-            return b.includes("couldn't sign you in") || b.includes("Sign in another way");
-          }, { timeout: 15000 });
-        } catch (_) { await page.waitForTimeout(5000); }
+        // On the "Face, fingerprint, PIN or security key" screen, click Back to get
+        // to the method-selection screen rather than waiting for auto-failure.
+        const backClicked = await tryClick(page, [
+          'button:has-text("Back")', 'input[value="Back"]', '#idBtn_Back',
+        ], 'auth-fido-back');
+        if (backClicked) {
+          await page.waitForTimeout(3000);
+        } else {
+          // Fallback: wait for it to auto-fail and show error/another-way link
+          try {
+            await page.waitForFunction(() => {
+              const b = document.body?.innerText || '';
+              return b.includes("couldn't sign you in") || b.includes("Sign in another way");
+            }, { timeout: 15000 });
+          } catch (_) { await page.waitForTimeout(5000); }
+        }
       }
       await shot(page, 'auth-pre-another-way');
       const clicked = await tryClick(page, [
