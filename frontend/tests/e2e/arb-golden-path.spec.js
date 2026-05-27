@@ -268,18 +268,37 @@ async function pollExtractionComplete(page, reviewId) {
   ]);
 
   for (let attempt = 1; attempt <= POLL_MAX_ATTEMPTS; attempt++) {
-    const status = await page.evaluate(async (rid) => {
-      try {
-        const r = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
-        if (!r.ok) return null;
-        return await r.json();
-      } catch { return null; }
-    }, reviewId);
+    // Return { httpStatus, data, errorSnippet } so we can diagnose non-200 responses.
+    let pollResult;
+    try {
+      pollResult = await page.evaluate(async (rid) => {
+        try {
+          const r = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
+          const text = await r.text().catch(() => '');
+          if (!r.ok) {
+            return { httpStatus: r.status, data: null, errorSnippet: text.slice(0, 300) };
+          }
+          try {
+            return { httpStatus: r.status, data: JSON.parse(text), errorSnippet: null };
+          } catch {
+            return { httpStatus: r.status, data: null, errorSnippet: `JSON parse failed: ${text.slice(0, 200)}` };
+          }
+        } catch (e) {
+          return { httpStatus: -1, data: null, errorSnippet: String(e) };
+        }
+      }, reviewId);
+    } catch (evalErr) {
+      // page.evaluate can throw if the page navigated mid-evaluation
+      pollResult = { httpStatus: -2, data: null, errorSnippet: `page.evaluate threw: ${evalErr?.message ?? evalErr}` };
+    }
 
-    // API returns { review: { workflowState: "..." } } — handle both the wrapped
-    // format and a flat format for forward compatibility.
-    const ws = (status?.review?.workflowState ?? status?.workflowState) ?? 'unknown';
-    console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}] workflowState = ${ws}`);
+    const { httpStatus, data, errorSnippet } = pollResult ?? {};
+
+    // API returns { review: { workflowState: "..." } } — handle both wrapped and flat.
+    const ws = (data?.review?.workflowState ?? data?.workflowState) ?? 'unknown';
+    const statusTag = httpStatus != null ? ` [HTTP ${httpStatus}]` : '';
+    const errorTag = errorSnippet ? ` | ${errorSnippet}` : '';
+    console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}]${statusTag} workflowState = ${ws}${errorTag}`);
 
     if (ws === 'Review In Progress') {
       pass('extraction-complete', `workflowState = ${ws} after ${attempt} poll(s)`);
@@ -546,13 +565,29 @@ async function runGoldenPath() {
       await page.locator('button.arb-cta-btn:not([disabled])').waitFor({ state: 'visible', timeout: 5000 });
     } catch (_) { await shot(page, 'start-analysis-still-disabled'); }
 
-    await tryClick(page, [
+    const extractionClicked = await tryClick(page, [
       'button.arb-cta-btn:not([disabled])',
       'button:has-text("Start analysis"):not([disabled])',
       'button:has-text("Retry analysis"):not([disabled])',
     ], 'trigger-extraction');
+    if (extractionClicked) {
+      pass('trigger-extraction', 'extraction button found and clicked');
+    }
     await page.waitForTimeout(3000);
     await shot(page, 'extraction-triggered');
+
+    // Immediate API probe so we can see the review state before the poll loop.
+    // This reveals auth issues (401), missing review (404), or function errors (500).
+    if (reviewId) {
+      const probe = await page.evaluate(async (rid) => {
+        try {
+          const r = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
+          const text = await r.text().catch(() => '');
+          return { httpStatus: r.status, snippet: text.slice(0, 300) };
+        } catch (e) { return { httpStatus: -1, snippet: String(e) }; }
+      }, reviewId).catch((e) => ({ httpStatus: -2, snippet: String(e) }));
+      console.log(`  [pre-poll probe] HTTP ${probe.httpStatus} — ${probe.snippet}`);
+    }
 
     // ── Step 6: Poll until extraction completes ──────────────────────────
     console.log('\n── Step 6: Poll for extraction completion (up to 10 min)');
