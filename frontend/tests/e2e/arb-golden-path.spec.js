@@ -276,15 +276,15 @@ async function pollExtractionComplete(page, reviewId) {
           const r = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
           const text = await r.text().catch(() => '');
           if (!r.ok) {
-            return { httpStatus: r.status, data: null, errorSnippet: text.slice(0, 300) };
+            return { httpStatus: r.status, data: null, errorSnippet: text.slice(0, 300), pageOrigin: window.location.origin };
           }
           try {
-            return { httpStatus: r.status, data: JSON.parse(text), errorSnippet: null };
+            return { httpStatus: r.status, data: JSON.parse(text), errorSnippet: null, pageOrigin: window.location.origin };
           } catch {
-            return { httpStatus: r.status, data: null, errorSnippet: `JSON parse failed: ${text.slice(0, 200)}` };
+            return { httpStatus: r.status, data: null, errorSnippet: `JSON parse failed: ${text.slice(0, 200)}`, pageOrigin: window.location.origin };
           }
         } catch (e) {
-          return { httpStatus: -1, data: null, errorSnippet: String(e) };
+          return { httpStatus: -1, data: null, errorSnippet: String(e), pageOrigin: window.location.origin };
         }
       }, reviewId);
     } catch (evalErr) {
@@ -297,8 +297,9 @@ async function pollExtractionComplete(page, reviewId) {
     // API returns { review: { workflowState: "..." } } — handle both wrapped and flat.
     const ws = (data?.review?.workflowState ?? data?.workflowState) ?? 'unknown';
     const statusTag = httpStatus != null ? ` [HTTP ${httpStatus}]` : '';
+    const originTag = pollResult?.pageOrigin ? ` origin=${pollResult.pageOrigin}` : '';
     const errorTag = errorSnippet ? ` | ${errorSnippet}` : '';
-    console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}]${statusTag} workflowState = ${ws}${errorTag}`);
+    console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}]${statusTag}${originTag} workflowState = ${ws}${errorTag}`);
 
     if (ws === 'Review In Progress') {
       pass('extraction-complete', `workflowState = ${ws} after ${attempt} poll(s)`);
@@ -575,18 +576,28 @@ async function runGoldenPath() {
     }
     await page.waitForTimeout(3000);
     await shot(page, 'extraction-triggered');
+    console.log(`  [pre-poll] current page URL: ${page.url()}`);
 
-    // Immediate API probe so we can see the review state before the poll loop.
-    // This reveals auth issues (401), missing review (404), or function errors (500).
+    // Immediate API probe: reveals auth issues (401), missing review (404), or function errors (500).
+    // Also probes using the ABSOLUTE URL to rule out relative-URL resolution issues.
     if (reviewId) {
-      const probe = await page.evaluate(async (rid) => {
+      const probe = await page.evaluate(async ({ rid, baseUrl }) => {
         try {
-          const r = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
-          const text = await r.text().catch(() => '');
-          return { httpStatus: r.status, snippet: text.slice(0, 300) };
-        } catch (e) { return { httpStatus: -1, snippet: String(e) }; }
-      }, reviewId).catch((e) => ({ httpStatus: -2, snippet: String(e) }));
-      console.log(`  [pre-poll probe] HTTP ${probe.httpStatus} — ${probe.snippet}`);
+          const relR = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
+          const relText = await relR.text().catch(() => '');
+          const absR = await fetch(`${baseUrl}/api/arb/reviews/${rid}`, { credentials: 'include', cache: 'no-store' });
+          const absText = await absR.text().catch(() => '');
+          return {
+            rel: { httpStatus: relR.status, snippet: relText.slice(0, 200) },
+            abs: { httpStatus: absR.status, snippet: absText.slice(0, 200) },
+            pageOrigin: window.location.origin,
+          };
+        } catch (e) { return { error: String(e) }; }
+      }, { rid: reviewId, baseUrl: BASE_URL }).catch((e) => ({ error: String(e) }));
+      console.log(`  [pre-poll probe] pageOrigin=${probe.pageOrigin} rel=${probe.rel?.httpStatus} abs=${probe.abs?.httpStatus}`);
+      if (probe.rel?.snippet) console.log(`  [pre-poll rel snippet] ${probe.rel.snippet}`);
+      if (probe.abs?.snippet) console.log(`  [pre-poll abs snippet] ${probe.abs.snippet}`);
+      if (probe.error) console.log(`  [pre-poll error] ${probe.error}`);
     }
 
     // ── Step 6: Poll until extraction completes ──────────────────────────
