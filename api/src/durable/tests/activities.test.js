@@ -378,3 +378,114 @@ describe('suppressContraindicatedLlmFindings — LLM false-positive suppression'
     assert.ok(result[0].title.includes('Backup'), 'only backup finding should remain');
   });
 });
+
+// ── suppressReadTimeFalsePositives — arbGetFindings read-time gate ────────────
+//
+// These tests validate the read-time suppression in arbGetFindings.js.
+// It is the LAST line of defence against false positives that were stored
+// before write-time suppression was deployed.
+
+describe('suppressReadTimeFalsePositives — read-time false-positive gate', () => {
+  const { suppressReadTimeFalsePositives } = require('../../functions/arbGetFindings');
+
+  const contosoFiles = [
+    { fileName: 'Contoso_ALZ_Hub_Spoke_Network_Topology.drawio' },
+    { fileName: 'Contoso_ALZ_Statement_of_Work_v1.0.docx' },
+    { fileName: 'Contoso_ALZ_Low_Level_Design_v1.0.xlsx' },
+  ];
+
+  function agentFinding(overrides) {
+    return { source: 'agent', severity: 'Medium', ...overrides };
+  }
+
+  // ── OPS ownership suppression ─────────────────────────────────────────────
+
+  it('suppresses runbook ownership finding with Contoso file set', () => {
+    const findings = [agentFinding({
+      title: 'Contoso Financial Services Landing Zone: runbook ownership needs clarification',
+      findingStatement: 'The design package does not clearly assign operational ownership for deployment and incident procedures.'
+    })];
+    const result = suppressReadTimeFalsePositives(findings, contosoFiles);
+    assert.strictEqual(result.length, 0, 'runbook ownership must be suppressed');
+  });
+
+  it('suppresses runbook ownership finding even with NO files (OPS is unconditional)', () => {
+    const findings = [agentFinding({
+      title: 'Contoso Financial Services Landing Zone: runbook ownership needs clarification',
+      findingStatement: 'The design package does not clearly assign operational ownership.'
+    })];
+    const result = suppressReadTimeFalsePositives(findings, []);
+    assert.strictEqual(result.length, 0, 'OPS ownership suppression requires no corpus');
+  });
+
+  it('suppresses operational ownership finding with null files', () => {
+    const findings = [agentFinding({ title: 'Operational ownership not defined', findingStatement: '' })];
+    const result = suppressReadTimeFalsePositives(findings, null);
+    assert.strictEqual(result.length, 0);
+  });
+
+  // ── Boundary control suppression ──────────────────────────────────────────
+
+  it('suppresses boundary control finding when Hub_Spoke file name is present', () => {
+    const findings = [agentFinding({
+      title: 'Contoso Financial Services Landing Zone: boundary control pattern not yet explicit',
+      findingStatement: 'The current design does not yet document an explicit boundary control pattern for internet-facing access.'
+    })];
+    const result = suppressReadTimeFalsePositives(findings, contosoFiles);
+    assert.strictEqual(result.length, 0, 'boundary control must be suppressed when hub-spoke file is present');
+  });
+
+  it('suppresses boundary control finding when Azure_Firewall is in file name', () => {
+    const findings = [agentFinding({ title: 'Boundary control not evidenced', findingStatement: '' })];
+    const files = [{ fileName: 'Contoso_Azure_Firewall_Policy.json' }];
+    const result = suppressReadTimeFalsePositives(findings, files);
+    assert.strictEqual(result.length, 0);
+  });
+
+  it('keeps boundary control finding when no relevant files are present', () => {
+    const findings = [agentFinding({
+      title: 'Boundary control not yet explicit',
+      findingStatement: 'No boundary protection documented.'
+    })];
+    const result = suppressReadTimeFalsePositives(findings, [{ fileName: 'budget-report.xlsx' }]);
+    assert.strictEqual(result.length, 1, 'boundary control must be kept when no hub-spoke evidence in file names');
+  });
+
+  // ── Rules-engine findings always pass through ──────────────────────────────
+
+  it('never suppresses rules-engine findings regardless of title', () => {
+    const findings = [{ source: 'rules-engine', ruleId: 'NET-001', title: 'Internet-facing boundary control is not evidenced', findingStatement: '' }];
+    const result = suppressReadTimeFalsePositives(findings, contosoFiles);
+    assert.strictEqual(result.length, 1, 'rules-engine findings must never be suppressed');
+  });
+
+  // ── Edge cases ─────────────────────────────────────────────────────────────
+
+  it('returns empty array unchanged', () => {
+    assert.deepEqual(suppressReadTimeFalsePositives([], contosoFiles), []);
+  });
+
+  it('returns non-array unchanged', () => {
+    assert.strictEqual(suppressReadTimeFalsePositives(null, contosoFiles), null);
+  });
+
+  it('preserves legitimate non-matching agent findings', () => {
+    const findings = [
+      agentFinding({ title: 'Backup strategy not documented', findingStatement: 'No RTO/RPO defined.' }),
+      agentFinding({ title: 'DR plan missing', findingStatement: '' })
+    ];
+    const result = suppressReadTimeFalsePositives(findings, contosoFiles);
+    assert.strictEqual(result.length, 2, 'non-matching findings must be preserved');
+  });
+
+  it('mixed: suppresses both false positives, keeps legitimate finding', () => {
+    const findings = [
+      agentFinding({ title: 'Contoso Financial Services Landing Zone: runbook ownership needs clarification', findingStatement: 'operational ownership not defined' }),
+      agentFinding({ title: 'Contoso Financial Services Landing Zone: boundary control pattern not yet explicit', findingStatement: 'boundary control missing' }),
+      agentFinding({ title: 'DR failover not documented', findingStatement: '' }),
+    ];
+    const result = suppressReadTimeFalsePositives(findings, contosoFiles);
+    assert.strictEqual(result.length, 1, 'only the DR finding should remain');
+    assert.ok(result[0].title.includes('DR'), 'DR finding must be preserved');
+  });
+});
