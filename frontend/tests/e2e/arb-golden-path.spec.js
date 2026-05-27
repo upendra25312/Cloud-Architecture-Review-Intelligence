@@ -365,22 +365,41 @@ async function runGoldenPath() {
     ]);
     if (nameInput) {
       await nameInput.fill(projectName);
+      await page.keyboard.press('Tab'); // trigger React onChange/blur
       pass('project-name', projectName);
     } else {
       fail('project-name', 'name input not found');
     }
 
+    // Use "Contoso Ltd" (unique to customer field) — the project name placeholder
+    // also contains "Contoso", so input[placeholder*="Contoso"] would return the
+    // wrong field first and leave customer name empty (button stays disabled).
     const custInput = await findVisible(page, [
-      'input[placeholder*="Contoso"]',
-      'input[placeholder*="Customer"]',
-      'input[placeholder*="customer"]',
+      'input[placeholder*="Contoso Ltd"]',
+      'input[placeholder*=" Ltd"]',
+      'input[placeholder*="Customer name"]',
+      'input[placeholder*="customer name"]',
     ]);
-    if (custInput) await custInput.fill('C7 Test Corp');
+    if (custInput) {
+      await custInput.fill('C7 Test Corp');
+      await page.keyboard.press('Tab'); // trigger React onChange/blur
+    }
+
+    await shot(page, 'project-form-filled');
+
+    // Wait for the submit button to become enabled — React gates on both required fields.
+    // Using :not([disabled]) ensures we never hang waiting on a disabled button.
+    try {
+      await page.locator('button[type="submit"]:not([disabled])').waitFor({ state: 'visible', timeout: 5000 });
+    } catch (_) {
+      await shot(page, 'project-submit-still-disabled');
+    }
 
     await tryClick(page, [
-      'button[type="submit"]',
-      'button:has-text("Create")',
-      'button:has-text("Save")',
+      'button[type="submit"]:not([disabled])',
+      'button:has-text("Create project"):not([disabled])',
+      'button:has-text("Create"):not([disabled])',
+      'button:has-text("Save"):not([disabled])',
     ], 'submit-create-project');
 
     await page.waitForTimeout(3000);
@@ -422,10 +441,10 @@ async function runGoldenPath() {
       }
 
       await tryClick(page, [
-        'button[type="submit"]',
-        'button:has-text("Create")',
-        'button:has-text("Start")',
-        'button:has-text("Save")',
+        'button[type="submit"]:not([disabled])',
+        'button:has-text("Create"):not([disabled])',
+        'button:has-text("Start"):not([disabled])',
+        'button:has-text("Save"):not([disabled])',
       ], 'submit-new-review');
 
       await page.waitForTimeout(3000);
