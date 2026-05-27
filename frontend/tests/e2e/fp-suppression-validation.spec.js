@@ -376,11 +376,11 @@ async function runFpValidation() {
     // ── Step 4: Trigger extraction ───────────────────────────────────────
     console.log('\n── Step 4: Trigger extraction + assessment');
     if (reviewId) {
-      const curUrl = page.url();
-      if (!curUrl.includes('step=upload') && !curUrl.includes('/upload')) {
-        await page.goto(`${BASE_URL}/arb?reviewId=${reviewId}&step=upload`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-        await page.waitForTimeout(2000);
-      }
+      // Always navigate to upload step so we see the CTA button.
+      // After file submission the app stays on the upload step, but the URL
+      // might include a hash or extra params — navigate explicitly to be safe.
+      await page.goto(`${BASE_URL}/arb?reviewId=${reviewId}&step=upload`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.waitForTimeout(2000);
     }
 
     const checkbox = await findVisible(page, [
@@ -394,9 +394,12 @@ async function runFpValidation() {
     }
     await page.waitForTimeout(500);
 
+    // With 6 files (docx, drawio, xlsx, png) extraction can take up to 3 min.
+    // Wait up to 3 minutes for extraction to complete and CTA button to become enabled.
+    console.log('  [wait] waiting up to 3 min for extraction to complete + CTA to enable...');
     try {
-      await page.locator('button.arb-cta-btn:not([disabled])').waitFor({ state: 'visible', timeout: 5000 });
-    } catch (_) { await shot(page, 'cta-btn-disabled'); }
+      await page.locator('button.arb-cta-btn:not([disabled])').waitFor({ state: 'visible', timeout: 180000 });
+    } catch (_) { await shot(page, 'cta-btn-still-disabled'); }
 
     const triggered = await tryClick(page, [
       'button.arb-cta-btn:not([disabled])',
