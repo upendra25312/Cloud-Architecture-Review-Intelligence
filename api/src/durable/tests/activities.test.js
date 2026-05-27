@@ -279,3 +279,102 @@ describe('stripOrphanEvidenceIds — evidenceId cross-validation', () => {
     assert.doesNotThrow(() => stripOrphanEvidenceIds(findings, [], [], null, 'r5'));
   });
 });
+
+// ── suppressContraindicatedLlmFindings — false-positive suppression ──────────
+
+describe('suppressContraindicatedLlmFindings — LLM false-positive suppression', () => {
+  const { suppressContraindicatedLlmFindings } = require('../activities/runAgent');
+
+  function agentFinding(overrides) {
+    return { source: 'agent', severity: 'Medium', confidence: 'Medium', evidenceIds: [], visualEvidenceIds: [], ...overrides };
+  }
+
+  // ── OPS ownership patterns (always suppressed regardless of corpus) ──────
+
+  it('suppresses runbook ownership finding even with empty evidence corpus', () => {
+    const findings = [agentFinding({ title: 'Contoso Financial Services Landing Zone: runbook ownership needs clarification', findingStatement: 'The design package does not clearly assign operational ownership for deployment and incident procedures.' })];
+    const result = suppressContraindicatedLlmFindings(findings, '');
+    assert.strictEqual(result.length, 0, 'runbook ownership finding should be suppressed');
+  });
+
+  it('suppresses operational ownership finding with null corpus', () => {
+    const findings = [agentFinding({ title: 'Operational ownership not defined', findingStatement: 'Operational ownership not defined for landing zone.' })];
+    const result = suppressContraindicatedLlmFindings(findings, null);
+    assert.strictEqual(result.length, 0);
+  });
+
+  it('suppresses runbook owner finding regardless of corpus content', () => {
+    const findings = [agentFinding({ title: 'Runbook owner missing', findingStatement: '' })];
+    const result = suppressContraindicatedLlmFindings(findings, 'azure firewall hub-spoke connectivity hub');
+    assert.strictEqual(result.length, 0);
+  });
+
+  it('suppresses incident ownership finding', () => {
+    const findings = [agentFinding({ title: 'Incident ownership unclear', findingStatement: 'Incident owner not assigned.' })];
+    const result = suppressContraindicatedLlmFindings(findings, '');
+    assert.strictEqual(result.length, 0);
+  });
+
+  it('suppresses ownership needs clarification in findingStatement when title does not match', () => {
+    const findings = [agentFinding({ title: 'Operations gap', findingStatement: 'Ownership needs clarification for day-2 operations.' })];
+    const result = suppressContraindicatedLlmFindings(findings, '');
+    assert.strictEqual(result.length, 0);
+  });
+
+  // ── Boundary control suppression (requires corpus evidence) ─────────────
+
+  it('suppresses boundary control finding when corpus contains azure firewall', () => {
+    const findings = [agentFinding({ title: 'Landing Zone: boundary control pattern not yet explicit', findingStatement: 'No explicit boundary control documented.' })];
+    const corpus = 'hub-spoke network topology azure firewall connectivity hub subscription';
+    const result = suppressContraindicatedLlmFindings(findings, corpus);
+    assert.strictEqual(result.length, 0, 'boundary control finding should be suppressed when firewall in corpus');
+  });
+
+  it('suppresses boundary control finding when file name in corpus contains hub spoke', () => {
+    const findings = [agentFinding({ title: 'Boundary control not yet explicit', findingStatement: '' })];
+    // Simulates file name "Contoso_ALZ_Hub_Spoke_Network_Topology.drawio" added to corpus
+    const corpus = 'Contoso ALZ Hub Spoke Network Topology drawio';
+    const result = suppressContraindicatedLlmFindings(findings, corpus);
+    assert.strictEqual(result.length, 0);
+  });
+
+  it('keeps boundary control finding when corpus has no boundary evidence', () => {
+    const findings = [agentFinding({ title: 'Boundary control not yet explicit', findingStatement: '' })];
+    const result = suppressContraindicatedLlmFindings(findings, 'cost budget reserved instances');
+    assert.strictEqual(result.length, 1, 'boundary control finding should remain when no boundary evidence in corpus');
+  });
+
+  // ── Rules-engine findings always pass through ────────────────────────────
+
+  it('never suppresses rules-engine findings regardless of title', () => {
+    const findings = [{ source: 'rules-engine', ruleId: 'NET-001', title: 'Internet-facing boundary control is not evidenced', findingStatement: '' }];
+    const result = suppressContraindicatedLlmFindings(findings, 'some evidence');
+    assert.strictEqual(result.length, 1, 'rules-engine findings must never be suppressed');
+  });
+
+  it('preserves non-matching agent findings', () => {
+    const findings = [agentFinding({ title: 'Backup strategy not evidenced', findingStatement: 'No RTO/RPO documented.' })];
+    const result = suppressContraindicatedLlmFindings(findings, 'some evidence');
+    assert.strictEqual(result.length, 1);
+  });
+
+  // ── Edge cases ─────────────────────────────────────────────────────────
+
+  it('returns empty array unchanged', () => {
+    assert.deepEqual(suppressContraindicatedLlmFindings([], 'corpus'), []);
+  });
+
+  it('returns non-array unchanged', () => {
+    assert.strictEqual(suppressContraindicatedLlmFindings(null, 'corpus'), null);
+  });
+
+  it('handles mixed findings: suppresses OPS finding, keeps non-matching finding', () => {
+    const findings = [
+      agentFinding({ title: 'Runbook ownership needs clarification', findingStatement: '' }),
+      agentFinding({ title: 'Backup not evidenced', findingStatement: '' })
+    ];
+    const result = suppressContraindicatedLlmFindings(findings, '');
+    assert.strictEqual(result.length, 1);
+    assert.ok(result[0].title.includes('Backup'), 'only backup finding should remain');
+  });
+});

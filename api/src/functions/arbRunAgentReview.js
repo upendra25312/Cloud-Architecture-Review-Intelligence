@@ -114,10 +114,11 @@ const BOUNDARY_CONTROL_EVIDENCE_TERMS = [
 
 // Remove LLM findings that are contradicted by evidence already present in the corpus.
 function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
-  if (!evidenceCorpus || !findings?.length) return findings;
+  if (!Array.isArray(findings) || !findings.length) return findings;
+  // Build corpus defensively — empty corpus is valid; OPS_OWNERSHIP_PATTERNS don't need it.
+  const corpus = (evidenceCorpus || '').toLowerCase();
   const rules = loadArbRules();
-  const corpus = evidenceCorpus.toLowerCase();
-  const hasKeyword = (terms) => terms.some((t) => corpus.includes(t.toLowerCase()));
+  const hasKeyword = (terms) => corpus.length > 0 && terms.some((t) => corpus.includes(t.toLowerCase()));
 
   return findings.filter((finding) => {
     // Never suppress deterministic rule findings
@@ -334,7 +335,9 @@ async function runReviewPipeline({ principal, reviewId, traceId, log }) {
     const evidenceCorpus = [
       ...evidenceList.map((e) => `${e.summary ?? ""} ${e.sourceExcerpt ?? ""}`),
       ...visualEvidenceList.map((e) => `${e.summary ?? ""} ${e.sourceExcerpt ?? ""}`),
-      ...requirementsList.map((r) => r.normalizedText ?? "")
+      ...requirementsList.map((r) => r.normalizedText ?? ""),
+      // File names carry implicit evidence — e.g. "Hub_Spoke_Network_Topology" evidences boundary control.
+      ...files.map((f) => String(f.fileName ?? "").replace(/[_\-\.]/g, " "))
     ].join(" ");
     const before = agentResult.findings.length;
     agentResult = {

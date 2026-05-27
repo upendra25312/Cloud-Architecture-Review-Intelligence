@@ -51,10 +51,11 @@ const BOUNDARY_CONTROL_EVIDENCE_TERMS = [
 ];
 
 function suppressContraindicatedLlmFindings(findings, evidenceCorpus) {
-  if (!evidenceCorpus || !Array.isArray(findings) || findings.length === 0) return findings;
+  if (!Array.isArray(findings) || findings.length === 0) return findings;
+  // Build corpus defensively — empty corpus is valid; OPS_OWNERSHIP_PATTERNS don't need it.
+  const corpus = (evidenceCorpus || '').toLowerCase();
   const rules = loadArbRules();
-  const corpus = evidenceCorpus.toLowerCase();
-  const hasKeyword = (terms) => terms.some((t) => corpus.includes(t.toLowerCase()));
+  const hasKeyword = (terms) => corpus.length > 0 && terms.some((t) => corpus.includes(t.toLowerCase()));
 
   return findings.filter((finding) => {
     if (finding.source === 'rules-engine') return true;
@@ -423,7 +424,9 @@ async function runAgentHandler(input, context) {
     const evidenceCorpus = [
       ...evidenceList.map((e) => `${e.summary ?? ''} ${e.sourceExcerpt ?? ''}`),
       ...visualEvidenceList.map((e) => `${e.summary ?? ''} ${e.sourceExcerpt ?? ''}`),
-      ...requirementsList.map((r) => r.normalizedText ?? '')
+      ...requirementsList.map((r) => r.normalizedText ?? ''),
+      // File names carry implicit evidence — e.g. "Hub_Spoke_Network_Topology" evidences boundary control.
+      ...filesList.map((f) => String(f.fileName ?? '').replace(/[_\-\.]/g, ' '))
     ].join(' ');
     const before = agentResult.findings.length;
     agentResult = {
@@ -546,5 +549,6 @@ module.exports = {
   deriveGovernedRecommendation,
   resolveEvidenceTraceability,
   validateArbOutput,
-  stripOrphanEvidenceIds
+  stripOrphanEvidenceIds,
+  suppressContraindicatedLlmFindings
 };

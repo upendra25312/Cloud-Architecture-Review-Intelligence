@@ -410,7 +410,13 @@ function tryInflateDrawioDiagram(encoded) {
   try {
     const compressed = Buffer.from(encoded, "base64");
     const inflated = zlib.inflateRawSync(compressed).toString("utf8");
-    return decodeURIComponent(inflated);
+    // decodeURIComponent can throw URIError on malformed percent-encoding — fall back to raw XML
+    // so cell labels (Azure Firewall, Hub VNet, etc.) are still extractable.
+    try {
+      return decodeURIComponent(inflated);
+    } catch {
+      return inflated;
+    }
   } catch {
     return null;
   }
