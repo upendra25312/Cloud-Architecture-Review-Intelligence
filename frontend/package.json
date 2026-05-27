@@ -25,7 +25,8 @@
     "test:e2e:review-cloud": "playwright test tests/e2e/review-cloud.spec.ts --workers=1 --reporter=line",
     "test:e2e:admin-copilot": "playwright test tests/e2e/admin-copilot.spec.ts --workers=1 --reporter=line",
     "test:e2e:projects": "playwright test tests/e2e/projects-smoke-test.spec.js --workers=1 --reporter=line --timeout=360000",
-    "test:e2e:golden-path": "playwright test tests/e2e/arb-golden-path.spec.js --workers=1 --reporter=line --timeout=720000"
+    "test:e2e:golden-path": "playwright test tests/e2e/arb-golden-path.spec.js --workers=1 --reporter=line --timeout=720000",
+    "test:e2e:fp-validation": "playwright test tests/e2e/fp-suppression-validation.spec.js --workers=1 --reporter=line --timeout=720000"
   },
   "dependencies": {
     "@azure/ai-form-recognizer": "^5.1.0",

@@ -1,0 +1,70 @@
+name: E2E — False-Positive Suppression Validation
+
+# Validates that boundary-control and runbook-ownership findings are correctly
+# suppressed when Contoso Financial Services Landing Zone files are uploaded.
+# Run manually (workflow_dispatch) or automatically after a successful API deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Override target URL (defaults to live site)'
+        required: false
+        default: ''
+  workflow_run:
+    workflows: ["Deploy — Azure Functions API"]
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22.x'
+
+jobs:
+  fp-validation:
+    name: FP Suppression Validation
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        working-directory: frontend
+        run: npx playwright install chromium --with-deps
+
+      - name: Run FP Suppression Validation
+        working-directory: frontend
+        run: npm run test:e2e:fp-validation
+        env:
+          CI: 'true'
+          E2E_BASE_URL: ${{ inputs.base_url || 'https://thankful-pond-04383960f.7.azurestaticapps.net' }}
+          E2E_LOGIN_EMAIL: ${{ secrets.E2E_LOGIN_EMAIL }}
+          E2E_LOGIN_PASSWORD: ${{ secrets.E2E_LOGIN_PASSWORD }}
+          E2E_SCREENSHOTS_DIR: /tmp/e2e-screenshots/fp-validation
+          FP_TEST_FILES_DIR: ${{ github.workspace }}/Test LZ files/Contoso Financial Services
+
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fp-validation-screenshots-${{ github.run_id }}
+          path: /tmp/e2e-screenshots/
+          retention-days: 7
+          if-no-files-found: ignore
