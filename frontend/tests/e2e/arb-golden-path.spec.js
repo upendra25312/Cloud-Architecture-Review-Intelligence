@@ -255,7 +255,39 @@ async function authenticate(page) {
 
 // ── poll extraction status ─────────────────────────────────────────────────
 
-async function pollExtractionComplete(page, reviewId) {
+// Discover the API base URL the React app is actually using.
+// The frontend uses NEXT_PUBLIC_API_URL to call the Azure Functions app DIRECTLY
+// (bypassing SWA). We detect this by inspecting outgoing network requests the
+// page has already made, then reuse the same base for poll requests.
+// Falls back to '' (relative, goes through SWA) if no direct URL is found.
+async function discoverApiBase(page, reviewId) {
+  try {
+    const apiBase = await page.evaluate(async (rid) => {
+      // 1. Check performance resource entries for a fetch to /api/arb/ on a different origin.
+      const entries = (window.performance?.getEntriesByType?.('resource') ?? [])
+        .filter(e => e.name.includes('/api/arb/') && e.name.includes(rid));
+      if (entries.length > 0) {
+        const url = new URL(entries[0].name);
+        const base = url.origin;
+        if (base !== window.location.origin) return base;
+      }
+      // 2. Broader search: any /api/arb/ fetch on a different origin (e.g. uploads).
+      const broad = (window.performance?.getEntriesByType?.('resource') ?? [])
+        .filter(e => e.name.includes('/api/arb/'));
+      for (const e of broad) {
+        try {
+          const url = new URL(e.name);
+          if (url.origin !== window.location.origin) return url.origin;
+        } catch { /* skip */ }
+      }
+      return '';
+    }, reviewId);
+    if (apiBase) console.log(`  [poll] using direct API base: ${apiBase}`);
+    return apiBase;
+  } catch (_) { return ''; }
+}
+
+async function pollExtractionComplete(page, reviewId, apiBase) {
   const TERMINAL_STATES = new Set([
     'Review In Progress',
     'Extraction Failed',
@@ -268,38 +300,57 @@ async function pollExtractionComplete(page, reviewId) {
   ]);
 
   for (let attempt = 1; attempt <= POLL_MAX_ATTEMPTS; attempt++) {
-    // Return { httpStatus, data, errorSnippet } so we can diagnose non-200 responses.
+    // Use the actual API base the React app uses (direct Functions URL if available,
+    // relative SWA path otherwise). Include x-ms-client-principal for direct calls.
     let pollResult;
     try {
-      pollResult = await page.evaluate(async (rid) => {
+      pollResult = await page.evaluate(async ({ rid, base }) => {
         try {
-          const r = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
+          const fetchUrl = `${base}/api/arb/reviews/${rid}`;
+          // For direct calls (non-SWA), inject the client principal from /.auth/me
+          const extraHeaders = {};
+          if (base) {
+            try {
+              const me = await fetch('/.auth/me', { credentials: 'same-origin', cache: 'no-store' });
+              if (me.ok) {
+                const meData = await me.json();
+                const principal = meData?.clientPrincipal;
+                if (principal) {
+                  extraHeaders['x-ms-client-principal'] = btoa(JSON.stringify(principal));
+                }
+              }
+            } catch { /* skip — will proceed without auth header */ }
+          }
+          const r = await fetch(fetchUrl, {
+            credentials: base ? 'include' : 'same-origin',
+            cache: 'no-store',
+            headers: extraHeaders,
+          });
           const text = await r.text().catch(() => '');
           if (!r.ok) {
-            return { httpStatus: r.status, data: null, errorSnippet: text.slice(0, 300), pageOrigin: window.location.origin };
+            return { httpStatus: r.status, data: null, errorSnippet: text.slice(0, 300), fetchUrl };
           }
           try {
-            return { httpStatus: r.status, data: JSON.parse(text), errorSnippet: null, pageOrigin: window.location.origin };
+            return { httpStatus: r.status, data: JSON.parse(text), errorSnippet: null, fetchUrl };
           } catch {
-            return { httpStatus: r.status, data: null, errorSnippet: `JSON parse failed: ${text.slice(0, 200)}`, pageOrigin: window.location.origin };
+            return { httpStatus: r.status, data: null, errorSnippet: `JSON parse failed: ${text.slice(0, 200)}`, fetchUrl };
           }
         } catch (e) {
-          return { httpStatus: -1, data: null, errorSnippet: String(e), pageOrigin: window.location.origin };
+          return { httpStatus: -1, data: null, errorSnippet: String(e), fetchUrl: 'unknown' };
         }
-      }, reviewId);
+      }, { rid: reviewId, base: apiBase });
     } catch (evalErr) {
-      // page.evaluate can throw if the page navigated mid-evaluation
       pollResult = { httpStatus: -2, data: null, errorSnippet: `page.evaluate threw: ${evalErr?.message ?? evalErr}` };
     }
 
-    const { httpStatus, data, errorSnippet } = pollResult ?? {};
+    const { httpStatus, data, errorSnippet, fetchUrl } = pollResult ?? {};
 
     // API returns { review: { workflowState: "..." } } — handle both wrapped and flat.
     const ws = (data?.review?.workflowState ?? data?.workflowState) ?? 'unknown';
     const statusTag = httpStatus != null ? ` [HTTP ${httpStatus}]` : '';
-    const originTag = pollResult?.pageOrigin ? ` origin=${pollResult.pageOrigin}` : '';
+    const urlTag = attempt === 1 && fetchUrl ? ` url=${fetchUrl}` : '';
     const errorTag = errorSnippet ? ` | ${errorSnippet}` : '';
-    console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}]${statusTag}${originTag} workflowState = ${ws}${errorTag}`);
+    console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}]${statusTag}${urlTag} workflowState = ${ws}${errorTag}`);
 
     if (ws === 'Review In Progress') {
       pass('extraction-complete', `workflowState = ${ws} after ${attempt} poll(s)`);
@@ -579,25 +630,27 @@ async function runGoldenPath() {
     console.log(`  [pre-poll] current page URL: ${page.url()}`);
 
     // Immediate API probe: reveals auth issues (401), missing review (404), or function errors (500).
-    // Also probes using the ABSOLUTE URL to rule out relative-URL resolution issues.
     if (reviewId) {
-      const probe = await page.evaluate(async ({ rid, baseUrl }) => {
+      const probeBase = await discoverApiBase(page, reviewId);
+      const probe = await page.evaluate(async ({ rid, probeBase: base }) => {
+        const fetchUrl = `${base}/api/arb/reviews/${rid}`;
         try {
-          const relR = await fetch(`/api/arb/reviews/${rid}`, { credentials: 'same-origin', cache: 'no-store' });
-          const relText = await relR.text().catch(() => '');
-          const absR = await fetch(`${baseUrl}/api/arb/reviews/${rid}`, { credentials: 'include', cache: 'no-store' });
-          const absText = await absR.text().catch(() => '');
-          return {
-            rel: { httpStatus: relR.status, snippet: relText.slice(0, 200) },
-            abs: { httpStatus: absR.status, snippet: absText.slice(0, 200) },
-            pageOrigin: window.location.origin,
-          };
-        } catch (e) { return { error: String(e) }; }
-      }, { rid: reviewId, baseUrl: BASE_URL }).catch((e) => ({ error: String(e) }));
-      console.log(`  [pre-poll probe] pageOrigin=${probe.pageOrigin} rel=${probe.rel?.httpStatus} abs=${probe.abs?.httpStatus}`);
-      if (probe.rel?.snippet) console.log(`  [pre-poll rel snippet] ${probe.rel.snippet}`);
-      if (probe.abs?.snippet) console.log(`  [pre-poll abs snippet] ${probe.abs.snippet}`);
-      if (probe.error) console.log(`  [pre-poll error] ${probe.error}`);
+          const extraHeaders = {};
+          if (base) {
+            try {
+              const me = await fetch('/.auth/me', { credentials: 'same-origin', cache: 'no-store' });
+              if (me.ok) {
+                const meData = await me.json();
+                if (meData?.clientPrincipal) extraHeaders['x-ms-client-principal'] = btoa(JSON.stringify(meData.clientPrincipal));
+              }
+            } catch { /* skip */ }
+          }
+          const r = await fetch(fetchUrl, { credentials: base ? 'include' : 'same-origin', cache: 'no-store', headers: extraHeaders });
+          const text = await r.text().catch(() => '');
+          return { httpStatus: r.status, snippet: text.slice(0, 300), fetchUrl };
+        } catch (e) { return { httpStatus: -1, snippet: String(e), fetchUrl }; }
+      }, { rid: reviewId, probeBase }).catch((e) => ({ httpStatus: -2, snippet: String(e), fetchUrl: 'unknown' }));
+      console.log(`  [pre-poll probe] HTTP ${probe.httpStatus} url=${probe.fetchUrl} — ${probe.snippet}`);
     }
 
     // ── Step 6: Poll until extraction completes ──────────────────────────
@@ -605,7 +658,10 @@ async function runGoldenPath() {
     if (!reviewId) {
       fail('poll-extraction', 'no reviewId — cannot poll');
     } else {
-      const extractionDone = await pollExtractionComplete(page, reviewId);
+      // Discover the actual API base URL the React app uses (may be direct Functions URL
+      // set via NEXT_PUBLIC_API_URL, bypassing SWA). Using the wrong base causes HTML 404.
+      const apiBase = await discoverApiBase(page, reviewId);
+      const extractionDone = await pollExtractionComplete(page, reviewId, apiBase);
       await shot(page, 'extraction-done');
 
       if (!extractionDone) {
