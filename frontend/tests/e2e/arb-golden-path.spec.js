@@ -276,7 +276,9 @@ async function pollExtractionComplete(page, reviewId) {
       } catch { return null; }
     }, reviewId);
 
-    const ws = status?.workflowState ?? 'unknown';
+    // API returns { review: { workflowState: "..." } } — handle both the wrapped
+    // format and a flat format for forward compatibility.
+    const ws = (status?.review?.workflowState ?? status?.workflowState) ?? 'unknown';
     console.log(`  [poll ${attempt}/${POLL_MAX_ATTEMPTS}] workflowState = ${ws}`);
 
     if (ws === 'Review In Progress') {
