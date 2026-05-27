@@ -358,150 +358,154 @@ async function runGoldenPath() {
     await page.waitForTimeout(1500);
 
     const projectName = `[C7-TEST] Golden Path ${Date.now()}`;
+
+    // Use label-based selectors — the most reliable way to target the right field.
+    // Placeholder-based selectors fail here because both inputs contain "Contoso".
     const nameInput = await findVisible(page, [
-      'input[placeholder*="Migration"]',
-      'input[placeholder*="Project name"]',
-      'form input[type="text"]',
+      'label:has-text("Project name") input',
+      '.arb-modal-panel input[type="text"]',
     ]);
     if (nameInput) {
       await nameInput.fill(projectName);
-      await page.keyboard.press('Tab'); // trigger React onChange/blur
       pass('project-name', projectName);
     } else {
       fail('project-name', 'name input not found');
     }
 
-    // Use "Contoso Ltd" (unique to customer field) — the project name placeholder
-    // also contains "Contoso", so input[placeholder*="Contoso"] would return the
-    // wrong field first and leave customer name empty (button stays disabled).
     const custInput = await findVisible(page, [
-      'input[placeholder*="Contoso Ltd"]',
-      'input[placeholder*=" Ltd"]',
-      'input[placeholder*="Customer name"]',
-      'input[placeholder*="customer name"]',
+      'label:has-text("Customer name") input',
+      'label:has-text("Customer") input',
     ]);
     if (custInput) {
       await custInput.fill('C7 Test Corp');
-      await page.keyboard.press('Tab'); // trigger React onChange/blur
+      pass('customer-name', 'C7 Test Corp');
+    } else {
+      fail('customer-name', 'customer input not found');
     }
 
     await shot(page, 'project-form-filled');
 
-    // Wait for the submit button to become enabled — React gates on both required fields.
-    // Using :not([disabled]) ensures we never hang waiting on a disabled button.
+    // Wait for React to enable the submit button (both fields must be non-empty).
+    // Scope to modal panel to avoid matching other submit buttons on the page.
     try {
-      await page.locator('button[type="submit"]:not([disabled])').waitFor({ state: 'visible', timeout: 5000 });
-    } catch (_) {
-      await shot(page, 'project-submit-still-disabled');
-    }
+      await page.locator('.arb-modal-panel button[type="submit"]:not([disabled])').waitFor({ state: 'visible', timeout: 5000 });
+    } catch (_) { await shot(page, 'project-submit-still-disabled'); }
 
     await tryClick(page, [
-      'button[type="submit"]:not([disabled])',
+      '.arb-modal-panel button[type="submit"]:not([disabled])',
       'button:has-text("Create project"):not([disabled])',
-      'button:has-text("Create"):not([disabled])',
-      'button:has-text("Save"):not([disabled])',
     ], 'submit-create-project');
 
-    await page.waitForTimeout(3000);
+    // App stays at /arb/projects after project creation — it just closes the modal
+    // and refreshes the list. Wait for the modal backdrop to disappear, then
+    // click "Open project →" for the newly created project.
+    try {
+      await page.locator('.arb-modal-backdrop').waitFor({ state: 'hidden', timeout: 8000 });
+    } catch (_) { /* modal dismissed or never opened */ }
+    await page.waitForTimeout(1000);
     await shot(page, 'project-created');
 
-    // Verify we landed on a project detail page
-    const currentUrl = page.url();
-    if (currentUrl.includes('/arb/projects/')) {
-      pass('project-detail-page', currentUrl);
+    const openProjectLink = await findVisible(page, [
+      'a.primary-button:has-text("Open project")',
+      'a:has-text("Open project")',
+    ]);
+    if (openProjectLink) {
+      await openProjectLink.click();
+      await page.waitForTimeout(2000);
+      const projUrl = page.url();
+      projUrl.includes('/arb/projects/view')
+        ? pass('project-detail-page', projUrl)
+        : warn('project-detail-page', `unexpected URL after Open project: ${projUrl}`);
     } else {
-      warn('project-detail-page', `unexpected URL: ${currentUrl}`);
+      warn('project-detail-page', 'Open project link not found — project may not have been created');
     }
 
-    // ── Step 3: Start a new review ───────────────────────────────────────
+    // ── Step 3: Navigate to /arb and fill project name ───────────────────
     console.log('\n── Step 3: Start new review');
+
+    // From project view, "+ New review" links to /arb?newReview=1&projectId=...
     const newReviewLink = await findVisible(page, [
       'a:has-text("+ New review")',
       'a:has-text("New review")',
       'a[href*="newReview"]',
     ]);
-
-    let reviewId = null;
-
     if (newReviewLink) {
-      const href = await newReviewLink.getAttribute('href');
       await newReviewLink.click();
       await page.waitForTimeout(2000);
-      await shot(page, 'new-review-dialog');
-
-      // Fill review / project code if a dialog appears
-      const reviewInput = await findVisible(page, [
-        'input[placeholder*="project code"]',
-        'input[placeholder*="Project code"]',
-        'input[placeholder*="code"]',
-        'form input[type="text"]',
-      ]);
-      if (reviewInput) {
-        await reviewInput.fill('c7-golden-path');
-      }
-
-      await tryClick(page, [
-        'button[type="submit"]:not([disabled])',
-        'button:has-text("Create"):not([disabled])',
-        'button:has-text("Start"):not([disabled])',
-        'button:has-text("Save"):not([disabled])',
-      ], 'submit-new-review');
-
-      await page.waitForTimeout(3000);
     } else {
-      // Fall back: navigate to /arb and create review from there
-      warn('new-review-link', 'new review link not found — trying /arb route');
+      warn('new-review-link', 'new review link not found — navigating to /arb directly');
       await page.goto(`${BASE_URL}/arb`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.waitForTimeout(2000);
     }
+    await shot(page, 'arb-page');
 
-    // Extract reviewId from URL — the upload/overview page should be at /arb/{reviewId}/...
-    await page.waitForTimeout(1000);
-    const reviewUrl = page.url();
-    const reviewIdMatch = reviewUrl.match(/\/arb\/([^/?#]+)/);
-    if (reviewIdMatch && reviewIdMatch[1] !== 'projects') {
-      reviewId = reviewIdMatch[1];
-      pass('review-id', reviewId);
-    } else {
-      fail('review-id', `could not extract reviewId from URL: ${reviewUrl}`);
+    // /arb page requires project name to be filled before the start button is enabled.
+    // Even when coming via ?newReview=1&projectId=..., the name field is NOT pre-filled.
+    const arbNameInput = await findVisible(page, [
+      'input[aria-label="Project name"]',
+      'input[placeholder*="landing zone"]',
+      'input[placeholder*="Contoso landing"]',
+      '.arb-field-input',
+    ]);
+    if (arbNameInput) {
+      await arbNameInput.fill(projectName);
+      pass('arb-project-name', 'project name filled on /arb');
     }
-    await shot(page, 'review-page');
 
-    // ── Step 4: Upload document ──────────────────────────────────────────
+    // ── Step 4: Upload document + start review ───────────────────────────
     console.log('\n── Step 4: Upload document');
-    // Navigate to upload tab if not already there
-    if (reviewId && !reviewUrl.includes('/upload')) {
-      await page.goto(`${BASE_URL}/arb/${reviewId}/upload`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await page.waitForTimeout(2000);
-    }
     await shot(page, 'upload-page');
 
-    // Create the test document as a temp file for playwright to upload
+    // Create test document
     const tmpDir = 'c:\\tmp\\playwright-qa';
     fs.mkdirSync(tmpDir, { recursive: true });
     const tmpDocPath = path.join(tmpDir, UPLOAD_DOC_NAME);
     fs.writeFileSync(tmpDocPath, UPLOAD_DOC_CONTENT, 'utf8');
 
-    // Find the file input and upload
+    // Select file — this changes arb-create-btn label to "...and upload files →"
     const fileInput = page.locator('input[type="file"]').first();
     if (await fileInput.count() > 0) {
       await fileInput.setInputFiles(tmpDocPath);
       await page.waitForTimeout(2000);
       pass('file-input', 'document selected');
       await shot(page, 'file-selected');
-
-      // Confirm/submit upload if there's a button
-      await tryClick(page, [
-        'button:has-text("Upload")',
-        'button:has-text("Add files")',
-        'button[type="submit"]',
-      ], 'upload-submit');
-      await page.waitForTimeout(3000);
-      await shot(page, 'after-upload');
-      pass('upload', 'upload submitted');
     } else {
       fail('file-input', 'file input not found on upload page');
     }
+
+    // Wait for the start button to become enabled (project name set + file selected)
+    try {
+      await page.locator('button.arb-create-btn:not([disabled])').waitFor({ state: 'visible', timeout: 8000 });
+    } catch (_) { await shot(page, 'arb-create-btn-still-disabled'); }
+
+    // Click the start-review button. This creates the review, uploads the file,
+    // and navigates to /arb/{reviewId}/upload. Use .arb-create-btn class selector
+    // to avoid matching any other button on the page.
+    const startClicked = await tryClick(page, [
+      'button.arb-create-btn:not([disabled])',
+    ], 'start-review');
+
+    let reviewId = null;
+
+    if (startClicked) {
+      // Wait for navigation to /arb/{reviewId}/...
+      try {
+        await page.waitForURL(/\/arb\/[^/?#]{10,}(\/|$)/, { timeout: 30000 });
+      } catch (_) { await page.waitForTimeout(5000); }
+      await shot(page, 'after-start-review');
+      pass('upload', 'review started and document submitted');
+    }
+
+    // Extract reviewId from the resulting URL
+    const reviewUrl = page.url();
+    const reviewIdMatch = reviewUrl.match(/\/arb\/([^/?#]+)/);
+    if (reviewIdMatch && reviewIdMatch[1] !== 'projects' && reviewIdMatch[1].length > 8) {
+      reviewId = reviewIdMatch[1];
+      pass('review-id', reviewId);
+    } else {
+      fail('review-id', `could not extract reviewId from URL: ${reviewUrl}`);
+    }
+    await shot(page, 'review-page');
 
     // ── Step 5: Trigger extraction ───────────────────────────────────────
     console.log('\n── Step 5: Trigger extraction');
