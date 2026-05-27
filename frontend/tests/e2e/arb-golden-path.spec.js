@@ -514,14 +514,40 @@ async function runGoldenPath() {
 
     // ── Step 5: Trigger extraction ───────────────────────────────────────
     console.log('\n── Step 5: Trigger extraction');
+
+    // Ensure we're on the upload step with the #run-automated-analysis section
+    if (reviewId) {
+      const curUrl = page.url();
+      if (!curUrl.includes('step=upload') && !curUrl.includes('/upload')) {
+        await page.goto(`${BASE_URL}/arb?reviewId=${reviewId}&step=upload`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.waitForTimeout(2000);
+      }
+    }
+
+    // The "Start analysis →" button (class arb-cta-btn) requires TWO conditions:
+    // 1. At least one file uploaded — done in Step 4
+    // 2. Confidentiality checkbox checked — test must check it explicitly
+    const confirmCheckbox = await findVisible(page, [
+      'input[aria-label="Confirm uploaded files can be used for review extraction"]',
+      '#run-automated-analysis input[type="checkbox"]',
+      '.arb-inline-check input[type="checkbox"]',
+    ]);
+    if (confirmCheckbox) {
+      const checked = await confirmCheckbox.isChecked();
+      if (!checked) await confirmCheckbox.check();
+      pass('confidentiality-confirm', 'confirmation checkbox checked');
+    }
+    await page.waitForTimeout(500);
+
+    // Wait for the start-analysis button to become enabled
+    try {
+      await page.locator('button.arb-cta-btn:not([disabled])').waitFor({ state: 'visible', timeout: 5000 });
+    } catch (_) { await shot(page, 'start-analysis-still-disabled'); }
+
     await tryClick(page, [
-      'button:has-text("Start Extraction")',
-      'button:has-text("Run Review")',
-      'button:has-text("Start Review")',
-      'button:has-text("Extract")',
-      'button:has-text("Analyse")',
-      'button:has-text("Analyze")',
-      'button:has-text("Run")',
+      'button.arb-cta-btn:not([disabled])',
+      'button:has-text("Start analysis"):not([disabled])',
+      'button:has-text("Retry analysis"):not([disabled])',
     ], 'trigger-extraction');
     await page.waitForTimeout(3000);
     await shot(page, 'extraction-triggered');
@@ -539,7 +565,7 @@ async function runGoldenPath() {
       } else {
         // ── Step 7: Verify findings ────────────────────────────────────
         console.log('\n── Step 7: Verify findings page');
-        await page.goto(`${BASE_URL}/arb/${reviewId}/findings`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.goto(`${BASE_URL}/arb?reviewId=${reviewId}&step=findings`, { waitUntil: 'domcontentloaded', timeout: 30000 });
         await page.waitForTimeout(3000);
         await shot(page, 'findings-page');
 
@@ -583,7 +609,7 @@ async function runGoldenPath() {
 
         // ── Step 8: Verify scorecard ───────────────────────────────────
         console.log('\n── Step 8: Verify scorecard page');
-        await page.goto(`${BASE_URL}/arb/${reviewId}/scorecard`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.goto(`${BASE_URL}/arb?reviewId=${reviewId}&step=scorecard`, { waitUntil: 'domcontentloaded', timeout: 30000 });
         await page.waitForTimeout(3000);
         await shot(page, 'scorecard-page');
 
