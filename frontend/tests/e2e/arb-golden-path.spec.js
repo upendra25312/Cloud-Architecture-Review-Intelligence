@@ -135,29 +135,72 @@ async function authenticate(page) {
       await shot(page, 'auth-after-email');
     }
 
-    // Handle FIDO/passkey page — wait for WebAuthn rejection then navigate to password
-    if (page.url().includes('fido')) {
-      console.log('  On FIDO page — waiting for WebAuthn rejection...');
-      try {
-        await page.waitForFunction(() => {
-          const b = document.body?.innerText || '';
-          return b.includes("couldn't sign you in") || b.includes("Sign in another way");
-        }, { timeout: 15000 });
-      } catch (_) {
-        await page.waitForTimeout(5000);
+    // Detect page type by URL AND body text — Microsoft updates their login UI frequently.
+    // The FIDO/passkey page and Microsoft Authenticator push page both need to be navigated
+    // through to reach the password field; they don't always have 'fido' in the URL.
+    const bodyAfterEmail = await page.locator('body').innerText().catch(() => '');
+    const urlAfterEmail = page.url();
+
+    const isPasskeyOrFido =
+      urlAfterEmail.includes('fido') ||
+      /passkey|security key|use a passkey|sign in with a passkey/i.test(bodyAfterEmail);
+    const isAuthenticatorPush =
+      /approve.*sign.?in request|microsoft authenticator|authenticator app/i.test(bodyAfterEmail);
+    const needsAnotherWay =
+      isPasskeyOrFido || isAuthenticatorPush ||
+      /sign in another way|other ways to sign in|use a different.*method|different sign.?in/i.test(bodyAfterEmail);
+
+    if (needsAnotherWay) {
+      console.log(`  Detected intermediate auth page (passkey=${isPasskeyOrFido} authenticator=${isAuthenticatorPush}) — navigating to password method`);
+
+      // For passkey/FIDO: wait for the WebAuthn rejection to surface the "another way" link
+      if (isPasskeyOrFido) {
+        try {
+          await page.waitForFunction(() => {
+            const b = document.body?.innerText || '';
+            return b.includes("couldn't sign you in") || b.includes("Sign in another way") || b.includes("Other ways to sign in");
+          }, { timeout: 15000 });
+        } catch (_) { await page.waitForTimeout(5000); }
       }
-      await shot(page, 'auth-fido-after-rejection');
-      const clicked = await tryClick(page, ['#signInAnotherWay', 'a:has-text("Sign in another way")', 'text=Sign in another way'], 'auth-fido-other-way');
+
+      await shot(page, 'auth-pre-another-way');
+      const clicked = await tryClick(page, [
+        '#signInAnotherWay',
+        'a:has-text("Sign in another way")',
+        'text=Sign in another way',
+        'text=Other ways to sign in',
+        'text=Use a different method',
+        "text=I can't use my Microsoft Authenticator app right now",
+        "text=I don't have access to one of these",
+        'button:has-text("Other ways")',
+      ], 'auth-another-way');
+
       if (clicked) {
         await page.waitForTimeout(3000);
-        await tryClick(page, ['text=Password', 'text=Use your password', '[data-value="Password"]'], 'auth-choose-password');
+        await shot(page, 'auth-method-list');
+        await tryClick(page, [
+          'text=Password',
+          'text=Use your password',
+          '[data-value="Password"]',
+          '.tile:has-text("Password")',
+          'div.option-button:has-text("Password")',
+        ], 'auth-choose-password');
         await page.waitForTimeout(2000);
       }
     }
 
-    // Try "Use your password" fallback in case FIDO was skipped
-    await tryClick(page, ['text=Use your password', 'text=Use password instead', '#signInOptions'], 'auth-use-password');
-    await page.waitForTimeout(1000);
+    // Fallback: only try "Use your password" if the password field isn't already visible
+    const pwAlreadyVisible = await findVisible(page, ['input[type="password"]', '#i0118', 'input[name="passwd"]']);
+    if (!pwAlreadyVisible) {
+      await tryClick(page, [
+        'text=Use your password',
+        'text=Use password instead',
+        '#signInOptions',
+        '[data-value="Password"]',
+        'text=Password',
+      ], 'auth-use-password');
+      await page.waitForTimeout(1000);
+    }
 
     // Fill password
     const pwInput = await findVisible(page, [
