@@ -29,10 +29,23 @@ const LOGIN_EMAIL = process.env.E2E_LOGIN_EMAIL || 'cari.pilot@outlook.com';
 const LOGIN_PASSWORD = process.env.E2E_LOGIN_PASSWORD || '';
 const SCREENSHOTS_DIR = process.env.E2E_SCREENSHOTS_DIR || 'c:\\tmp\\playwright-qa\\screenshots\\fp-validation';
 
-// In CI the test files are uploaded from the repo checkout.
-// In local runs they come from the developer's machine.
-const FILES_BASE = process.env.FP_TEST_FILES_DIR ||
-  'c:\\cari-repo\\Test LZ files\\Contoso Financial Services';
+// File resolution order:
+//   1. FP_TEST_FILES_DIR env var (explicit override)
+//   2. Real Contoso files on dev machine (gitignored, richer content)
+//   3. Synthetic fixtures committed to repo (used in CI)
+const FIXTURE_DIR = path.join(__dirname, 'fixtures', 'contoso-lz');
+const LOCAL_FILES_DIR = 'c:\\cari-repo\\Test LZ files\\Contoso Financial Services';
+function resolveFilesBase() {
+  if (process.env.FP_TEST_FILES_DIR) return process.env.FP_TEST_FILES_DIR;
+  // Prefer real files if they exist locally
+  try {
+    fs.accessSync(path.join(LOCAL_FILES_DIR, 'Contoso_ALZ_Hub_Spoke_Network_Topology.drawio'));
+    return LOCAL_FILES_DIR;
+  } catch (_) { /* not available — use fixtures */ }
+  return FIXTURE_DIR;
+}
+const FILES_BASE = resolveFilesBase();
+console.log(`  [files] using: ${FILES_BASE}`);
 
 const UPLOAD_FILES = [
   path.join(FILES_BASE, 'Contoso_ALZ_High_Level_Design_v1.0.docx'),

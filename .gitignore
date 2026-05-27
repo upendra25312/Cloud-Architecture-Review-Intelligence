@@ -44,6 +44,9 @@ Thumbs.db
 Test LZ files/
 demo meeting.png
 
+# E2E test fixtures are exceptions — binary fixtures are intentionally committed
+!frontend/tests/e2e/fixtures/**
+
 # IDE — commit .vscode/ for team settings; ignore user-specific overrides
 .vscode/*.code-workspace
 .idea/

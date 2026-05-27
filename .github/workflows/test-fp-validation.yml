@@ -58,7 +58,7 @@ jobs:
           E2E_LOGIN_EMAIL: ${{ secrets.E2E_LOGIN_EMAIL }}
           E2E_LOGIN_PASSWORD: ${{ secrets.E2E_LOGIN_PASSWORD }}
           E2E_SCREENSHOTS_DIR: /tmp/e2e-screenshots/fp-validation
-          FP_TEST_FILES_DIR: ${{ github.workspace }}/Test LZ files/Contoso Financial Services
+          # FP_TEST_FILES_DIR not set — test auto-discovers fixtures from tests/e2e/fixtures/contoso-lz/
 
       - name: Upload Screenshots
         if: always()
