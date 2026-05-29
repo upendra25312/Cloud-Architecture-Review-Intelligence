@@ -5,13 +5,13 @@
  *
  * Verifies the three required behavioral contracts:
  *   1. Returns silently when USE_AGENTS_API !== 'telemetry'
- *   2. Returns silently when FOUNDRY_AGENT_NAME is absent
- *   3. Swallows errors — Foundry failures never propagate to the caller
+ *   2. Returns silently when FOUNDRY_AGENT_ID is absent (Agents API requires the actual GUID)
+ *   3. Swallows errors — Foundry Agents API failures never propagate to the caller
  *
  * All tests run without Azure credentials or network access.
  */
 
-const { describe, it, beforeEach, afterEach } = require('node:test');
+const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
 // ── Module loading with environment isolation ─────────────────────────────────
@@ -65,13 +65,16 @@ describe('notifyAgentsApiTelemetry — USE_AGENTS_API guard', () => {
   });
 });
 
-// ── Test 2: guard — missing agent name ───────────────────────────────────────
+// ── Test 2: guard — missing agent ID ─────────────────────────────────────────
 
-describe('notifyAgentsApiTelemetry — FOUNDRY_AGENT_NAME guard', () => {
-  it('returns without error when FOUNDRY_AGENT_NAME is empty', async () => {
+describe('notifyAgentsApiTelemetry — FOUNDRY_AGENT_ID guard', () => {
+  it('returns without error when FOUNDRY_AGENT_ID is empty', async () => {
+    // The Agents API requires the actual agent GUID (from KeyVault). If the
+    // GUID is absent (e.g. KeyVault reference not yet resolved), telemetry
+    // must be a no-op rather than attempting an unauthenticated API call.
     const fn = loadTelemetryFn({
       USE_AGENTS_API: 'telemetry',
-      FOUNDRY_AGENT_NAME: ''
+      FOUNDRY_AGENT_ID: ''
     });
     await assert.doesNotReject(() => fn('rev-002', 'review_started', { fileCount: 1 }));
   });
@@ -80,13 +83,13 @@ describe('notifyAgentsApiTelemetry — FOUNDRY_AGENT_NAME guard', () => {
 // ── Test 3: error swallowing ──────────────────────────────────────────────────
 
 describe('notifyAgentsApiTelemetry — error swallowing', () => {
-  it('does not throw when Foundry endpoint is unconfigured', async () => {
-    // With USE_AGENTS_API=telemetry and a real agent name but no endpoint,
-    // the HTTP call will fail — that error must be swallowed.
+  it('does not throw when Foundry Agents API endpoint is unreachable', async () => {
+    // FOUNDRY_AGENT_ID must be set to pass the guard so the HTTP calls are
+    // actually attempted. The connection to 127.0.0.1:1 will fail — that
+    // network error must be swallowed and never propagate to the caller.
     const fn = loadTelemetryFn({
       USE_AGENTS_API: 'telemetry',
-      FOUNDRY_AGENT_NAME: 'cari-arb-review-agent',
-      FOUNDRY_AGENT_VERSION: '7',
+      FOUNDRY_AGENT_ID: 'test-agent-guid-0000',
       FOUNDRY_PROJECT_ENDPOINT: 'https://127.0.0.1:1/nonexistent'
     });
     await assert.doesNotReject(() => fn('rev-003', 'review_completed', {

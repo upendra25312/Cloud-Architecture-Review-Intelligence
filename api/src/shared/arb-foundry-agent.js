@@ -292,15 +292,58 @@ async function foundryResponsesAgentRequest(input, options = {}) {
 
 async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
   if (process.env.USE_AGENTS_API !== "telemetry") return;
-  if (!FOUNDRY_AGENT_NAME) return;
+  // FOUNDRY_AGENT_ID is the actual agent GUID (resolved from KeyVault at runtime).
+  // FOUNDRY_AGENT_NAME alone is not sufficient — the Agents API run requires the GUID.
+  if (!FOUNDRY_AGENT_ID) return;
   try {
-    await foundryResponsesAgentRequest(JSON.stringify({
-      type: "cari_review_telemetry",
-      event: phase,
-      reviewId,
-      ...metadata,
-      timestamp: new Date().toISOString()
-    }));
+    const token = await getFoundryProjectToken();
+    const base = `${FOUNDRY_PROJECT_ENDPOINT}/agents/v1.0`;
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    };
+
+    // Step 1 — create an empty thread
+    const threadRes = await fetchWithTimeout(`${base}/threads`, {
+      method: "POST", headers, body: "{}"
+    }, 10000);
+    if (!threadRes.ok) {
+      const t = await threadRes.text().catch(() => String(threadRes.status));
+      console.warn(`[agents-api-telemetry] thread create ${threadRes.status}: ${t.slice(0, 200)}`);
+      return;
+    }
+    const { id: threadId } = await threadRes.json();
+
+    // Step 2 — add the telemetry event as a user message
+    const msgRes = await fetchWithTimeout(`${base}/threads/${threadId}/messages`, {
+      method: "POST", headers,
+      body: JSON.stringify({
+        role: "user",
+        content: JSON.stringify({
+          type: "cari_review_telemetry",
+          event: phase,
+          reviewId,
+          ...metadata,
+          timestamp: new Date().toISOString()
+        })
+      })
+    }, 10000);
+    if (!msgRes.ok) {
+      const t = await msgRes.text().catch(() => String(msgRes.status));
+      console.warn(`[agents-api-telemetry] message create ${msgRes.status}: ${t.slice(0, 200)}`);
+      return;
+    }
+
+    // Step 3 — start the run (fire-and-forget: don't poll for completion)
+    // This is the call that registers in the Foundry Monitor as an agent run.
+    const runRes = await fetchWithTimeout(`${base}/threads/${threadId}/runs`, {
+      method: "POST", headers,
+      body: JSON.stringify({ assistant_id: FOUNDRY_AGENT_ID })
+    }, 10000);
+    if (!runRes.ok) {
+      const t = await runRes.text().catch(() => String(runRes.status));
+      console.warn(`[agents-api-telemetry] run create ${runRes.status}: ${t.slice(0, 200)}`);
+    }
   } catch (err) {
     // Telemetry failure must never break a review
     console.warn("[agents-api-telemetry] Non-fatal error:", err.message);
