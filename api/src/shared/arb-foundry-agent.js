@@ -294,7 +294,11 @@ async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
   if (process.env.USE_AGENTS_API !== "telemetry") return;
   // FOUNDRY_AGENT_ID is the actual agent GUID (resolved from KeyVault at runtime).
   // FOUNDRY_AGENT_NAME alone is not sufficient — the Agents API run requires the GUID.
-  if (!FOUNDRY_AGENT_ID) return;
+  if (!FOUNDRY_AGENT_ID) {
+    console.warn("[agents-api-telemetry] FOUNDRY_AGENT_ID not resolved (KeyVault reference may have failed) — skipping");
+    return;
+  }
+  console.log(`[agents-api-telemetry] invoking phase=${phase} reviewId=${reviewId}`);
   try {
     const token = await getFoundryProjectToken();
     // Foundry Agents REST API paths are directly on the project endpoint — no /agents/v1.0 prefix.
