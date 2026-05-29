@@ -297,14 +297,17 @@ async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
   if (!FOUNDRY_AGENT_ID) return;
   try {
     const token = await getFoundryProjectToken();
-    const base = `${FOUNDRY_PROJECT_ENDPOINT}/agents/v1.0`;
+    // Foundry Agents REST API paths are directly on the project endpoint — no /agents/v1.0 prefix.
+    // GA api-version per https://learn.microsoft.com/azure/foundry-classic/agents/quickstart
+    const av = "2025-05-01";
+    const ep = FOUNDRY_PROJECT_ENDPOINT;
     const headers = {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     };
 
     // Step 1 — create an empty thread
-    const threadRes = await fetchWithTimeout(`${base}/threads`, {
+    const threadRes = await fetchWithTimeout(`${ep}/threads?api-version=${av}`, {
       method: "POST", headers, body: "{}"
     }, 10000);
     if (!threadRes.ok) {
@@ -315,7 +318,7 @@ async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
     const { id: threadId } = await threadRes.json();
 
     // Step 2 — add the telemetry event as a user message
-    const msgRes = await fetchWithTimeout(`${base}/threads/${threadId}/messages`, {
+    const msgRes = await fetchWithTimeout(`${ep}/threads/${threadId}/messages?api-version=${av}`, {
       method: "POST", headers,
       body: JSON.stringify({
         role: "user",
@@ -335,8 +338,8 @@ async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
     }
 
     // Step 3 — start the run (fire-and-forget: don't poll for completion)
-    // This is the call that registers in the Foundry Monitor as an agent run.
-    const runRes = await fetchWithTimeout(`${base}/threads/${threadId}/runs`, {
+    // This call registers in the Foundry Monitor as an agent run.
+    const runRes = await fetchWithTimeout(`${ep}/threads/${threadId}/runs?api-version=${av}`, {
       method: "POST", headers,
       body: JSON.stringify({ assistant_id: FOUNDRY_AGENT_ID })
     }, 10000);
