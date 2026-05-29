@@ -257,11 +257,12 @@ function extractResponsesText(data) {
   return chunks.join("\n").trim();
 }
 
-async function foundryResponsesAgentRequest(input) {
+async function foundryResponsesAgentRequest(input, options = {}) {
   if (!FOUNDRY_AGENT_NAME) {
     throw new Error("FOUNDRY_AGENT_NAME missing");
   }
 
+  const { timeoutMs = 120000, maxOutputTokens } = options;
   const url = `${FOUNDRY_PROJECT_ENDPOINT}/openai/v1/responses`;
   const token = await getFoundryProjectToken();
   const agentReference = {
@@ -270,24 +271,40 @@ async function foundryResponsesAgentRequest(input) {
   };
   if (FOUNDRY_AGENT_VERSION) agentReference.version = FOUNDRY_AGENT_VERSION;
 
+  const body = { input, agent_reference: agentReference, temperature: 0.2 };
+  if (maxOutputTokens) body.max_output_tokens = maxOutputTokens;
+
   const { ok, status, data, text } = await fetchJsonWithTimeout(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
-    body: JSON.stringify({
-      input,
-      agent_reference: agentReference,
-      temperature: 0.2
-    })
-  }, 120000);
+    body: JSON.stringify(body)
+  }, timeoutMs);
 
   if (!ok) {
     throw new Error(`Foundry responses agent failed ${status}: ${text ?? status}`);
   }
 
   return extractResponsesText(data);
+}
+
+async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
+  if (process.env.USE_AGENTS_API !== "telemetry") return;
+  if (!FOUNDRY_AGENT_NAME) return;
+  try {
+    await foundryResponsesAgentRequest(JSON.stringify({
+      type: "cari_review_telemetry",
+      event: phase,
+      reviewId,
+      ...metadata,
+      timestamp: new Date().toISOString()
+    }));
+  } catch (err) {
+    // Telemetry failure must never break a review
+    console.warn("[agents-api-telemetry] Non-fatal error:", err.message);
+  }
 }
 
 const ARB_SYSTEM_PROMPT = `You are CARI ARB Agent for Rackspace Cloud Architecture Review Intelligence.
@@ -1920,5 +1937,6 @@ module.exports = {
   getFoundryConfiguration,
   describeImageForReview,
   runArbAgentReview,
-  aiEnhanceRequirements
+  aiEnhanceRequirements,
+  notifyAgentsApiTelemetry
 };
