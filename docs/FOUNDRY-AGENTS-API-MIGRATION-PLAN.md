@@ -1539,10 +1539,10 @@ This section is the live tracker for the migration. It is "live" as the operatin
 
 **Tracker status legend:** `Not Started`, `In Progress`, `Blocked`, `Done`, `Deferred`, `Rolled Back`.
 
-**Last tracker update:** 2026-05-29 IST  
-**Current working phase:** Phase 1 — Telemetry Bridge (in progress)  
-**Current production flag:** `USE_AGENTS_API=off` — confirmed live on `func-arb-review-api-flex`  
-**Current resume point:** TRK-012 through TRK-015 complete. Branch `feature/agents-api-phase1-telemetry` ready to PR. Next: TRK-016 — raise PR to main, merge, then set `USE_AGENTS_API=telemetry` and verify Foundry Monitor shows agent run count > 0.
+**Last tracker update:** 2026-05-29 IST (session 2)  
+**Current working phase:** Phase 1 — Telemetry Bridge (LIVE — monitoring)  
+**Current production flag:** `USE_AGENTS_API=telemetry` — confirmed live on `func-arb-review-api-flex`  
+**Current resume point:** TRK-012 through TRK-016 complete. Phase 1 code deployed to production, flag activated. Acceptance gate: 24-hour monitoring window — watch Foundry Monitor for agent run count > 0 and Log Analytics for `[agents-api-telemetry]` errors. Next: TRK-017 — export Foundry agent version 7 config before Phase 2 begins.
 
 ### Claude AI Session Context
 
@@ -1584,7 +1584,7 @@ This section is the live tracker for the migration. It is "live" as the operatin
 | TRK-013 | Create backup tag and migration branch | Phase 1 | GitHub Expert | Done | 2026-05-29 | Tag `backup/pre-agents-api-migration-20260529` pushed; branch `feature/agents-api-phase1-telemetry` created | Permanent restore point in origin |
 | TRK-014 | Implement Phase 1 telemetry helper | Phase 1 | Full-Stack Developer | Done | 2026-05-29 | `arb-foundry-agent.js` — `notifyAgentsApiTelemetry` added; `foundryResponsesAgentRequest` extended with options; exported; called from `runAgent.js` at review_started and review_completed | 291/291 tests pass |
 | TRK-015 | Add Phase 1 tests and browser validation | Phase 1 | Full-Stack Developer + UI/UX Specialist | Done | 2026-05-29 | `arb-foundry-agent.telemetry.test.js` — 9 new tests: guard (flag/name), error swallowing, metadata shape | 291/291 pass; browser golden path validation pending post-deploy |
-| TRK-016 | Activate Phase 1 telemetry in production | Phase 1 | Senior PM + Azure Cloud Architect | Not Started | TBD | App setting change record | Only after deploy, health smoke, and rollback readiness |
+| TRK-016 | Activate Phase 1 telemetry in production | Phase 1 | Senior PM + Azure Cloud Architect | Done | 2026-05-29 | PR #46 merged; `USE_AGENTS_API=telemetry` set via `az` CLI; `/api/health` returns Healthy | 24-hour monitoring window open — watch Foundry Monitor + Log Analytics |
 | TRK-017 | Export/screenshot Foundry agent version `7` config | Phase 2 | Azure AI Architect | Not Started | TBD | PR attachment | Required before Phase 2 go-live |
 | TRK-018 | Reconcile portal prompt/schema drift | Phase 2 | Azure AI Architect + Full-Stack Developer | Not Started | TBD | PR diff / prompt export | Recommendation labels, score weights, Networking, and `visualEvidenceIds` must align |
 | TRK-019 | Implement Phase 2 synthesis path and fallback | Phase 2 | Full-Stack Developer | Not Started | TBD | PR link | Extend existing helper; fallback to Chat Completions on any failure |
