@@ -3,7 +3,8 @@
 const df = require('durable-functions');
 const {
   runArbAgentReview,
-  buildFallbackAgentReview
+  buildFallbackAgentReview,
+  notifyAgentsApiTelemetry
 } = require('../../shared/arb-foundry-agent');
 const { loadArbRules } = require('../../shared/arb-rules-engine');
 
@@ -339,6 +340,11 @@ async function runAgentHandler(input, context) {
     .filter((f) => f && f.criticalBlocker)
     .map((f) => f.title);
 
+  await notifyAgentsApiTelemetry(reviewObj.reviewId, 'review_started', {
+    fileCount: filesList.length,
+    ruleCount: existingRuleFindings.length
+  });
+
   let agentResult = await Promise.race([
     runArbAgentReview({
       review: reviewObj,
@@ -509,6 +515,13 @@ async function runAgentHandler(input, context) {
   }
 
   resolveEvidenceTraceability(agentResult, evidenceList, visualEvidenceList);
+
+  // Fire-and-forget — telemetry failure must not block result return
+  notifyAgentsApiTelemetry(reviewObj.reviewId, 'review_completed', {
+    findingsCount: (agentResult.findings || []).length,
+    score: (agentResult.scorecard && agentResult.scorecard.overallScore) ?? null,
+    recommendation: agentResult.recommendation
+  });
 
   if (context && typeof context.log === 'function') {
     context.log(
