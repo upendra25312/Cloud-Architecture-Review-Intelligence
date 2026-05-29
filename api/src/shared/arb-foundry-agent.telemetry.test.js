@@ -4,9 +4,9 @@
  * Unit tests for notifyAgentsApiTelemetry (Phase 1 telemetry bridge).
  *
  * Verifies the three required behavioral contracts:
- *   1. Returns silently when USE_AGENTS_API !== 'telemetry'
- *   2. Returns silently when FOUNDRY_AGENT_ID is absent (Agents API requires the actual GUID)
- *   3. Swallows errors — Foundry Agents API failures never propagate to the caller
+ *   1. Returns silently (immediately) when USE_AGENTS_API !== 'telemetry'
+ *   2. Fires the Responses API in the background when USE_AGENTS_API=telemetry — caller is not blocked
+ *   3. Swallows errors — Foundry Responses API failures never propagate to the caller
  *
  * All tests run without Azure credentials or network access.
  */
@@ -65,31 +65,30 @@ describe('notifyAgentsApiTelemetry — USE_AGENTS_API guard', () => {
   });
 });
 
-// ── Test 2: guard — missing agent ID ─────────────────────────────────────────
+// ── Test 2: fire-and-forget — returns immediately even when telemetry=on ──────
 
-describe('notifyAgentsApiTelemetry — FOUNDRY_AGENT_ID guard', () => {
-  it('returns without error when FOUNDRY_AGENT_ID is empty', async () => {
-    // The Agents API requires the actual agent GUID (from KeyVault). If the
-    // GUID is absent (e.g. KeyVault reference not yet resolved), telemetry
-    // must be a no-op rather than attempting an unauthenticated API call.
+describe('notifyAgentsApiTelemetry — fire-and-forget behaviour', () => {
+  it('returns immediately (does not block) when USE_AGENTS_API=telemetry and endpoint unreachable', async () => {
+    // The Responses API call runs in the background — the caller must not wait for it.
+    // Point at an unreachable host; the function should resolve well before a TCP timeout.
     const fn = loadTelemetryFn({
       USE_AGENTS_API: 'telemetry',
-      FOUNDRY_AGENT_ID: ''
+      FOUNDRY_PROJECT_ENDPOINT: 'https://127.0.0.1:1/nonexistent'
     });
-    await assert.doesNotReject(() => fn('rev-002', 'review_started', { fileCount: 1 }));
+    const start = Date.now();
+    await fn('rev-002', 'review_started', { fileCount: 1 });
+    const elapsed = Date.now() - start;
+    // Should return in <<1s even though the background fetch will eventually fail
+    assert.ok(elapsed < 1000, `Expected immediate return, took ${elapsed}ms`);
   });
 });
 
 // ── Test 3: error swallowing ──────────────────────────────────────────────────
 
 describe('notifyAgentsApiTelemetry — error swallowing', () => {
-  it('does not throw when Foundry Agents API endpoint is unreachable', async () => {
-    // FOUNDRY_AGENT_ID must be set to pass the guard so the HTTP calls are
-    // actually attempted. The connection to 127.0.0.1:1 will fail — that
-    // network error must be swallowed and never propagate to the caller.
+  it('does not throw when Foundry Responses API endpoint is unreachable', async () => {
     const fn = loadTelemetryFn({
       USE_AGENTS_API: 'telemetry',
-      FOUNDRY_AGENT_ID: 'test-agent-guid-0000',
       FOUNDRY_PROJECT_ENDPOINT: 'https://127.0.0.1:1/nonexistent'
     });
     await assert.doesNotReject(() => fn('rev-003', 'review_completed', {

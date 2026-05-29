@@ -292,69 +292,48 @@ async function foundryResponsesAgentRequest(input, options = {}) {
 
 async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
   if (process.env.USE_AGENTS_API !== "telemetry") return;
-  // FOUNDRY_AGENT_ID is the actual agent GUID (resolved from KeyVault at runtime).
-  // FOUNDRY_AGENT_NAME alone is not sufficient — the Agents API run requires the GUID.
-  if (!FOUNDRY_AGENT_ID) {
-    console.warn("[agents-api-telemetry] FOUNDRY_AGENT_ID not resolved (KeyVault reference may have failed) — skipping");
-    return;
-  }
   console.log(`[agents-api-telemetry] invoking phase=${phase} reviewId=${reviewId}`);
-  try {
-    const token = await getFoundryProjectToken();
-    // Foundry Agents REST API paths are directly on the project endpoint — no /agents/v1.0 prefix.
-    // GA api-version per https://learn.microsoft.com/azure/foundry-classic/agents/quickstart
-    const av = "2025-05-01";
-    const ep = FOUNDRY_PROJECT_ENDPOINT;
-    const headers = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    };
 
-    // Step 1 — create an empty thread
-    const threadRes = await fetchWithTimeout(`${ep}/threads?api-version=${av}`, {
-      method: "POST", headers, body: "{}"
-    }, 10000);
-    if (!threadRes.ok) {
-      const t = await threadRes.text().catch(() => String(threadRes.status));
-      console.warn(`[agents-api-telemetry] thread create ${threadRes.status}: ${t.slice(0, 200)}`);
-      return;
-    }
-    const { id: threadId } = await threadRes.json();
-
-    // Step 2 — add the telemetry event as a user message
-    const msgRes = await fetchWithTimeout(`${ep}/threads/${threadId}/messages?api-version=${av}`, {
-      method: "POST", headers,
+  // Foundry Monitor counts runs created via the Responses API with agent_reference.
+  // The Threads/Runs (Assistants) API creates runs that do NOT appear in Monitor.
+  // The Responses API call takes 30-60s (agent execution), so we fire it off in the
+  // background without awaiting — the caller returns immediately while this continues
+  // in Node's event loop (outgoing HTTP keeps the loop alive).
+  getFoundryProjectToken().then(token => {
+    const url = `${FOUNDRY_PROJECT_ENDPOINT}/openai/v1/responses`;
+    const agentReference = { name: FOUNDRY_AGENT_NAME, type: "agent_reference" };
+    if (FOUNDRY_AGENT_VERSION) agentReference.version = FOUNDRY_AGENT_VERSION;
+    return fetchWithTimeout(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({
-        role: "user",
-        content: JSON.stringify({
-          type: "cari_review_telemetry",
-          event: phase,
-          reviewId,
-          ...metadata,
-          timestamp: new Date().toISOString()
-        })
+        input: [{
+          role: "user",
+          content: JSON.stringify({
+            type: "cari_review_telemetry",
+            event: phase,
+            reviewId,
+            ...metadata,
+            timestamp: new Date().toISOString()
+          })
+        }],
+        agent_reference: agentReference
       })
-    }, 10000);
-    if (!msgRes.ok) {
-      const t = await msgRes.text().catch(() => String(msgRes.status));
-      console.warn(`[agents-api-telemetry] message create ${msgRes.status}: ${t.slice(0, 200)}`);
-      return;
+    }, 60000);
+  }).then(async res => {
+    if (!res.ok) {
+      const t = await res.text().catch(() => String(res.status));
+      console.warn(`[agents-api-telemetry] responses create ${res.status}: ${t.slice(0, 200)}`);
+    } else {
+      console.log(`[agents-api-telemetry] responses OK phase=${phase}`);
     }
-
-    // Step 3 — start the run (fire-and-forget: don't poll for completion)
-    // This call registers in the Foundry Monitor as an agent run.
-    const runRes = await fetchWithTimeout(`${ep}/threads/${threadId}/runs?api-version=${av}`, {
-      method: "POST", headers,
-      body: JSON.stringify({ assistant_id: FOUNDRY_AGENT_ID })
-    }, 10000);
-    if (!runRes.ok) {
-      const t = await runRes.text().catch(() => String(runRes.status));
-      console.warn(`[agents-api-telemetry] run create ${runRes.status}: ${t.slice(0, 200)}`);
-    }
-  } catch (err) {
-    // Telemetry failure must never break a review
+  }).catch(err => {
     console.warn("[agents-api-telemetry] Non-fatal error:", err.message);
-  }
+  });
+  // Return immediately — telemetry runs in background
 }
 
 const ARB_SYSTEM_PROMPT = `You are CARI ARB Agent for Rackspace Cloud Architecture Review Intelligence.
