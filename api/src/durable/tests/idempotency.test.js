@@ -138,7 +138,7 @@ const AGENT_RESULTS = {
   runSearch: { searchChunks: [] },
   runRules: { ruleFindings: [], ruleBlockers: [], criticalBlockerCount: 0 },
   runAgent: { agentResult: { findings: [], scorecard: { overallScore: 80, criticalBlockerCount: 0 }, recommendation: 'Ready with Gaps', fallbackUsed: false } },
-  persistResults: { persisted: true, findingsCount: 0, overallScore: 80, recommendation: 'Ready with Gaps' },
+  persistResults: { persisted: true, findingsCount: 0, overallScore: 80, recommendation: 'Ready with Gaps', generatedAt: '2026-01-01T00:00:00.000Z' },
   syncOutputs: { artifactsGenerated: 2 }
 };
 
