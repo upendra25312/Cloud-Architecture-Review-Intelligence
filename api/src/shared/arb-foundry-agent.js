@@ -1329,6 +1329,84 @@ async function runDomainFanOutViaAgentsApi({ review, files, requirements, eviden
   );
 }
 
+// ─── SHADOW COMPARISON (TRK-022) ───────────────────────────────────────────
+// Compares Phase 3 (Agents API) domain results against Phase 2 (Chat Completions)
+// baseline per Section 28 thresholds. Called non-authoritatively during shadow runs;
+// never affects the authoritative review output.
+function compareShadowResults(phase2Results, phase3Results) {
+  const p2 = (phase2Results || []).filter(Boolean);
+  const p3 = (phase3Results || []).filter(Boolean);
+
+  // Domain coverage — every Phase 2 domain must appear in Phase 3
+  const p2Domains = new Set(p2.map((r) => r.domain));
+  const p3Domains = new Set(p3.map((r) => r.domain));
+  const missingDomains = [...p2Domains].filter((d) => !p3Domains.has(d));
+  const domainCoveragePass = missingDomains.length === 0;
+
+  // Critical + High findings delta ≤ 2 (Section 28 threshold)
+  const countBySev = (results, ...sevs) =>
+    results.flatMap((r) => r.findings || []).filter((f) => sevs.includes(f.severity)).length;
+  const p2CritHigh = countBySev(p2, "Critical", "High");
+  const p3CritHigh = countBySev(p3, "Critical", "High");
+  const critHighDelta = Math.abs(p2CritHigh - p3CritHigh);
+  const critHighPass = critHighDelta <= 2;
+
+  // Deterministic rule findings 100% retained in Phase 3
+  const getRuleIds = (results) =>
+    results
+      .flatMap((r) => r.findings || [])
+      .filter((f) => f.source === "rule" || f.ruleId)
+      .map((f) => f.ruleId || f.findingId)
+      .filter(Boolean);
+  const p2RuleIds = new Set(getRuleIds(p2));
+  const p3RuleIds = new Set(getRuleIds(p3));
+  const missingRuleIds = [...p2RuleIds].filter((id) => !p3RuleIds.has(id));
+  const ruleRetentionPass = missingRuleIds.length === 0;
+
+  // Per-domain scorecard score delta ≤ 5 points
+  const p2ScoreMap = Object.fromEntries(p2.map((r) => [r.domain, r.scorecardDimension?.score ?? 0]));
+  const p3ScoreMap = Object.fromEntries(p3.map((r) => [r.domain, r.scorecardDimension?.score ?? 0]));
+  const scoreDeltasByDomain = {};
+  let maxScoreDelta = 0;
+  for (const domain of p2Domains) {
+    const delta = Math.abs((p2ScoreMap[domain] ?? 0) - (p3ScoreMap[domain] ?? 0));
+    scoreDeltasByDomain[domain] = delta;
+    if (delta > maxScoreDelta) maxScoreDelta = delta;
+  }
+  const scoreDeltaPass = maxScoreDelta <= 5;
+
+  // Phase 3 learn links must be valid learn.microsoft.com URLs
+  const p3InvalidLearnLinks = p3
+    .flatMap((r) => r.findings || [])
+    .map((f) => f.learnMoreUrl)
+    .filter((url) => url && !url.startsWith("https://learn.microsoft.com"));
+  const learnLinksPass = p3InvalidLearnLinks.length === 0;
+
+  // No missing-evidence category present in Phase 2 may be absent in Phase 3
+  const p2Missing = new Set(p2.flatMap((r) => r.missingEvidence || []));
+  const p3Missing = new Set(p3.flatMap((r) => r.missingEvidence || []));
+  const lostMissingEvidence = [...p2Missing].filter((m) => !p3Missing.has(m));
+  const missingEvidencePass = lostMissingEvidence.length === 0;
+
+  const pass =
+    domainCoveragePass &&
+    critHighPass &&
+    ruleRetentionPass &&
+    scoreDeltaPass &&
+    learnLinksPass &&
+    missingEvidencePass;
+
+  return {
+    pass,
+    domainCoverage: { pass: domainCoveragePass, missingDomains },
+    critHighDelta: { pass: critHighPass, p2CritHigh, p3CritHigh, delta: critHighDelta },
+    ruleRetention: { pass: ruleRetentionPass, missingRuleIds },
+    scoreDeltas: { pass: scoreDeltaPass, maxScoreDelta, byDomain: scoreDeltasByDomain },
+    learnLinks: { pass: learnLinksPass, invalidCount: p3InvalidLearnLinks.length },
+    missingEvidence: { pass: missingEvidencePass, lostCategories: lostMissingEvidence }
+  };
+}
+
 async function runArbAgentReviewFanOut({ review, files, requirements, evidence, searchChunks, visualEvidence = [] }) {
   const t0 = Date.now();
 
@@ -1373,6 +1451,32 @@ async function runArbAgentReviewFanOut({ review, files, requirements, evidence, 
       return parseDomainResponse(responseText, cfg);
     });
     domainResults = await Promise.all(domainCallPromises);
+  }
+
+  // Phase 3 shadow mode (TRK-022): run Agents API fan-out non-authoritatively alongside
+  // Phase 2 Chat Completions. Shadow output is never used as authoritative output.
+  // Comparison is logged per Section 28 thresholds for pre-go-live validation.
+  if (process.env.USE_AGENTS_API === "shadow") {
+    const capturedDomainResults = domainResults;
+    runDomainFanOutViaAgentsApi({ review, files, requirements, evidence, visualEvidence, learnDocs })
+      .then((shadowResults) => {
+        if (shadowResults) {
+          const report = compareShadowResults(capturedDomainResults, shadowResults);
+          console.log(
+            `[agents-api] TRK-022 shadow comparison reviewId=${review.reviewId ?? ""} pass=${report.pass}: ${JSON.stringify(report)}`
+          );
+        } else {
+          console.warn(
+            `[agents-api] TRK-022 shadow fan-out: >2 domain failures reviewId=${review.reviewId ?? ""} — full fallback triggered`
+          );
+        }
+      })
+      .catch((err) => {
+        console.warn(
+          `[agents-api] TRK-022 shadow fan-out error reviewId=${review.reviewId ?? ""}:`,
+          err?.message ?? err
+        );
+      });
   }
 
   // If more than 2 out of 7 domains failed to parse, fall back to monolithic
@@ -2132,5 +2236,7 @@ module.exports = {
   runSynthesisViaChatCompletions,
   // Exported for Phase 3 fan-out tests (TRK-021)
   buildDomainAgentInput,
-  runDomainFanOutViaAgentsApi
+  runDomainFanOutViaAgentsApi,
+  // Exported for shadow comparison tests (TRK-022)
+  compareShadowResults
 };

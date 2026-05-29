@@ -1539,10 +1539,10 @@ This section is the live tracker for the migration. It is "live" as the operatin
 
 **Tracker status legend:** `Not Started`, `In Progress`, `Blocked`, `Done`, `Deferred`, `Rolled Back`.
 
-**Last tracker update:** 2026-05-29 IST (session 7)  
-**Current working phase:** Phase 2 soak (TRK-020 In Progress) + Phase 3 code ready (TRK-021 Done)  
-**Current production flag:** `USE_AGENTS_API=synthesis` — soak day 1, Phase 3 code deployed but NOT active (requires `USE_AGENTS_API=full`)  
-**Current resume point:** TRK-020 soak running (day 1 of 5, target close 2026-06-05). TRK-021 complete: `buildDomainAgentInput`, `runDomainFanOutViaAgentsApi` implemented and deployed — 341/341 tests pass. Phase 3 code is live but dormant. Next: continue TRK-020 soak (10+ reviews, P95 latency, cost check). When TRK-020 closes, run TRK-022 (shadow comparison: set `USE_AGENTS_API=full` on test reviews, compare vs Phase 2 baseline using Section 28 thresholds). Do NOT set `USE_AGENTS_API=full` in production until TRK-022 shadow comparison passes and cost projection is confirmed < $50.
+**Last tracker update:** 2026-05-29 IST (session 8)  
+**Current working phase:** Phase 2 soak (TRK-020 In Progress) + Phase 3 shadow comparison infrastructure ready (TRK-022 In Progress)  
+**Current production flag:** `USE_AGENTS_API=synthesis` — soak day 1 of 5. Phase 3 code deployed but NOT active.  
+**Current resume point:** TRK-020 soak running (day 1 of 5, target close 2026-06-05). TRK-022 shadow infrastructure deployed: `compareShadowResults` function + `USE_AGENTS_API=shadow` mode active. To run shadow comparison: set `USE_AGENTS_API=shadow` on production (safe — Chat Completions remains authoritative), run 5 controlled reviews, read App Insights/Log Analytics for `[agents-api] TRK-022 shadow comparison` entries, confirm `pass=true` for all 5. Do NOT set `USE_AGENTS_API=full` until all 5 shadow comparisons pass AND cost projection confirmed < $50 AND TRK-020 soak closes (2026-06-05).
 
 ### Claude AI Session Context
 
@@ -1590,7 +1590,7 @@ This section is the live tracker for the migration. It is "live" as the operatin
 | TRK-019 | Implement Phase 2 synthesis path and fallback | Phase 2 | Full-Stack Developer | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildSynthesisAgentInput()`, `runSynthesisViaChatCompletions()`, `runSynthesisViaAgentsApi()` added; synthesis block in `runArbAgentReviewFanOut()` is feature-flag-gated; `arb-foundry-agent.synthesis.test.js` — 21 new tests; 331/331 pass | Code deployed with flag still `telemetry`; activate `synthesis` only after cost check < $50 |
 | TRK-020 | Soak Phase 2 for 5 business days | Phase 2 | Senior PM | In Progress | 2026-05-29 | Cost query: MTD ₹3,806 (~$40 USD), projected ₹4,069 (~$43 USD) — gate PASS; `USE_AGENTS_API=synthesis` set 2026-05-29; `/api/health` 200 OK | Soak day 1 of 5. Run 10+ reviews on live site. Monitor Foundry Traces for synthesis agent-reference runs and Log Analytics for fallback/error markers. Close after 5 business days AND 10+ reviews with no regressions. Soak end target: 2026-06-05. |
 | TRK-021 | Implement Phase 3 shadow fan-out | Phase 3 | Full-Stack Developer + Azure AI Architect | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildDomainAgentInput()`, `runDomainFanOutViaAgentsApi()` added; 200ms stagger, `Promise.allSettled`, per-domain Chat Completions fallback (1-2 failures), full fallback (>2 failures); `USE_AGENTS_API=full` gate in `runArbAgentReviewFanOut()`; `arb-foundry-agent.fanout.test.js` — 10 new tests; 341/341 pass | Code deployed with flag still `synthesis` — dormant. Phase 3 runs only when `USE_AGENTS_API=full`. |
-| TRK-022 | Compare Phase 3 shadow results | Phase 3 | Azure AI Architect + Senior Director | Not Started | TBD | Comparison report | Use Section 28 thresholds |
+| TRK-022 | Compare Phase 3 shadow results | Phase 3 | Azure AI Architect + Senior Director | In Progress | 2026-05-29 | `arb-foundry-agent.js` — `compareShadowResults()` (Section 28 gates); `USE_AGENTS_API=shadow` mode fires Phase 3 non-authoritatively alongside Phase 2 and logs comparison to App Insights; `arb-foundry-agent.shadow.test.js` — 11 new tests; 352/352 pass | Activate by setting `USE_AGENTS_API=shadow` in production (Chat Completions remains authoritative). Run 5 controlled reviews. Confirm all 5 log `pass=true` in App Insights (`[agents-api] TRK-022 shadow comparison`). Close only after 5 pass AND TRK-020 soak ends (2026-06-05) AND cost < $50. |
 | TRK-023 | Activate Phase 3 full mode | Phase 3 | Senior Director + Azure Cloud Architect | Not Started | TBD | Go-live record | Requires full evidence pack and rollback test |
 
 ### 22.2 Session Resume Checklist
