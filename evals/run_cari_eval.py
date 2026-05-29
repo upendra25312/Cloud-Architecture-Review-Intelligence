@@ -353,8 +353,10 @@ def contains_forbidden_behavior(result: dict, forbidden: str) -> bool:
             and posture.lower() == "approved":
         return True
 
-    # Check for explicit endorsement phrases near the risk concept
-    if any(phrase in corpus for phrase in explicit_approval_signals):
+    # Check for explicit endorsement phrases near the risk concept.
+    # Guard against negated forms: "not fully evidenced" must not match "fully evidenced".
+    if any(phrase in corpus and f"not {phrase}" not in corpus
+           for phrase in explicit_approval_signals):
         # Extract risk domain words from the forbidden string
         skip_words = {"do", "not", "never", "mark", "treat", "accept", "approve", "claim",
                       "say", "invent", "follow", "assume", "include", "without", "based",
