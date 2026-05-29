@@ -1539,10 +1539,10 @@ This section is the live tracker for the migration. It is "live" as the operatin
 
 **Tracker status legend:** `Not Started`, `In Progress`, `Blocked`, `Done`, `Deferred`, `Rolled Back`.
 
-**Last tracker update:** 2026-05-29 IST (session 2)  
-**Current working phase:** Phase 1 — Telemetry Bridge (LIVE — monitoring)  
-**Current production flag:** `USE_AGENTS_API=telemetry` — confirmed live on `func-arb-review-api-flex`  
-**Current resume point:** TRK-012 through TRK-016 complete. Phase 1 code deployed to production, flag activated. Acceptance gate: 24-hour monitoring window — watch Foundry Monitor for agent run count > 0 and Log Analytics for `[agents-api-telemetry]` errors. Next: TRK-017 — export Foundry agent version 7 config before Phase 2 begins.
+**Last tracker update:** 2026-05-29 IST (session 7)  
+**Current working phase:** Phase 2 soak (TRK-020 In Progress) + Phase 3 code ready (TRK-021 Done)  
+**Current production flag:** `USE_AGENTS_API=synthesis` — soak day 1, Phase 3 code deployed but NOT active (requires `USE_AGENTS_API=full`)  
+**Current resume point:** TRK-020 soak running (day 1 of 5, target close 2026-06-05). TRK-021 complete: `buildDomainAgentInput`, `runDomainFanOutViaAgentsApi` implemented and deployed — 341/341 tests pass. Phase 3 code is live but dormant. Next: continue TRK-020 soak (10+ reviews, P95 latency, cost check). When TRK-020 closes, run TRK-022 (shadow comparison: set `USE_AGENTS_API=full` on test reviews, compare vs Phase 2 baseline using Section 28 thresholds). Do NOT set `USE_AGENTS_API=full` in production until TRK-022 shadow comparison passes and cost projection is confirmed < $50.
 
 ### Claude AI Session Context
 
@@ -1585,11 +1585,11 @@ This section is the live tracker for the migration. It is "live" as the operatin
 | TRK-014 | Implement Phase 1 telemetry helper | Phase 1 | Full-Stack Developer | Done | 2026-05-29 | `arb-foundry-agent.js` — `notifyAgentsApiTelemetry` added; `foundryResponsesAgentRequest` extended with options; exported; called from `runAgent.js` at review_started and review_completed | 291/291 tests pass |
 | TRK-015 | Add Phase 1 tests and browser validation | Phase 1 | Full-Stack Developer + UI/UX Specialist | Done | 2026-05-29 | `arb-foundry-agent.telemetry.test.js` — 9 new tests: guard (flag/name), error swallowing, metadata shape | 291/291 pass; browser golden path validation pending post-deploy |
 | TRK-016 | Activate Phase 1 telemetry in production | Phase 1 | Senior PM + Azure Cloud Architect | Done | 2026-05-29 | PR #46 merged; `USE_AGENTS_API=telemetry` set via `az` CLI; `/api/health` returns Healthy | 24-hour monitoring window open — watch Foundry Monitor + Log Analytics |
-| TRK-017 | Export/screenshot Foundry agent version `7` config | Phase 2 | Azure AI Architect | Not Started | TBD | PR attachment | Required before Phase 2 go-live |
-| TRK-018 | Reconcile portal prompt/schema drift | Phase 2 | Azure AI Architect + Full-Stack Developer | Not Started | TBD | PR diff / prompt export | Recommendation labels, score weights, Networking, and `visualEvidenceIds` must align |
-| TRK-019 | Implement Phase 2 synthesis path and fallback | Phase 2 | Full-Stack Developer | Not Started | TBD | PR link | Extend existing helper; fallback to Chat Completions on any failure |
-| TRK-020 | Soak Phase 2 for 5 business days | Phase 2 | Senior PM | Not Started | TBD | Monitoring report | Requires 10+ successful reviews and cost projection below `$50` |
-| TRK-021 | Implement Phase 3 shadow fan-out | Phase 3 | Full-Stack Developer + Azure AI Architect | Not Started | TBD | PR link | Shadow output must not affect UI or persisted authoritative result |
+| TRK-017 | Export/screenshot Foundry agent version `7` config | Phase 2 | Azure AI Architect | Done | 2026-05-29 | YAML exported by user in session 2 (model-router, File Search, microsoft_learn MCP, no max_completion_tokens cap) | Confirm Foundry Monitor shows agent runs > 0 ✅ |
+| TRK-018 | Reconcile portal prompt/schema drift | Phase 2 | Azure AI Architect + Full-Stack Developer | Done | 2026-05-29 | Code: `ARB_SYSTEM_PROMPT` + `buildUserMessage()` updated; `arb-foundry-agent.schema.test.js` (15 tests); 310/310 pass. Portal: v7-r3 pasted → agent version 9 live 2026-05-29. SOW traceability rules, scoring formula, designArtifacts, PPTX slide, UI chips all implemented. | TRK-018 complete — all schema drift gates closed |
+| TRK-019 | Implement Phase 2 synthesis path and fallback | Phase 2 | Full-Stack Developer | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildSynthesisAgentInput()`, `runSynthesisViaChatCompletions()`, `runSynthesisViaAgentsApi()` added; synthesis block in `runArbAgentReviewFanOut()` is feature-flag-gated; `arb-foundry-agent.synthesis.test.js` — 21 new tests; 331/331 pass | Code deployed with flag still `telemetry`; activate `synthesis` only after cost check < $50 |
+| TRK-020 | Soak Phase 2 for 5 business days | Phase 2 | Senior PM | In Progress | 2026-05-29 | Cost query: MTD ₹3,806 (~$40 USD), projected ₹4,069 (~$43 USD) — gate PASS; `USE_AGENTS_API=synthesis` set 2026-05-29; `/api/health` 200 OK | Soak day 1 of 5. Run 10+ reviews on live site. Monitor Foundry Traces for synthesis agent-reference runs and Log Analytics for fallback/error markers. Close after 5 business days AND 10+ reviews with no regressions. Soak end target: 2026-06-05. |
+| TRK-021 | Implement Phase 3 shadow fan-out | Phase 3 | Full-Stack Developer + Azure AI Architect | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildDomainAgentInput()`, `runDomainFanOutViaAgentsApi()` added; 200ms stagger, `Promise.allSettled`, per-domain Chat Completions fallback (1-2 failures), full fallback (>2 failures); `USE_AGENTS_API=full` gate in `runArbAgentReviewFanOut()`; `arb-foundry-agent.fanout.test.js` — 10 new tests; 341/341 pass | Code deployed with flag still `synthesis` — dormant. Phase 3 runs only when `USE_AGENTS_API=full`. |
 | TRK-022 | Compare Phase 3 shadow results | Phase 3 | Azure AI Architect + Senior Director | Not Started | TBD | Comparison report | Use Section 28 thresholds |
 | TRK-023 | Activate Phase 3 full mode | Phase 3 | Senior Director + Azure Cloud Architect | Not Started | TBD | Go-live record | Requires full evidence pack and rollback test |
 
