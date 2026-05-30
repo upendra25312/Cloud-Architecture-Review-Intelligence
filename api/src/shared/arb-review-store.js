@@ -2975,6 +2975,7 @@ function capRequirementsForTableStorage(requirements) {
     reviewerStatus: req.reviewerStatus,
     cariStatus: req.cariStatus,
     cariValidationNote: trimString(req.cariValidationNote, 300),
+    designArtifacts: Array.isArray(req.designArtifacts) ? req.designArtifacts.slice(0, 5) : [],
     isGap: req.isGap === true
   }));
 }

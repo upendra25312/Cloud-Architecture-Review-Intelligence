@@ -530,9 +530,18 @@ function buildDecisionSlide(p, data, slideNum) {
   }
 }
 
+function sowStatusColor(status) {
+  switch (status) {
+    case "Validated":  return { text: "#14532D", bg: "#DCFCE7" };
+    case "Partial":    return { text: "#713F12", bg: "#FEF9C3" };
+    case "Not Found":  return { text: "#7F1D1D", bg: "#FEE2E2" };
+    default:           return { text: BRAND.teal,   bg: null };
+  }
+}
+
 function buildSowTraceabilitySlide(p, data, slideNum) {
   const s = p.addSlide();
-  addHeader(s, "SOW Traceability", "Evidence mapped to SOW scope and deliverables");
+  addHeader(s, "SOW Traceability", "SOW commitments validated against design documents");
   addFooter(s, data.reviewId, slideNum);
 
   const rows = data.sowTraceability || [];
@@ -544,25 +553,55 @@ function buildSowTraceabilitySlide(p, data, slideNum) {
     return;
   }
 
+  // Coverage summary banner
+  const validatedCount = rows.filter(r => r.status === "Validated").length;
+  const partialCount   = rows.filter(r => r.status === "Partial").length;
+  const notFoundCount  = rows.filter(r => r.status === "Not Found").length;
+  const hasAiStatus    = validatedCount + partialCount + notFoundCount > 0;
+  const coverageRate   = rows.length > 0 ? Math.round(((validatedCount + partialCount) / rows.length) * 100) : 0;
+
+  if (hasAiStatus) {
+    const bannerColor = coverageRate >= 80 ? "14532D" : coverageRate >= 50 ? "713F12" : "7F1D1D";
+    const bannerBg    = coverageRate >= 80 ? "DCFCE7" : coverageRate >= 50 ? "FEF9C3" : "FEE2E2";
+    s.addShape(p.ShapeType.rect, { x: M, y: BODY_Y - 0.55, w: CW, h: 0.42, fill: { color: bannerBg }, line: { color: bannerBg } });
+    const parts = [`SOW Coverage: ${coverageRate}%`];
+    if (validatedCount > 0) parts.push(`✓ ${validatedCount} Validated`);
+    if (partialCount   > 0) parts.push(`~ ${partialCount} Partial`);
+    if (notFoundCount  > 0) parts.push(`✗ ${notFoundCount} Not Found`);
+    s.addText(parts.join("   "), {
+      x: M + 0.15, y: BODY_Y - 0.52, w: CW - 0.3, h: 0.36,
+      fontSize: 9.5, bold: true, color: bannerColor, fontFace: BRAND.font, valign: "middle", wrap: true,
+    });
+  }
+
   // Column widths total = CW = 12.33"
-  const colW = [2.8, 5.5, 2.33, 1.7];
-  const headers = ["Domain", "SOW Requirement", "Evidence Source", "Status"];
+  const colW = [2.0, 5.5, 3.13, 1.7];
+  const headers = ["Domain", "SOW Requirement", "Design Coverage", "Status"];
+  const tableY = hasAiStatus ? BODY_Y : BODY_Y;
 
   const tableData = [
     headers.map((h) => ({
       text: h,
       options: { bold: true, color: BRAND.white, fill: { color: BRAND.blue }, fontSize: 9.5, fontFace: BRAND.font },
     })),
-    ...rows.slice(0, 12).map((r) => [
-      { text: r.area          || "" },
-      { text: r.sowRef        || "—" },
-      { text: r.evidenceSource || "—" },
-      { text: r.status        || "—", options: { color: r.status === "In scope" ? BRAND.teal : BRAND.midGrey, bold: r.status === "In scope" } },
-    ]),
+    ...rows.slice(0, 11).map((r) => {
+      const sc = sowStatusColor(r.status);
+      return [
+        { text: r.area           || "" },
+        { text: r.sowRef         || "—", options: { wrap: true } },
+        { text: r.evidenceSource || "—", options: { wrap: true } },
+        { text: r.status         || "—", options: {
+            color: sc.text,
+            bold: true,
+            ...(sc.bg ? { fill: { color: sc.bg.replace("#", "") } } : {}),
+          }
+        },
+      ];
+    }),
   ];
 
   s.addTable(tableData, {
-    x: M, y: BODY_Y, w: CW,
+    x: M, y: tableY, w: CW,
     rowH: 0.38,
     fontSize: 9.5,
     fontFace: BRAND.font,
@@ -802,16 +841,20 @@ function shapeReviewDataForPptx(review, files, requirements, evidence, findings,
   const sowReqs    = (requirements || []).filter((r) => sowFileIds.has(r.sourceFileId)).slice(0, 12);
   const sowTraceability = sowReqs.length > 0
     ? sowReqs.map((r) => ({
-        area:           r.category       || "Architecture",
-        sowRef:         r.sourceFileName || "SOW",
-        evidenceSource: r.sourceFileName || "SOW",
-        status:         "In scope",
+        area:           r.category || "Architecture",
+        sowRef:         (r.normalizedText || "").slice(0, 140) || r.sourceFileName || "SOW",
+        evidenceSource: Array.isArray(r.designArtifacts) && r.designArtifacts.length > 0
+          ? r.designArtifacts.slice(0, 3).join(", ")
+          : r.cariValidationNote?.split(".")[0] || r.sourceFileName || "See design doc",
+        status:         r.cariStatus || "In scope",
+        note:           r.cariValidationNote || "",
       }))
     : sowFiles.slice(0, 12).map((f) => ({
         area:           "Scope",
         sowRef:         f.fileName,
         evidenceSource: f.fileName,
         status:         "In scope",
+        note:           "",
       }));
 
   return {

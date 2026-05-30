@@ -238,6 +238,8 @@ export interface ArbRequirement {
   cariStatus?: "Validated" | "Partial" | "Not Found" | "Gap" | "Pending";
   /** Brief note explaining the validation result */
   cariValidationNote?: string | null;
+  /** Named design components that satisfy this SOW requirement (e.g. "S2S VPN", "Azure Firewall") */
+  designArtifacts?: string[];
   /** True when this item is in design docs but missing from the SOW */
   isGap?: boolean;
 }

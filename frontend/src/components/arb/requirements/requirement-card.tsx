@@ -106,6 +106,20 @@ export function RequirementCard({ requirement }: RequirementCardProps) {
         </p>
       )}
 
+      {/* Design artifacts — specific components that satisfy this SOW requirement */}
+      {Array.isArray(requirement.designArtifacts) && requirement.designArtifacts.length > 0 && (
+        <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 4 }}>
+          {requirement.designArtifacts.map((artifact) => (
+            <span
+              key={artifact}
+              style={{ fontSize: "0.72rem", background: "#EFF6FF", color: "#1D4ED8", border: "1px solid #BFDBFE", borderRadius: 4, padding: "1px 6px", fontWeight: 500 }}
+            >
+              {artifact}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Source file + category */}
       <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         <span
