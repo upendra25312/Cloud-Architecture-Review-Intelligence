@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createArbReview, listArbReviews, uploadArbFiles, deleteArbReview } from "@/arb/api";
-import { getArbStepHref } from "@/arb/routes";
+import { getArbStepHref, getArbCompareHref } from "@/arb/routes";
 import type { ArbReviewSummary } from "@/arb/types";
 import { useAuthSession } from "@/components/auth-session-provider";
 import { EvidenceGuidancePanel } from "@/components/arb/evidence-guidance";
@@ -275,6 +275,18 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
     }
     return reviews;
   }, [focus, reviews]);
+
+  // Group reviews by project + customer so we can surface compare links on cards
+  const siblingMap = useMemo(() => {
+    const map = new Map<string, ArbReviewSummary[]>();
+    for (const r of filteredReviews) {
+      const key = `${r.projectName}|${r.customerName ?? ""}`;
+      const group = map.get(key) ?? [];
+      group.push(r);
+      map.set(key, group);
+    }
+    return map;
+  }, [filteredReviews]);
 
   async function handleCreateReview() {
     try {
@@ -699,6 +711,21 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
                   <Link href={getArbStepHref(review.reviewId, "findings")} className="arb-table-secondary">
                     Open findings
                   </Link>
+                  {(() => {
+                    const key = `${review.projectName}|${review.customerName ?? ""}`;
+                    const sibling = siblingMap.get(key)
+                      ?.filter((s) => s.reviewId !== review.reviewId)
+                      .sort((a, b) => (b.lastUpdated ?? "").localeCompare(a.lastUpdated ?? ""))[0];
+                    return sibling ? (
+                      <Link
+                        href={getArbCompareHref(sibling.reviewId, review.reviewId) as Route}
+                        className="arb-table-secondary"
+                        title={`Compare with ${sibling.projectName} (${sibling.workflowState})`}
+                      >
+                        Compare →
+                      </Link>
+                    ) : null;
+                  })()}
                   <span className="arb-review-id">Review ID: {review.reviewId}</span>
                 </div>
               </article>
@@ -731,7 +758,7 @@ export function ArbReviewLibrary(props: { focus?: ArbReviewLibraryFocus }) {
             <ul className="arb-rereview-modal-steps">
               <li>A new, isolated review is created for <strong>{reReviewModal.projectName}</strong> — your existing review and its findings are untouched.</li>
               <li>You will be taken to the upload step to provide the updated architecture documents for the new cycle.</li>
-              <li>Once the new review is complete, open it and use <strong>Overview → Previous review cycles</strong> to compare results side-by-side with this review.</li>
+              <li>Once the new review is complete, a <strong>Compare →</strong> link will appear on both review cards in the library so you can compare results side-by-side.</li>
             </ul>
 
             {reReviewError && (
