@@ -50,6 +50,7 @@
 27. [Failure Injection and Recovery Drills](#27-failure-injection-and-recovery-drills)
 28. [Shadow-Run Comparison Method](#28-shadow-run-comparison-method)
 29. [Change Freeze and Roll-Forward Rules](#29-change-freeze-and-roll-forward-rules)
+30. [Future Roadmap: Multi-Cloud MCP Integration (AWS and GCP)](#30-future-roadmap-multi-cloud-mcp-integration-aws-and-gcp)
 
 ---
 
@@ -1884,6 +1885,123 @@ Use the least disruptive rollback that restores correctness:
 2. `synthesis` -> `telemetry` if synthesis agent output is affected but telemetry is safe.
 3. `telemetry` -> `off` if telemetry creates misleading traces, cost, or errors.
 4. Redeploy from `main` or backup tag only if feature flag rollback is insufficient.
+
+## 30. Future Roadmap: Multi-Cloud MCP Integration (AWS and GCP)
+
+> **Status:** Not started — future feature. Do not implement until TRK-020 soak closes (2026-06-05) and Phase 3 (TRK-023) is validated with the thin-portal-agent redesign.
+
+### 30.1 Objective
+
+Extend CARI from an Azure-only ARB review tool to a multi-cloud Architecture Review Board platform by integrating AWS Knowledge and GCP documentation MCP servers alongside the existing `microsoft_learn` MCP tool.
+
+### 30.2 Architecture Decision: Single Agent + Multi-Cloud MCP Tools
+
+**Decision (2026-05-30, expert team unanimous): Single agent architecture. Separate per-cloud agents were evaluated and rejected.**
+
+| Option | Decision | Reason |
+| --- | --- | --- |
+| Separate agents per cloud (azure-agent, aws-agent, gcp-agent + orchestrator) | **Rejected** | Multiplies agent call latency (sequential = 3x, parallel = 21 domain calls); merge problem unsolved; 4x operational overhead; TRK-022 proved 7 parallel agent calls already cause domain dropout |
+| Single `cari-arb-review-agent` + 3 cloud MCP tools | **Chosen** | CARI's 7 domains are cloud-agnostic; cloud-specific content delivered via MCP tools at inference time; zero schema change |
+
+### 30.3 Target Architecture
+
+```text
+cari-arb-review-agent (single agent)
+├── file_search tools
+│     ├── azure-knowledge-store  (CAF, WAF, ALZ rules — current 29.57 KB)
+│     ├── aws-knowledge-store    (AWS WAF, CDK patterns, service docs)     ← NEW
+│     └── gcp-knowledge-store    (GCP AF, GKE patterns, service docs)     ← NEW
+│
+└── MCP tools
+      ├── microsoft_learn  (https://learn.microsoft.com/api/mcp)          ← existing
+      ├── aws_knowledge    (AWS Knowledge MCP endpoint)                   ← NEW
+      └── gcp_docs         (GCP documentation MCP endpoint)               ← NEW
+```
+
+Cloud-specific MCP tools activate **only when evidence contains the relevant cloud's services** — zero latency impact on pure Azure reviews.
+
+### 30.4 Cloud Framework Mapping to CARI Domains
+
+| CARI Domain | Azure WAF | AWS WAF | GCP Architecture Framework |
+| --- | --- | --- | --- |
+| Security | WAF:Security | Security (IAM, GuardDuty, KMS, SCPs) | Security (IAM, VPC Service Controls, CMEK) |
+| Networking | WAF:Networking / ALZ | VPC, Transit Gateway, Direct Connect | VPC, Cloud Armor, Cloud CDN, Cloud Interconnect |
+| Reliability | WAF:Reliability | Reliability (AZs, Route 53, Auto Scaling) | Reliability (Global LB, multi-region, Cloud Armor) |
+| Operations | WAF:Operational Excellence | Operational Excellence | Operational Excellence |
+| Cost | WAF:Cost Optimization | Cost Optimization | Cost Optimization |
+| Performance | WAF:Performance Efficiency | Performance Efficiency | Performance Efficiency |
+| Governance | CAF:Govern | AWS Organizations + SCPs + Config | Resource hierarchy + Org Policy + Security Command Center |
+
+### 30.5 Changes Required
+
+#### Portal agent (`cari-arb-review-agent`)
+
+- Add `aws_knowledge` MCP tool (AWS Knowledge MCP server endpoint)
+- Add `gcp_docs` MCP tool (GCP documentation MCP server endpoint)
+- Add `aws-knowledge-store` and `gcp-knowledge-store` file_search vector stores
+- Update agent instructions to invoke cloud-specific tools when evidence contains those cloud's services
+
+#### Code (`api/src/shared/arb-foundry-agent.js`)
+
+1. **`detectCloudProviders(requirements, evidence)`** — scan evidence text for AWS/GCP service names; returns `{ hasAws, hasGcp }` to gate grounding calls
+2. **`fetchAwsGrounding(review, requirements, evidence)`** — mirrors `fetchMicrosoftLearnGrounding()`; calls AWS Knowledge MCP; uses same blob cache pattern; gated by `hasAws`
+3. **`fetchGcpGrounding(review, requirements, evidence)`** — same pattern for GCP docs MCP; gated by `hasGcp`
+4. **Fan-out entry point** — run all three grounding fetches in parallel, pass `awsDocs` + `gcpDocs` into `buildDomainMessage()` alongside existing `learnDocs`
+5. **`buildDomainMessage()`** — add `## AWS Reference Documentation` and `## GCP Reference Documentation` sections (same pattern as existing `## Microsoft Learn Reference Documentation`)
+
+#### Rules engine (new files)
+
+- `api/data/arb-rules/aws-waf-rules.json` — AWS Well-Architected Framework 6-pillar rules mapped to CARI domain model
+- `api/data/arb-rules/gcp-af-rules.json` — GCP Architecture Framework 6-pillar rules mapped to CARI domain model
+
+#### System prompt (`ARB_SYSTEM_PROMPT`)
+
+- Replace Azure-only scope line with multi-cloud framework assessment instructions
+- Add per-cloud decision band guidance for cross-cloud integration risk findings
+
+#### Knowledge stores
+
+- Populate `aws-knowledge-store`: AWS WAF pillar summaries, CDK patterns, key service best practices
+- Populate `gcp-knowledge-store`: GCP AF pillar summaries, GKE patterns, key service best practices
+
+### 30.6 New App Settings Required
+
+```bash
+AWS_KNOWLEDGE_MCP_ENDPOINT=<aws-knowledge-mcp-server-url>
+GCP_DOCS_MCP_ENDPOINT=<gcp-docs-mcp-server-url>
+```
+
+These can be added to Function App settings immediately (feature-flagged off by empty value). No infrastructure change required.
+
+### 30.7 Cost Impact
+
+Multi-cloud grounding only runs when `hasAws` or `hasGcp` is true. Pure Azure reviews: zero cost change. Multi-cloud reviews: at most 2 additional MCP grounding calls (AWS + GCP) per review, estimated +₹10–50/month at current review volumes. Stays well within $60/month cap.
+
+### 30.8 Prerequisite Gates
+
+This feature must not start until:
+
+- [ ] TRK-020 Phase 2 soak complete (2026-06-05)
+- [ ] TRK-023 Phase 3 validated (thin portal agent approach passes Section 28 gates)
+- [ ] Projected month-end cost < $50 (multi-cloud MCP adds incremental spend)
+- [ ] AWS Knowledge MCP server endpoint confirmed and accessible from Function App managed identity
+- [ ] GCP documentation MCP server endpoint confirmed and accessible
+
+### 30.9 Estimated Effort (when prerequisites met)
+
+| Task | Owner | Hours |
+| --- | --- | --- |
+| Portal agent: add AWS + GCP MCP tools + knowledge stores | Azure AI Architect | 3h |
+| `detectCloudProviders()` + `fetchAwsGrounding()` + `fetchGcpGrounding()` | Full-Stack Developer | 8h |
+| `buildDomainMessage()` AWS/GCP section injection | Full-Stack Developer | 3h |
+| `aws-waf-rules.json` + `gcp-af-rules.json` rules authoring | Azure Cloud Architect | 6h |
+| `ARB_SYSTEM_PROMPT` multi-cloud update | Azure AI Architect | 2h |
+| Knowledge store population (AWS + GCP) | Azure AI Architect | 4h |
+| Unit tests + eval framework baseline comparison | Full-Stack Developer | 6h |
+| 5-review multi-cloud validation (mixed Azure+AWS evidence) | Azure AI Architect + Senior PM | 4h |
+| **Total** | | **~36 hours** |
+
+---
 
 ## Appendix A: Quick Reference — Feature Flag Commands
 
