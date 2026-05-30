@@ -271,7 +271,8 @@ async function foundryResponsesAgentRequest(input, options = {}) {
   };
   if (FOUNDRY_AGENT_VERSION) agentReference.version = FOUNDRY_AGENT_VERSION;
 
-  const body = { input, agent_reference: agentReference, temperature: 0.2 };
+  // temperature is not allowed when agent_reference is specified (API returns 400)
+  const body = { input, agent_reference: agentReference };
   if (maxOutputTokens) body.max_output_tokens = maxOutputTokens;
 
   const { ok, status, data, text } = await fetchJsonWithTimeout(url, {
@@ -1302,7 +1303,8 @@ async function runDomainFanOutViaAgentsApi({ review, files, requirements, eviden
 
   const failCount = domainSettled.filter((r) => r.status === "rejected").length;
   if (failCount > 2) {
-    console.warn(`[agents-api] ${failCount}/7 domain runs failed — full fallback to Chat Completions fan-out`);
+    const firstErr = domainSettled.find((r) => r.status === "rejected")?.reason;
+    console.warn(`[agents-api] ${failCount}/7 domain runs failed — full fallback to Chat Completions fan-out. First error: ${firstErr?.message ?? firstErr}`);
     return null;
   }
 
