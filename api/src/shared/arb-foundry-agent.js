@@ -1053,8 +1053,14 @@ function buildDomainMessage(config, review, files, requirements, evidence, visua
 // analysis rather than the full holistic ARB review.
 
 function buildDomainAgentInput(config, review, files, requirements, evidence, visualEvidence, learnDocs) {
+  // Embed the domain-specific system prompt in the user message so the portal agent (which has
+  // the full holistic ARB system prompt) applies domain-scoped rules: named critical blockers,
+  // "produce a finding for EVERY gap", and explicit 0-100 scoring bands.
+  // Without this, the portal agent's holistic prompt overrides domain focus and produces
+  // fewer Critical/High findings and more generous scores (25-30 pt delta vs Phase 2 baseline).
+  const sysPrompt = buildDomainSystemPrompt(config);
   const domainMsg = buildDomainMessage(config, review, files, requirements, evidence, visualEvidence ?? [], learnDocs ?? []);
-  const content = `## CARI ARB Domain Analysis Task\n\nAnalyze only the ${config.domain} domain.\n\n${domainMsg}`;
+  const content = `## CARI ARB Domain Analysis Task\n\n${sysPrompt}\n\n${domainMsg}`;
   return [{ role: "user", content }];
 }
 
