@@ -363,6 +363,21 @@ async function runAgentHandler(input, context) {
     )
   ]);
 
+  // TRK-022: When running via Durable, the shadow fan-out promise returned by
+  // runArbAgentReview must be explicitly awaited here. Fire-and-forget is silently
+  // orphaned when a Durable activity exits before the promise resolves, so no
+  // shadow comparison traces ever appear in App Insights.
+  if (agentResult && agentResult._shadowPromise) {
+    const SHADOW_TIMEOUT_MS = 3 * 60 * 1000;
+    try {
+      await Promise.race([
+        agentResult._shadowPromise,
+        new Promise((resolve) => setTimeout(resolve, SHADOW_TIMEOUT_MS))
+      ]);
+    } catch {}
+    delete agentResult._shadowPromise;
+  }
+
   if (!agentResult || agentResult.success === false) {
     const reason =
       (agentResult && agentResult.reason) || 'Automated assessment unavailable';

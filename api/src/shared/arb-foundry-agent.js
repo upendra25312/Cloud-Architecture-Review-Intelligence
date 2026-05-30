@@ -1464,9 +1464,13 @@ async function runArbAgentReviewFanOut({ review, files, requirements, evidence, 
   // Phase 3 shadow mode (TRK-022): run Agents API fan-out non-authoritatively alongside
   // Phase 2 Chat Completions. Shadow output is never used as authoritative output.
   // Comparison is logged per Section 28 thresholds for pre-go-live validation.
+  // _shadowPromise is returned to callers so Durable activities can await it explicitly
+  // (fire-and-forget is orphaned when a Durable activity exits before the promise resolves).
+  let _shadowPromise = null;
   if (process.env.USE_AGENTS_API === "shadow") {
     const capturedDomainResults = domainResults;
-    runDomainFanOutViaAgentsApi({ review, files, requirements, evidence, visualEvidence, learnDocs })
+    console.log(`[agents-api] TRK-022 shadow fan-out starting reviewId=${review.reviewId ?? ""}`);
+    _shadowPromise = runDomainFanOutViaAgentsApi({ review, files, requirements, evidence, visualEvidence, learnDocs })
       .then((shadowResults) => {
         if (shadowResults) {
           const report = compareShadowResults(capturedDomainResults, shadowResults);
@@ -1592,7 +1596,7 @@ async function runArbAgentReviewFanOut({ review, files, requirements, evidence, 
     generatedAt: new Date().toISOString()
   };
 
-  return { findings, scorecard, recommendation, learnMcpMeta };
+  return { findings, scorecard, recommendation, learnMcpMeta, _shadowPromise };
 }
 
 // ─── END DOMAIN FAN-OUT ────────────────────────────────────────────────────
@@ -1906,7 +1910,8 @@ async function runArbAgentReview({ review, files, requirements, evidence, search
     try {
       const fanoutResult = await runArbAgentReviewFanOut({ review, files, requirements, evidence, searchChunks, visualEvidence });
       if (fanoutResult) {
-        return { success: true, ...fanoutResult };
+        const { _shadowPromise, ...fanoutData } = fanoutResult;
+        return { success: true, ...fanoutData, _shadowPromise };
       }
       console.warn("[foundry] Fan-out returned null — falling through to monolithic path");
     } catch (fanoutError) {
