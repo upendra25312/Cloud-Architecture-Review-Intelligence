@@ -338,6 +338,115 @@ function buildRequirementsSection(pack) {
   ];
 }
 
+function buildApprovalConditionsSection(pack) {
+  const findings = pack.findings || [];
+  const blockers = findings.filter(
+    (f) => ["Critical", "High"].includes(f.severity) && f.status !== "Closed",
+  );
+
+  const dc = pack.decision || {};
+  const isApproved = dc.reviewerDecision === "Approved";
+
+  const items = [
+    pageBreak(),
+    new Paragraph({ text: "Approval Conditions", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
+    spacer(),
+  ];
+
+  if (isApproved) {
+    items.push(p("All conditions have been met. This review has been approved.", { color: "065F46" }));
+    items.push(spacer());
+    return items;
+  }
+
+  if (!blockers.length) {
+    items.push(p("No Critical or High severity open findings. Review is eligible for approval pending sign-off."));
+    items.push(spacer());
+    return items;
+  }
+
+  items.push(p(`The following ${blockers.length} condition(s) must be resolved before this review can be approved:`, { bold: true }));
+  items.push(spacer());
+
+  for (const f of blockers) {
+    items.push(
+      new Paragraph({
+        children: [
+          new TextRun({ text: `☐  [${f.severity}] `, bold: true, size: 20,
+            color: f.severity === "Critical" ? "D92B2B" : "C85000" }),
+          new TextRun({ text: f.title || "—", size: 20 }),
+          f.recommendation
+            ? new TextRun({ text: `  —  ${f.recommendation}`, size: 18, color: "475569" })
+            : new TextRun({ text: "" }),
+        ],
+        spacing: { after: 80 },
+      }),
+    );
+  }
+
+  items.push(spacer());
+  return items;
+}
+
+function buildSignOffSection(pack) {
+  const dc  = pack.decision  || {};
+  const es  = pack.executiveSummary || {};
+  const meta = pack.metadata || {};
+
+  const decisionColor = dc.reviewerDecision === "Approved"    ? "065F46"
+    : dc.reviewerDecision === "Conditionally Approved"         ? "78350F"
+    : dc.reviewerDecision === "Needs Revision"                 ? "1E3A5F"
+    : dc.reviewerDecision === "Needs Remediation"              ? "7F1D1D"
+    : "374151";
+
+  return [
+    pageBreak(),
+    new Paragraph({ text: "Sign-off", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
+    spacer(),
+    labelValue("Review Decision",      dc.reviewerDecision  || "Not Recorded"),
+    labelValue("Governance Posture",   dc.governancePosture || "—"),
+    labelValue("Risk Acceptance",      dc.riskAcceptanceRequired ? "Required" : "Not Required"),
+    labelValue("Overall Score",        es.overallScore != null ? `${es.overallScore} / 100 (${es.scoreBand || ""})` : "—"),
+    labelValue("Recommendation",       es.recommendation    || "—"),
+    labelValue("Review ID",            meta.reviewId        || "—"),
+    labelValue("Generated At",         meta.generatedAt
+      ? new Date(meta.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+      : new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })),
+    spacer(),
+
+    ...(dc.rationale ? [
+      new Paragraph({ text: "Decision Rationale", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }),
+      new Paragraph({
+        children: [new TextRun({ text: dc.rationale, size: 20, italics: true, color: decisionColor })],
+        spacing: { after: 120 },
+      }),
+      spacer(),
+    ] : []),
+
+    new Paragraph({ text: "Reviewer Sign-off", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }),
+    buildTable(
+      ["Role", "Name", "Decision", "Date", "Signature"],
+      [
+        [
+          "Principal Reviewer",
+          dc.reviewerName || "                              ",
+          dc.reviewerDecision || "                    ",
+          dc.recordedAt
+            ? new Date(dc.recordedAt).toLocaleDateString("en-GB")
+            : "                    ",
+          "                              ",
+        ],
+        ["Customer / Project Sponsor", "                              ", "", "                    ", "                              "],
+        ["ARB Chair",                  "                              ", "", "                    ", "                              "],
+      ],
+      BRAND.dark,
+    ),
+    spacer(),
+    p("By signing above, the reviewer confirms that this architecture review was conducted in accordance with the Cloud Architecture Review Board process and that the findings and recommendation reflect an accurate assessment of the submitted evidence.", { italics: true, color: "64748B", size: 18 }),
+    spacer(),
+  ];
+}
+
 // ─── Main export ───────────────────────────────────────────────────────────────
 
 async function generateArbDocx(pack) {
@@ -350,6 +459,8 @@ async function generateArbDocx(pack) {
     ...buildFindingsSection(pack),
     ...buildActionsSection(pack),
     ...buildRequirementsSection(pack),
+    ...buildApprovalConditionsSection(pack),
+    ...buildSignOffSection(pack),
   ];
 
   const doc = new Document({
