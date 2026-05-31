@@ -137,7 +137,7 @@ export function ArbExportPanel({
       icon: <IconDocx />,
       iconBg: "rgba(43,87,154,0.10)",
       title: "Word Document",
-      desc: "Structured board pack — cover, executive summary, findings, actions",
+      desc: "Full board pack — executive summary, scorecard, findings, approval conditions, and formal sign-off block",
       loading: downloadingDocx,
       onClick: onDownloadDocx,
     },

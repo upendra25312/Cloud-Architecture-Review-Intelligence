@@ -244,7 +244,11 @@ export function ArbOverviewPage({ reviewId }: { reviewId: string }) {
                       <span className={styles.relatedReviewScore}>Score: {sibling.overallScore}/100</span>
                     )}
                   </div>
-                  <p className={styles.relatedReviewId}>{sibling.reviewId}</p>
+                  <p className={styles.relatedReviewId}>
+                    {sibling.lastUpdated
+                      ? new Date(sibling.lastUpdated).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+                      : sibling.reviewId}
+                  </p>
                   <Link
                     href={getArbCompareHref(sibling.reviewId, reviewId) as Route}
                     className={styles.relatedReviewCompare}
