@@ -169,8 +169,8 @@ export function ArbReviewShell(props: {
               <button type="button" className="ghost-button" onClick={() => router.push('/decision-center')}>
                 Open Decision Center
               </button>
-              {/* Persistent Upload Documents button, hidden on upload step */}
-              {activeStep !== "upload" && (
+              {/* Upload Documents button — shown during setup only, hidden once review is in progress or complete */}
+              {activeStep !== "upload" && activeStep !== "scorecard" && activeStep !== "decision" && activeStep !== "overview" && (
                 <Link
                   href={getUploadStepHref() as Route}
                   className="primary-button"

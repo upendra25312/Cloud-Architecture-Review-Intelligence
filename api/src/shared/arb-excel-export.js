@@ -72,6 +72,20 @@ function setColWidths(ws, widths) {
   });
 }
 
+// ─── Evidence text sanitiser ──────────────────────────────────────────────────
+// Strips raw diagram coordinate sequences (drawio geometry blobs) and truncates.
+// Pattern: 3+ comma-separated numbers → machine data, not readable text.
+const COORD_BLOB_RE = /^[\d\s,.\-e]+$/;
+function sanitiseEvidenceText(raw) {
+  if (!raw) return "";
+  const text = String(raw).trim();
+  // Detect pure coordinate/numeric blob (drawio geometry serialisation)
+  const stripped = text.replace(/\s+/g, " ");
+  const numericRatio = (stripped.match(/[\d,.]/g) || []).length / (stripped.length || 1);
+  if (numericRatio > 0.6 && stripped.length > 80) return "[Diagram geometry — see uploaded file]";
+  return stripped.slice(0, 500) + (stripped.length > 500 ? "…" : "");
+}
+
 // ─── Sheet builders ────────────────────────────────────────────────────────────
 
 function buildExecutiveSummarySheet(wb, pack) {
@@ -114,14 +128,15 @@ function buildExecutiveSummarySheet(wb, pack) {
 
 function buildFindingsSheet(wb, pack) {
   const ws = wb.addWorksheet("Findings");
-  const headers = ["Finding ID","Title","Severity","Status","Domain","Description","Recommendation","Source","Confidence","Evidence Gap"];
+  // Source, Confidence, and Evidence Gap are internal CARI fields — not customer-facing
+  const headers = ["Finding ID","Title","Severity","Status","Domain","Description","Recommendation"];
   setHeaderRow(ws, headers);
-  setColWidths(ws, [14,32,10,12,16,40,40,12,12,24]);
+  setColWidths(ws, [14,36,10,12,18,50,50]);
 
   for (const f of pack.findings || []) {
     addDataRow(ws, [
       f.findingId, f.title, f.severity, f.status, f.domain,
-      f.description, f.recommendation, f.source, f.confidence, f.evidenceGap,
+      f.description, f.recommendation,
     ], f.severity);
   }
 }
@@ -167,7 +182,7 @@ function buildScorecardSheet(wb, pack) {
   ovRow.height = 20;
 
   for (const d of sc.domains || []) {
-    const row = ws.addRow([d.domain, d.score, d.maxScore, `${d.percentage}%`, d.rationale]);
+    const row = ws.addRow([d.domain, d.score ?? 0, d.maxScore ?? 0, `${d.percentage ?? 0}%`, d.rationale ?? ""]);
     row.height = 18;
     row.eachCell((cell) => { cell.alignment = { wrapText: true, vertical: "top" }; });
   }
@@ -226,7 +241,7 @@ function buildEvidenceRegisterSheet(wb, pack) {
 
   for (const e of pack.evidence || []) {
     const row = ws.addRow([
-      e.evidenceId, e.evidenceType, e.text, e.sourceFile,
+      e.evidenceId, e.evidenceType, sanitiseEvidenceText(e.text), e.sourceFile,
       e.sourcePage || "", e.confidence, e.provesImplementation ? "Yes" : "No",
     ]);
     row.height = 18;

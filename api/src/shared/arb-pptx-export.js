@@ -272,7 +272,7 @@ function buildAssessmentScopeSlide(p, data, slideNum) {
     ["Project Category", data.projectCategory || "Architecture Review"],
     ["Customer",         data.customerName    || "Not specified"],
     ["Project",          data.projectName     || "Not specified"],
-    ["In-Scope Areas",   (data.inScope    || []).join(", ") || "See uploaded SOW"],
+    ["In-Scope Areas",   (data.inScope    || []).join(", ") || "Not specified in review data"],
     ["Out-of-Scope",     (data.outOfScope || []).join(", ") || "Not specified in review data"],
     ["Assumptions",      (data.assumptions || []).slice(0, 3).join("; ") || "No assumptions recorded"],
   ];
@@ -547,7 +547,7 @@ function buildSowTraceabilitySlide(p, data, slideNum) {
   const rows = data.sowTraceability || [];
   if (rows.length === 0) {
     s.addShape(p.ShapeType.rect, { x: M, y: 2.5, w: CW, h: 0.9, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
-    s.addText("No SOW traceability data available. Upload a SOW document to enable this section.", {
+    s.addText("No Statement of Work was provided in this review. SOW traceability is not available for this pack.", {
       x: M + 0.2, y: 2.65, w: CW - 0.4, h: 0.6, fontSize: 11, color: BRAND.midGrey, fontFace: BRAND.font, italic: true, wrap: true,
     });
     return;
@@ -828,11 +828,13 @@ async function generateArbPptx(packOrReviewData) {
 function shapeReviewDataForPptx(review, files, requirements, evidence, findings, actions, scorecard, decision) {
   const projectMeta = review?.projectMeta ?? {};
   const overallScore = scorecard?.overallScore ?? 0;
-  const domainScores = (scorecard?.domainScores ?? []).map((d) => ({
-    domain: d.domain ?? d.name ?? "",
-    score:  Math.round(d.score ?? d.weight ?? 0),
-    reason: d.reason ?? "",
-  }));
+  const domainScores = (scorecard?.domainScores ?? []).map((d) => {
+    const score    = Math.round(d.score ?? d.weight ?? 0);
+    const maxScore = Math.round(d.maxScore ?? 20);
+    // Always compute percentage from score/maxScore — never trust a stored pct that could be a raw score value
+    const percentage = maxScore > 0 ? Math.min(100, Math.round((score / maxScore) * 100)) : 0;
+    return { domain: d.domain ?? d.name ?? "", score, maxScore, percentage, reason: d.reason ?? "" };
+  });
 
   // Build SOW traceability from files tagged as SOW + their extracted requirements.
   // Evidence objects in storage do not carry logicalCategory, so filter from files instead.

@@ -978,7 +978,7 @@ function normalizeReviewForExport(
                  String(f.status || "").toLowerCase() !== "closed"
         );
         const reason = openForDomain.length > 0
-          ? `${openForDomain.length} active finding${openForDomain.length !== 1 ? "s" : ""} currently influence this domain.`
+          ? `${openForDomain.length} active finding${openForDomain.length !== 1 ? "s" : ""} currently ${openForDomain.length !== 1 ? "influence" : "influences"} this domain.`
           : (d.rationale && !/\d+\s+active\s+finding/i.test(d.rationale))
             ? d.rationale
             : "No active blockers. Domain remains capped below full score until reviewer sign-off confirms control evidence.";
@@ -990,17 +990,20 @@ function normalizeReviewForExport(
           reason,
         };
       }),
-      findings: canonicalFindings.map((f) => ({
-        title:            f.title,
-        severity:         f.severity,
-        domain:           f.domain,
-        findingStatement: f.description,
-        recommendation:   f.recommendation,
-        owner:            f.owner || "Unassigned",
-        dueDate:          null,
-        status:           f.status,
-        criticalBlocker:  f.severity === "Critical",
-      })),
+      findings: canonicalFindings.map((f) => {
+        const linkedAction = remediationActions.find((a) => a.linkedFindingId === f.findingId);
+        return {
+          title:            f.title,
+          severity:         f.severity,
+          domain:           f.domain,
+          findingStatement: f.description,
+          recommendation:   f.recommendation,
+          owner:            f.owner || "Unassigned",
+          dueDate:          linkedAction?.dueDate ?? null,
+          status:           f.status,
+          criticalBlocker:  f.severity === "Critical",
+        };
+      }),
       actions: remediationActions.map((a) => ({
         actionSummary: a.title,
         status:        a.status,

@@ -137,7 +137,20 @@ function buildCoverSection(pack) {
   const dc    = pack.decision  || {};
   const wf    = pack.workflow  || {};
 
+  const isPendingSignOff = !dc.reviewerDecision || dc.reviewerDecision === "Not Recorded";
+  const items = [];
+
+  if (isPendingSignOff) {
+    items.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing:   { before: 240, after: 120 },
+      children:  [new TextRun({ text: "DRAFT — AWAITING REVIEWER SIGN-OFF", bold: true, size: 24, color: BRAND.red, allCaps: true })],
+      border: { top: { style: "single", size: 6, color: BRAND.red }, bottom: { style: "single", size: 6, color: BRAND.red } },
+    }));
+  }
+
   return [
+    ...items,
     new Paragraph({
       alignment: AlignmentType.CENTER,
       spacing:   { before: 600, after: 200 },
