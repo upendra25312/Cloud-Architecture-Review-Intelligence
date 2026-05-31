@@ -1,13 +1,13 @@
 # CARI Todo Tracker
 
-_Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK-020 soak Day 3/5; Phase 3 Option A pre-designed as TRK-025 in Section 31 of migration plan)._
+_Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK-020 soak Day 3/5; TRK-025 Option A implemented — foundryResponsesModelRequest + runSynthesisViaResponsesDirect + 10 tests, 362 pass)._
 
 ---
 
 ## Mode A — Discovery (Complete)
 
 | # | Task | Status |
-|---|------|--------|
+| --- | ------ | -------- |
 | A1 | Check git state and run API tests | ✅ Done |
 | A2 | Inspect repo structure (API, durable, shared, evals, frontend/arb) | ✅ Done |
 | A3 | Audit ARB JSON schema validation gate | ✅ Done — **GAP fixed in C2** |
@@ -22,7 +22,7 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 ## Mode B — Planning Docs
 
 | # | Task | Status |
-|---|------|--------|
+| --- | ------ | -------- |
 | B1 | Create `docs/CARI_REPO_DISCOVERY_REPORT.md` | ✅ Done |
 | B2 | Create `docs/CARI_IMPLEMENTATION_BACKLOG.md` | ✅ Done |
 | B3 | Create `docs/CARI_SKILL_FIT_ASSESSMENT.md` | ✅ Done |
@@ -38,7 +38,7 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 ## Mode C — Implementation Slices
 
 | # | Slice | Priority | Status | Commit | Tests |
-|---|-------|----------|--------|--------|-------|
+| --- | ----- | -------- | ------ | ------ | ----- |
 | C0 | Commit PDCA session fixes (4 fixes: XLSX si-grouping, suppressScaffold, W002 suppression, isImplementationEvidence) | P0 | ✅ **DONE** | `047d926` | 197→197 pass |
 | C1 | Upload magic-bytes sniffing — `detectExecutableMagicBytes` in `arbUploadFiles.js` | P0 | ✅ **DONE** | `b245244` | +11 tests → 219 pass |
 | C2 | ARB JSON schema validation gate — `validateArbOutput` in `runAgent.js` | P1 | ✅ **DONE** | `49334f8` | +11 tests |
@@ -75,6 +75,7 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 | 2026-05-29 TRK-019 | 331 | 331 | 0 | +21 synthesis path tests (arb-foundry-agent.synthesis.test.js) |
 | 2026-05-29 TRK-021 | 341 | 341 | 0 | +10 fan-out tests (arb-foundry-agent.fanout.test.js) |
 | 2026-05-31 current | **352** | **352** | 0 | +11 Dependabot + misc (includes schema/synthesis/fanout test files) |
+| 2026-05-31 TRK-025 | **362** | **362** | 0 | +10 Phase 3 Option A responses-direct tests (arb-foundry-agent.responses-direct.test.js) |
 
 ---
 
@@ -85,7 +86,7 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 | TRK-020 | Phase 2 soak (5 business days) | ⏳ In Progress — Day 3/5 | Ends 2026-06-05. `USE_AGENTS_API=synthesis`. No action required. |
 | TRK-022 | Phase 3 shadow comparison (portal agent) | ❌ Rolled Back | 0/5 pass. Portal agent system prompt incompatibility. Closed 2026-05-30. |
 | TRK-023 | Phase 3 full activation | ⏸ Deferred | Awaiting TRK-020 + redesign decision (Option A or B) on 2026-06-05. |
-| TRK-025 | Phase 3 Option A — Responses API Direct | 📋 Pre-designed | Ready to execute if Option A chosen on June 5. See Section 31 of migration plan. ~9h effort. |
+| TRK-025 | Phase 3 Option A — Responses API Direct | ✅ Implemented | `foundryResponsesModelRequest` + `runSynthesisViaResponsesDirect` + flag routing coded. 10 tests pass. Awaiting June 5 activation decision. |
 
 ---
 
@@ -118,9 +119,9 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 ## Next Session Start Instructions
 
 1. Read this file first
-2. Run `npm --prefix api test` — expect **219 pass, 0 fail**
-3. Check `git log --oneline -8` — last commit should be `436d006`
-4. All Mode C slices (C0–C10) complete. All Mode B docs (B1–B9) complete. Next: commit Mode B output or address N1 (Playwright in CI)
+2. Run `npm --prefix api test` — expect **362 pass, 0 fail**
+3. Check `git log --oneline -8` — last commit should be the TRK-025 implementation commit
+4. All Mode C slices (C0–C10) complete. TRK-025 Option A implemented (not yet activated). June 5 decision: activate `USE_AGENTS_API=responses-direct` (Option A) or keep `synthesis` as permanent (Option B).
 5. Prompt path: `c:\cari-repo\prompts\CARI_Claude_Code_Skills_Master_Prompt_V6.md`
 
 ---

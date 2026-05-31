@@ -291,6 +291,27 @@ async function foundryResponsesAgentRequest(input, options = {}) {
   return extractResponsesText(data);
 }
 
+// Phase 3 Option A (TRK-025): Responses API with direct model reference + ARB_SYSTEM_PROMPT.
+// Bypasses portal agent (which overrides domain scoring rules) while retaining Foundry Monitor tracing.
+async function foundryResponsesModelRequest(input, options = {}) {
+  const { timeoutMs = 120000, maxOutputTokens, model } = options;
+  const url = `${FOUNDRY_PROJECT_ENDPOINT}/openai/v1/responses`;
+  const token = await getFoundryProjectToken();
+  const body = {
+    model: model || FOUNDRY_ANALYSIS_MODEL,
+    instructions: ARB_SYSTEM_PROMPT,
+    input,
+  };
+  if (maxOutputTokens) body.max_output_tokens = maxOutputTokens;
+  const { ok, status, data, text } = await fetchJsonWithTimeout(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    body: JSON.stringify(body)
+  }, timeoutMs);
+  if (!ok) throw new Error(`Foundry responses model failed ${status}: ${text ?? status}`);
+  return extractResponsesText(data);
+}
+
 async function notifyAgentsApiTelemetry(reviewId, phase, metadata = {}) {
   if (process.env.USE_AGENTS_API !== "telemetry") return;
   console.log(`[agents-api-telemetry] invoking phase=${phase} reviewId=${reviewId}`);
@@ -1286,6 +1307,17 @@ async function runSynthesisViaAgentsApi(domainResults, review, requirements, fil
   return parseSynthesisResponse(responseText);
 }
 
+// Phase 3 Option A (TRK-025): synthesis via Responses API direct model call.
+// Uses ARB_SYSTEM_PROMPT as instructions — preserves domain scoring rules without portal agent interference.
+async function runSynthesisViaResponsesDirect(domainResults, review, requirements, files) {
+  const input = buildSynthesisAgentInput(domainResults, review, requirements, files);
+  const responseText = await foundryResponsesModelRequest(input, {
+    maxOutputTokens: 4096,
+    timeoutMs: 120000,
+  });
+  return parseSynthesisResponse(responseText);
+}
+
 // ─── PHASE 3 DOMAIN FAN-OUT VIA AGENTS API (TRK-021) ───────────────────────
 // Runs 7 parallel domain calls via the Foundry Responses agent-reference with
 // 200ms stagger to avoid TPM spike. Per-domain 90s timeout.
@@ -1516,17 +1548,21 @@ async function runArbAgentReviewFanOut({ review, files, requirements, evidence, 
   });
 
   // Synthesis call: lightweight — sees only domain summaries, produces global fields.
-  // Phase 2 (TRK-019): USE_AGENTS_API=synthesis|full routes through the Foundry Responses
-  // agent-reference; any failure falls back to the Chat Completions path.
+  // Phase 2 (TRK-019): USE_AGENTS_API=synthesis|full → portal agent via Responses API agent_reference.
+  // Phase 3 Option A (TRK-025): USE_AGENTS_API=responses-direct → model direct via Responses API.
+  // Both paths fall back to Chat Completions on failure.
   let synthesisResult = null;
+  const useSynthesisViaResponsesDirect = process.env.USE_AGENTS_API === "responses-direct";
   const useAgentsApiForSynthesis =
     process.env.USE_AGENTS_API === "synthesis" || process.env.USE_AGENTS_API === "full";
-  if (useAgentsApiForSynthesis) {
+  if (useSynthesisViaResponsesDirect || useAgentsApiForSynthesis) {
     try {
-      synthesisResult = await runSynthesisViaAgentsApi(domainResults, review, requirements, files);
-      console.log("[foundry] Synthesis via Foundry Agents API succeeded");
-    } catch (agentsApiErr) {
-      console.warn("[foundry] Synthesis via Agents API failed — falling back to Chat Completions:", agentsApiErr?.message ?? agentsApiErr);
+      synthesisResult = useSynthesisViaResponsesDirect
+        ? await runSynthesisViaResponsesDirect(domainResults, review, requirements, files)
+        : await runSynthesisViaAgentsApi(domainResults, review, requirements, files);
+      console.log(`[foundry] Synthesis via ${process.env.USE_AGENTS_API} succeeded`);
+    } catch (synthErr) {
+      console.warn(`[foundry] Synthesis via ${process.env.USE_AGENTS_API} failed — falling back to Chat Completions:`, synthErr?.message ?? synthErr);
       try {
         synthesisResult = await runSynthesisViaChatCompletions(domainResults, review, requirements, files);
       } catch (fallbackErr) {
@@ -2251,5 +2287,8 @@ module.exports = {
   buildDomainAgentInput,
   runDomainFanOutViaAgentsApi,
   // Exported for shadow comparison tests (TRK-022)
-  compareShadowResults
+  compareShadowResults,
+  // Exported for Phase 3 Option A tests (TRK-025)
+  foundryResponsesModelRequest,
+  runSynthesisViaResponsesDirect,
 };
