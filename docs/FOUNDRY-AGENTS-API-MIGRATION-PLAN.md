@@ -51,6 +51,7 @@
 28. [Shadow-Run Comparison Method](#28-shadow-run-comparison-method)
 29. [Change Freeze and Roll-Forward Rules](#29-change-freeze-and-roll-forward-rules)
 30. [Future Roadmap: Multi-Cloud MCP Integration (AWS and GCP)](#30-future-roadmap-multi-cloud-mcp-integration-aws-and-gcp)
+31. [Phase 3 Option A: Responses API Direct — TRK-025 Pre-Design](#31-phase-3-option-a-responses-api-direct--trk-025-pre-design)
 
 ---
 
@@ -1597,6 +1598,7 @@ This section is the live tracker for the migration. It is "live" as the operatin
 | TRK-021 | Implement Phase 3 shadow fan-out | Phase 3 | Full-Stack Developer + Azure AI Architect | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildDomainAgentInput()`, `runDomainFanOutViaAgentsApi()` added; 200ms stagger, `Promise.allSettled`, per-domain Chat Completions fallback (1-2 failures), full fallback (>2 failures); `USE_AGENTS_API=full` gate in `runArbAgentReviewFanOut()`; `arb-foundry-agent.fanout.test.js` — 10 new tests; 341/341 pass | Code deployed with flag still `synthesis` — dormant. Phase 3 runs only when `USE_AGENTS_API=full`. |
 | TRK-022 | Compare Phase 3 shadow results | Phase 3 | Azure AI Architect + Senior Director | Rolled Back | 2026-05-30 | Second 5-run validation 2026-05-30: 0/5 pass across 9 App Insights traces. scoreDeltas FAIL 5/5 (maxDelta 30–48pt, threshold ≤5). domainCoverage FAIL 4/5 (Reliability/Governance/Operations/Security each disappeared in one run — non-deterministic Responses API timeout). missingEvidence FAIL 5/5. critHighDelta FAIL 4/5 (delta 4–9, threshold ≤2). ruleRetention PASS 5/5 ✅. learnLinks PASS 5/5 ✅. Root cause: portal agent holistic system prompt overrides domain-specific scoring rules embedded in user message — architectural incompatibility. `USE_AGENTS_API` rolled back to `synthesis` (2026-05-30) to eliminate 3-min shadow overhead from production reviews. | Phase 3 portal-agent approach cannot pass Section 28 gates. TRK-023 Deferred. Durable shadow infrastructure (commit `ee32978`) and `compareShadowResults()` remain in code, dormant. |
 | TRK-023 | Activate Phase 3 full mode | Phase 3 | Senior Director + Azure Cloud Architect | Deferred | 2026-05-30 | TRK-022 closed Rolled Back — Section 28 gates failed 0/5 across 10 controlled reviews. Portal agent produces 30–48pt score divergence and loses 1 domain per run non-deterministically. | Phase 3 redesign required before resuming. Option A: raw Responses API without `agent_reference` (inject domain-specific system prompt directly, use Responses transport only). Option B: close permanently, keep Phase 2 as the final architecture. Decision after TRK-020 soak ends 2026-06-05. |
+| TRK-025 | Implement and validate Phase 3 Option A (Responses API Direct) | Phase 3 redesign | Full-Stack Developer + Azure AI Architect | Not Started | — | Pre-designed in Section 31. Awaiting TRK-020 soak completion (2026-06-05) and expert team decision to select Option A. | Execute only if Option A is selected on 2026-06-05. Implement `foundryResponsesModelRequest()` + `runSynthesisViaResponsesDirect()` + flag routing → run 5 shadow comparison reviews against Section 31.5 gates → all 5/5 must pass → activate `USE_AGENTS_API=responses-direct`. Estimated ~9 hours total. |
 
 ### 22.2 Session Resume Checklist
 
@@ -1982,7 +1984,7 @@ Multi-cloud grounding only runs when `hasAws` or `hasGcp` is true. Pure Azure re
 This feature must not start until:
 
 - [ ] TRK-020 Phase 2 soak complete (2026-06-05)
-- [ ] TRK-023 Phase 3 validated (thin portal agent approach passes Section 28 gates)
+- [ ] TRK-025 Phase 3 Option A validated (Responses API Direct passes Section 31.5 gates 5/5), OR Option B decision taken (Phase 2 designated as permanent architecture)
 - [ ] Projected month-end cost < $50 (multi-cloud MCP adds incremental spend)
 - [ ] AWS Knowledge MCP server endpoint confirmed and accessible from Function App managed identity
 - [ ] GCP documentation MCP server endpoint confirmed and accessible
@@ -2018,7 +2020,7 @@ az functionapp config appsettings set \
   --subscription 87cf2b93-5e52-4533-9e6b-7182cd7dbde6 \
   --resource-group rg-arb-review-prod \
   --name func-arb-review-api-flex \
-  --settings "USE_AGENTS_API=off|telemetry|synthesis|full"
+  --settings "USE_AGENTS_API=off|telemetry|synthesis|responses-direct|full"
 ```
 
 ## Appendix B: Backup Tag Commands
@@ -2073,3 +2075,191 @@ Current repo note: `api/src/shared/arb-foundry-agent.js` already has a REST-base
 ---
 
 *Document maintained by the CARI Engineering Team. Update this document when phases are completed or decisions change.*
+
+---
+
+## 31. Phase 3 Option A: Responses API Direct — TRK-025 Pre-Design
+
+> **Status:** Pre-designed — awaiting June 5 decision (TRK-020 soak end). Execute only if the expert team selects Option A after reviewing soak results. This section is production-ready: code design, tests, gates, and rollback are all specified.
+
+### 31.1 Problem Statement
+
+TRK-022 proved the portal-agent approach (`agent_reference` in the Responses API body) is architecturally incompatible with CARI's domain-specific scoring rules:
+
+- The portal agent (`cari-arb-review-agent` v9) has its own holistic system prompt stored in the Foundry portal.
+- That prompt takes precedence over domain-specific instructions injected in the user message.
+- Result: 30–48pt score divergence (threshold ≤5pt), non-deterministic domain dropout, persistent `missingEvidence` failures. Not tunable — it is a system-prompt precedence conflict at the API layer.
+
+### 31.2 Root Cause and Solution
+
+| Layer | Portal agent (`agent_reference`) — failed | Option A: direct model reference |
+| --- | --- | --- |
+| System prompt source | Foundry portal agent v9 (overrides our instructions) | `ARB_SYSTEM_PROMPT` injected as `instructions` field — authoritative |
+| Domain scoring rules | Overridden | Preserved — our prompt is the only prompt |
+| Foundry Monitor tracing | ✅ Traces appear | ✅ Model-level traces appear in Foundry Monitor |
+| MCP / File Search tools | Via portal agent config | Not available — compensated by `fetchMicrosoftLearnGrounding()` in code |
+| Temperature control | ❌ Not allowed with `agent_reference` | ✅ Supported |
+| Determinism | ❌ Non-deterministic domain dropout | ✅ Deterministic |
+
+### 31.3 Architecture
+
+Option A uses the same `${FOUNDRY_PROJECT_ENDPOINT}/openai/v1/responses` transport but replaces `agent_reference` with a direct `model` reference and injects `ARB_SYSTEM_PROMPT` as the `instructions` field.
+
+```text
+Current synthesis path (USE_AGENTS_API=synthesis):
+  runSynthesisViaAgentsApi()
+    └─ foundryResponsesAgentRequest()
+         └─ POST /openai/v1/responses
+              { agent_reference: { name: "cari-arb-review-agent" }, input: [...] }
+                ↑ portal agent system prompt overrides domain scoring rules ❌
+
+Option A (USE_AGENTS_API=responses-direct):
+  runSynthesisViaResponsesDirect()
+    └─ foundryResponsesModelRequest()
+         └─ POST /openai/v1/responses
+              { model: "model-router", instructions: ARB_SYSTEM_PROMPT, input: [...] }
+                ↑ ARB_SYSTEM_PROMPT is authoritative, domain rules preserved ✅
+```
+
+### 31.4 Code Changes
+
+All changes are in `api/src/shared/arb-foundry-agent.js`.
+
+**New function: `foundryResponsesModelRequest()`** (add after `foundryResponsesAgentRequest`, ~line 292)
+
+```javascript
+async function foundryResponsesModelRequest(input, options = {}) {
+  const { timeoutMs = 120000, maxOutputTokens, model } = options;
+  const url = `${FOUNDRY_PROJECT_ENDPOINT}/openai/v1/responses`;
+  const token = await getFoundryProjectToken();
+  const body = {
+    model: model || FOUNDRY_ANALYSIS_MODEL,
+    instructions: ARB_SYSTEM_PROMPT,
+    input,
+  };
+  if (maxOutputTokens) body.max_output_tokens = maxOutputTokens;
+  const { ok, status, data, text } = await fetchJsonWithTimeout(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+    body: JSON.stringify(body)
+  }, timeoutMs);
+  if (!ok) throw new Error(`Foundry responses model failed ${status}: ${text ?? status}`);
+  return extractResponsesText(data);
+}
+```
+
+**New synthesis wrapper: `runSynthesisViaResponsesDirect()`** (add after `runSynthesisViaAgentsApi`, ~line 1290)
+
+```javascript
+async function runSynthesisViaResponsesDirect(domainResults, review, requirements, files) {
+  const input = buildSynthesisAgentInput(domainResults, review, requirements, files);
+  const responseText = await foundryResponsesModelRequest(input, {
+    maxOutputTokens: 4096,
+    timeoutMs: 120000,
+  });
+  return parseArbAgentOutput(responseText);
+}
+```
+
+**Updated flag routing in `runArbAgentReviewFanOut()`** (synthesis block, ~line 1519)
+
+```javascript
+// Before:
+const useSynthesisViaAgentsApi =
+  process.env.USE_AGENTS_API === "synthesis" || process.env.USE_AGENTS_API === "full";
+
+// After:
+const useSynthesisViaResponsesDirect = process.env.USE_AGENTS_API === "responses-direct";
+const useSynthesisViaAgentsApi =
+  process.env.USE_AGENTS_API === "synthesis" || process.env.USE_AGENTS_API === "full";
+
+if (useSynthesisViaResponsesDirect || useSynthesisViaAgentsApi) {
+  try {
+    synthesisResult = useSynthesisViaResponsesDirect
+      ? await runSynthesisViaResponsesDirect(domainResults, review, requirements, files)
+      : await runSynthesisViaAgentsApi(domainResults, review, requirements, files);
+  } catch (synthError) {
+    console.warn(`[arb-review] synthesis via ${process.env.USE_AGENTS_API} failed, falling back`, synthError.message);
+    synthesisResult = await runSynthesisViaChatCompletions(domainResults, review, requirements, files);
+  }
+}
+```
+
+**Export additions** (module.exports block at end of file):
+
+```javascript
+foundryResponsesModelRequest,
+runSynthesisViaResponsesDirect,
+```
+
+**New feature flag value:** `USE_AGENTS_API=responses-direct`
+
+### 31.5 Validation Gates (same methodology as Section 28)
+
+Run 5 controlled reviews with `USE_AGENTS_API=responses-direct` configured as a shadow call alongside the live `synthesis` path. All 5 reviews must pass all 6 gates:
+
+| Gate | Threshold | Metric |
+| --- | --- | --- |
+| `scoreDeltas` | maxDelta ≤ 5pt | `responses-direct` overall score vs `synthesis` score per review |
+| `domainCoverage` | 6/6 domains present | All 6 WAF domains scored; none dropped |
+| `missingEvidence` | 0 | No evidenceIds in `responses-direct` output absent from `synthesis` output |
+| `critHighDelta` | delta ≤ 2 | Critical + High finding count delta |
+| `ruleRetention` | 100% | All deterministic rule-based findings present in both paths |
+| `learnLinks` | ≥ 1 link per domain | Microsoft Learn MCP grounding links present |
+
+Pass threshold: 5/5 reviews × 6/6 gates → activate `USE_AGENTS_API=responses-direct`.
+
+### 31.6 Test Plan (minimum 8 new unit tests)
+
+Add to `api/src/shared/arb-foundry-agent.responses-direct.test.js`:
+
+1. `foundryResponsesModelRequest` — body includes `model` field (not `agent_reference`)
+2. `foundryResponsesModelRequest` — body includes `instructions: ARB_SYSTEM_PROMPT`
+3. `foundryResponsesModelRequest` — `maxOutputTokens` passed when provided
+4. `foundryResponsesModelRequest` — throws on non-200 response
+5. `foundryResponsesModelRequest` — calls `extractResponsesText` on success
+6. `runSynthesisViaResponsesDirect` — calls `foundryResponsesModelRequest` (not `foundryResponsesAgentRequest`)
+7. Flag routing — `USE_AGENTS_API=responses-direct` routes to `runSynthesisViaResponsesDirect`
+8. Flag routing — `USE_AGENTS_API=synthesis` still routes to `runSynthesisViaAgentsApi` (no regression)
+
+### 31.7 Implementation Estimate
+
+| Task | Owner | Hours |
+| --- | --- | --- |
+| `foundryResponsesModelRequest()` + `runSynthesisViaResponsesDirect()` | Full-Stack Developer | 2h |
+| Flag routing update in `runArbAgentReviewFanOut()` | Full-Stack Developer | 1h |
+| 8 unit tests | Full-Stack Developer | 2h |
+| 5-review shadow comparison (Section 31.5 gates) | Azure AI Architect + Senior PM | 3h |
+| Cost confirmation (projected month-end < $50) | Senior PM | 0.5h |
+| Activation `az` command | Azure Cloud Architect | 0.5h |
+| **Total** | | **~9 hours** |
+
+### 31.8 Activation Command
+
+```bash
+az functionapp config appsettings set \
+  --subscription 87cf2b93-5e52-4533-9e6b-7182cd7dbde6 \
+  --resource-group rg-arb-review-prod \
+  --name func-arb-review-api-flex \
+  --settings "USE_AGENTS_API=responses-direct"
+```
+
+### 31.9 Rollback Command
+
+```bash
+az functionapp config appsettings set \
+  --subscription 87cf2b93-5e52-4533-9e6b-7182cd7dbde6 \
+  --resource-group rg-arb-review-prod \
+  --name func-arb-review-api-flex \
+  --settings "USE_AGENTS_API=synthesis"
+```
+
+### 31.10 Decision Checklist (use on 2026-06-05)
+
+- [ ] TRK-020 soak complete — 5 business days AND 10+ reviews, no regressions
+- [ ] Expert team vote: Option A selected (not Option B)
+- [ ] Projected month-end cost confirmed < $50
+- [ ] Code changes implemented and all 352+ API tests pass
+- [ ] 5/5 shadow reviews pass Section 31.5 gates
+- [ ] Activation command executed and `/api/health` returns 200
+- [ ] Foundry Monitor shows `responses-direct` traces after first post-activation review

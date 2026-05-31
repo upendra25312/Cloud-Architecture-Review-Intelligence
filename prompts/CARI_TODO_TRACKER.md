@@ -1,6 +1,6 @@
 # CARI Todo Tracker
 
-_Maintained by Claude Code per Master Prompt V6. Updated each session. Last updated: 2026-05-25 (C9 complete)._
+_Maintained by Claude Code per Master Prompt V6. Updated each session. Last updated: 2026-05-31 (TRK-020 soak Day 3/5; Phase 3 Option A pre-designed as TRK-025 in Section 31 of migration plan)._
 
 ---
 
@@ -70,6 +70,22 @@ _Maintained by Claude Code per Master Prompt V6. Updated each session. Last upda
 | 2026-05-25 C10 | 229 | 229 | 0 | +10 RBAC cross-user isolation tests |
 | 2026-05-25 C6 | 229 | 229 | 0 | frontend only — no new API tests |
 | 2026-05-26 C8 | 253 | 253 | 0 | +24 durable idempotency tests |
+| 2026-05-29 TRK-015 | 291 | 291 | 0 | +9 telemetry helper tests (TRK-014/015) |
+| 2026-05-29 TRK-018 | 310 | 310 | 0 | +15 schema drift tests (arb-foundry-agent.schema.test.js) |
+| 2026-05-29 TRK-019 | 331 | 331 | 0 | +21 synthesis path tests (arb-foundry-agent.synthesis.test.js) |
+| 2026-05-29 TRK-021 | 341 | 341 | 0 | +10 fan-out tests (arb-foundry-agent.fanout.test.js) |
+| 2026-05-31 current | **352** | **352** | 0 | +11 Dependabot + misc (includes schema/synthesis/fanout test files) |
+
+---
+
+## Agents API Migration Status (see docs/FOUNDRY-AGENTS-API-MIGRATION-PLAN.md)
+
+| TRK | Description | Status | Notes |
+| --- | --- | --- | --- |
+| TRK-020 | Phase 2 soak (5 business days) | ⏳ In Progress — Day 3/5 | Ends 2026-06-05. `USE_AGENTS_API=synthesis`. No action required. |
+| TRK-022 | Phase 3 shadow comparison (portal agent) | ❌ Rolled Back | 0/5 pass. Portal agent system prompt incompatibility. Closed 2026-05-30. |
+| TRK-023 | Phase 3 full activation | ⏸ Deferred | Awaiting TRK-020 + redesign decision (Option A or B) on 2026-06-05. |
+| TRK-025 | Phase 3 Option A — Responses API Direct | 📋 Pre-designed | Ready to execute if Option A chosen on June 5. See Section 31 of migration plan. ~9h effort. |
 
 ---
 
