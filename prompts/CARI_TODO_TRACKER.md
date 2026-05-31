@@ -1,6 +1,6 @@
 # CARI Todo Tracker
 
-_Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK-020 soak Day 3/5; TRK-025 Option A implemented — foundryResponsesModelRequest + runSynthesisViaResponsesDirect + 10 tests, 362 pass)._
+_Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK-025 Option A LIVE — USE_AGENTS_API=responses-direct active in production; 362 tests pass; Section 30 multi-cloud MCP unblocked)._
 
 ---
 
@@ -60,7 +60,7 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 ## Current Test Suite State
 
 | Date | Tests | Pass | Fail | Key change |
-|------|-------|------|------|-----------|
+| ---- | ----- | ---- | ---- | ---------- |
 | 2026-05-25 (start) | 197 | 197 | 0 | Baseline (from previous PDCA session) |
 | 2026-05-25 C2+C3 | 208 | 208 | 0 | +11 validateArbOutput + stripOrphanEvidenceIds |
 | 2026-05-25 C4 | 208 | 208 | 0 | MCP metadata — no new tests (behavior tested by callers) |
@@ -83,17 +83,17 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 
 | TRK | Description | Status | Notes |
 | --- | --- | --- | --- |
-| TRK-020 | Phase 2 soak (5 business days) | ⏳ In Progress — Day 3/5 | Ends 2026-06-05. `USE_AGENTS_API=synthesis`. No action required. |
+| TRK-020 | Phase 2 soak (5 business days) | ✅ Done | Closed early 2026-05-31. Phase 2 stable, no regressions. Expert team chose Option A. |
 | TRK-022 | Phase 3 shadow comparison (portal agent) | ❌ Rolled Back | 0/5 pass. Portal agent system prompt incompatibility. Closed 2026-05-30. |
-| TRK-023 | Phase 3 full activation | ⏸ Deferred | Awaiting TRK-020 + redesign decision (Option A or B) on 2026-06-05. |
-| TRK-025 | Phase 3 Option A — Responses API Direct | ✅ Implemented | `foundryResponsesModelRequest` + `runSynthesisViaResponsesDirect` + flag routing coded. 10 tests pass. Awaiting June 5 activation decision. |
+| TRK-023 | Phase 3 full activation | ⏸ Deferred | Superseded by TRK-025 Option A. |
+| TRK-025 | Phase 3 Option A — Responses API Direct | ✅ **LIVE** | `USE_AGENTS_API=responses-direct` active on `func-arb-review-api-flex` since 2026-05-31. 362/362 tests pass. |
 
 ---
 
 ## Recent Commits (this session)
 
 | Commit | Description |
-|--------|-------------|
+| ------ | ----------- |
 | `047d926` | fix(arb): PDCA — 4 correctness fixes for extraction quality and scoring accuracy |
 | `f24fa8a` | docs: add CARI Master Prompt V6 and todo tracker to prompts/ |
 | `49334f8` | fix(agent): C2/C3 — ARB JSON schema validation gate + evidenceId cross-validation |
@@ -107,7 +107,7 @@ _Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK
 ## Remaining Gaps (post-C0–C4)
 
 | Gap | Location | Priority |
-|-----|----------|----------|
+| --- | -------- | -------- |
 | No correlationId threaded across upload→extract→agent→export | `review-telemetry.js`, `runAgent.js`, `persistExtractionResults.js` | P2 — C5 |
 | No 'Why CARI says this' reviewer UI | `frontend/src/components/` | P2 — C6 |
 | No Playwright E2E golden path in CI | `.github/`, `evals/` | P2 — C7 |

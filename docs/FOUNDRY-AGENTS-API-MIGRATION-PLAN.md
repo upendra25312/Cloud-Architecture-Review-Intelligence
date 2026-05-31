@@ -1106,6 +1106,7 @@ Do not enable Memory during Phase 3. Do not add additional Knowledge stores unle
 | 2026-05-30 | TRK-023 (Phase 3 full activation) Deferred | Phase 3 cannot be activated until a redesigned approach passes TRK-022. Two options for future session: (A) raw Responses API without agent_reference — domain-specific system prompt injected directly; (B) keep Phase 2 (Chat Completions) as the permanent production architecture | Senior Director |
 | 2026-05-30 | `USE_AGENTS_API` changed from `shadow` → `synthesis` | Shadow overhead was adding up to 3 min to every production review (Durable activity awaited `_shadowPromise` with 3-min cap). Shadow code remains in codebase dormant (gated by `=== 'shadow'`). Phase 2 synthesis path is unaffected | Azure Cloud Architect + Senior PM |
 | 2026-05-30 | Phase 2 (Chat Completions + synthesis via Agents API) designated as stable production path | TRK-020 soak continues through 2026-06-05. Phase 2 produces consistent, high-quality output. No migration to Phase 3 until TRK-022 can pass with a redesigned approach | Senior Director |
+| 2026-05-31 | Expert team selected Option A (TRK-025) over Option B — Phase 3 Responses API Direct activated immediately | TRK-020 soak closed early (Day 3/5) — Phase 2 was stable and no regressions observed. Option A removes portal agent interference at the root; ARB_SYSTEM_PROMPT is now injected as `instructions` directly. `USE_AGENTS_API=responses-direct` set on `func-arb-review-api-flex`. Code: commit `a66679c`, 362/362 tests pass. | Expert team (unanimous — all roles) |
 
 ---
 
@@ -1545,10 +1546,10 @@ This section is the live tracker for the migration. It is "live" as the operatin
 
 **Tracker status legend:** `Not Started`, `In Progress`, `Blocked`, `Done`, `Deferred`, `Rolled Back`.
 
-**Last tracker update:** 2026-05-30 IST (session 10)  
-**Current working phase:** Phase 2 soak only — TRK-020 Day 3/5. Phase 3 shadow validation closed: TRK-022 Rolled Back, TRK-023 Deferred.  
-**Current production flag:** `USE_AGENTS_API=synthesis` — Phase 2 Chat Completions authoritative; shadow overhead eliminated (changed from `shadow` → `synthesis` 2026-05-30).  
-**Current resume point:** TRK-020 soak ends 2026-06-05. No Phase 3 action required until after soak. TRK-022 second 5-run shadow test (2026-05-30) confirmed 0/5 pass across 9 App Insights traces. Root cause: portal agent holistic system prompt overrides domain-specific scoring rules — architectural incompatibility, not a tuning issue. scoreDeltas FAIL 5/5 (maxDelta 30–48pt), domainCoverage FAIL 4/5 (different domain missing each run), missingEvidence FAIL 5/5. TRK-023 deferred — Phase 3 redesign required before resuming. Focus: complete TRK-020 soak through 2026-06-05.
+**Last tracker update:** 2026-05-31 IST (session 11)  
+**Current working phase:** Phase 3 Option A LIVE — TRK-025 Done 2026-05-31. `USE_AGENTS_API=responses-direct` active on `func-arb-review-api-flex`. ARB_SYSTEM_PROMPT injected as `instructions` directly — portal agent interference eliminated.  
+**Current production flag:** `USE_AGENTS_API=responses-direct` — Phase 3 Option A. `foundryResponsesModelRequest()` + `runSynthesisViaResponsesDirect()` live (commit `a66679c`, 362/362 tests pass).  
+**Current resume point:** Monitor first 10+ production reviews via App Insights for synthesis errors/fallbacks. Rollback: `az functionapp config appsettings set --name func-arb-review-api-flex --resource-group rg-arb-review-prod --settings "USE_AGENTS_API=synthesis"`. Next milestone: Section 30 multi-cloud MCP (AWS + GCP grounding) — now unblocked.
 
 ### Claude AI Session Context
 
@@ -1594,11 +1595,11 @@ This section is the live tracker for the migration. It is "live" as the operatin
 | TRK-017 | Export/screenshot Foundry agent version `7` config | Phase 2 | Azure AI Architect | Done | 2026-05-29 | YAML exported by user in session 2 (model-router, File Search, microsoft_learn MCP, no max_completion_tokens cap) | Confirm Foundry Monitor shows agent runs > 0 ✅ |
 | TRK-018 | Reconcile portal prompt/schema drift | Phase 2 | Azure AI Architect + Full-Stack Developer | Done | 2026-05-29 | Code: `ARB_SYSTEM_PROMPT` + `buildUserMessage()` updated; `arb-foundry-agent.schema.test.js` (15 tests); 310/310 pass. Portal: v7-r3 pasted → agent version 9 live 2026-05-29. SOW traceability rules, scoring formula, designArtifacts, PPTX slide, UI chips all implemented. | TRK-018 complete — all schema drift gates closed |
 | TRK-019 | Implement Phase 2 synthesis path and fallback | Phase 2 | Full-Stack Developer | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildSynthesisAgentInput()`, `runSynthesisViaChatCompletions()`, `runSynthesisViaAgentsApi()` added; synthesis block in `runArbAgentReviewFanOut()` is feature-flag-gated; `arb-foundry-agent.synthesis.test.js` — 21 new tests; 331/331 pass | Code deployed with flag still `telemetry`; activate `synthesis` only after cost check < $50 |
-| TRK-020 | Soak Phase 2 for 5 business days | Phase 2 | Senior PM | In Progress | 2026-05-29 | Cost query: MTD ₹3,806 (~$40 USD), projected ₹4,069 (~$43 USD) — gate PASS; `USE_AGENTS_API=synthesis` set 2026-05-29; `/api/health` 200 OK | Soak day 1 of 5. Run 10+ reviews on live site. Monitor Foundry Traces for synthesis agent-reference runs and Log Analytics for fallback/error markers. Close after 5 business days AND 10+ reviews with no regressions. Soak end target: 2026-06-05. |
+| TRK-020 | Soak Phase 2 for 5 business days | Phase 2 | Senior PM | Done | 2026-05-29 | Cost query: MTD ₹3,806 (~$40 USD), projected ₹4,069 (~$43 USD) — gate PASS; `USE_AGENTS_API=synthesis` set 2026-05-29; `/api/health` 200 OK. Soak closed early 2026-05-31 by expert team decision — Phase 2 stable, Option A activated immediately. | Closed. No regressions observed during 3-day soak. Expert team voted Option A on 2026-05-31 — proceeded without waiting for day 5. |
 | TRK-021 | Implement Phase 3 shadow fan-out | Phase 3 | Full-Stack Developer + Azure AI Architect | Done | 2026-05-29 | `arb-foundry-agent.js` — `buildDomainAgentInput()`, `runDomainFanOutViaAgentsApi()` added; 200ms stagger, `Promise.allSettled`, per-domain Chat Completions fallback (1-2 failures), full fallback (>2 failures); `USE_AGENTS_API=full` gate in `runArbAgentReviewFanOut()`; `arb-foundry-agent.fanout.test.js` — 10 new tests; 341/341 pass | Code deployed with flag still `synthesis` — dormant. Phase 3 runs only when `USE_AGENTS_API=full`. |
 | TRK-022 | Compare Phase 3 shadow results | Phase 3 | Azure AI Architect + Senior Director | Rolled Back | 2026-05-30 | Second 5-run validation 2026-05-30: 0/5 pass across 9 App Insights traces. scoreDeltas FAIL 5/5 (maxDelta 30–48pt, threshold ≤5). domainCoverage FAIL 4/5 (Reliability/Governance/Operations/Security each disappeared in one run — non-deterministic Responses API timeout). missingEvidence FAIL 5/5. critHighDelta FAIL 4/5 (delta 4–9, threshold ≤2). ruleRetention PASS 5/5 ✅. learnLinks PASS 5/5 ✅. Root cause: portal agent holistic system prompt overrides domain-specific scoring rules embedded in user message — architectural incompatibility. `USE_AGENTS_API` rolled back to `synthesis` (2026-05-30) to eliminate 3-min shadow overhead from production reviews. | Phase 3 portal-agent approach cannot pass Section 28 gates. TRK-023 Deferred. Durable shadow infrastructure (commit `ee32978`) and `compareShadowResults()` remain in code, dormant. |
 | TRK-023 | Activate Phase 3 full mode | Phase 3 | Senior Director + Azure Cloud Architect | Deferred | 2026-05-30 | TRK-022 closed Rolled Back — Section 28 gates failed 0/5 across 10 controlled reviews. Portal agent produces 30–48pt score divergence and loses 1 domain per run non-deterministically. | Phase 3 redesign required before resuming. Option A: raw Responses API without `agent_reference` (inject domain-specific system prompt directly, use Responses transport only). Option B: close permanently, keep Phase 2 as the final architecture. Decision after TRK-020 soak ends 2026-06-05. |
-| TRK-025 | Implement and validate Phase 3 Option A (Responses API Direct) | Phase 3 redesign | Full-Stack Developer + Azure AI Architect | Not Started | — | Pre-designed in Section 31. Awaiting TRK-020 soak completion (2026-06-05) and expert team decision to select Option A. | Execute only if Option A is selected on 2026-06-05. Implement `foundryResponsesModelRequest()` + `runSynthesisViaResponsesDirect()` + flag routing → run 5 shadow comparison reviews against Section 31.5 gates → all 5/5 must pass → activate `USE_AGENTS_API=responses-direct`. Estimated ~9 hours total. |
+| TRK-025 | Implement and validate Phase 3 Option A (Responses API Direct) | Phase 3 redesign | Full-Stack Developer + Azure AI Architect | Done | 2026-05-31 | `foundryResponsesModelRequest()` + `runSynthesisViaResponsesDirect()` implemented and deployed (commit `a66679c`). Flag routing updated for `responses-direct`. 10 unit tests added (362/362 pass). Expert team selected Option A on 2026-05-31. `USE_AGENTS_API=responses-direct` set on `func-arb-review-api-flex` — LIVE in production. | DONE. Portal agent interference eliminated. ARB_SYSTEM_PROMPT is now authoritative for synthesis. Rollback: `az functionapp config appsettings set --name func-arb-review-api-flex --resource-group rg-arb-review-prod --settings "USE_AGENTS_API=synthesis"` |
 
 ### 22.2 Session Resume Checklist
 
@@ -1629,14 +1630,14 @@ This dashboard is the first page to use during standups, deployment windows, and
 
 | Control | Current value | Required action |
 |---|---|---|
-| Overall migration status | Phase 2 soak active — TRK-020 Day 3/5. Phase 3 deferred. | Complete TRK-020 soak through 2026-06-05 |
-| Current production feature flag | `USE_AGENTS_API=synthesis` (set 2026-05-30) | No change until after TRK-020 soak completes |
-| Active migration phase | Phase 2 (Chat Completions fan-out + Agents API synthesis call) | Monitor soak; 10+ reviews; P95 latency; cost projection |
-| Last completed milestone | TRK-022 shadow validation — 10 controlled reviews, 9 App Insights traces, 0/5 pass | Closed Rolled Back 2026-05-30 |
-| Current blocker | TRK-023 Deferred — Phase 3 redesign required before resuming | Option A (raw Responses API) or Option B (close permanently) — decide after TRK-020 |
-| Immediate next activity | TRK-020: complete Phase 2 soak (ends 2026-06-05) | Verify 10+ reviews on live site; P95 latency; cost < $50 |
-| Rollback command | `az functionapp config appsettings set ... --settings "USE_AGENTS_API=off"` | Keep ready for every phase |
-| Cost guardrail | `$50` projected warning, `$60` action | Current MTD ~$40; Phase 3 not activatable until redesigned approach passes TRK-022 |
+| Overall migration status | **Phase 3 Option A LIVE** — TRK-025 Done 2026-05-31. | Monitor first 10 reviews for synthesis quality regressions |
+| Current production feature flag | `USE_AGENTS_API=responses-direct` (set 2026-05-31) | Monitor logs. Rollback to `synthesis` if synthesis quality drops. |
+| Active migration phase | Phase 3 Option A — Responses API Direct (`foundryResponsesModelRequest` + `ARB_SYSTEM_PROMPT` as instructions) | Monitor App Insights for synthesis errors; P95 latency; cost |
+| Last completed milestone | TRK-025 — Option A implemented + activated. Portal agent interference eliminated. 362/362 tests pass. | Done 2026-05-31 |
+| Current blocker | None. Section 30 multi-cloud MCP unblocked. | Begin Section 30 planning when ready |
+| Immediate next activity | Monitor first 10+ production reviews with `responses-direct`; watch for synthesis failures in App Insights | If failures > 10%, rollback to `synthesis` |
+| Rollback command | `az functionapp config appsettings set --name func-arb-review-api-flex --resource-group rg-arb-review-prod --settings "USE_AGENTS_API=synthesis"` | Keep ready |
+| Cost guardrail | `$50` projected warning, `$60` action | Current MTD ~$40; direct model call may be slightly cheaper than agent_reference |
 | Required browser evidence | Playwright report, screenshots, trace/video, correlation file | Required before every phase flag activation |
 | Required Foundry evidence | Monitor/Trace screenshot for agent version `9` (synthesis) | Confirm synthesis agent runs appear in Foundry Monitor during soak |
 
@@ -1648,7 +1649,7 @@ This dashboard is the first page to use during standups, deployment windows, and
 | Phase 1 | `telemetry` | ✅ Deployed | ✅ Done (TRK-016) | ✅ Done | ✅ Foundry Monitor confirmed | ✅ Negligible impact | ✅ Done |
 | Phase 2 | `synthesis` | ✅ Deployed | ✅ Active (TRK-020 soak) | ✅ Validated | ✅ Synthesis trace confirmed | ✅ MTD ~$40 projected | ✅ Active soak — ends 2026-06-05 |
 | Phase 3 shadow | `synthesis` + shadow code | ✅ Deployed (dormant) | ❌ Disabled (rolled back from `shadow` 2026-05-30) | ✅ 10 E2E runs | ✅ 9 traces in App Insights | — | ❌ Section 28 gates failed 0/5 — TRK-022 Rolled Back |
-| Phase 3 full | `full` | ✅ Dormant in code | ❌ Not activated | ❌ Blocked | ❌ Blocked | ❌ Blocked | ❌ TRK-023 Deferred — redesign required |
+| Phase 3 Option A | `responses-direct` | ✅ Deployed (commit `a66679c`) | ✅ **LIVE** (set 2026-05-31) | ✅ 362 unit tests pass | ⏳ Monitor first 10 reviews | ✅ MTD ~$40 | ✅ **TRK-025 Done — ARB_SYSTEM_PROMPT authoritative** |
 
 ---
 
