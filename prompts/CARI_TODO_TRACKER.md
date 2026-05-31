@@ -1,6 +1,6 @@
 # CARI Todo Tracker
 
-_Maintained by Claude Code per Master Prompt V6. Updated each session. Last updated: 2026-05-31 (TRK-020 soak Day 3/5; Phase 3 Option A pre-designed as TRK-025 in Section 31 of migration plan)._
+_Maintained by Product Team. Updated each session. Last updated: 2026-05-31 (TRK-020 soak Day 3/5; Phase 3 Option A pre-designed as TRK-025 in Section 31 of migration plan)._
 
 ---
 
