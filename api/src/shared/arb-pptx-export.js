@@ -201,6 +201,65 @@ function buildCoverSlide(p, data, slideNum) {
   });
 }
 
+// ─── Slide outline helper (used by TOC) ──────────────────────────────────────
+function computeSlideOutline(reviewData, hasFindings, hasOpenActions, maxFindPages) {
+  const entries = [];
+  let sn = 1; // cover is un-numbered; sn=1 = TOC
+  entries.push({ section: "Table of Contents",              slide: sn++ });
+  entries.push({ section: "Executive Summary",              slide: sn++ });
+  entries.push({ section: "Assessment Scope & Methodology", slide: sn++ });
+  entries.push({ section: "Scorecard",                      slide: sn++ });
+  entries.push({ section: "Strengths & Domain Status",      slide: sn++ });
+  if (hasFindings) {
+    entries.push({ section: "Findings Overview (Chart)",    slide: sn++ });
+    entries.push({ section: `Key Findings (${maxFindPages} page${maxFindPages !== 1 ? "s" : ""})`, slide: sn });
+    sn += maxFindPages;
+    entries.push({ section: "Risk Register",                slide: sn++ });
+    entries.push({ section: "Risk Heat Map",                slide: sn++ });
+    if (hasOpenActions) entries.push({ section: "Remediation Actions", slide: sn++ });
+  } else {
+    entries.push({ section: "No Open Items",                slide: sn++ });
+  }
+  entries.push({ section: "Governance Decision",            slide: sn++ });
+  entries.push({ section: "SOW Traceability",               slide: sn++ });
+  if ((reviewData.reviewHistory || []).length >= 2) entries.push({ section: "Score Progression", slide: sn++ });
+  entries.push({ section: "Recommended Next Steps",         slide: sn++ });
+  entries.push({ section: "References & Standards",         slide: sn++ });
+  return entries;
+}
+
+function buildTableOfContentsSlide(p, data, outline, slideNum) {
+  const s = p.addSlide();
+  addHeader(s, "Contents", "Architecture Review Report — Section Guide");
+  addFooter(s, data.reviewId, slideNum);
+
+  const half  = Math.ceil(outline.length / 2);
+  const col1  = outline.slice(0, half);
+  const col2  = outline.slice(half);
+  const colW  = (CW - 0.5) / 2;
+
+  [[col1, 0], [col2, 1]].forEach(([col, ci]) => {
+    const colX = M + ci * (colW + 0.5);
+    col.forEach((entry, i) => {
+      const y = BODY_Y + i * 0.56;
+      s.addShape(p.ShapeType.rect, { x: colX, y: y + 0.1, w: 0.32, h: 0.3, fill: { color: BRAND.red }, line: { color: BRAND.red } });
+      s.addText(String(entry.slide), { x: colX, y: y + 0.12, w: 0.32, h: 0.26, fontSize: 9, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
+      s.addText(entry.section, {
+        x: colX + 0.44, y: y + 0.08, w: colW - 0.48, h: 0.38,
+        fontSize: 11, color: BRAND.darkGrey, fontFace: BRAND.font, valign: "middle", bold: true,
+      });
+    });
+  });
+
+  // Document info bar
+  const now = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  s.addShape(p.ShapeType.rect, { x: M, y: FTR_Y - 0.5, w: CW, h: 0.42, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
+  s.addText(`Generated: ${now}  ·  Review ID: ${data.reviewId}  ·  CONFIDENTIAL — For authorised recipient only`, {
+    x: M + 0.15, y: FTR_Y - 0.46, w: CW - 0.3, h: 0.34,
+    fontSize: 8.5, color: BRAND.midGrey, fontFace: BRAND.font,
+  });
+}
+
 function buildExecutiveSummarySlide(p, data, slideNum) {
   const s = p.addSlide();
   addHeader(s, "Executive Summary", data.projectCategory || "");
@@ -261,29 +320,34 @@ function buildExecutiveSummarySlide(p, data, slideNum) {
 
 function buildAssessmentScopeSlide(p, data, slideNum) {
   const s = p.addSlide();
-  addHeader(s, "Assessment Scope", "Derived from uploaded SOW and project category");
+  addHeader(s, "Assessment Scope & Methodology", "Frameworks applied, scope boundary, and review approach");
   addFooter(s, data.reviewId, slideNum);
 
   const labelW = 3.0;
   const valueX = M + labelW + 0.2;
   const valueW = CW - labelW - 0.2;
-  const rowH   = 0.75;
+  const rowH   = 0.6;
 
+  const frameworks = "Azure Well-Architected Framework (WAF)  ·  Azure Cloud Adoption Framework (CAF)";
   const rows = [
-    ["Project Category", data.projectCategory || "Architecture Review"],
-    ["Customer",         data.customerName    || "Not specified"],
-    ["Project",          data.projectName     || "Not specified"],
-    ["In-Scope Areas",   (data.inScope    || []).join(", ") || "Not specified in review data"],
-    ["Out-of-Scope",     (data.outOfScope || []).join(", ") || "Not specified in review data"],
-    ["Assumptions",      (data.assumptions || []).slice(0, 3).join("; ") || "No assumptions recorded"],
+    ["Project Category",   data.projectCategory || "Architecture Review"],
+    ["Customer",           data.customerName    || "Not specified"],
+    ["Project",            data.projectName     || "Not specified"],
+    ["Frameworks Applied", frameworks],
+    ["Assessment Duration", data.reviewDuration || "Not recorded"],
+    ["In-Scope Areas",     (data.inScope    || []).join(", ") || "Not specified in review data"],
+    ["Out-of-Scope",       (data.outOfScope || []).join(", ") || "Not specified in review data"],
+    ["Assumptions",        (data.assumptions || []).slice(0, 3).join("; ") || "No assumptions recorded"],
   ];
 
   rows.forEach(([label, value], i) => {
     const y = BODY_Y + i * (rowH + 0.05);
-    s.addShape(p.ShapeType.rect, { x: M,      y, w: labelW, h: rowH, fill: { color: BRAND.red       }, line: { color: BRAND.red       } });
-    s.addText(label,  { x: M + 0.12, y: y + 0.18, w: labelW - 0.2, h: rowH - 0.3,  fontSize: 10.5, bold: true, color: BRAND.white,    fontFace: BRAND.font });
+    const isMethodology = label === "Frameworks Applied" || label === "Assessment Duration";
+    const labelBg = isMethodology ? BRAND.blue : BRAND.red;
+    s.addShape(p.ShapeType.rect, { x: M,      y, w: labelW, h: rowH, fill: { color: labelBg      }, line: { color: labelBg      } });
+    s.addText(label,  { x: M + 0.12, y: y + 0.12, w: labelW - 0.2, h: rowH - 0.22, fontSize: 10, bold: true, color: BRAND.white,    fontFace: BRAND.font });
     s.addShape(p.ShapeType.rect, { x: valueX, y, w: valueW, h: rowH, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
-    s.addText(value,  { x: valueX + 0.15, y: y + 0.1,  w: valueW - 0.3, h: rowH - 0.18, fontSize: 10, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true, valign: "middle" });
+    s.addText(value,  { x: valueX + 0.15, y: y + 0.06, w: valueW - 0.3, h: rowH - 0.1, fontSize: 9.5, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true, valign: "middle" });
   });
 }
 
@@ -477,6 +541,109 @@ function buildRemediationActionsSlide(p, data, slideNum) {
   });
 }
 
+// ─── Risk Heat Map ────────────────────────────────────────────────────────────
+// 3×3 likelihood × impact matrix with open findings plotted as coloured dots.
+
+function buildRiskHeatMapSlide(p, data, slideNum) {
+  const s = p.addSlide();
+  addHeader(s, "Risk Heat Map", "Open findings by likelihood and impact");
+  addFooter(s, data.reviewId, slideNum);
+
+  const findings = (data.findings || []).filter((f) => f.status !== "Closed");
+
+  // Derive likelihood/impact from severity
+  const RISK_POS = { Critical: [2, 2], High: [2, 1], Medium: [1, 1], Low: [0, 0] };
+
+  // Cell zone colours (row=impact 0-2, col=likelihood 0-2)
+  const CELL_COL = [
+    ["D1FAE5", "FEF9C3", "FEE2E2"],
+    ["FEF9C3", "FEE2E2", "FEE2E2"],
+    ["FEE2E2", "FEE2E2", "FFD6D6"],
+  ];
+  const ZONE_LBL = [
+    ["LOW",    "MEDIUM", "HIGH"   ],
+    ["MEDIUM", "HIGH",   "HIGH"   ],
+    ["HIGH",   "HIGH",   "CRITICAL"],
+  ];
+
+  const gridX = M + 1.1;
+  const gridY = BODY_Y + 0.35;
+  const cellW = 2.85;
+  const cellH = 1.55;
+
+  // Axis labels
+  s.addText("IMPACT ↑", {
+    x: M - 0.05, y: gridY + 1.5 * cellH - 0.2, w: 1.0, h: 0.4,
+    fontSize: 9, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font, align: "center", rotate: 270,
+  });
+  ["Low", "Medium", "High"].forEach((lbl, i) => {
+    s.addText(lbl, {
+      x: gridX - 0.7, y: gridY + (2 - i) * cellH + cellH / 2 - 0.14, w: 0.6, h: 0.28,
+      fontSize: 8.5, color: BRAND.midGrey, fontFace: BRAND.font, align: "right",
+    });
+    s.addText(lbl, {
+      x: gridX + i * cellW + 0.1, y: gridY + 3 * cellH + 0.08, w: cellW - 0.2, h: 0.28,
+      fontSize: 8.5, color: BRAND.midGrey, fontFace: BRAND.font, align: "center",
+    });
+  });
+  s.addText("LIKELIHOOD →", {
+    x: gridX + 1.5 * cellW - 1.2, y: gridY + 3 * cellH + 0.42, w: 2.4, h: 0.28,
+    fontSize: 9, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font, align: "center",
+  });
+
+  // Draw cells
+  for (let ri = 0; ri < 3; ri++) {
+    for (let ci = 0; ci < 3; ci++) {
+      const cx = gridX + ci * cellW;
+      const cy = gridY + (2 - ri) * cellH;
+      s.addShape(p.ShapeType.rect, { x: cx, y: cy, w: cellW, h: cellH, fill: { color: CELL_COL[ri][ci] }, line: { color: "FFFFFF", pt: 1.5 } });
+      s.addText(ZONE_LBL[ri][ci], {
+        x: cx + 0.1, y: cy + 0.06, w: cellW - 0.2, h: 0.26,
+        fontSize: 7.5, color: "6B7280", fontFace: BRAND.font, align: "center",
+      });
+    }
+  }
+
+  // Plot finding counts as dots
+  const cellCounts = {};
+  findings.forEach((f) => {
+    const [ci, ri] = RISK_POS[f.severity] || RISK_POS.Medium;
+    const key = `${ci},${ri}`;
+    cellCounts[key] = (cellCounts[key] || 0) + 1;
+  });
+  Object.entries(cellCounts).forEach(([key, cnt]) => {
+    const [ci, ri] = key.split(",").map(Number);
+    const cx = gridX + ci * cellW + cellW / 2 - 0.32;
+    const cy = gridY + (2 - ri) * cellH + cellH / 2 - 0.22;
+    const sev = ri === 2 && ci === 2 ? "Critical" : ri + ci >= 3 ? "High" : ri + ci >= 2 ? "Medium" : "Low";
+    const col = SEVERITY_COLOUR[sev] || BRAND.red;
+    s.addShape(p.ShapeType.ellipse, { x: cx, y: cy, w: 0.64, h: 0.44, fill: { color: col }, line: { color: col } });
+    s.addText(String(cnt), { x: cx, y: cy + 0.04, w: 0.64, h: 0.36, fontSize: 14, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
+  });
+
+  // Legend — right panel
+  const legX = gridX + 3 * cellW + 0.45;
+  s.addText("Open Findings", { x: legX, y: BODY_Y + 0.3, w: 2.4, h: 0.32, fontSize: 10, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font });
+  const sevOrder = ["Critical", "High", "Medium", "Low"];
+  sevOrder.forEach((sev, i) => {
+    const cnt = findings.filter((f) => f.severity === sev).length;
+    const y   = BODY_Y + 0.75 + i * 0.56;
+    s.addShape(p.ShapeType.rect, { x: legX, y: y + 0.02, w: 0.28, h: 0.28, fill: { color: SEVERITY_COLOUR[sev] }, line: { color: SEVERITY_COLOUR[sev] } });
+    s.addText(`${sev}: ${cnt}`, { x: legX + 0.38, y: y + 0.03, w: 2.0, h: 0.26, fontSize: 10, color: BRAND.darkGrey, fontFace: BRAND.font });
+  });
+  const totalOpen = findings.length;
+  s.addShape(p.ShapeType.rect, { x: legX, y: BODY_Y + 3.2, w: 2.4, h: 0.4, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
+  s.addText(`Total Open: ${totalOpen}`, { x: legX, y: BODY_Y + 3.27, w: 2.4, h: 0.28, fontSize: 11, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font, align: "center" });
+
+  if (findings.length === 0) {
+    s.addShape(p.ShapeType.rect, { x: M, y: BODY_Y + 2.2, w: CW, h: 0.7, fill: { color: "D1FAE5" }, line: { color: "00A36C" } });
+    s.addText("✓  No open findings — all risks have been closed or resolved.", {
+      x: M + 0.2, y: BODY_Y + 2.4, w: CW - 0.4, h: 0.3,
+      fontSize: 12, bold: true, color: "065F46", fontFace: BRAND.font, align: "center",
+    });
+  }
+}
+
 // Returns fill/text colours for a decision-value cell based on the decision string.
 function decisionCellStyle(value) {
   if (!value) return { bg: BRAND.lightGrey, fg: BRAND.darkGrey };
@@ -519,14 +686,41 @@ function buildDecisionSlide(p, data, slideNum) {
     s.addText(value, { x: valueX + 0.15, y: y + 0.08, w: valueW - 0.3, h: rowH - 0.14, fontSize: 10, color: fg, fontFace: BRAND.font, wrap: true, valign: "middle", bold: colorCode });
   });
 
-  // Governance warning callout — shown prominently when posture conflicts with reviewer decision
+  // Governance warning callout
+  let nextY = BODY_Y + fields.length * (rowH + rowGap) + 0.08;
   if (decision.governanceWarning) {
-    const warningY = BODY_Y + fields.length * (rowH + rowGap) + 0.08;
-    const warningH = Math.max(0.5, FTR_Y - warningY - 0.45);
-    s.addShape(p.ShapeType.rect, { x: M, y: warningY, w: CW, h: warningH, fill: { color: "FEF3C7" }, line: { color: "F59E0B", pt: 1.5 } });
+    const warningH = 0.52;
+    s.addShape(p.ShapeType.rect, { x: M, y: nextY, w: CW, h: warningH, fill: { color: "FEF3C7" }, line: { color: "F59E0B", pt: 1.5 } });
     s.addText(`⚠  Governance Alert:  ${decision.governanceWarning}`, {
-      x: M + 0.18, y: warningY + 0.07, w: CW - 0.35, h: warningH - 0.12,
+      x: M + 0.18, y: nextY + 0.07, w: CW - 0.35, h: warningH - 0.12,
       fontSize: 8.5, color: "92400E", fontFace: BRAND.font, wrap: true,
+    });
+    nextY += warningH + 0.1;
+  }
+
+  // Approval Conditions — Critical/High open findings as blocking items
+  const openBlockers = (data.findings || []).filter((f) => ["Critical", "High"].includes(f.severity) && f.status !== "Closed");
+  const remainH = FTR_Y - nextY - 0.5;
+  if (openBlockers.length > 0 && remainH > 0.5) {
+    s.addShape(p.ShapeType.rect, { x: M, y: nextY, w: CW, h: 0.3, fill: { color: BRAND.red }, line: { color: BRAND.red } });
+    s.addText(`Approval Conditions — ${openBlockers.length} blocking item${openBlockers.length !== 1 ? "s" : ""} must be resolved`, {
+      x: M + 0.15, y: nextY + 0.04, w: CW - 0.3, h: 0.22,
+      fontSize: 9, bold: true, color: BRAND.white, fontFace: BRAND.font,
+    });
+    nextY += 0.32;
+    const lineH = 0.22;
+    const maxLines = Math.floor((FTR_Y - nextY - 0.45) / lineH);
+    openBlockers.slice(0, maxLines).forEach((f, i) => {
+      s.addText(`  •  [${f.severity}]  ${(f.title || "Untitled finding").slice(0, 110)}`, {
+        x: M + 0.1, y: nextY + i * lineH, w: CW - 0.2, h: lineH,
+        fontSize: 8.5, color: BRAND.darkGrey, fontFace: BRAND.font,
+      });
+    });
+  } else if (openBlockers.length === 0 && remainH > 0.4) {
+    s.addShape(p.ShapeType.rect, { x: M, y: nextY, w: CW, h: 0.36, fill: { color: "D1FAE5" }, line: { color: "00A36C" } });
+    s.addText("✓  No Critical or High severity blockers outstanding. Decision can proceed.", {
+      x: M + 0.15, y: nextY + 0.06, w: CW - 0.3, h: 0.24,
+      fontSize: 9, bold: true, color: "065F46", fontFace: BRAND.font,
     });
   }
 }
@@ -1021,9 +1215,12 @@ async function generateArbPptx(packOrReviewData) {
     if (!reviewData.reviewHistory)  reviewData.reviewHistory  = packOrReviewData.metadata?.reviewHistory  || [];
   }
 
-  let sn = 1; // slide number counter
+  // Pre-compute slide outline so TOC can show correct page numbers
+  const outline = computeSlideOutline(reviewData, hasFindings, hasOpenActions, maxFindPages);
+  let sn = 1; // cover is un-numbered; sn=1 = TOC
 
-  buildCoverSlide(pptx, reviewData, null);       sn++;  // cover has no footer number
+  buildCoverSlide(pptx, reviewData, null);
+  buildTableOfContentsSlide(pptx, reviewData, outline, sn++);
   buildExecutiveSummarySlide(pptx, reviewData, sn++);
   buildAssessmentScopeSlide(pptx, reviewData, sn++);
   buildScorecardSlide(pptx, reviewData, sn++);
@@ -1035,6 +1232,7 @@ async function generateArbPptx(packOrReviewData) {
       buildFindingsSlide(pptx, { ...reviewData, totalFindingPages: maxFindPages }, i, sn++);
     }
     buildRiskRegisterSlide(pptx, reviewData, sn++);
+    buildRiskHeatMapSlide(pptx, reviewData, sn++);
     if (hasOpenActions) buildRemediationActionsSlide(pptx, reviewData, sn++);
   } else {
     buildNoOpenItemsSlide(pptx, reviewData, sn++);

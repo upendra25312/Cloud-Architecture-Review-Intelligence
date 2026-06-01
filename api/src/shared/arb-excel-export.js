@@ -88,6 +88,69 @@ function sanitiseEvidenceText(raw) {
 
 // ─── Sheet builders ────────────────────────────────────────────────────────────
 
+function buildSummaryDashboardSheet(wb, pack) {
+  const ws  = wb.addWorksheet("Summary Dashboard");
+  const sc  = pack.scorecard        || {};
+  const es  = pack.executiveSummary || {};
+  const dc  = pack.decision         || {};
+  const meta = pack.metadata        || {};
+
+  ws.getColumn(1).width = 32;
+  ws.getColumn(2).width = 22;
+  ws.getColumn(3).width = 22;
+
+  const findings = pack.findings || [];
+  const sevCounts = { Critical: 0, High: 0, Medium: 0, Low: 0 };
+  findings.forEach((f) => { if (f.status !== "Closed") sevCounts[f.severity] = (sevCounts[f.severity] || 0) + 1; });
+  const domainCount    = (sc.domains || []).length;
+  const passingDomains = (sc.domains || []).filter((d) => (d.percentage ?? 0) >= 70).length;
+  const failingDomains = domainCount - passingDomains;
+  const openActions    = (pack.remediationActions || []).filter((a) => a.status !== "Closed").length;
+  const score          = sc.percentage ?? es.overallScore ?? 0;
+
+  // Title
+  const titleRow = ws.addRow(["ARB Review — Summary Dashboard", "", ""]);
+  titleRow.getCell(1).font = { bold: true, size: 16, color: { argb: "FFFFFFFF" } };
+  titleRow.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFEB0000" } };
+  ws.mergeCells(`A1:C1`);
+  titleRow.height = 28;
+
+  ws.addRow([]);
+
+  const addKpi = (label, value, argbBg, argbFg = "FF0F172A") => {
+    const row = ws.addRow([label, value, ""]);
+    row.height = 22;
+    row.getCell(1).font = { bold: true, size: 11, color: { argb: "FF475569" } };
+    row.getCell(2).font = { bold: true, size: 13, color: { argb: argbFg } };
+    row.getCell(2).fill = { type: "pattern", pattern: "solid", fgColor: { argb: argbBg } };
+    row.getCell(2).alignment = { horizontal: "center" };
+    row.eachCell((cell) => { cell.border = { bottom: { style: "hair", color: { argb: "FFE2E8F0" } } }; });
+  };
+
+  const scoreBg = score >= 80 ? "FFD1FAE5" : score >= 70 ? "FFFFF3E0" : "FFFEE2E2";
+  const scoreFg = score >= 80 ? "FF065F46" : score >= 70 ? "FF78350F" : "FF9B1C1C";
+
+  addKpi("Overall Score",              `${score} / 100  (${es.scoreBand || "—"})`, scoreBg, scoreFg);
+  addKpi("Recommendation",             es.recommendation || dc.governancePosture || "Pending", "FFEFF6FF", "FF1E3A5F");
+  addKpi("Reviewer Decision",          dc.reviewerDecision || "Not recorded", "FFF8FAFC");
+  ws.addRow([]);
+  addKpi("Domains Passing (≥70%)",     `${passingDomains} of ${domainCount}`, "FFD1FAE5", "FF065F46");
+  addKpi("Domains Failing (<70%)",     `${failingDomains} of ${domainCount}`, failingDomains > 0 ? "FFFEE2E2" : "FFD1FAE5", failingDomains > 0 ? "FF9B1C1C" : "FF065F46");
+  ws.addRow([]);
+  addKpi("Critical Findings (open)",   String(sevCounts.Critical), sevCounts.Critical > 0 ? "FFFEE2E2" : "FFD1FAE5", sevCounts.Critical > 0 ? "FFD92B2B" : "FF065F46");
+  addKpi("High Findings (open)",       String(sevCounts.High),     sevCounts.High > 0     ? "FFFFF3E0" : "FFD1FAE5", sevCounts.High > 0     ? "FFC85000" : "FF065F46");
+  addKpi("Medium Findings (open)",     String(sevCounts.Medium),   "FFFFF8DC");
+  addKpi("Low Findings (open)",        String(sevCounts.Low),      "FFE3F2FD");
+  addKpi("Open Actions",               String(openActions),        openActions > 0 ? "FFFFF3E0" : "FFD1FAE5");
+  ws.addRow([]);
+  addKpi("Assessment Duration",        meta.reviewDuration || "Not recorded", "FFF8FAFC");
+  addKpi("Evidence Readiness",         (pack.evidenceReadiness || {}).status || "—", "FFF8FAFC");
+  ws.addRow([]);
+  const nextReview = new Date();
+  nextReview.setDate(nextReview.getDate() + 90);
+  addKpi("Next Review Recommended",    nextReview.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }), "FFEFF6FF");
+}
+
 function buildExecutiveSummarySheet(wb, pack) {
   const ws = wb.addWorksheet("Executive Summary");
   ws.getColumn(1).width = 30;
@@ -238,28 +301,36 @@ function buildFindingsSheet(wb, pack) {
 
 function buildRisksSheet(wb, pack) {
   const ws = wb.addWorksheet("Risks");
-  const headers = ["Risk ID","Linked Finding","Risk Title","Severity","Likelihood","Impact","Risk Owner","Mitigation","Status","Due Date"];
+  const headers = ["Risk ID","Linked Finding","Risk Title","Severity","Likelihood","Impact","Residual Risk","Risk Owner","Mitigation","Status","Due Date"];
   setHeaderRow(ws, headers);
-  setColWidths(ws, [10,14,28,10,10,36,18,36,12,12]);
+  setColWidths(ws, [10,14,28,10,10,10,14,18,36,12,12]);
 
   for (const r of pack.riskRegister || []) {
+    // Compute residual risk rating: High+High=Critical, etc.
+    const lMap = { High: 2, Medium: 1, Low: 0 };
+    const l = lMap[r.likelihood] ?? 1;
+    const i = lMap[r.impact]     ?? 1;
+    const residual = l + i >= 4 ? "Critical" : l + i >= 3 ? "High" : l + i >= 2 ? "Medium" : "Low";
     addDataRow(ws, [
       r.riskId, r.linkedFindingId, r.riskTitle, r.severity,
-      r.likelihood, r.impact, r.riskOwner, r.mitigation, r.status, r.dueDate || "",
+      r.likelihood || "Medium", r.impact || "Medium", residual,
+      r.riskOwner, r.mitigation, r.status, r.dueDate || "",
     ], r.severity);
   }
 }
 
 function buildActionsSheet(wb, pack) {
   const ws = wb.addWorksheet("Actions");
-  const headers = ["Action ID","Linked Finding","Title","Severity","Domain","Owner","Due Date","Due Status","Status","Source"];
+  const headers = ["Action ID","Linked Finding","Title","Severity","Domain","Owner","Due Date","Due Status","Status","Acceptance Criteria","Source"];
   setHeaderRow(ws, headers);
-  setColWidths(ws, [14,14,36,10,16,18,12,12,12,12]);
+  setColWidths(ws, [14,14,36,10,16,18,12,12,12,36,12]);
 
   for (const a of pack.remediationActions || []) {
+    // Default acceptance criteria derived from action title if not explicit
+    const acceptance = a.acceptanceCriteria || `Confirmed resolved: ${(a.title || "").slice(0, 80)}`;
     addDataRow(ws, [
       a.actionId, a.linkedFindingId, a.title, a.severity, a.domain,
-      a.owner, a.dueDate || "", a.dueStatus, a.status, a.source,
+      a.owner, a.dueDate || "", a.dueStatus, a.status, acceptance, a.source,
     ], a.severity);
   }
 }
@@ -513,6 +584,7 @@ async function generateArbExcel(pack) {
   wb.modified = new Date();
   wb.properties.date1904 = false;
 
+  buildSummaryDashboardSheet(wb, pack);
   buildExecutiveSummarySheet(wb, pack);
   buildDomainAssessmentSheet(wb, pack);
   buildScoreProgressionSheet(wb, pack);

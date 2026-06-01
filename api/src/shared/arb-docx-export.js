@@ -129,6 +129,67 @@ function buildTable(headers, rows, headerFill = BRAND.red) {
 
 // ─── Section builders ──────────────────────────────────────────────────────────
 
+function buildTableOfContentsSection(pack) {
+  const toc = [
+    "Executive Summary",
+    "Assessment Scope & Methodology",
+    "Scorecard",
+    "Domain Assessment",
+    "Findings",
+    "Risk Register",
+    "Remediation Actions",
+    "Requirements",
+    "Approval Conditions",
+    "Sign-off",
+  ];
+  return [
+    pageBreak(),
+    new Paragraph({ text: "Table of Contents", heading: HeadingLevel.HEADING_1, spacing: { after: 200 } }),
+    ...toc.map((section, i) =>
+      new Paragraph({
+        children: [new TextRun({ text: `${i + 1}.  ${section}`, size: 22 })],
+        spacing: { after: 60 },
+      }),
+    ),
+    spacer(),
+    p("Note: Update this document's field codes (Ctrl+A → F9) if using Microsoft Word to auto-generate page numbers.", { italics: true, color: "94A3B8", size: 18 }),
+    spacer(),
+  ];
+}
+
+function buildScopeAndMethodologySection(pack) {
+  const meta = pack.metadata || {};
+  const proj = pack.project  || {};
+  const sc   = pack.scorecard || {};
+  const domainCount = (sc.domains || []).length;
+  return [
+    pageBreak(),
+    new Paragraph({ text: "Assessment Scope & Methodology", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
+    spacer(),
+    labelValue("Frameworks Applied",  "Azure Well-Architected Framework (WAF)  ·  Azure Cloud Adoption Framework (CAF)"),
+    labelValue("Project Category",    proj.category || meta.exportFormat || "Architecture Review"),
+    labelValue("Domains Assessed",    `${domainCount} domain${domainCount !== 1 ? "s" : ""}`),
+    labelValue("Assessment Duration", meta.reviewDuration || "Not recorded"),
+    labelValue("Review ID",           meta.reviewId || "—"),
+    spacer(),
+    new Paragraph({ text: "Review Methodology", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }),
+    p("This review was conducted using the Cloud Architecture Review Intelligence (CARI) platform, applying Azure WAF and CAF standards. Uploaded architecture documents, SOW artefacts, and design specifications were extracted, analysed, and cross-referenced against governance rules to produce findings, scores, and recommendations."),
+    spacer(),
+    new Paragraph({ text: "Scoring Bands", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }),
+    buildTable(
+      ["Band", "Score Range", "Meaning"],
+      [
+        ["Strong",     "85 – 100", "Domain well aligned with WAF/CAF. No material blockers."],
+        ["Moderate",   "70 – 84",  "Generally compliant with minor gaps. Targeted remediation recommended."],
+        ["Needs Work", "50 – 69",  "Significant gaps present. Remediation required before approval."],
+        ["Critical",   "0 – 49",   "Fundamental issues identified. Architecture may not meet governance standards."],
+      ],
+      BRAND.blue,
+    ),
+    spacer(),
+  ];
+}
+
 function buildCoverSection(pack) {
   const meta  = pack.metadata  || {};
   const cust  = pack.customer  || {};
@@ -178,21 +239,49 @@ function buildCoverSection(pack) {
 }
 
 function buildExecutiveSummarySection(pack) {
-  const es = pack.executiveSummary || {};
-  const dc = pack.decision         || {};
-  const er = pack.evidenceReadiness|| {};
+  const es       = pack.executiveSummary || {};
+  const dc       = pack.decision         || {};
+  const er       = pack.evidenceReadiness|| {};
+  const meta     = pack.metadata         || {};
+  const sc       = pack.scorecard        || {};
+  const findings = pack.findings         || [];
 
-  const meta = pack.metadata || {};
+  // Findings KPI counts
+  const sevCounts = { Critical: 0, High: 0, Medium: 0, Low: 0 };
+  findings.forEach((f) => { if (f.status !== "Closed") sevCounts[f.severity] = (sevCounts[f.severity] || 0) + 1; });
+  const domainCount   = (sc.domains || []).length;
+  const passingDomains = (sc.domains || []).filter((d) => (d.percentage ?? 0) >= 70).length;
+  const failingDomains = domainCount - passingDomains;
+
+  // Next review date recommendation — 90 days from now
+  const nextReviewDate = new Date();
+  nextReviewDate.setDate(nextReviewDate.getDate() + 90);
+  const nextReviewStr = nextReviewDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
   const items = [
     pageBreak(),
     new Paragraph({ text: "Executive Summary", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
     spacer(),
-    labelValue("Overall Score",       es.overallScore != null ? `${es.overallScore} / 100 (${es.scoreBand || ""})` : "—"),
-    labelValue("Recommendation",      es.recommendation   || "—"),
-    labelValue("Governance Posture",  dc.governancePosture || "—"),
-    labelValue("Reviewer Decision",   dc.reviewerDecision  || "Not recorded"),
-    labelValue("Evidence Readiness",  `${er.status || "—"}${er.reason ? ` — ${er.reason}` : ""}`),
-    ...(meta.reviewDuration ? [labelValue("Assessment Duration", meta.reviewDuration)] : []),
+    // Key metrics table
+    new Paragraph({ text: "Key Assessment Metrics", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }),
+    buildTable(
+      ["Metric", "Value"],
+      [
+        ["Overall Score",        es.overallScore != null ? `${es.overallScore} / 100  (${es.scoreBand || "—"})` : "Pending"],
+        ["Recommendation",       es.recommendation || dc.governancePosture || "Pending"],
+        ["Reviewer Decision",    dc.reviewerDecision || "Not recorded"],
+        ["Domains Passing (≥70%)", `${passingDomains} of ${domainCount}`],
+        ["Domains Failing (<70%)", `${failingDomains} of ${domainCount}`],
+        ["Critical Findings (open)", String(sevCounts.Critical)],
+        ["High Findings (open)",     String(sevCounts.High)],
+        ["Medium Findings (open)",   String(sevCounts.Medium)],
+        ["Low Findings (open)",      String(sevCounts.Low)],
+        ["Evidence Readiness",   `${er.status || "—"}${er.reason ? ` — ${er.reason}` : ""}`],
+        ["Assessment Duration",  meta.reviewDuration || "Not recorded"],
+        ["Next Review Recommended", nextReviewStr],
+      ],
+      BRAND.red,
+    ),
     spacer(),
   ];
 
@@ -402,6 +491,41 @@ function buildActionsSection(pack) {
   ];
 }
 
+function buildRiskRegisterSection(pack) {
+  const risks = pack.riskRegister || [];
+  const header = [
+    pageBreak(),
+    new Paragraph({ text: "Risk Register", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
+    spacer(),
+  ];
+
+  if (!risks.length) {
+    return [...header, p("No risks recorded. Risk items are derived from open Critical and High severity findings."), spacer()];
+  }
+
+  const rows = risks.map((r) => [
+    r.riskId || "—",
+    r.riskTitle || r.title || "—",
+    r.severity || "—",
+    r.likelihood || "Medium",
+    r.impact || "Medium",
+    r.riskOwner || r.owner || "TBC",
+    r.mitigation || "—",
+    r.dueDate ? new Date(r.dueDate).toLocaleDateString("en-GB") : "TBC",
+    r.status || "Open",
+  ]);
+
+  return [
+    ...header,
+    buildTable(
+      ["Risk ID", "Risk Title", "Severity", "Likelihood", "Impact", "Owner", "Mitigation", "Due Date", "Status"],
+      rows,
+      BRAND.red,
+    ),
+    spacer(),
+  ];
+}
+
 function buildRequirementsSection(pack) {
   const reqs = pack.requirements || [];
   if (!reqs.length) return [];
@@ -538,10 +662,13 @@ async function generateArbDocx(pack) {
 
   const children = [
     ...buildCoverSection(pack),
+    ...buildTableOfContentsSection(pack),
     ...buildExecutiveSummarySection(pack),
+    ...buildScopeAndMethodologySection(pack),
     ...buildScorecardSection(pack),
     ...buildDomainAssessmentSection(pack),
     ...buildFindingsSection(pack),
+    ...buildRiskRegisterSection(pack),
     ...buildActionsSection(pack),
     ...buildRequirementsSection(pack),
     ...buildApprovalConditionsSection(pack),
