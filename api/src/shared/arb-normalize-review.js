@@ -841,6 +841,14 @@ function normalizeReviewForExport(
     canonicalRequirements, canonicalEvidence, canonicalFindings, remediationActions
   );
 
+  // Back-propagate traceability-derived evidenceStatus into requirements.
+  // The agent always stores reviewerStatus: "Pending" — traceability computes
+  // the real status from actual linked evidence (Evidenced / Partially Evidenced / Not Evidenced).
+  const traceStatusByReqId = new Map(traceability.map((t) => [t.requirementId, t.evidenceStatus]));
+  for (const req of canonicalRequirements) {
+    req.evidenceStatus = traceStatusByReqId.get(req.requirementId) || req.evidenceStatus;
+  }
+
   // ── Recommendation (canonical) ────────────────────────────────────────────────
   // Always derive from the current governance posture (based on actual open findings)
   // so all export formats — Excel, Word, HTML, CSV, MD, PPTX — agree on the same value.
@@ -954,7 +962,9 @@ function normalizeReviewForExport(
       reviewDate:           review?.createdAt
         ? new Date(review.createdAt).toLocaleDateString("en-GB")
         : new Date().toLocaleDateString("en-GB"),
-      status:               review?.status ?? "Review Complete",
+      status:               review?.finalDecision
+        ? "Decision Recorded"
+        : (review?.workflowState || review?.status || "Review Complete"),
       overallScore:         canonicalScorecard.totalScore,
       // Use derived governancePosture (from current findings) not stale scorecard recommendation.
       recommendation:       canonicalDecision.governancePosture,

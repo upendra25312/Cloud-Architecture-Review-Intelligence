@@ -555,9 +555,14 @@ Return only a valid JSON object in this exact shape:
 }
 
 Finding volume:
-- For a complete evidence package, aim for 8-15 findings across WAF, CAF, ALZ, and service-specific Microsoft Learn guidance.
-- For a thin evidence package, produce fewer findings if only a few are actually evidenced, and put the rest in missingEvidence.
+- For a complete evidence package (2+ uploaded files), you MUST produce a minimum of 8 findings across WAF, CAF, ALZ, and service-specific Microsoft Learn guidance. Do not stop at 2-3 findings — every untested domain requires at least one finding or a missingEvidence entry explaining why it is compliant.
+- For a thin evidence package (1 file only), produce at least 3 findings if any gaps are visible.
 - missingEvidence must contain at least 5 specific items unless the submitted evidence fully covers all review domains.
+
+Finding title format:
+- Finding titles MUST be standalone architecture issue descriptors (5-12 words). Do NOT prefix with project name, customer name, abbreviation, or bracket tags.
+- Bad: "[E2E-TB] Trust Bank LZ: MFA not enforced" — Good: "MFA enforcement not configured for privileged accounts"
+- Bad: "Contoso Financial Services Landing Zone: runbook ownership unclear" — Good: "Operational runbook ownership not assigned for deployment and incidents"
 
 Severity calibration:
 - Critical: directly evidenced exploit path, data-exfiltration risk, mandatory compliance violation, or non-waivable ARB blocker.
@@ -1126,7 +1131,7 @@ function parseDomainResponse(responseText, config) {
       findingType: String(f.findingType ?? f.framework ?? "WAF"),
       framework: String(f.framework ?? "WAF"),
       frameworkPillar: String(f.frameworkPillar ?? ""),
-      title: String(f.title ?? "Finding"),
+      title: sanitiseFindingTitle(f.title),
       findingStatement: String(f.findingStatement ?? ""),
       whyItMatters: String(f.whyItMatters ?? ""),
       evidenceBasis: String(f.evidenceBasis ?? ""),
@@ -1135,7 +1140,7 @@ function parseDomainResponse(responseText, config) {
       evidenceReferences,
       recommendation: String(f.recommendation ?? ""),
       learnMoreUrl: String(f.learnMoreUrl ?? ""),
-      references: f.learnMoreUrl ? [{ title: String(f.title ?? "Learn more"), url: String(f.learnMoreUrl) }] : [],
+      references: f.learnMoreUrl ? [{ title: sanitiseFindingTitle(f.title) || "Learn more", url: String(f.learnMoreUrl) }] : [],
       confidence: String(f.confidence ?? "Medium"),
       criticalBlocker: Boolean(f.criticalBlocker ?? false),
       suggestedOwner: String(f.suggestedOwner ?? ""),
@@ -1651,6 +1656,16 @@ function parseConfidence(value) {
   return "Medium";
 }
 
+// Strip project-name/abbreviation prefixes that models sometimes prepend to finding titles.
+// Pattern examples the model generates: "[E2E-TB] Trust Bank LZ: ..." or
+// "Contoso Financial Services Landing Zone: ..."
+function sanitiseFindingTitle(raw) {
+  let t = String(raw ?? "Finding").trim();
+  t = t.replace(/^\[[^\]]{0,30}\]\s*/, "");
+  t = t.replace(/^[\w\s]{3,50}(?:\s+LZ|\s+Landing Zone|\s+Project)?\s*:\s*/i, "");
+  return t.trim() || "Finding";
+}
+
 function parseRecommendation(value) {
   const v = String(value ?? "").trim();
   const legacyMap = {
@@ -1711,7 +1726,7 @@ function parseAgentResponse(responseText) {
       findingType: String(f.findingType ?? f.framework ?? "WAF"),
       framework: String(f.framework ?? "WAF"),
       frameworkPillar: String(f.frameworkPillar ?? ""),
-      title: String(f.title ?? "Finding"),
+      title: sanitiseFindingTitle(f.title),
       findingStatement: String(f.findingStatement ?? ""),
       whyItMatters: String(f.whyItMatters ?? ""),
       evidenceBasis: String(f.evidenceBasis ?? ""),
