@@ -181,8 +181,9 @@ function buildCoverSlide(p, data, slideNum) {
     fill: { color: BRAND.purple }, align: "center", valign: "middle",
   });
 
-  // Review date · status
-  s.addText(`${data.reviewDate || ""}   ·   ${data.status || ""}`, {
+  // Review date · status · duration
+  const coverMeta = [data.reviewDate, data.status, data.reviewDuration ? `Duration: ${data.reviewDuration}` : null].filter(Boolean).join("   ·   ");
+  s.addText(coverMeta || "", {
     x: 0.7, y: 4.15, w: 11.0, h: 0.35,
     fontSize: 12, color: BRAND.white, fontFace: BRAND.font,
   });
@@ -783,6 +784,71 @@ function buildNoOpenItemsSlide(p, data, slideNum) {
   });
 }
 
+// ─── Score Progression ────────────────────────────────────────────────────────
+// Shows a bar chart of scores across multiple reviews of the same project.
+
+function buildScoreProgressionSlide(p, data, slideNum) {
+  const history = data.reviewHistory || [];
+  if (history.length < 2) return;
+
+  const s = p.addSlide();
+  addHeader(s, "Score Progression", `${history.length} reviews for this project`);
+  addFooter(s, data.reviewId, slideNum);
+
+  const labels = history.map((r, i) =>
+    r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" }) : `Review ${i + 1}`
+  );
+  const values = history.map((r) => r.overallScore ?? 0);
+  const colors = values.map((v) => v >= 80 ? "00BEBC" : v >= 70 ? "F0A500" : "EB0000");
+
+  s.addChart("bar", [{
+    name: "Overall Score",
+    labels,
+    values,
+  }], {
+    x: M, y: BODY_Y, w: 8.5, h: BODY_H,
+    barDir: "col",
+    barGrouping: "clustered",
+    chartColors: colors,
+    showValue: true,
+    dataLabelFontSize: 11,
+    dataLabelFontBold: true,
+    dataLabelColor: BRAND.darkGrey,
+    valAxisMaxVal: 100,
+    valAxisMinVal: 0,
+    valAxisNumFmt: "0",
+    catAxisLabelFontSize: 10,
+    title: "Score / 100 per Review",
+    showTitle: true,
+    titleFontSize: 12,
+    showLegend: false,
+  });
+
+  // Summary callout on the right
+  const rightX = M + 9.0;
+  const first  = history[0]?.overallScore  ?? 0;
+  const last   = history[history.length - 1]?.overallScore ?? 0;
+  const delta  = last - first;
+  const col    = delta > 0 ? "00A36C" : delta < 0 ? BRAND.red : BRAND.midGrey;
+  const arrow  = delta > 0 ? "▲" : delta < 0 ? "▼" : "━";
+
+  s.addShape(p.ShapeType.rect, { x: rightX, y: BODY_Y, w: 3.5, h: 1.4, fill: { color: BRAND.lightGrey }, line: { color: BRAND.lightGrey } });
+  s.addText(`${arrow} ${delta > 0 ? "+" : ""}${delta} pts`, { x: rightX, y: BODY_Y + 0.12, w: 3.5, h: 0.72, fontSize: 28, bold: true, color: col, fontFace: BRAND.font, align: "center" });
+  s.addText("Total score change", { x: rightX, y: BODY_Y + 0.85, w: 3.5, h: 0.3, fontSize: 9, color: BRAND.midGrey, fontFace: BRAND.font, align: "center" });
+
+  s.addText(`First: ${first}/100  →  Latest: ${last}/100`, {
+    x: rightX, y: BODY_Y + 1.6, w: 3.5, h: 0.35,
+    fontSize: 10, color: BRAND.darkGrey, fontFace: BRAND.font, align: "center",
+  });
+
+  if (delta > 0) {
+    s.addText("CARI assessments are adding value — the architecture has improved.", {
+      x: rightX, y: BODY_Y + 2.1, w: 3.5, h: 0.8,
+      fontSize: 9, color: "065F46", fontFace: BRAND.font, wrap: true, align: "center",
+    });
+  }
+}
+
 // ─── Category-aware Next Steps ────────────────────────────────────────────────
 const CATEGORY_NEXT_STEPS = {
   "landing-zone": [
@@ -948,9 +1014,11 @@ async function generateArbPptx(packOrReviewData) {
   const hasFindings    = findings.length > 0;
   const hasOpenActions = (reviewData.actions || []).some((a) => a.status !== "Closed");
 
-  // Propagate strengths from canonical pack into reviewData for new slides
-  if (isCanonicalPack && !reviewData.strengths) {
-    reviewData.strengths = packOrReviewData.strengths || [];
+  // Propagate strengths and metadata from canonical pack into reviewData for new slides
+  if (isCanonicalPack) {
+    if (!reviewData.strengths)      reviewData.strengths      = packOrReviewData.strengths || [];
+    if (!reviewData.reviewDuration) reviewData.reviewDuration = packOrReviewData.metadata?.reviewDuration || null;
+    if (!reviewData.reviewHistory)  reviewData.reviewHistory  = packOrReviewData.metadata?.reviewHistory  || [];
   }
 
   let sn = 1; // slide number counter
@@ -973,6 +1041,7 @@ async function generateArbPptx(packOrReviewData) {
   }
   buildDecisionSlide(pptx, reviewData, sn++);
   buildSowTraceabilitySlide(pptx, reviewData, sn++);
+  buildScoreProgressionSlide(pptx, reviewData, sn++);   // only renders if ≥2 reviews
   buildNextStepsSlide(pptx, reviewData, sn++);
   buildReferencesSlide(pptx, reviewData, sn++);
 

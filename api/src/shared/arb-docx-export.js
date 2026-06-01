@@ -182,6 +182,7 @@ function buildExecutiveSummarySection(pack) {
   const dc = pack.decision         || {};
   const er = pack.evidenceReadiness|| {};
 
+  const meta = pack.metadata || {};
   const items = [
     pageBreak(),
     new Paragraph({ text: "Executive Summary", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
@@ -191,6 +192,7 @@ function buildExecutiveSummarySection(pack) {
     labelValue("Governance Posture",  dc.governancePosture || "—"),
     labelValue("Reviewer Decision",   dc.reviewerDecision  || "Not recorded"),
     labelValue("Evidence Readiness",  `${er.status || "—"}${er.reason ? ` — ${er.reason}` : ""}`),
+    ...(meta.reviewDuration ? [labelValue("Assessment Duration", meta.reviewDuration)] : []),
     spacer(),
   ];
 
@@ -201,8 +203,28 @@ function buildExecutiveSummarySection(pack) {
 
   const strengths = pack.strengths || es.strengths || [];
   if (strengths.length) {
-    items.push(new Paragraph({ text: "Strengths", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }));
-    for (const s of strengths) items.push(bullet(s));
+    items.push(new Paragraph({ text: "Architecture Strengths", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }));
+    for (const s of strengths) items.push(bullet(`✓  ${s}`));
+    items.push(spacer());
+  }
+
+  // Score progression across multiple reviews of the same project
+  const reviewHistory = meta.reviewHistory || [];
+  if (reviewHistory.length > 1) {
+    items.push(new Paragraph({ text: "Score Progression", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }));
+    items.push(p(`This project has been reviewed ${reviewHistory.length} times. Score trend across reviews:`));
+    items.push(spacer());
+    const histRows = reviewHistory.map((r, i) => {
+      const prev  = i > 0 ? (reviewHistory[i - 1].overallScore || 0) : null;
+      const delta = prev !== null ? (r.overallScore || 0) - prev : null;
+      return [
+        r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-GB") : `Review ${i + 1}`,
+        `${r.overallScore ?? "—"} / 100`,
+        delta !== null ? (delta > 0 ? `▲ +${delta}` : delta < 0 ? `▼ ${delta}` : "━ 0") : "—",
+        r.recommendation || "—",
+      ];
+    });
+    items.push(buildTable(["Date", "Score", "Change", "Recommendation"], histRows, BRAND.blue));
     items.push(spacer());
   }
 

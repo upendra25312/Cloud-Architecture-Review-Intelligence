@@ -2175,6 +2175,7 @@ function renderHtmlExportBody(pack, summaryText) {
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Evidence Readiness</td><td style="padding:4px 0;font-weight:500;">${esc(er.status)}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Overall Score</td><td style="padding:4px 0;font-weight:600;">${overallScore !== null ? esc(overallScore) + " / 100" : "TBD"}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Recommendation</td><td style="padding:4px 0;">${recommendationBadge(recommendation)}</td></tr>`,
+    meta.reviewDuration ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Assessment Duration</td><td style="padding:4px 0;font-weight:500;">${esc(meta.reviewDuration)}</td></tr>` : "",
     hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer Decision</td><td style="padding:4px 0;font-weight:600;">${esc(dc.reviewerDecision)}</td></tr>` : "",
     hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer</td><td style="padding:4px 0;font-weight:500;">${esc(dc.reviewerName || "Not recorded")}</td></tr>` : "",
     hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Decision Recorded</td><td style="padding:4px 0;font-weight:500;">${esc(dc.recordedAt || "Not recorded")}</td></tr>` : "",
@@ -2252,6 +2253,42 @@ function renderHtmlExportBody(pack, summaryText) {
         `</div>`
       );
     }
+    parts.push(`</div></div>`);
+  }
+
+  /* ── SCORE PROGRESSION (multi-review project) ── */
+  const reviewHistory = meta.reviewHistory || [];
+  if (reviewHistory.length > 1) {
+    parts.push(
+      divider,
+      `<div style="margin-bottom:32px;">`,
+      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Score Progression</h2>`,
+      `<p style="margin:0 0 16px;font-size:13px;color:#64748B;">This project has been reviewed ${reviewHistory.length} time${reviewHistory.length !== 1 ? "s" : ""}. Score trend across reviews:</p>`,
+      `<div style="display:flex;align-items:flex-end;gap:10px;padding:16px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;overflow-x:auto;">`
+    );
+    const maxScore = Math.max(...reviewHistory.map((r) => r.overallScore || 0), 1);
+    const barMaxH = 120;
+    reviewHistory.forEach((r, i) => {
+      const pct   = Math.round(Math.min(100, r.overallScore || 0));
+      const barH  = Math.round((pct / 100) * barMaxH);
+      const col   = scoreColor(pct);
+      const isNow = r.isCurrent;
+      const dt    = r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" }) : `Review ${i + 1}`;
+      const prev  = i > 0 ? (reviewHistory[i - 1].overallScore || 0) : null;
+      const delta = prev !== null ? pct - prev : null;
+      const deltaHtml = delta !== null
+        ? `<span style="font-size:11px;font-weight:600;color:${delta > 0 ? "#059669" : delta < 0 ? "#D92B2B" : "#64748B"};">${delta > 0 ? "▲" : delta < 0 ? "▼" : "━"} ${Math.abs(delta)}</span>`
+        : "";
+      parts.push(
+        `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:64px;">`,
+        deltaHtml,
+        `<div style="width:40px;height:${barH}px;background:${isNow ? col : "#CBD5E1"};border-radius:4px 4px 0 0;border-bottom:2px solid ${col};"></div>`,
+        `<span style="font-size:14px;font-weight:700;color:${isNow ? col : "#64748B"};">${pct}</span>`,
+        `<span style="font-size:10px;color:#94A3B8;text-align:center;max-width:64px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" title="${esc(dt)}">${esc(dt)}</span>`,
+        isNow ? `<span style="font-size:10px;font-weight:600;color:#0078D4;">Current</span>` : "",
+        `</div>`
+      );
+    });
     parts.push(`</div></div>`);
   }
 
@@ -5870,6 +5907,38 @@ async function createArbExport(principal, reviewId, input = {}) {
   const client = await getTableClient(ARB_REVIEW_TABLE_NAME);
   const review = await getArbReview(principal, reviewId);
   const files = await getArbFiles(principal, reviewId);
+
+  // Attach score progression history for the same project so exports can show improvement over time.
+  // Load all reviews for this project, filter to scored+completed ones, exclude the current review.
+  if (review.projectId) {
+    try {
+      const allReviews = await listArbReviews(principal, { limit: 100 });
+      const history = allReviews.reviews
+        .filter((r) => r.projectId === review.projectId && r.reviewId !== review.reviewId && r.overallScore != null)
+        .sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || "")))
+        .map((r) => ({
+          reviewId:    r.reviewId,
+          createdAt:   r.createdAt,
+          lastUpdated: r.lastUpdated,
+          overallScore: r.overallScore,
+          recommendation: r.recommendation,
+          workflowState: r.workflowState,
+        }));
+      // Include the current review at the end of the timeline
+      if (review.overallScore != null) {
+        history.push({
+          reviewId:    review.reviewId,
+          createdAt:   review.createdAt,
+          lastUpdated: review.lastUpdated,
+          overallScore: review.overallScore,
+          recommendation: review.recommendation,
+          workflowState: review.workflowState,
+          isCurrent: true,
+        });
+      }
+      review._projectHistory = history;
+    } catch { /* non-critical — proceed without history */ }
+  }
   const requirements = await getArbRequirements(principal, reviewId);
   const evidence = await getArbEvidence(principal, reviewId);
   const visualEvidence = await getArbVisualEvidence(principal, reviewId);

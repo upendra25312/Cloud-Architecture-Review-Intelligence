@@ -768,6 +768,20 @@ function normalizeReviewForExport(
 ) {
   const generatedAt = new Date().toISOString();
 
+  // ── Review duration ───────────────────────────────────────────────────────────
+  function formatDuration(startIso, endIso) {
+    if (!startIso || !endIso) return null;
+    const ms = new Date(endIso) - new Date(startIso);
+    if (isNaN(ms) || ms < 0) return null;
+    const totalMin = Math.round(ms / 60_000);
+    if (totalMin < 1)  return "< 1 minute";
+    if (totalMin < 60) return `${totalMin} minute${totalMin !== 1 ? "s" : ""}`;
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  }
+  const reviewDuration = formatDuration(review?.createdAt, review?.lastUpdated);
+
   // ── Uploaded inputs ──────────────────────────────────────────────────────────
   const uploadedInputs = (files || []).map(mapUploadedInput);
 
@@ -893,6 +907,11 @@ function normalizeReviewForExport(
       toolVersion:    "2.0",
       confidentiality:"Confidential",
       exportFormat:   exportFormat || "unknown",
+      reviewDuration,
+      createdAt:      review?.createdAt  || null,
+      completedAt:    review?.lastUpdated || null,
+      // Score progression history (populated by createArbExport when projectId is set)
+      reviewHistory:  Array.isArray(review?._projectHistory) ? review._projectHistory : [],
     },
     customer: {
       name:         review?.projectMeta?.customerName || review?.customerName || "Unknown Customer",
@@ -1039,6 +1058,8 @@ function normalizeReviewForExport(
         .map((r) => r.normalizedText ?? r.sourceText ?? ""),
       nextSteps:     buildStateAwareNextSteps(canonicalDecision, canonicalFindings, files),
       mcpReferences: Array.isArray(review?.mcpTopResults) ? review.mcpTopResults : [],
+      reviewDuration: reviewDuration,
+      reviewHistory: Array.isArray(review?._projectHistory) ? review._projectHistory : [],
     },
   };
 

@@ -105,10 +105,13 @@ function buildExecutiveSummarySheet(wb, pack) {
   const dc = pack.decision         || {};
   const er = pack.evidenceReadiness|| {};
 
-  addKv("Review ID",         pack.metadata?.reviewId || "");
-  addKv("Customer",          pack.customer?.name || "");
-  addKv("Project",           pack.project?.name  || "");
-  addKv("Generated At",      pack.metadata?.generatedAt || "");
+  addKv("Review ID",           pack.metadata?.reviewId || "");
+  addKv("Customer",            pack.customer?.name || "");
+  addKv("Project",             pack.project?.name  || "");
+  addKv("Generated At",        pack.metadata?.generatedAt || "");
+  if (pack.metadata?.reviewDuration) addKv("Assessment Duration", pack.metadata.reviewDuration);
+  if (pack.metadata?.createdAt)      addKv("Review Started",      pack.metadata.createdAt);
+  if (pack.metadata?.completedAt)    addKv("Last Updated",        pack.metadata.completedAt);
   addKv("Workflow State",    wf.currentState || "");
   addKv("Overall Score",     `${es.overallScore ?? 0} / 100`);
   addKv("Score Band",        es.scoreBand || "");
@@ -422,6 +425,78 @@ function buildUploadedInputsSheet(wb, pack) {
   }
 }
 
+function buildScoreProgressionSheet(wb, pack) {
+  const history = pack.metadata?.reviewHistory || [];
+  if (history.length < 2) return;   // only add sheet when there are multiple reviews
+
+  const ws = wb.addWorksheet("Score Progression");
+  ws.getColumn(1).width = 20;
+  ws.getColumn(2).width = 14;
+  ws.getColumn(3).width = 14;
+  ws.getColumn(4).width = 22;
+  ws.getColumn(5).width = 18;
+
+  setHeaderRow(ws, ["Review Date", "Score / 100", "Score Change", "Recommendation", "Review ID"]);
+
+  history.forEach((r, i) => {
+    const prev  = i > 0 ? (history[i - 1].overallScore || 0) : null;
+    const delta = prev !== null ? (r.overallScore || 0) - prev : null;
+    const row   = ws.addRow([
+      r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-GB") : `Review ${i + 1}`,
+      r.overallScore ?? 0,
+      delta !== null ? (delta > 0 ? `+${delta}` : String(delta)) : "—",
+      r.recommendation || "",
+      r.reviewId || "",
+    ]);
+    row.height = 20;
+    // Colour the score column: green ≥80, amber 70-79, red <70
+    const score = r.overallScore ?? 0;
+    const scoreColor = score >= 80 ? "FF00A36C" : score >= 70 ? "FFF0A500" : "FFEB0000";
+    row.getCell(2).font = { bold: true, color: { argb: scoreColor } };
+    if (delta !== null) {
+      row.getCell(3).font = { bold: true, color: { argb: delta > 0 ? "FF00A36C" : delta < 0 ? "FFEB0000" : "FF64748B" } };
+    }
+    if (r.isCurrent) {
+      row.eachCell((cell) => { cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFDBEAFE" } }; });
+    }
+    row.eachCell((cell) => { cell.alignment = { wrapText: false, vertical: "top" }; });
+  });
+
+  // Data bars on score column
+  const rowCount = history.length;
+  if (rowCount > 0) {
+    ws.addConditionalFormatting({
+      ref: `B2:B${rowCount + 1}`,
+      rules: [{
+        type: "dataBar",
+        minLength: 0,
+        maxLength: 100,
+        gradient: true,
+        color: "00BEBC",
+        border: false,
+        cfvo: [{ type: "num", value: 0 }, { type: "num", value: 100 }],
+      }],
+    });
+  }
+
+  // Summary line
+  ws.addRow([]);
+  const first  = history[0]?.overallScore ?? null;
+  const last   = history[history.length - 1]?.overallScore ?? null;
+  if (first !== null && last !== null) {
+    const totalChange = last - first;
+    const summaryRow  = ws.addRow([
+      "Total Improvement",
+      "",
+      totalChange > 0 ? `+${totalChange}` : String(totalChange),
+      `Across ${history.length} reviews`,
+      "",
+    ]);
+    summaryRow.getCell(1).font = { bold: true, size: 11 };
+    summaryRow.getCell(3).font = { bold: true, color: { argb: totalChange > 0 ? "FF00A36C" : totalChange < 0 ? "FFEB0000" : "FF64748B" } };
+  }
+}
+
 // ─── Main entry point ─────────────────────────────────────────────────────────
 
 /**
@@ -439,6 +514,7 @@ async function generateArbExcel(pack) {
 
   buildExecutiveSummarySheet(wb, pack);
   buildDomainAssessmentSheet(wb, pack);
+  buildScoreProgressionSheet(wb, pack);
   buildFindingsSheet(wb, pack);
   buildRisksSheet(wb, pack);
   buildActionsSheet(wb, pack);
