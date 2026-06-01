@@ -31,10 +31,10 @@ const { validateArbReviewOutputPack } = require("./arb-export-validator");
 // ─── PPTX Template resolution ─────────────────────────────────────────────────
 // Lookup order:
 //   1. POWERPOINT_TEMPLATE_PATH env var
-//   2. C:\cari-repo\Rackspace Presentation Template.pptx
-//   3. templates/Rackspace Presentation Template.pptx (repo root)
+//   2. C:\cari-repo\CARI Presentation Template.pptx
+//   3. templates/CARI Presentation Template.pptx (repo root)
 
-const TEMPLATE_NAME = "Rackspace Presentation Template.pptx";
+const TEMPLATE_NAME = "CARI Presentation Template.pptx";
 const TEMPLATE_CANDIDATES = [
   process.env.POWERPOINT_TEMPLATE_PATH || null,
   path.join("C:\\cari-repo", TEMPLATE_NAME),
@@ -597,12 +597,16 @@ function collectExportWarnings(pack) {
       ["Architecture Decision Summary", "Risk Register"]);
   }
 
-  // PPTX template availability
+  // PPTX template availability — pptxOnly flag prevents this from appearing in Word/HTML/Excel exports
   const templatePath = resolveTemplatePath();
   if (!templatePath) {
-    warn("Medium",
-      "Rackspace PowerPoint template was not found at any configured path. PPTX exports use programmatic Rackspace brand styling. True template-based generation requires the Rackspace Presentation Template.pptx file configured via POWERPOINT_TEMPLATE_PATH.",
-      ["PowerPoint Export"]);
+    warnings.push({
+      warningId: `W${String(id++).padStart(3, "0")}`,
+      severity: "info",
+      pptxOnly: true,
+      message: "CARI Presentation Template not found. Set POWERPOINT_TEMPLATE_PATH or place template at repo root. Brand styling is applied programmatically.",
+      affectedSections: ["PowerPoint Export"],
+    });
   }
 
   return warnings;

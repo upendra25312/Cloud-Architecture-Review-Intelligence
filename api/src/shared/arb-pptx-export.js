@@ -2,9 +2,9 @@
  * arb-pptx-export.js
  *
  * Generates an executive-ready PowerPoint deck for an ARB review.
- * Layout: 16:9 widescreen (13.33" × 7.5") — Rackspace corporate theme.
+ * Layout: 16:9 widescreen (13.33" × 7.5") — CARI corporate theme.
  *
- * Rackspace brand tokens:
+ * Brand tokens:
  *   Red     #EB0000   Blue    #0059C8   Teal   #00BEBC
  *   Purple  #95008A   LtGrey  #E6E6E6   Font   Arial
  */
@@ -22,8 +22,8 @@ const PptxGenJS = require("pptxgenjs");
 
 const TEMPLATE_CANDIDATES = [
   process.env.POWERPOINT_TEMPLATE_PATH || null,
-  path.join(process.cwd(), "Rackspace Presentation Template.pptx"),
-  path.resolve(__dirname, "../../../templates/Rackspace Presentation Template.pptx"),
+  path.join(process.cwd(), "CARI Presentation Template.pptx"),
+  path.resolve(__dirname, "../../../templates/CARI Presentation Template.pptx"),
 ].filter(Boolean);
 
 function resolveTemplatePath() {
@@ -37,12 +37,12 @@ function addTemplateWarnings(pack) {
   if (!pack || !Array.isArray(pack.exportWarnings)) return;
   const templatePath = resolveTemplatePath();
   const w = templatePath
-    ? { warningId: "TEMPLATE_LIBRARY_LIMITATION", severity: "info",
-        message: `Rackspace template found at "${templatePath}" but cannot be applied — pptxgenjs@4.x does not support loading existing .pptx files. Brand styling is applied programmatically.`,
-        affectedSections: ["all"] }
-    : { warningId: "TEMPLATE_NOT_FOUND", severity: "info",
-        message: "Rackspace template not found. Set POWERPOINT_TEMPLATE_PATH or place template at repo root. Brand styling is applied programmatically.",
-        affectedSections: ["all"] };
+    ? { warningId: "TEMPLATE_LIBRARY_LIMITATION", severity: "info", pptxOnly: true,
+        message: `CARI template found at "${templatePath}" but cannot be applied — pptxgenjs@4.x does not support loading existing .pptx files. Brand styling is applied programmatically.`,
+        affectedSections: ["PowerPoint Export"] }
+    : { warningId: "TEMPLATE_NOT_FOUND", severity: "info", pptxOnly: true,
+        message: "CARI Presentation Template not found. Set POWERPOINT_TEMPLATE_PATH or place template at repo root. Brand styling is applied programmatically.",
+        affectedSections: ["PowerPoint Export"] };
   pack.exportWarnings.push(w);
 }
 
@@ -146,7 +146,7 @@ function buildCoverSlide(p, data, slideNum) {
   // Full-bleed red background
   s.addShape(p.ShapeType.rect, { x: 0, y: 0, w: "100%", h: "100%", fill: { color: BRAND.red }, line: { color: BRAND.red } });
 
-  // White bottom strip (Rackspace wordmark area)
+  // White bottom strip (CARI wordmark area)
   s.addShape(p.ShapeType.rect, { x: 0, y: 5.7, w: "100%", h: 1.8, fill: { color: BRAND.white }, line: { color: BRAND.white } });
 
   // Left accent stripe on cover (white, thin, full height)
@@ -194,10 +194,10 @@ function buildCoverSlide(p, data, slideNum) {
     fontSize: 9, color: BRAND.midGrey, fontFace: BRAND.font,
   });
 
-  // Rackspace wordmark
-  s.addText("Rackspace Technology", {
+  // CARI wordmark
+  s.addText("Cloud Architecture Review Intelligence (CARI)", {
     x: 0.7, y: 6.25, w: 12.0, h: 0.42,
-    fontSize: 18, bold: true, color: BRAND.red, fontFace: BRAND.font,
+    fontSize: 14, bold: true, color: BRAND.red, fontFace: BRAND.font,
   });
 }
 
@@ -1197,7 +1197,7 @@ async function generateArbPptx(packOrReviewData) {
   // LAYOUT_WIDE = 13.33" × 7.5" (16:9 widescreen) — do NOT override with defineLayout
   pptx.layout    = "LAYOUT_WIDE";
   pptx.author    = "CARI — Cloud Architecture Review Intelligence";
-  pptx.company   = "Rackspace Technology";
+  pptx.company   = "CARI — Cloud Architecture Review Intelligence";
   pptx.subject   = "Architecture Review Report";
   pptx.title     = `${reviewData.projectName || "Architecture Review"} — Review Report`;
   pptx.revision  = "1";

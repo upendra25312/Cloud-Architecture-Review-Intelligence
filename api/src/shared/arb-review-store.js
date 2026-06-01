@@ -1789,7 +1789,7 @@ function renderMarkdownExportBody(pack) {
     "5. [Architecture Strengths](#architecture-strengths)",
     "6. [Findings](#findings)",
     "7. [Risk Register](#risk-register)",
-    "8. [Remediation Actions](#remediation-actions)",
+    "8. [Actions](#actions)",
     "9. [Requirements](#requirements)",
     "10. [Evidence Register](#evidence-register)",
     "11. [Requirements Traceability](#requirements-traceability)",
@@ -1819,10 +1819,11 @@ function renderMarkdownExportBody(pack) {
     `| **Next Review Recommended** | ${nextReviewStr} |`,
   ];
 
-  // Export warnings
-  if (warns.length > 0) {
-    lines.push("", "> ⚠ **Export Warnings**");
-    for (const w of warns) lines.push(`> - **[${w.severity}]** ${w.message}`);
+  // Export warnings — filter out PPTX-only operational warnings (not relevant in Word/HTML/MD)
+  const mdWarns = warns.filter((w) => !w.pptxOnly && w.severity !== "info");
+  if (mdWarns.length > 0) {
+    lines.push("", "> ⚠ **Reviewer Notes**");
+    for (const w of mdWarns) lines.push(`> - **[${w.severity}]** ${w.message}`);
   }
   if (er.status !== "Ready") {
     lines.push("", `> ⚠ **Evidence Readiness Warning:** ${er.reason}`);
@@ -2288,7 +2289,7 @@ function renderHtmlExportBody(pack, summaryText) {
     ["#section-domain",             "Scorecard"],
     ["#section-risks",        "Risk Register"],
     ["#section-findings",     "Findings"],
-    ["#section-actions",      "Remediation Actions"],
+    ["#section-actions",      "Actions"],
     ["#section-evidence",     "Evidence"],
     ["#section-requirements", "Requirements"],
     ["#section-inputs",       "Uploaded Inputs"],
@@ -2442,13 +2443,13 @@ function renderHtmlExportBody(pack, summaryText) {
   }
 
   /* ── ARCHITECTURE STRENGTHS ── */
+  parts.push(
+    divider,
+    `<div id="section-strengths" style="margin-bottom:32px;">`,
+    `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Architecture Strengths</h2>`,
+  );
   if (strengths.length > 0) {
-    parts.push(
-      divider,
-      `<div id="section-strengths" style="margin-bottom:32px;">`,
-      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Architecture Strengths</h2>`,
-      `<div style="display:grid;gap:10px;">`
-    );
+    parts.push(`<div style="display:grid;gap:10px;">`);
     for (const str of strengths) {
       parts.push(
         `<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;">`,
@@ -2457,8 +2458,11 @@ function renderHtmlExportBody(pack, summaryText) {
         `</div>`
       );
     }
-    parts.push(`</div></div>`);
+    parts.push(`</div>`);
+  } else {
+    parts.push(`<p style="color:#64748B;font-style:italic;">No specific strengths identified in this review cycle.</p>`);
   }
+  parts.push(`</div>`);
 
   /* ── SCORE PROGRESSION (multi-review project) ── */
   const reviewHistory = (meta.reviewHistory || []).filter(Boolean);
@@ -2564,6 +2568,7 @@ function renderHtmlExportBody(pack, summaryText) {
         `<div style="overflow-x:auto;">`,
         `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
         `<thead><tr style="background:#EB0000;color:#fff;">`,
+        `<th style="padding:8px 12px;text-align:left;">Risk ID</th>`,
         `<th style="padding:8px 12px;text-align:left;">Risk Title</th>`,
         `<th style="padding:8px 12px;text-align:left;">Severity</th>`,
         `<th style="padding:8px 12px;text-align:left;">Likelihood</th>`,
@@ -2579,7 +2584,10 @@ function renderHtmlExportBody(pack, summaryText) {
           const residual = l + imp >= 4 ? "Critical" : l + imp >= 3 ? "High" : l + imp >= 2 ? "Medium" : "Low";
           const bg = i % 2 === 0 ? "#FFFFFF" : "#F8FAFC";
           const sevStyles = { Critical: "#FEE2E2", High: "#FFF3E0", Medium: "#FEF9C3", Low: "#E3F2FD" };
+          const rawId = r.riskId || r.findingId || "";
+          const riskId = rawId ? `R-${rawId.slice(-4).replace(/^0+/, "") || rawId.slice(-4)}` : `R-${String(i + 1).padStart(3, "0")}`;
           return `<tr style="background:${bg};border-bottom:1px solid #E2E8F0;">` +
+            `<td style="padding:8px 12px;font-family:monospace;font-size:12px;color:#475569;">${esc(riskId)}</td>` +
             `<td style="padding:8px 12px;font-weight:500;">${esc(r.riskTitle || r.title || "—")}</td>` +
             `<td style="padding:8px 12px;"><span style="padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:${sevStyles[r.severity] || "#F1F5F9"};color:#374151;">${esc(r.severity || "—")}</span></td>` +
             `<td style="padding:8px 12px;">${esc(r.likelihood || "Medium")}</td>` +
@@ -2643,34 +2651,44 @@ function renderHtmlExportBody(pack, summaryText) {
   parts.push(divider);
   parts.push(
     `<div id="section-actions" style="margin-bottom:32px;">`,
-    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Remediation Actions</h2>`
+    `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Actions</h2>`
   );
   if (actions.length === 0) {
     parts.push(`<p style="color:#64748B;font-style:italic;">No actions recorded.</p>`);
   } else {
+    const actionSevStyles = { Critical: "#FEE2E2", High: "#FFF3E0", Medium: "#FEF9C3", Low: "#E3F2FD" };
     parts.push(
+      `<div style="overflow-x:auto;">`,
       `<table style="width:100%;border-collapse:collapse;font-size:13px;">`,
       `<thead>`,
-      `<tr style="border-bottom:2px solid #E2E8F0;">`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Action</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Owner</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Due Date</th>`,
-      `<th style="text-align:left;padding:8px 10px;color:#64748B;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Status</th>`,
+      `<tr style="background:#EB0000;color:#fff;">`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Action ID</th>`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Title</th>`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Severity</th>`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Owner</th>`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Due Date</th>`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Status</th>`,
+      `<th style="text-align:left;padding:8px 10px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Acceptance Criteria</th>`,
       `</tr>`,
       `</thead>`,
       `<tbody>`
     );
     for (const a of actions) {
+      const actionId = a.actionId ? a.actionId.slice(-8) : "\u2014";
+      const sevBg = actionSevStyles[a.severity] || "#F1F5F9";
       parts.push(
         `<tr style="border-bottom:1px solid #F1F5F9;">`,
-        `<td style="padding:10px;vertical-align:top;">${esc(a.title || a.actionSummary)}</td>`,
+        `<td style="padding:10px;vertical-align:top;font-family:monospace;font-size:12px;color:#475569;">${esc(actionId)}</td>`,
+        `<td style="padding:10px;vertical-align:top;font-weight:500;">${esc(a.title || a.actionSummary)}</td>`,
+        `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:${sevBg};color:#374151;">${esc(a.severity || "\u2014")}</span></td>`,
         `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(a.owner || "Unassigned")}</td>`,
         `<td style="padding:10px;vertical-align:top;color:#475569;">${esc(a.dueDate || "\u2014")}</td>`,
-        `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(a.status)}</span></td>`,
+        `<td style="padding:10px;vertical-align:top;"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:#F1F5F9;color:#475569;">${esc(a.status || "\u2014")}</span></td>`,
+        `<td style="padding:10px;vertical-align:top;font-size:12px;color:#64748B;">${esc(a.acceptanceCriteria || "\u2014")}</td>`,
         `</tr>`
       );
     }
-    parts.push(`</tbody></table>`);
+    parts.push(`</tbody></table></div>`);
   }
   parts.push(`</div>`);
 
@@ -3769,7 +3787,7 @@ function calculateDomainScore(domain, weight, findings, review) {
     domain,
     weight,
     score: Math.max(minScore, weight - penalty),
-    reason: `${linkedFindings.length} active finding${linkedFindings.length === 1 ? "" : "s"} currently influence this domain.`,
+    reason: `${linkedFindings.length} active finding${linkedFindings.length === 1 ? "" : "s"} currently influence${linkedFindings.length === 1 ? "s" : ""} this domain.`,
     linkedFindings: linkedFindings.map((finding) => finding.findingId)
   };
 }

@@ -473,7 +473,7 @@ function buildExportWarningsSheet(wb, pack) {
   setHeaderRow(ws, ["Warning ID","Severity","Message","Affected Sections"]);
   setColWidths(ws, [12,10,60,30]);
 
-  for (const w of pack.exportWarnings || []) {
+  for (const w of (pack.exportWarnings || []).filter((w) => !w.pptxOnly && w.severity !== "info")) {
     const row = ws.addRow([w.warningId, w.severity, w.message, (w.affectedSections || []).join(", ")]);
     if (w.severity === "High") {
       row.getCell(2).font = { color: { argb: "FFD92B2B" }, bold: true };
