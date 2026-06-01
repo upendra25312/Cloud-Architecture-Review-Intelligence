@@ -2257,7 +2257,7 @@ function renderHtmlExportBody(pack, summaryText) {
   }
 
   /* ── SCORE PROGRESSION (multi-review project) ── */
-  const reviewHistory = meta.reviewHistory || [];
+  const reviewHistory = (meta.reviewHistory || []).filter(Boolean);
   if (reviewHistory.length > 1) {
     parts.push(
       divider,
@@ -5910,6 +5910,7 @@ async function createArbExport(principal, reviewId, input = {}) {
 
   // Attach score progression history for the same project so exports can show improvement over time.
   // Load all reviews for this project, filter to scored+completed ones, exclude the current review.
+  review._projectHistory = [];
   if (review.projectId) {
     try {
       const allReviews = await listArbReviews(principal, { limit: 100 });

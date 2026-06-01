@@ -160,7 +160,7 @@ function buildDomainAssessmentSheet(wb, pack) {
     actionsByDomain[d] = (actionsByDomain[d] || 0) + (a.status !== "Closed" ? 1 : 0);
   }
 
-  for (const d of sc.domains || []) {
+  for (const d of (sc.domains || []).filter(Boolean)) {
     const pct    = d.percentage ?? 0;
     const status = d.status || (pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical");
     const openF  = findingsByDomain[d.domain] ?? 0;
@@ -276,7 +276,7 @@ function buildScorecardSheet(wb, pack) {
   ovRow.fill  = SECTION_FILL;
   ovRow.height = 20;
 
-  for (const d of sc.domains || []) {
+  for (const d of (sc.domains || []).filter(Boolean)) {
     const row = ws.addRow([d.domain, d.score ?? 0, d.maxScore ?? 0, `${d.percentage ?? 0}%`, d.rationale ?? ""]);
     row.height = 18;
     row.eachCell((cell) => { cell.alignment = { wrapText: true, vertical: "top" }; });
@@ -438,8 +438,9 @@ function buildScoreProgressionSheet(wb, pack) {
 
   setHeaderRow(ws, ["Review Date", "Score / 100", "Score Change", "Recommendation", "Review ID"]);
 
-  history.forEach((r, i) => {
-    const prev  = i > 0 ? (history[i - 1].overallScore || 0) : null;
+  const safeHistory = history.filter(Boolean);
+  safeHistory.forEach((r, i) => {
+    const prev  = i > 0 ? (safeHistory[i - 1].overallScore || 0) : null;
     const delta = prev !== null ? (r.overallScore || 0) - prev : null;
     const row   = ws.addRow([
       r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-GB") : `Review ${i + 1}`,

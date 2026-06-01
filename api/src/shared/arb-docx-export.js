@@ -201,7 +201,7 @@ function buildExecutiveSummarySection(pack) {
     items.push(spacer());
   }
 
-  const strengths = pack.strengths || es.strengths || [];
+  const strengths = pack.strengths || es.topStrengths || [];
   if (strengths.length) {
     items.push(new Paragraph({ text: "Architecture Strengths", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }));
     for (const s of strengths) items.push(bullet(`✓  ${s}`));
@@ -209,7 +209,7 @@ function buildExecutiveSummarySection(pack) {
   }
 
   // Score progression across multiple reviews of the same project
-  const reviewHistory = meta.reviewHistory || [];
+  const reviewHistory = (meta.reviewHistory || []).filter(Boolean);
   if (reviewHistory.length > 1) {
     items.push(new Paragraph({ text: "Score Progression", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }));
     items.push(p(`This project has been reviewed ${reviewHistory.length} times. Score trend across reviews:`));
