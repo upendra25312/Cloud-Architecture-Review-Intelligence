@@ -780,7 +780,13 @@ function normalizeReviewForExport(
     const m = totalMin % 60;
     return m > 0 ? `${h}h ${m}m` : `${h}h`;
   }
-  const reviewDuration = formatDuration(review?.createdAt, review?.lastUpdated);
+  // Start = earliest file uploadedAt (i.e. when user first uploaded docs); fall back to review.createdAt
+  const firstUploadAt = (files || []).reduce((earliest, f) => {
+    if (!f.uploadedAt) return earliest;
+    if (!earliest || f.uploadedAt < earliest) return f.uploadedAt;
+    return earliest;
+  }, null);
+  const reviewDuration = formatDuration(firstUploadAt || review?.createdAt, review?.lastUpdated);
 
   // ── Uploaded inputs ──────────────────────────────────────────────────────────
   const uploadedInputs = (files || []).map(mapUploadedInput);
