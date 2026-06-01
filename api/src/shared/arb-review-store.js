@@ -1888,10 +1888,12 @@ function renderMarkdownExportBody(pack) {
     lines.push(`| ${d.domain || "—"} | ${d.score ?? 0} | ${d.maxScore ?? 0} | ${pct}% | **${status}** | ${ratTrunc} |`);
   }
 
-  // Architecture Strengths
+  // Architecture Strengths (always shown)
+  lines.push("", "---", "", "## Architecture Strengths", "");
   if (strengths.length > 0) {
-    lines.push("", "---", "", "## Architecture Strengths", "");
     for (const str of strengths) lines.push(`- ✓ ${str}`);
+  } else {
+    lines.push("_No specific strengths identified in this review cycle._");
   }
 
   // Findings
@@ -1918,26 +1920,30 @@ function renderMarkdownExportBody(pack) {
   if (risks.length === 0) {
     lines.push("_No open risk items. Risk items are derived from open Critical and High severity findings._");
   } else {
-    lines.push("| Risk Title | Severity | Likelihood | Impact | Residual Risk | Owner | Status |",
-               "|------------|----------|------------|--------|---------------|-------|--------|");
+    lines.push("| Risk ID | Risk Title | Severity | Likelihood | Impact | Residual Risk | Owner | Status |",
+               "|---------|------------|----------|------------|--------|---------------|-------|--------|");
     const lMap = { High: 2, Medium: 1, Low: 0 };
     for (const r of risks) {
       const l = lMap[r.likelihood] ?? 1;
       const i = lMap[r.impact]     ?? 1;
       const residual = l + i >= 4 ? "Critical" : l + i >= 3 ? "High" : l + i >= 2 ? "Medium" : "Low";
-      lines.push(`| ${(r.riskTitle || "—").replace(/\|/g,"\\|")} | **${r.severity || "—"}** | ${r.likelihood || "Medium"} | ${r.impact || "Medium"} | **${residual}** | ${r.riskOwner || "TBC"} | ${r.status || "Open"} |`);
+      const riskId = r.riskId || r.findingId ? `R-${(r.riskId || r.findingId || "").slice(-4)}` : "—";
+      lines.push(`| ${riskId} | ${(r.riskTitle || "—").replace(/\|/g,"\\|")} | **${r.severity || "—"}** | ${r.likelihood || "Medium"} | ${r.impact || "Medium"} | **${residual}** | ${r.riskOwner || "TBC"} | ${r.status || "Open"} |`);
     }
   }
 
   // Remediation actions
-  lines.push("", `## Remediation Actions`, "");
+  lines.push("", `## Actions`, "");
   if (actions.length === 0) {
     lines.push("_No actions recorded._");
   } else {
-    lines.push("| Title | Severity | Owner | Due Date | Status |",
-               "|-------|----------|-------|----------|--------|");
+    lines.push("| Action ID | Title | Severity | Owner | Due Date | Status | Acceptance Criteria |",
+               "|-----------|-------|----------|-------|----------|--------|---------------------|");
     for (const a of actions) {
-      lines.push(`| ${(a.title || "—").replace(/\|/g,"\\|").slice(0,80)} | ${a.severity || "—"} | ${a.owner || "TBC"} | ${a.dueDate || "Not set"} | ${a.status || "Open"} |`);
+      const actionId = a.actionId ? a.actionId.slice(-8) : "—";
+      const titleTrunc = (a.title || "—").replace(/\|/g,"\\|");
+      const title = titleTrunc.length > 80 ? titleTrunc.slice(0, titleTrunc.lastIndexOf(" ", 80) + 1 || 80).trimEnd() + "…" : titleTrunc;
+      lines.push(`| ${actionId} | ${title} | ${a.severity || "—"} | ${a.owner || "TBC"} | ${a.dueDate || "Not set"} | ${a.status || "Open"} | ${a.acceptanceCriteria || "—"} |`);
     }
   }
 
@@ -2273,12 +2279,13 @@ function renderHtmlExportBody(pack, summaryText) {
 
   /* ── NAVIGATION (TABLE OF CONTENTS) ── */
   const navSections = [
-    ["#section-metadata",     "Review Metadata"],
-    ["#section-decision",     "Governance Decision"],
-    ["#section-score",        "Overall Score"],
-    ["#section-methodology",  "Scope & Methodology"],
-    ["#section-strengths",    "Architecture Strengths"],
-    ["#section-domain",       "Domain Assessment"],
+    ["#section-metadata",           "Review Metadata"],
+    ["#section-executive-summary",  "Executive Summary"],
+    ["#section-decision",           "Governance Decision"],
+    ["#section-score",              "Overall Score"],
+    ["#section-methodology",        "Scope & Methodology"],
+    ["#section-strengths",          "Architecture Strengths"],
+    ["#section-domain",             "Scorecard"],
     ["#section-risks",        "Risk Register"],
     ["#section-findings",     "Findings"],
     ["#section-actions",      "Remediation Actions"],
@@ -2359,6 +2366,33 @@ function renderHtmlExportBody(pack, summaryText) {
       );
     }
     parts.push(`</div>`);
+  }
+
+  /* ── EXECUTIVE SUMMARY ── */
+  {
+    const sevCounts = { Critical: 0, High: 0, Medium: 0, Low: 0 };
+    findings.forEach((f) => { if (f.status !== "Closed") sevCounts[String(f.severity || "")] = (sevCounts[String(f.severity || "")] || 0) + 1; });
+    const domCount    = domainScores.length;
+    const passingDoms = domainScores.filter((d) => (d.percentage ?? 0) >= 70).length;
+    const nextRev     = new Date(); nextRev.setDate(nextRev.getDate() + 90);
+    parts.push(
+      divider,
+      `<div id="section-executive-summary" style="margin-bottom:32px;">`,
+      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Executive Summary</h2>`,
+      `<table style="width:100%;border-collapse:collapse;font-size:13px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;margin-bottom:12px;">`,
+      `<tr style="background:#EB0000;"><th style="padding:8px 16px;text-align:left;color:#fff;font-weight:600;">Metric</th><th style="padding:8px 16px;text-align:left;color:#fff;font-weight:600;">Value</th></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Overall Score</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;font-weight:600;color:${scoreColor(overallScore ?? 0)};">${overallScore != null ? `${esc(overallScore)} / 100 (${esc(es.scoreBand || "—")})` : "Pending"}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Recommendation</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;">${recommendationBadge(recommendation)}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Domains Passing (≥70%)</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;">${passingDoms} of ${domCount}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Critical Findings (open)</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;${sevCounts.Critical > 0 ? "color:#D92B2B;font-weight:600;" : ""}">${sevCounts.Critical}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">High Findings (open)</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;${sevCounts.High > 0 ? "color:#C85000;font-weight:600;" : ""}">${sevCounts.High}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Medium Findings (open)</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;">${sevCounts.Medium}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Assessment Duration</td><td style="padding:8px 16px;border-bottom:1px solid #E2E8F0;">${esc(meta.reviewDuration || "Not recorded")}</td></tr>`,
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;">Next Review Recommended</td><td style="padding:8px 16px;">${nextRev.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</td></tr>`,
+      `</table>`,
+      es.narrative ? `<div style="padding:14px 18px;background:#EFF6FF;border-left:4px solid #0078D4;border-radius:4px;font-size:14px;line-height:1.7;color:#1E3A5F;">${esc(es.narrative)}</div>` : "",
+      `</div>`,
+    );
   }
 
   /* ── OVERALL SCORE BAR ── */
@@ -2471,7 +2505,7 @@ function renderHtmlExportBody(pack, summaryText) {
     parts.push(
       divider,
       `<div id="section-domain" style="margin-bottom:32px;">`,
-      `<h2 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#0F172A;">Domain Assessment</h2>`,
+      `<h2 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#0F172A;">Scorecard — Domain Assessment</h2>`,
       `<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">`,
       overallScore !== null
         ? `<div style="flex-shrink:0;">${svgDonut(Math.min(100, Number(overallScore)), scoreColor(overallScore), "Overall", 110)}</div>`
