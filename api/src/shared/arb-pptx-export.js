@@ -337,7 +337,7 @@ function buildAssessmentScopeSlide(p, data, slideNum) {
     ["Assessment Duration", data.reviewDuration || "Not recorded"],
     ["In-Scope Areas",     (data.inScope    || []).join(", ") || "Not specified in review data"],
     ["Out-of-Scope",       (data.outOfScope || []).join(", ") || "Not specified in review data"],
-    ["Assumptions",        (data.assumptions || []).slice(0, 3).join("; ") || "No assumptions recorded"],
+    ["Assumptions",        (data.assumptions || []).filter(Boolean).slice(0, 3).join("; ") || "No assumptions recorded"],
   ];
 
   rows.forEach(([label, value], i) => {

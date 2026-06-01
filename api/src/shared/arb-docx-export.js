@@ -201,10 +201,18 @@ function buildCoverSection(pack) {
   const isPendingSignOff = !dc.reviewerDecision || dc.reviewerDecision === "Not Recorded";
   const items = [];
 
+  // CONFIDENTIAL classification banner — always shown
+  items.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing:   { before: 200, after: 80 },
+    children:  [new TextRun({ text: "CONFIDENTIAL", bold: true, size: 20, color: BRAND.white, allCaps: true })],
+    shading:   { type: "clear", color: BRAND.red, fill: BRAND.red },
+  }));
+
   if (isPendingSignOff) {
     items.push(new Paragraph({
       alignment: AlignmentType.CENTER,
-      spacing:   { before: 240, after: 120 },
+      spacing:   { before: 120, after: 120 },
       children:  [new TextRun({ text: "DRAFT — AWAITING REVIEWER SIGN-OFF", bold: true, size: 24, color: BRAND.red, allCaps: true })],
       border: { top: { style: "single", size: 6, color: BRAND.red }, bottom: { style: "single", size: 6, color: BRAND.red } },
     }));
@@ -214,7 +222,7 @@ function buildCoverSection(pack) {
     ...items,
     new Paragraph({
       alignment: AlignmentType.CENTER,
-      spacing:   { before: 600, after: 200 },
+      spacing:   { before: 400, after: 200 },
       children:  [new TextRun({ text: "Cloud Architecture Review Board Pack", bold: true, size: 52, color: BRAND.red })],
     }),
     new Paragraph({
@@ -611,13 +619,15 @@ function buildSignOffSection(pack) {
     pageBreak(),
     new Paragraph({ text: "Sign-off", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
     spacer(),
-    labelValue("Review Decision",      dc.reviewerDecision  || "Not Recorded"),
-    labelValue("Governance Posture",   dc.governancePosture || "—"),
-    labelValue("Risk Acceptance",      dc.riskAcceptanceRequired ? "Required" : "Not Required"),
-    labelValue("Overall Score",        es.overallScore != null ? `${es.overallScore} / 100 (${es.scoreBand || ""})` : "—"),
-    labelValue("Recommendation",       es.recommendation    || "—"),
-    labelValue("Review ID",            meta.reviewId        || "—"),
-    labelValue("Generated At",         meta.generatedAt
+    labelValue("Review Decision",        dc.reviewerDecision  || "Not Recorded"),
+    labelValue("Governance Posture",     dc.governancePosture || "—"),
+    labelValue("Risk Acceptance",        dc.riskAcceptanceRequired ? "Required" : "Not Required"),
+    labelValue("Overall Score",          es.overallScore != null ? `${es.overallScore} / 100 (${es.scoreBand || ""})` : "—"),
+    labelValue("Recommendation",         es.recommendation    || "—"),
+    labelValue("Assessment Duration",    meta.reviewDuration  || "Not recorded"),
+    labelValue("Next Review Recommended", (() => { const d = new Date(); d.setDate(d.getDate() + 90); return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); })()),
+    labelValue("Review ID",              meta.reviewId        || "—"),
+    labelValue("Generated At",           meta.generatedAt
       ? new Date(meta.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
       : new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })),
     spacer(),

@@ -108,11 +108,19 @@ function buildSummaryDashboardSheet(wb, pack) {
   const openActions    = (pack.remediationActions || []).filter((a) => a.status !== "Closed").length;
   const score          = sc.percentage ?? es.overallScore ?? 0;
 
+  // CONFIDENTIAL classification row
+  const confRow = ws.addRow(["CONFIDENTIAL — Cloud Architecture Review Board Pack", "", ""]);
+  confRow.getCell(1).font  = { bold: true, size: 10, color: { argb: "FFFFFFFF" } };
+  confRow.getCell(1).fill  = { type: "pattern", pattern: "solid", fgColor: { argb: "FF7F1D1D" } };
+  confRow.getCell(1).alignment = { horizontal: "center" };
+  ws.mergeCells(`A1:C1`);
+  confRow.height = 18;
+
   // Title
   const titleRow = ws.addRow(["ARB Review — Summary Dashboard", "", ""]);
   titleRow.getCell(1).font = { bold: true, size: 16, color: { argb: "FFFFFFFF" } };
   titleRow.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFEB0000" } };
-  ws.mergeCells(`A1:C1`);
+  ws.mergeCells(`A2:C2`);
   titleRow.height = 28;
 
   ws.addRow([]);
@@ -172,7 +180,7 @@ function buildExecutiveSummarySheet(wb, pack) {
   addKv("Customer",            pack.customer?.name || "");
   addKv("Project",             pack.project?.name  || "");
   addKv("Generated At",        pack.metadata?.generatedAt || "");
-  if (pack.metadata?.reviewDuration) addKv("Assessment Duration", pack.metadata.reviewDuration);
+  addKv("Assessment Duration", pack.metadata?.reviewDuration || "Not recorded");
   if (pack.metadata?.createdAt)      addKv("Review Started",      pack.metadata.createdAt);
   if (pack.metadata?.completedAt)    addKv("Last Updated",        pack.metadata.completedAt);
   addKv("Workflow State",    wf.currentState || "");

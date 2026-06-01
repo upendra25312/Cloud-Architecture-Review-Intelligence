@@ -1883,7 +1883,9 @@ function renderMarkdownExportBody(pack) {
   for (const d of (sc.domains || []).filter(Boolean)) {
     const pct    = d.percentage ?? 0;
     const status = d.status || (pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical");
-    lines.push(`| ${d.domain || "—"} | ${d.score ?? 0} | ${d.maxScore ?? 0} | ${pct}% | **${status}** | ${(d.rationale || "").replace(/\|/g, "\\|").slice(0, 120)} |`);
+    const rat = (d.rationale || "").replace(/\|/g, "\\|");
+    const ratTrunc = rat.length > 120 ? rat.slice(0, rat.lastIndexOf(" ", 120) + 1 || 120).trimEnd() + "…" : rat;
+    lines.push(`| ${d.domain || "—"} | ${d.score ?? 0} | ${d.maxScore ?? 0} | ${pct}% | **${status}** | ${ratTrunc} |`);
   }
 
   // Architecture Strengths
@@ -1957,7 +1959,8 @@ function renderMarkdownExportBody(pack) {
     lines.push("| Requirement | Text | Evidence Status |",
                "|-------------|------|----------------|");
     for (const t of pack.traceability || []) {
-      const text = (t.requirementText || "").replace(/\|/g,"\\|").slice(0, 80) + ((t.requirementText || "").length > 80 ? "…" : "");
+      const rawTxt = (t.requirementText || "").replace(/\|/g, "\\|");
+      const text = rawTxt.length > 80 ? rawTxt.slice(0, rawTxt.lastIndexOf(" ", 80) + 1 || 80).trimEnd() + "…" : rawTxt;
       lines.push(`| ${t.requirementId} | ${text} | ${t.evidenceStatus} |`);
     }
   } else {
@@ -2302,7 +2305,7 @@ function renderHtmlExportBody(pack, summaryText) {
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Evidence Readiness</td><td style="padding:4px 0;font-weight:500;">${esc(er.status)}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Overall Score</td><td style="padding:4px 0;font-weight:600;">${overallScore !== null ? esc(overallScore) + " / 100" : "TBD"}</td></tr>`,
     `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Recommendation</td><td style="padding:4px 0;">${recommendationBadge(recommendation)}</td></tr>`,
-    meta.reviewDuration ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Assessment Duration</td><td style="padding:4px 0;font-weight:500;">${esc(meta.reviewDuration)}</td></tr>` : "",
+    `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Assessment Duration</td><td style="padding:4px 0;font-weight:500;">${esc(meta.reviewDuration || "Not recorded")}</td></tr>`,
     hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer Decision</td><td style="padding:4px 0;font-weight:600;">${esc(dc.reviewerDecision)}</td></tr>` : "",
     hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Reviewer</td><td style="padding:4px 0;font-weight:500;">${esc(dc.reviewerName || "Not recorded")}</td></tr>` : "",
     hasDecision ? `<tr><td style="padding:4px 16px 4px 0;color:#64748B;white-space:nowrap;vertical-align:top;">Decision Recorded</td><td style="padding:4px 0;font-weight:500;">${esc(dc.recordedAt || "Not recorded")}</td></tr>` : "",
@@ -2330,7 +2333,8 @@ function renderHtmlExportBody(pack, summaryText) {
 
     parts.push(
       `<div id="section-decision" style="margin-bottom:32px;">`,
-      `<div style="display:flex;align-items:flex-start;gap:16px;padding:18px 22px;background:${decStyle.bg};border:1px solid ${decStyle.border};border-left:4px solid ${decStyle.border};border-radius:8px;margin-bottom:${(findings.filter(f => ["Critical","High"].includes(f.severity) && f.status !== "Closed").length > 0) ? "0" : "0"}px;">`,
+      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Governance Decision &amp; Approval Conditions</h2>`,
+      `<div style="display:flex;align-items:flex-start;gap:16px;padding:18px 22px;background:${decStyle.bg};border:1px solid ${decStyle.border};border-left:4px solid ${decStyle.border};border-radius:8px;margin-bottom:0px;">`,
       `<span style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:${decStyle.border};color:#fff;font-size:1.25rem;font-weight:800;flex-shrink:0;line-height:1;">${decIcon}</span>`,
       `<div style="flex:1;min-width:0;">`,
       `<h2 style="margin:0 0 6px;font-size:18px;font-weight:700;color:${decStyle.fg};">${esc(displayDec)}</h2>`,
@@ -2384,7 +2388,7 @@ function renderHtmlExportBody(pack, summaryText) {
       `<table style="width:100%;border-collapse:collapse;font-size:13px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;">`,
       `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;width:36%;border-bottom:1px solid #E2E8F0;">Frameworks Applied</td><td style="padding:8px 16px;color:#0F172A;border-bottom:1px solid #E2E8F0;">Azure Well-Architected Framework (WAF) · Azure Cloud Adoption Framework (CAF)</td></tr>`,
       `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Domains Assessed</td><td style="padding:8px 16px;color:#0F172A;border-bottom:1px solid #E2E8F0;">${domainCount} domain${domainCount !== 1 ? "s" : ""}</td></tr>`,
-      meta.reviewDuration ? `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Assessment Duration</td><td style="padding:8px 16px;color:#0F172A;border-bottom:1px solid #E2E8F0;">${esc(meta.reviewDuration)}</td></tr>` : "",
+      `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Assessment Duration</td><td style="padding:8px 16px;color:#0F172A;border-bottom:1px solid #E2E8F0;">${esc(meta.reviewDuration || "Not recorded")}</td></tr>`,
       `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;border-bottom:1px solid #E2E8F0;">Review Approach</td><td style="padding:8px 16px;color:#0F172A;border-bottom:1px solid #E2E8F0;">AI-assisted document extraction, rule-based scoring, and evidence cross-referencing. Findings are evidence-grounded and require human reviewer sign-off.</td></tr>`,
       `<tr><td style="padding:8px 16px;font-weight:600;color:#475569;">Next Review Recommended</td><td style="padding:8px 16px;color:#0F172A;">${nextReview.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</td></tr>`,
       `</table></div>`
