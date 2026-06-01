@@ -2094,6 +2094,37 @@ function renderHtmlExportBody(pack, summaryText) {
   const recommendation    = es.recommendation ?? "Pending";
   const domainScores      = sc.domains || [];
   const hasDecision       = dc.reviewerDecision && dc.reviewerDecision !== "Not Recorded";
+  const strengths         = pack.strengths || es.topStrengths || [];
+
+  /* ── inline SVG donut chart helper (score / remaining) ── */
+  const svgDonut = (pct, color, label, size = 100) => {
+    const r  = size * 0.38;
+    const cx = size / 2;
+    const cy = size / 2;
+    const circumference = 2 * Math.PI * r;
+    const dash = (pct / 100) * circumference;
+    const gap  = circumference - dash;
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;">` +
+      `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E5E7EB" stroke-width="${size * 0.14}"/>` +
+      `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${size * 0.14}"` +
+      ` stroke-dasharray="${dash} ${gap}" stroke-linecap="round"` +
+      ` transform="rotate(-90 ${cx} ${cy})"/>` +
+      `<text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="${size * 0.22}" font-weight="700" fill="${color}">${pct}</text>` +
+      `<text x="${cx}" y="${cy + size * 0.16}" text-anchor="middle" font-size="${size * 0.12}" fill="#64748B">${esc(label)}</text>` +
+      `</svg>`;
+  };
+
+  /* ── status badge helper ── */
+  const statusBadge = (status) => {
+    const styles = {
+      Strong:       "background:#D1FAE5;color:#065F46;",
+      Moderate:     "background:#FEF3C7;color:#78350F;",
+      "Needs Work": "background:#FEE2E2;color:#7F1D1D;",
+      Critical:     "background:#FFE4E6;color:#9B1C1C;",
+    };
+    const st = styles[status] || "background:#F1F5F9;color:#475569;";
+    return `<span style="display:inline-block;padding:2px 10px;border-radius:10px;font-size:12px;font-weight:600;${st}">${esc(status || "—")}</span>`;
+  };
 
   /* ── score bar helper ── */
   const scoreBar = (score, maxVal = 100) => {
@@ -2205,27 +2236,70 @@ function renderHtmlExportBody(pack, summaryText) {
     );
   }
 
-  /* ── DOMAIN SCORES ── */
-  if (domainScores.length > 0) {
+  /* ── ARCHITECTURE STRENGTHS ── */
+  if (strengths.length > 0) {
     parts.push(
       divider,
       `<div style="margin-bottom:32px;">`,
-      `<h2 style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0F172A;">Domain Scores</h2>`
+      `<h2 style="margin:0 0 12px;font-size:18px;font-weight:600;color:#0F172A;">Architecture Strengths</h2>`,
+      `<div style="display:grid;gap:10px;">`
     );
+    for (const str of strengths) {
+      parts.push(
+        `<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;">`,
+        `<span style="flex-shrink:0;width:22px;height:22px;background:#059669;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;line-height:1;">✓</span>`,
+        `<p style="margin:0;font-size:13px;color:#065F46;line-height:1.5;">${esc(str)}</p>`,
+        `</div>`
+      );
+    }
+    parts.push(`</div></div>`);
+  }
+
+  /* ── DOMAIN SCORES ── */
+  if (domainScores.length > 0) {
+    // Split into compliant (≥70%) and needs action (<70%)
+    const compliantDoms = domainScores.filter((d) => (d.percentage ?? 0) >= 70);
+    const actionDoms    = domainScores.filter((d) => (d.percentage ?? 0) < 70);
+
+    parts.push(
+      divider,
+      `<div style="margin-bottom:32px;">`,
+      `<h2 style="margin:0 0 8px;font-size:18px;font-weight:600;color:#0F172A;">Domain Assessment</h2>`,
+      `<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">`,
+      overallScore !== null
+        ? `<div style="flex-shrink:0;">${svgDonut(Math.min(100, Number(overallScore)), scoreColor(overallScore), "Overall", 110)}</div>`
+        : "",
+      `<div style="flex:1;min-width:200px;">`,
+      compliantDoms.length > 0
+        ? `<div style="margin-bottom:8px;padding:8px 14px;background:#F0FDF4;border-radius:6px;font-size:13px;"><strong style="color:#065F46;">Compliant (≥70%):</strong> ${compliantDoms.map((d) => esc(d.domain)).join(", ")}</div>`
+        : "",
+      actionDoms.length > 0
+        ? `<div style="padding:8px 14px;background:#FEF2F2;border-radius:6px;font-size:13px;"><strong style="color:#D92B2B;">Needs Action (&lt;70%):</strong> ${actionDoms.map((d) => esc(d.domain)).join(", ")}</div>`
+        : "",
+      `</div></div>`
+    );
+
     for (const ds of domainScores) {
       const maxVal = Number(ds.maxScore ?? ds.weight ?? 0);
       const pct = maxVal > 0 ? Math.round((Number(ds.score) / maxVal) * 100) : (ds.percentage ?? 0);
       const color = scoreColor(pct >= 85 ? 85 : pct >= 70 ? 75 : 50);
+      const domStatus = ds.status || (pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical");
+      const domFindings = (pack.findings || []).filter((f) => f.domain === ds.domain && f.status !== "Closed");
       parts.push(
-        `<div style="margin-bottom:14px;">`,
-        `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">`,
-        `<span style="font-size:13px;font-weight:600;color:#1F2937;">${esc(ds.domain)}</span>`,
-        `<span style="font-size:12px;color:#64748B;">${esc(ds.score)} / ${esc(maxVal)} (${pct}%)</span>`,
-        `</div>`,
-        `<div style="height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;">`,
+        `<div style="margin-bottom:16px;padding:14px 16px;border:1px solid #E5E7EB;border-radius:6px;background:#FAFAFA;">`,
+        `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">`,
+        `<span style="font-size:14px;font-weight:600;color:#1F2937;">${esc(ds.domain)}</span>`,
+        `<div style="display:flex;align-items:center;gap:8px;">`,
+        statusBadge(domStatus),
+        `<span style="font-size:13px;font-weight:600;color:${color};">${pct}%</span>`,
+        `</div></div>`,
+        `<div style="height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;margin-bottom:8px;">`,
         `<div style="width:${Math.min(100, Math.max(0, pct))}%;height:100%;background:${color};border-radius:4px;"></div>`,
         `</div>`,
-        ds.reason ? `<p style="margin:4px 0 0;font-size:12px;color:#64748B;">${esc(ds.reason)}</p>` : "",
+        ds.reason ? `<p style="margin:0 0 6px;font-size:12px;color:#4B5563;">${esc(ds.reason)}</p>` : "",
+        domFindings.length > 0
+          ? `<div style="font-size:12px;color:#D92B2B;font-weight:500;">${domFindings.length} open finding${domFindings.length !== 1 ? "s" : ""} in this domain</div>`
+          : `<div style="font-size:12px;color:#059669;font-weight:500;">✓ No open findings in this domain</div>`,
         `</div>`
       );
     }

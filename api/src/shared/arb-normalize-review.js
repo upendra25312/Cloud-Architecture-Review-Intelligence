@@ -467,6 +467,7 @@ function calculateScorecard(scorecard) {
     const score     = Number(d.score  ?? 0);
     const maxDomain = Number(d.weight ?? d.maxScore ?? 10);
     const pct       = maxDomain > 0 ? Math.round((score / maxDomain) * 100) : 0;
+    const status    = pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical";
     return {
       domain:           d.domain || d.name || "Other",
       score,
@@ -474,6 +475,7 @@ function calculateScorecard(scorecard) {
       percentage:       pct,
       rationale:        d.reason || d.rationale || "",
       blockingFindings: d.linkedFindings || [],
+      status,
     };
   });
 
@@ -918,7 +920,9 @@ function normalizeReviewForExport(
       scoreBand,
       recommendation,
       summaryNarrative:  review?.executiveSummary || scorecard?.executiveSummary || "",
-      topStrengths:      [],
+      topStrengths:      (scorecard?.strengths || []).slice(0, 6),
+      compliantDomains:  canonicalScorecard.domains.filter((d) => d.percentage >= 70).map((d) => d.domain),
+      domainsNeedingAction: canonicalScorecard.domains.filter((d) => d.percentage < 70).map((d) => d.domain),
       topRisks:          canonicalFindings
         .filter((f) => ["Critical", "High"].includes(f.severity) && f.status !== "Closed")
         .slice(0, 5).map((f) => f.title),
@@ -940,6 +944,7 @@ function normalizeReviewForExport(
       .map((r) => ({ text: r.normalizedText || "" })),
     dependencies: [],
     constraints:  [],
+    strengths:    (scorecard?.strengths || []).slice(0, 6),
     scorecard:    canonicalScorecard,
     findings:     canonicalFindings,
     riskRegister,

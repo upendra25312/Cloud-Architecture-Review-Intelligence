@@ -611,6 +611,157 @@ function buildSowTraceabilitySlide(p, data, slideNum) {
   });
 }
 
+// ─── Architecture Assessment: Strengths + Domain Status ──────────────────────
+// Shows evidence-grounded strengths on the left and a per-domain compliant/needs-
+// action table on the right so reviewers can see "what is good" alongside gaps.
+
+function buildStrengthsAndDomainStatusSlide(p, data, slideNum) {
+  const s = p.addSlide();
+  addHeader(s, "Architecture Assessment", "What was found: strengths and areas requiring action");
+  addFooter(s, data.reviewId, slideNum);
+
+  const strengths   = data.strengths   || [];
+  const domainScores = data.domainScores || [];
+
+  const colW   = (CW - 0.3) / 2;
+  const leftX  = M;
+  const rightX = M + colW + 0.3;
+
+  // ── Left: Strengths ──────────────────────────────────────────────────────────
+  s.addText("Architecture Strengths", {
+    x: leftX, y: BODY_Y, w: colW, h: 0.32,
+    fontSize: 11, bold: true, color: BRAND.teal, fontFace: BRAND.font,
+  });
+
+  if (strengths.length === 0) {
+    s.addText("No strengths captured — run the AI assessment to generate evidence-grounded strengths.", {
+      x: leftX, y: BODY_Y + 0.4, w: colW, h: 0.5,
+      fontSize: 9, italic: true, color: BRAND.midGrey, fontFace: BRAND.font, wrap: true,
+    });
+  } else {
+    strengths.slice(0, 6).forEach((str, i) => {
+      const y = BODY_Y + 0.38 + i * 0.82;
+      s.addShape(p.ShapeType.rect, { x: leftX, y, w: 0.08, h: 0.52, fill: { color: BRAND.teal }, line: { color: BRAND.teal } });
+      s.addText(String(str).slice(0, 160), {
+        x: leftX + 0.18, y, w: colW - 0.22, h: 0.55,
+        fontSize: 9, color: BRAND.darkGrey, fontFace: BRAND.font, wrap: true, valign: "middle",
+      });
+    });
+  }
+
+  // ── Right: Domain status table ───────────────────────────────────────────────
+  s.addText("Domain Status", {
+    x: rightX, y: BODY_Y, w: colW, h: 0.32,
+    fontSize: 11, bold: true, color: BRAND.blue, fontFace: BRAND.font,
+  });
+
+  const statusColor = { Strong: "00A36C", Moderate: "F0A500", "Needs Work": "C85000", Critical: BRAND.red };
+  const statusIcon  = { Strong: "✓", Moderate: "~", "Needs Work": "!", Critical: "✗" };
+
+  if (domainScores.length === 0) {
+    s.addText("No domain scores available.", {
+      x: rightX, y: BODY_Y + 0.4, w: colW, h: 0.4,
+      fontSize: 9, italic: true, color: BRAND.midGrey, fontFace: BRAND.font,
+    });
+  } else {
+    domainScores.slice(0, 8).forEach((d, i) => {
+      const y      = BODY_Y + 0.38 + i * 0.63;
+      const pct    = Math.min(100, Math.round(d.percentage ?? d.score ?? 0));
+      const status = d.status || (pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical");
+      const col    = statusColor[status] || BRAND.midGrey;
+      const icon   = statusIcon[status]  || "·";
+
+      s.addShape(p.ShapeType.rect, { x: rightX, y: y + 0.04, w: 0.28, h: 0.44, fill: { color: col }, line: { color: col } });
+      s.addText(icon, { x: rightX, y: y + 0.06, w: 0.28, h: 0.38, fontSize: 11, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
+      s.addText(d.domain || `Domain ${i + 1}`, {
+        x: rightX + 0.35, y: y + 0.04, w: colW - 1.5, h: 0.44,
+        fontSize: 10, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font, valign: "middle",
+      });
+      s.addShape(p.ShapeType.rect, { x: rightX + colW - 1.1, y: y + 0.1, w: 1.05, h: 0.3, fill: { color: col }, line: { color: col } });
+      s.addText(`${pct}%  ${status}`, {
+        x: rightX + colW - 1.1, y: y + 0.1, w: 1.05, h: 0.3,
+        fontSize: 8, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center",
+      });
+    });
+  }
+}
+
+// ─── Findings Severity Chart ──────────────────────────────────────────────────
+// Donut chart showing findings breakdown by severity alongside compliant domain list.
+
+function buildFindingsChartSlide(p, data, slideNum) {
+  const s = p.addSlide();
+  addHeader(s, "Findings Overview", "Severity distribution and domain coverage");
+  addFooter(s, data.reviewId, slideNum);
+
+  const findings = data.findings || [];
+  const sevOrder = ["Critical", "High", "Medium", "Low"];
+  const counts   = sevOrder.map((sev) => findings.filter((f) => f.severity === sev && f.status !== "Closed").length);
+  const total    = counts.reduce((a, b) => a + b, 0);
+
+  // ── Donut chart (left side) ──────────────────────────────────────────────────
+  if (total > 0) {
+    s.addChart("doughnut", [{
+      name: "Open Findings",
+      labels: sevOrder.filter((_, i) => counts[i] > 0),
+      values: counts.filter((c) => c > 0),
+    }], {
+      x: M, y: BODY_Y, w: 5.2, h: 4.2,
+      title: `${total} Open Finding${total !== 1 ? "s" : ""}`,
+      showTitle: true,
+      titleFontSize: 13,
+      chartColors: sevOrder.filter((_, i) => counts[i] > 0).map((sev) => SEVERITY_COLOUR[sev] || BRAND.midGrey),
+      showLegend: true,
+      legendPos: "b",
+      legendFontSize: 10,
+      dataLabelFontSize: 11,
+      dataLabelColor: BRAND.white,
+      dataLabelPosition: "ctr",
+      holeSize: 55,
+    });
+  } else {
+    s.addShape(p.ShapeType.rect, { x: M, y: BODY_Y, w: 5.2, h: 4.2, fill: { color: BRAND.teal }, line: { color: BRAND.teal } });
+    s.addText("No Open Findings", { x: M, y: BODY_Y + 1.8, w: 5.2, h: 0.6, fontSize: 16, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
+  }
+
+  // ── Right side: severity breakdown text ─────────────────────────────────────
+  const rightX = M + 5.6;
+  s.addText("Severity Breakdown", {
+    x: rightX, y: BODY_Y, w: CW - 5.6, h: 0.35,
+    fontSize: 12, bold: true, color: BRAND.darkGrey, fontFace: BRAND.font,
+  });
+
+  sevOrder.forEach((sev, i) => {
+    const cnt  = counts[i];
+    const col  = SEVERITY_COLOUR[sev] || BRAND.midGrey;
+    const y    = BODY_Y + 0.45 + i * 0.7;
+    s.addShape(p.ShapeType.rect, { x: rightX, y, w: 0.35, h: 0.48, fill: { color: col }, line: { color: col } });
+    s.addText(String(cnt), { x: rightX, y: y + 0.05, w: 0.35, h: 0.38, fontSize: 16, bold: true, color: BRAND.white, fontFace: BRAND.font, align: "center" });
+    s.addText(sev, { x: rightX + 0.45, y: y + 0.1, w: 2.2, h: 0.3, fontSize: 12, color: BRAND.darkGrey, fontFace: BRAND.font });
+    const openClosed = findings.filter((f) => f.severity === sev);
+    const closedCnt = openClosed.filter((f) => f.status === "Closed").length;
+    if (closedCnt > 0) {
+      s.addText(`(${closedCnt} closed)`, { x: rightX + 0.45, y: y + 0.34, w: 2.2, h: 0.2, fontSize: 8, color: BRAND.midGrey, fontFace: BRAND.font, italic: true });
+    }
+  });
+
+  // ── Compliant domains callout ────────────────────────────────────────────────
+  const domainScores = data.domainScores || [];
+  const goodDomains  = domainScores.filter((d) => (d.percentage ?? 0) >= 70);
+  if (goodDomains.length > 0) {
+    const startY = BODY_Y + 3.3;
+    s.addShape(p.ShapeType.rect, { x: rightX, y: startY, w: CW - 5.6, h: 0.28, fill: { color: "00A36C" }, line: { color: "00A36C" } });
+    s.addText(`${goodDomains.length} domain${goodDomains.length !== 1 ? "s" : ""} at or above threshold`, {
+      x: rightX + 0.1, y: startY, w: CW - 5.7, h: 0.28,
+      fontSize: 8.5, bold: true, color: BRAND.white, fontFace: BRAND.font, valign: "middle",
+    });
+    s.addText(goodDomains.map((d) => `✓ ${d.domain}`).join("   "), {
+      x: rightX, y: startY + 0.33, w: CW - 5.6, h: 0.55,
+      fontSize: 8, color: "00A36C", fontFace: BRAND.font, wrap: true,
+    });
+  }
+}
+
 function buildNoOpenItemsSlide(p, data, slideNum) {
   const s = p.addSlide();
   addHeader(s, "Findings, Risk & Actions", "Open items summary");
@@ -797,14 +948,21 @@ async function generateArbPptx(packOrReviewData) {
   const hasFindings    = findings.length > 0;
   const hasOpenActions = (reviewData.actions || []).some((a) => a.status !== "Closed");
 
+  // Propagate strengths from canonical pack into reviewData for new slides
+  if (isCanonicalPack && !reviewData.strengths) {
+    reviewData.strengths = packOrReviewData.strengths || [];
+  }
+
   let sn = 1; // slide number counter
 
   buildCoverSlide(pptx, reviewData, null);       sn++;  // cover has no footer number
   buildExecutiveSummarySlide(pptx, reviewData, sn++);
   buildAssessmentScopeSlide(pptx, reviewData, sn++);
   buildScorecardSlide(pptx, reviewData, sn++);
+  buildStrengthsAndDomainStatusSlide(pptx, reviewData, sn++);
 
   if (hasFindings) {
+    buildFindingsChartSlide(pptx, reviewData, sn++);
     for (let i = 0; i < maxFindPages; i++) {
       buildFindingsSlide(pptx, { ...reviewData, totalFindingPages: maxFindPages }, i, sn++);
     }

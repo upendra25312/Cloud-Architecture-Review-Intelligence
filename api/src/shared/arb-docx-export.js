@@ -245,6 +245,55 @@ function buildScorecardSection(pack) {
   ];
 }
 
+function buildDomainAssessmentSection(pack) {
+  const sc       = pack.scorecard || {};
+  const domains  = sc.domains    || [];
+  const strengths = pack.strengths || pack.executiveSummary?.topStrengths || [];
+
+  const header = [
+    pageBreak(),
+    new Paragraph({ text: "Domain Assessment", heading: HeadingLevel.HEADING_1, spacing: { after: 120 } }),
+    labelValue("Compliant Domains (≥70%)",    domains.filter((d) => (d.percentage ?? 0) >= 70).map((d) => d.domain).join(", ") || "None"),
+    labelValue("Domains Requiring Action (<70%)", domains.filter((d) => (d.percentage ?? 0) < 70).map((d) => d.domain).join(", ") || "None"),
+    spacer(),
+  ];
+
+  const STATUS_COLOR = { Strong: "065F46", Moderate: "78350F", "Needs Work": "7F1D1D", Critical: "9B1C1C" };
+
+  const findingsByDomain = {};
+  for (const f of pack.findings || []) {
+    const d = f.domain || "Other";
+    findingsByDomain[d] = (findingsByDomain[d] || 0) + (f.status !== "Closed" ? 1 : 0);
+  }
+
+  const rows = domains.map((d) => {
+    const pct    = d.percentage ?? 0;
+    const status = d.status || (pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical");
+    const openF  = findingsByDomain[d.domain] ?? 0;
+    return [
+      { text: d.domain || "—" },
+      { text: status, opts: { color: STATUS_COLOR[status] || "374151", bold: true } },
+      { text: `${pct}%` },
+      { text: openF > 0 ? `${openF} open` : "None", opts: { color: openF > 0 ? "D92B2B" : "065F46" } },
+      { text: d.rationale || "—" },
+    ];
+  });
+
+  const table = rows.length
+    ? buildTable(["Domain", "Status", "Score%", "Open Findings", "Assessment Notes"], rows, BRAND.blue)
+    : p("No domain scores available.");
+
+  const sections = [...header, table, spacer()];
+
+  if (strengths.length > 0) {
+    sections.push(new Paragraph({ text: "Architecture Strengths", heading: HeadingLevel.HEADING_2, spacing: { after: 80 } }));
+    for (const str of strengths) sections.push(bullet(`✓  ${str}`));
+    sections.push(spacer());
+  }
+
+  return sections;
+}
+
 function buildFindingsSection(pack) {
   const findings = pack.findings || [];
 
@@ -469,6 +518,7 @@ async function generateArbDocx(pack) {
     ...buildCoverSection(pack),
     ...buildExecutiveSummarySection(pack),
     ...buildScorecardSection(pack),
+    ...buildDomainAssessmentSection(pack),
     ...buildFindingsSection(pack),
     ...buildActionsSection(pack),
     ...buildRequirementsSection(pack),

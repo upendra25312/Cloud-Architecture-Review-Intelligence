@@ -126,6 +126,98 @@ function buildExecutiveSummarySheet(wb, pack) {
   if (dc.governanceWarning) addKv("Governance Warning", dc.governanceWarning);
 }
 
+function buildDomainAssessmentSheet(wb, pack) {
+  const ws = wb.addWorksheet("Domain Assessment");
+  const sc = pack.scorecard || {};
+
+  setHeaderRow(ws, ["Domain","Status","Score","Max","Percentage","Open Findings","Actions Required","Assessment"]);
+  setColWidths(ws, [22,14,8,8,14,14,16,50]);
+
+  const STATUS_FILL = {
+    Strong:       { type: "pattern", pattern: "solid", fgColor: { argb: "FFD1FAE5" } },
+    Moderate:     { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFF3E0" } },
+    "Needs Work": { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEE2E2" } },
+    Critical:     { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFE4E6" } },
+  };
+  const STATUS_FONT_COLOR = {
+    Strong:       { argb: "FF065F46" },
+    Moderate:     { argb: "FF78350F" },
+    "Needs Work": { argb: "FF7F1D1D" },
+    Critical:     { argb: "FF9B1C1C" },
+  };
+
+  const findingsByDomain = {};
+  const actionsByDomain  = {};
+  for (const f of pack.findings || []) {
+    const d = f.domain || "Other";
+    findingsByDomain[d] = (findingsByDomain[d] || 0) + (f.status !== "Closed" ? 1 : 0);
+  }
+  for (const a of pack.remediationActions || []) {
+    const d = a.domain || "Other";
+    actionsByDomain[d] = (actionsByDomain[d] || 0) + (a.status !== "Closed" ? 1 : 0);
+  }
+
+  for (const d of sc.domains || []) {
+    const pct    = d.percentage ?? 0;
+    const status = d.status || (pct >= 85 ? "Strong" : pct >= 70 ? "Moderate" : pct >= 50 ? "Needs Work" : "Critical");
+    const openF  = findingsByDomain[d.domain] ?? 0;
+    const openA  = actionsByDomain[d.domain]  ?? 0;
+    const assessment = pct >= 85
+      ? `Domain aligned with WAF/CAF requirements. ${d.rationale || "No active blockers."}`
+      : pct >= 70
+        ? `Generally compliant with minor gaps. ${d.rationale || ""}`
+        : `Requires remediation. ${d.rationale || "Review findings and take action before approval."}`;
+
+    const row = ws.addRow([d.domain, status, d.score ?? 0, d.maxScore ?? 0, pct, openF, openA, assessment]);
+    row.height = 22;
+    const fill = STATUS_FILL[status] || STATUS_FILL["Needs Work"];
+    const fontCol = STATUS_FONT_COLOR[status] || STATUS_FONT_COLOR["Needs Work"];
+    row.getCell(1).fill = fill;
+    row.getCell(2).fill = fill;
+    row.getCell(2).font = { ...HEADER_FONT, color: fontCol, bold: true };
+    row.eachCell((cell) => { cell.alignment = { wrapText: true, vertical: "top" }; });
+  }
+
+  // Data bars on the percentage column (column 5)
+  const dataRows = (sc.domains || []).length;
+  if (dataRows > 0) {
+    ws.addConditionalFormatting({
+      ref: `E2:E${dataRows + 1}`,
+      rules: [{
+        type: "dataBar",
+        minLength: 0,
+        maxLength: 100,
+        gradient: true,
+        color: "00BEBC",
+        border: false,
+        cfvo: [{ type: "num", value: 0 }, { type: "num", value: 100 }],
+      }],
+    });
+  }
+
+  // Compliant vs Needs Action summary below the table
+  const domains   = sc.domains || [];
+  const compliant = domains.filter((d) => (d.percentage ?? 0) >= 70);
+  const needsWork = domains.filter((d) => (d.percentage ?? 0) < 70);
+
+  ws.addRow([]);
+  const summaryHdr = ws.addRow(["Summary", "", "", "", "", "", "", ""]);
+  summaryHdr.getCell(1).font = { bold: true, size: 11 };
+
+  ws.addRow(["Compliant (≥70%)", compliant.map((d) => d.domain).join(", ") || "None", "", "", "", "", "", ""]);
+  ws.addRow(["Needs Action (<70%)", needsWork.map((d) => d.domain).join(", ") || "None", "", "", "", "", "", ""]);
+
+  const strengths = pack.strengths || pack.executiveSummary?.topStrengths || [];
+  if (strengths.length > 0) {
+    ws.addRow([]);
+    const strHdr = ws.addRow(["Architecture Strengths", "", "", "", "", "", "", ""]);
+    strHdr.getCell(1).font = { bold: true, size: 11, color: { argb: "FF065F46" } };
+    for (const str of strengths) {
+      ws.addRow([`  ✓  ${str}`, "", "", "", "", "", "", ""]);
+    }
+  }
+}
+
 function buildFindingsSheet(wb, pack) {
   const ws = wb.addWorksheet("Findings");
   // Source, Confidence, and Evidence Gap are internal CARI fields — not customer-facing
@@ -346,6 +438,7 @@ async function generateArbExcel(pack) {
   wb.properties.date1904 = false;
 
   buildExecutiveSummarySheet(wb, pack);
+  buildDomainAssessmentSheet(wb, pack);
   buildFindingsSheet(wb, pack);
   buildRisksSheet(wb, pack);
   buildActionsSheet(wb, pack);
